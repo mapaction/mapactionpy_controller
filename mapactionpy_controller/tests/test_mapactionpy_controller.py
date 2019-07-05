@@ -1,5 +1,5 @@
 from unittest import TestCase
-import fixtures
+from . import fixtures
 
 import mapactionpy_controller
 
