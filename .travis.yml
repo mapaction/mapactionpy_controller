@@ -7,4 +7,4 @@ install:
   - pip install .
 script:
   - ls -l --recursive
-  - ./mapactionpy_controller/tests/test_mapactionpy_controller.py
+  - python ./mapactionpy_controller/tests/test_mapactionpy_controller.py
