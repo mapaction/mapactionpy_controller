@@ -12,10 +12,10 @@ class Event:
                 # Doubtless there is a more elegant way to do this.
                 self.operation_name = obj['operation_name']
                 self.glide_number = obj['glide_number']
-                self.affected_country_iso3 = obj['affected_country_iso3']
+                self.affected_country_iso3 = obj['affected_country_iso3'].lower()
                 self.time_zone = obj['time_zone']
                 self.language_iso2 = obj['language_iso2']
-                self.operation_id =  obj['operation_id']
+                self.operation_id = (obj['operation_id']).lower()
                 self.default_source_organisation = obj['default_source_organisation']
                 self.default_source_organisation_url =obj['default_source_organisation_url']
                 self.default_publishing_base_url =  obj['default_publishing_base_url']
