@@ -1,0 +1,10 @@
+language: python
+python:
+  - "2.7"
+  - "3.6"
+# command to install dependencies
+install:
+  - pip install .
+script:
+  - ls -l --recursive
+  - python ./mapactionpy_controller/tests/test_mapactionpy_controller.py
