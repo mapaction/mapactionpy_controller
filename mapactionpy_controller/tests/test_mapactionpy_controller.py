@@ -11,9 +11,12 @@ from mapactionpy_controller.event import Event
 class TestMAController(TestCase):
 
     def setUp(self):
-        self.recipe=MapRecipe(r"D:\code\github\mapactionpy_controller\mapactionpy_controller\example\product_bundle_example.json")
-
         parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+
+        recipe_descriptor_path = os.path.join(
+            parent_dir, 'example', 'product_bundle_example.json')
+        self.recipe = MapRecipe(recipe_descriptor_path)
+
         cmf_descriptor_path = os.path.join(
             parent_dir, 'example', 'cmf_description.json')
         self.cmf = CrashMoveFolder(cmf_descriptor_path)
