@@ -6,5 +6,5 @@ python:
 install:
   - pip install .
 script:
-  - ls -l 
+  - ls -l --recursive
   - ./mapactionpy_controller/tests/test_mapactionpy_controller.py
