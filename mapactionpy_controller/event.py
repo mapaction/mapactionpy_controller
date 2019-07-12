@@ -7,8 +7,7 @@ class Event:
         try:
             with open(event_file, 'r') as f:
                 obj = json.loads(f.read())
-                print(obj.keys())
-
+                
                 # Doubtless there is a more elegant way to do this.
                 self.operation_name = obj['operation_name']
                 self.glide_number = obj['glide_number']

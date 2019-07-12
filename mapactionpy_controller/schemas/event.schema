@@ -1,0 +1,143 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "operation_name",
+    "glide_number",
+    "affected_country_iso3",
+    "time_zone",
+    "language_iso2",
+    "operation_id",
+    "default_source_organisation",
+    "default_source_organisation_url",
+    "default_publishing_base_url",
+    "deployment_primary_email",
+    "default_disclaimer_text",
+    "default_donors_text"
+  ],
+  "properties": {
+    "operation_name": {
+      "$id": "#/properties/operation_name",
+      "type": "string",
+      "title": "The Operation_name Schema",
+      "default": "",
+      "examples": [
+        "Test"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "glide_number": {
+      "$id": "#/properties/glide_number",
+      "type": "string",
+      "title": "The Glide_number Schema",
+      "default": "",
+      "examples": [
+        "FL-2019-123456-MOZ"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "affected_country_iso3": {
+      "$id": "#/properties/affected_country_iso3",
+      "type": "string",
+      "title": "The Affected_country_iso3 Schema",
+      "default": "",
+      "examples": [
+        "MOZ"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "time_zone": {
+      "$id": "#/properties/time_zone",
+      "type": "string",
+      "title": "The Time_zone Schema",
+      "default": "",
+      "examples": [
+        "UTC+01:00"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "language_iso2": {
+      "$id": "#/properties/language_iso2",
+      "type": "string",
+      "title": "The Language_iso2 Schema",
+      "default": "",
+      "examples": [
+        "Undetermined"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "operation_id": {
+      "$id": "#/properties/operation_id",
+      "type": "string",
+      "title": "The Operation_id Schema",
+      "default": "",
+      "examples": [
+        "2019moz01"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "default_source_organisation": {
+      "$id": "#/properties/default_source_organisation",
+      "type": "string",
+      "title": "The Default_source_organisation Schema",
+      "default": "",
+      "examples": [
+        "MapAction"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "default_source_organisation_url": {
+      "$id": "#/properties/default_source_organisation_url",
+      "type": "string",
+      "title": "The Default_source_organisation_url Schema",
+      "default": "",
+      "examples": [
+        "mapaction.org"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "default_publishing_base_url": {
+      "$id": "#/properties/default_publishing_base_url",
+      "type": "string",
+      "title": "The Default_publishing_base_url Schema",
+      "default": "",
+      "examples": [
+        "https://maps.mapaction.org/dataset"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "deployment_primary_email": {
+      "$id": "#/properties/deployment_primary_email",
+      "type": "string",
+      "title": "The Deployment_primary_email Schema",
+      "default": "",
+      "examples": [
+        "test@mapaction.org"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "default_disclaimer_text": {
+      "$id": "#/properties/default_disclaimer_text",
+      "type": "string",
+      "title": "The Default_disclaimer_text Schema",
+      "default": "",
+      "examples": [
+        "This map is for test purposes only."
+      ],
+      "pattern": "^(.*)$"
+    },
+    "default_donors_text": {
+      "$id": "#/properties/default_donors_text",
+      "type": "string",
+      "title": "The Default_donors_text Schema",
+      "default": "",
+      "examples": [
+        "Kind donors paid for this"
+      ],
+      "pattern": "^(.*)$"
+    }
+  }
+}

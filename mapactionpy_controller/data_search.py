@@ -1,6 +1,4 @@
-from crash_move_folder import CrashMoveFolder
-from event import Event
-from product_bundle_definition import MapRecipe
+import pickle 
 
 class DataSearch():
     def __init__(self, cmf):
@@ -9,4 +7,6 @@ class DataSearch():
     def update_search_with_event_details(self, recipe, event):
         for lyr in recipe.layers:
             output_str = lyr.search_definition.format(e=event)
-            print('{}\t{}'.format(lyr.search_definition, output_str))
+            lyr.search_definition = output_str
+
+        return recipe

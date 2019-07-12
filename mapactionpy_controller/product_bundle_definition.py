@@ -2,17 +2,24 @@ import json
 
 
 class MapRecipe:
-    def __init__(self, recipeJsonFile):
-        self.recipeJsonFile = recipeJsonFile
+    '''
+        Opens the recipe file specificed by recipe_json_path and creates a MapRecipe object accordingly.
+        If str_def is not None then this is treated as a string representation of the json recipe. `recipeJsonFile` is ignored is str_def is not None. This is primarily used for testing.
+    '''
+    def __init__(self, recipe_json_path, str_def = None):
+        self.recipe_json_path = recipe_json_path
         self.title = ""
-        self.layers = set()
+        self.layers = []
 
-        with open(self.recipeJsonFile) as json_file:
-            jsonContents = json.load(json_file)
-            self.title = jsonContents['title']
-            for layer in jsonContents['layers']:
-                self.layers.add(LayerSpec(layer))
-            
+        if str_def is not None:
+            json_contents = json.loads(str_def)
+        else:
+            with open(self.recipe_json_path) as json_file:
+                json_contents = json.load(json_file)
+
+        self.title = json_contents['title']
+        for layer in json_contents['layers']:
+            self.layers.append(LayerSpec(layer))
 
 
 class LayerSpec:
@@ -25,11 +32,3 @@ class LayerSpec:
         self.rendering = spec['rendering']
         self.definition_query = spec['definition_query']
         self.visable = spec['visable']
-
-
-if __name__ == '__main__':
-    recipe = MapRecipe(
-        r"D:\code\github\mapactionpy_controller\mapactionpy_controller\example\product_bundle_example.json")
-            
-    for lyr in recipe.layers:
-        print('{l.map_frame}\t{l.layer_display_name}'.format(l=lyr))

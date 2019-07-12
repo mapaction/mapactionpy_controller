@@ -1,0 +1,132 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "event_description_file",
+    "original_data",
+    "active_data",
+    "layer_redering",
+    "mxd_templates",
+    "qgis_templates",
+    "export_dir",
+    "dnc_lookup_dir",
+    "default_jpeg_red_dpi",
+    "default_pdf_red_dpi",
+    "default_emf_red_dpi"
+  ],
+  "properties": {
+    "event_description_file": {
+      "$id": "#/properties/event_description_file",
+      "type": "string",
+      "title": "The Event_description_file Schema",
+      "default": "",
+      "examples": [
+        "event_description.json"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "original_data": {
+      "$id": "#/properties/original_data",
+      "type": "string",
+      "title": "The Original_data Schema",
+      "default": "",
+      "examples": [
+        "GIS/1_Original_Data"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "active_data": {
+      "$id": "#/properties/active_data",
+      "type": "string",
+      "title": "The Active_data Schema",
+      "default": "",
+      "examples": [
+        "GIS/2_Active_Data"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "layer_redering": {
+      "$id": "#/properties/layer_redering",
+      "type": "string",
+      "title": "The Layer_redering Schema",
+      "default": "",
+      "examples": [
+        "GIS/3_Mapping/38_Initial_Maps_Layer_Files"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "mxd_templates": {
+      "$id": "#/properties/mxd_templates",
+      "type": "string",
+      "title": "The Mxd_templates Schema",
+      "default": "",
+      "examples": [
+        "GIS/3_Mapping/32_MXD_Templates/arcgis_10_6"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "qgis_templates": {
+      "$id": "#/properties/qgis_templates",
+      "type": "string",
+      "title": "The Qgis_templates Schema",
+      "default": "",
+      "examples": [
+        "GIS/3_Mapping/39_QGIS_Templates"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "export_dir": {
+      "$id": "#/properties/export_dir",
+      "type": "string",
+      "title": "The Export_dir Schema",
+      "default": "",
+      "examples": [
+        "GIS/3_Mapping/34_Map_Products_MapAction"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "dnc_lookup_dir": {
+      "$id": "#/properties/dnc_lookup_dir",
+      "type": "string",
+      "title": "The Dnc_lookup_dir Schema",
+      "default": "",
+      "examples": [
+        "GIS/2_Active_Data/200_data_name_lookup"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "default_jpeg_red_dpi": {
+      "$id": "#/properties/default_jpeg_red_dpi",
+      "type": "integer",
+      "title": "The Default_jpeg_red_dpi Schema",
+      "default": "",
+      "examples": [
+        "300"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "default_pdf_red_dpi": {
+      "$id": "#/properties/default_pdf_red_dpi",
+      "type": "integer",
+      "title": "The Default_pdf_red_dpi Schema",
+      "default": "",
+      "examples": [
+        "300"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "default_emf_red_dpi": {
+      "$id": "#/properties/default_emf_red_dpi",
+      "type": "integer",
+      "title": "The Default_emf_red_dpi Schema",
+      "default": "",
+      "examples": [
+        "300"
+      ],
+      "pattern": "^(.*)$"
+    }
+  }
+}

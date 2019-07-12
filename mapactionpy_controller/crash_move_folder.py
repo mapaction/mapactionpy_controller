@@ -6,14 +6,14 @@ class CrashMoveFolder:
     def __init__(self, cmf_path):
         cd = os.path.dirname(os.path.realpath(__file__))
         schema_path = os.path.join(cd, 'schemas', 'cmf-v0.1.schema')
-        json_schema = open(schema_path, 'r').read()
-        print(json_schema)
+        # json_schema = open(schema_path, 'r').read()
+        # print(json_schema)
 
         self.path = os.path.dirname(cmf_path)
 
         with open(cmf_path, 'r') as f:
             txt = f.read()
-            print(txt)
+            # print(txt)
             #validate(txt, json_schema)
             obj = json.loads(txt)
 
