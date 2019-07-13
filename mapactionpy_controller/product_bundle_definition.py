@@ -44,14 +44,15 @@ class LayerSpec:
         self.visable = spec['visable']
 
     def __eq__(self, other):
-        atrs = ['map_frame',
-                'layer_group',
-                'layer_display_name',
-                'search_definition',
-                'data_source_path',
-                'rendering',
-                'definition_query',
-                'visable']
-        
-        listcomp = list( map(lambda a: self.__getattribute__(a) == other.__getattribute__(a), atrs))
-        return all(listcomp)
+        comp = [
+                self.map_frame == other.map_frame,
+                self.layer_group == other.layer_group,
+                self.layer_display_name == other.layer_display_name,
+                self.search_definition == other.search_definition,
+                self.data_source_path == other.data_source_path,
+                self.rendering == other.rendering,
+                self.definition_query == other.definition_query,
+                self.visable == other.visable
+        ]
+
+        return all(comp)

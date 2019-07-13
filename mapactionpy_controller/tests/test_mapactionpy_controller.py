@@ -2,12 +2,17 @@ import jsonpickle
 import os
 import unittest
 from unittest import TestCase
-from unittest import mock
 import fixtures
 from mapactionpy_controller.product_bundle_definition import MapRecipe, LayerSpec
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.data_search import DataSearch
 from mapactionpy_controller.event import Event
+
+# works differently for python 2.7 and python 3.x
+try:
+    from unittest import mock
+except ImportError as ie:
+    import mock
 
 
 class TestMAController(TestCase):
