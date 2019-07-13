@@ -1,6 +1,8 @@
+import jsonpickle
 import os
 import unittest
 from unittest import TestCase
+from unittest import mock
 import fixtures
 from mapactionpy_controller.product_bundle_definition import MapRecipe, LayerSpec
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
@@ -32,57 +34,39 @@ class TestMAController(TestCase):
 
     def test_substitute_iso3_in_regex(self):
         ds = DataSearch(self.cmf)
-        # ds.update_search_with_event_details(recipe, event)
 
+        reference_recipe = MapRecipe(
+            None, str_def=fixtures.recipe_with_positive_iso3_code)
         pos_recipe = MapRecipe(
             None, str_def=fixtures.recipe_without_positive_iso3_code)
         updated_pos_recipe = ds.update_search_with_event_details(pos_recipe, self.event)
-        test_str_positive = updated_pos_recipe.layers[0].search_definition
-        self.assertEqual(test_str_positive, fixtures.fixture_regex_with_iso3_code)
+        self.assertEqual(updated_pos_recipe, reference_recipe)
 
+        reference_recipe = MapRecipe(
+            None, str_def=fixtures.recipe_with_negative_iso3_code)
         neg_recipe = MapRecipe(
             None, str_def=fixtures.recipe_without_negative_iso3_code)
-        #test_str_negative = ds.update_search_with_event_details(neg_recipe, self.event)
         updated_neg_recipe = ds.update_search_with_event_details(
             neg_recipe, self.event)
-        test_str_negative = updated_neg_recipe.layers[0].search_definition
+        self.assertEqual(updated_neg_recipe, reference_recipe)
 
-        self.assertEqual(test_str_negative, fixtures.fixture_regex_with_negative_iso3_code)
+    @mock.patch('mapactionpy_controller.data_search.os.path')
+    @mock.patch('mapactionpy_controller.data_search.os')
+    def test_search_for_shapefiles(self, mock_os, mock_path):
+        ds = DataSearch(self.cmf)
 
-
-    @unittest.SkipTest
-    def test_search_for_shapefiles(self):
         # case where there is exactly one dataset per query
-        test_result_success = mapactionpy_controller.find_datasource(
-            fixtures.fixture_datasource_intermediatory_query)
-
-        self.assertEqual(test_result_success,
-                         fixtures.fixture_datasource_result_one_dataset_per_layer)
-
-        # case where there is a missing dataset for one or more query
-        test_result_success = mapactionpy_controller.find_datasource(
-            fixtures.fixture_datasource_intermediatory_query)
-
-        self.assertEqual(test_result_success,
-                         fixtures.fixture_datasource_result_missing_layer)
+        mock_os.walk.return_value = fixtures.walk_single_admn_file_search_search
+        mock_path.join.return_value = r'D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp'
+        mock_path.normpath.return_value = r'D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp'
+        reference_recipe = MapRecipe(
+            None, str_def=fixtures.recipe_result_one_dataset_per_layer)
+        test_recipe = MapRecipe(None, str_def=fixtures.recipe_with_positive_iso3_code)
+        self.assertNotEqual(test_recipe, reference_recipe)
+        updated_test_recipe = ds.update_recipe_with_datasources(test_recipe)
+        
+        self.assertEqual(updated_test_recipe, reference_recipe)
 
 
 if __name__ == '__main__':
     unittest.main()
-
-
-r""" 
-'''
-if __name__ == '__main__':
-    recipe=MapRecipe(r"D:\code\github\mapactionpy_controller\mapactionpy_controller\example\product_bundle_example.json")
-    cmf=CrashMoveFolder(
-        r"D:\code\github\mapactionpy_controller\mapactionpy_controller\example\cmf_description.json")
-    event = Event(cmf)
-
-    ds = DataSearch(cmf)
-    ds.update_search_with_event_details(recipe, event)
-
-    #for lyr in recipe.layers:
-    #print('{l.map_frame}\t{l.layer_display_name}'.format(l=lyr))
-'''
-"""
