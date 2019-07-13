@@ -1,4 +1,5 @@
-import pickle 
+import re
+import os
 
 class DataSearch():
     def __init__(self, cmf):
@@ -10,3 +11,18 @@ class DataSearch():
             lyr.search_definition = output_str
 
         return recipe
+
+    def update_recipe_with_datasources(self, recipe):
+        for lyr in recipe.layers:
+            lyr.data_source_path = self._find_datasource(lyr)
+
+        return recipe
+
+    def _find_datasource(self, lyr):
+        found = []
+        for root, dirs, files in os.walk(self.cmf.active_data):
+            for f in files:
+                if re.match(lyr.search_definition, f):
+                    found.append(os.path.normpath(os.path.join(root, f)))
+
+        return ';'.join(found)
