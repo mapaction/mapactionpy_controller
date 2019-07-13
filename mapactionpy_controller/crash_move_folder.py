@@ -4,8 +4,8 @@ import os
 
 class CrashMoveFolder:
     def __init__(self, cmf_path):
-        cd = os.path.dirname(os.path.realpath(__file__))
-        schema_path = os.path.join(cd, 'schemas', 'cmf-v0.1.schema')
+        # cd = os.path.dirname(os.path.realpath(__file__))
+        # schema_path = os.path.join(cd, 'schemas', 'cmf-v0.1.schema')
         # json_schema = open(schema_path, 'r').read()
         # print(json_schema)
 

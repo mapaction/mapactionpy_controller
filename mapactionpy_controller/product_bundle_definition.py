@@ -21,6 +21,16 @@ class MapRecipe:
         for layer in json_contents['layers']:
             self.layers.append(LayerSpec(layer))
 
+    def __eq__(self, other):
+        if not self.title == other.title:
+            return False
+
+        if not len(self.layers) == len(other.layers):
+            return False
+
+        listcomp = list(map(lambda sl, ol: sl == ol, self.layers, other.layers))
+        return all(listcomp)
+
 
 class LayerSpec:
     def __init__(self, spec):
@@ -32,3 +42,16 @@ class LayerSpec:
         self.rendering = spec['rendering']
         self.definition_query = spec['definition_query']
         self.visable = spec['visable']
+
+    def __eq__(self, other):
+        atrs = ['map_frame',
+                'layer_group',
+                'layer_display_name',
+                'search_definition',
+                'data_source_path',
+                'rendering',
+                'definition_query',
+                'visable']
+        
+        listcomp = list( map(lambda a: self.__getattribute__(a) == other.__getattribute__(a), atrs))
+        return all(listcomp)
