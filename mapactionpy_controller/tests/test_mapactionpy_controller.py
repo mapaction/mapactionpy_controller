@@ -27,7 +27,6 @@ class TestMAController(TestCase):
         cmf_descriptor_path = os.path.join(
             parent_dir, 'example', 'cmf_description.json')
         self.cmf = CrashMoveFolder(cmf_descriptor_path)
-        self.event = Event(self.cmf)
 
     @unittest.SkipTest
     def test_alway_fail(self):
@@ -44,15 +43,14 @@ class TestMAController(TestCase):
             None, str_def=fixtures.recipe_with_positive_iso3_code)
         pos_recipe = MapRecipe(
             None, str_def=fixtures.recipe_without_positive_iso3_code)
-        updated_pos_recipe = ds.update_search_with_event_details(pos_recipe, self.event)
+        updated_pos_recipe = ds.update_search_with_event_details(pos_recipe)
         self.assertEqual(updated_pos_recipe, reference_recipe)
 
         reference_recipe = MapRecipe(
             None, str_def=fixtures.recipe_with_negative_iso3_code)
         neg_recipe = MapRecipe(
             None, str_def=fixtures.recipe_without_negative_iso3_code)
-        updated_neg_recipe = ds.update_search_with_event_details(
-            neg_recipe, self.event)
+        updated_neg_recipe = ds.update_search_with_event_details(neg_recipe)
         self.assertEqual(updated_neg_recipe, reference_recipe)
 
     @mock.patch('mapactionpy_controller.data_search.os.path')
