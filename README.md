@@ -27,11 +27,11 @@ Using the MapRecipe, CrashMoveFolder and Event classes
 ----
 There are three classes which are desgined for reuse in other modules. For each of these there is a cooreponding json representation. There should not be any need for any other code to touch these json files:
 
-**MapRecipe** : A object that represents a recipe (as read from a json file).  
+* **MapRecipe** : A object that represents a recipe (as read from a json file).  
 This object may be maniulated by 
 (eg the data_search tool, updates the datasources fields )
-**CrashMoveFolder** : A object the describes the CrashMoveFolder and its contents. There should be no need to hardcode any path (absolute or relevate) to anywhere in a crash move folder
-**Event** : This decribes the real-world humanitarian event to which the Crash Move Folder cooresponds.
+* **CrashMoveFolder** : A object the describes the CrashMoveFolder and its contents. There should be no need to hardcode any path (absolute or relevate) to anywhere in a crash move folder
+* **Event** : This decribes the real-world humanitarian event to which the Crash Move Folder cooresponds.
 
 (**Note1:**) The name `Event` matches the naming of the equivilent concept on the Map & Data Respository (see https://github.com/mapaction/ckanext-mapactionevent). However it is rather too generic in this context. A more decriptive name for this class would be helpful.
 
