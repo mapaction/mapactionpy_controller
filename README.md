@@ -21,7 +21,6 @@ todo:
 [] enable installation via pypi.
 
 
-
 Usage
 =====
 Using the MapRecipe, CrashMoveFolder and Event classes
@@ -34,9 +33,9 @@ This object may be maniulated by
 **CrashMoveFolder** : A object the describes the CrashMoveFolder and its contents. There should be no need to hardcode any path (absolute or relevate) to anywhere in a crash move folder
 **Event** : This decribes the real-world humanitarian event to which the Crash Move Folder cooresponds.
 
-(Note1:) The nmae `Event` matches the naming of the equivilent concept on the Map & Data Respository (see https://github.com/mapaction/ckanext-mapactionevent). However it is rather too generic in this context. A more decriptive name for this class would be helpful.
+(**Note1:**) The name `Event` matches the naming of the equivilent concept on the Map & Data Respository (see https://github.com/mapaction/ckanext-mapactionevent). However it is rather too generic in this context. A more decriptive name for this class would be helpful.
 
-(Note2: in the MapExportTool the information within the CrashMoveFolder and Event used to be encapsulated in the operational_config.xml file. This mixed _state_ about the event/emergency and _configuration_ about the local paths to and within the crash move folder.  )
+(**Note2**: in the MapExportTool the information within the CrashMoveFolder and Event used to be encapsulated in the operational_config.xml file. This mixed _state_ about the event/emergency and _configuration_ about the local paths to and within the crash move folder.  )
 
 
 Using the Data Serach tool from the commandline
@@ -63,15 +62,10 @@ In no particular order:
 ```
     assert my_recipe == MapRecipe.fromJOSN(my_recipe>toJSON())
 ```   
+The `jsonpickle` module is particularly well suited for this.
 
  [] CrashMoveFolder class should check for the existance of all of the subdirectories in the constructor.
 
  [] Replace debug print statements with output to a logging libaray - to ensure that standard output is not corrupted with error/debug messages.
 
  [] Better name for the `Event` class
-
-
-
-
-
-
