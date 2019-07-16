@@ -64,6 +64,8 @@ In no particular order:
 ```   
 The `jsonpickle` module is particularly well suited for this.
 
+ [] Implenment json schema validation for the various json files.
+
  [] CrashMoveFolder class should check for the existance of all of the subdirectories in the constructor.
 
  [] Replace debug print statements with output to a logging libaray - to ensure that standard output is not corrupted with error/debug messages.
