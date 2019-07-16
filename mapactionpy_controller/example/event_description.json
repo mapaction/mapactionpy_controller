@@ -1,0 +1,14 @@
+{
+    "operation_name": "Test",
+    "glide_number": "FL-2019-123456-MOZ",
+    "affected_country_iso3": "MOZ",
+    "time_zone": "UTC+01:00",
+    "language_iso2": "Undetermined",
+    "operation_id": "2019moz01",
+    "default_source_organisation": "MapAction",
+    "default_source_organisation_url": "mapaction.org",
+    "default_publishing_base_url": "https://maps.mapaction.org/dataset",
+    "deployment_primary_email": "test@mapaction.org",
+    "default_disclaimer_text": "This map is for test purposes only.",
+    "default_donors_text": "Kind donors paid for this"
+}

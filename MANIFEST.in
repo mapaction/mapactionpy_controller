@@ -1,1 +1,4 @@
 include README.rst
+include schemas/cmf-v0.1.schema
+include schemas/event.schema
+include schemas/productbundle.schema
