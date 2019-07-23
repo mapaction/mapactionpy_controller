@@ -1,0 +1,8 @@
+Value,Description,Scale_range
+s0,Global mapping,? 5 000 000
+s1,Country scale mapping,? 1 000 000
+s2,Sub-country mapping,? 250 000
+s3,Medium scale mapping,? 1:50 000
+s4,Large scale mapping,? 1:2 500
+s5,Site maps / plans,? 1:500
+su,Unknown Scale,unknown
