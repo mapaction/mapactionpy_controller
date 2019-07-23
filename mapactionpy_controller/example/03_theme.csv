@@ -1,0 +1,179 @@
+Value,Description,Category
+hub,UN Centres,3www
+ngo,NGO offices,3www
+www,Who / What / Where location,3www
+ad,Administrative boundary (various levels),admn
+ad0,Administrative boundary (level 0 national),admn
+ad1,Administrative boundary (level 1),admn
+ad2,Administrative boundary (level 2),admn
+ad3,Administrative boundary (level 3),admn
+ad4,Administrative boundary (level 4),admn
+ad5,Administrative boundary (level 5),admn
+ad6,Administrative boundary (level 6),admn
+cnt,Continent boundary,admn
+pco,Pcode list,admn
+reg,Region,admn
+aff,Affected area,affd
+cas,Casualties,affd
+idp,IDP numbers,affd
+mov,Movements of population,affd
+agr,Agriculture,agri
+irr,Irrigation,agri
+gps,GPS survey,assm
+pho,Photo location,assm
+pnt,Point visited,assm
+trk,Track / route (planned or taken),assm
+bdg,Building,bldg
+dmg,Damaged building,bldg
+dst,Destroyed building,bldg
+res,Residential building,bldg
+nrs,Non-residential building,bldg
+aoi,Area of interest,carto
+cli,Clipping polygon,carto
+ddp,Data driven pages index grid,carto
+fea,Feather / vignette for shoreline,carto
+grd,Grid,carto
+lat,Lat/Long Grid,carto
+tim,Time Zone,carto
+utm,UTM,carto
+atm,Automated teller machine,cash
+bnk,Bank,cash
+ref,Refugee location,cccm
+edu,School,educ
+con,Contour,elev
+cst,Coastline,elev
+dem,Digital Elevation Model,elev
+dtm,Digital Terrain Model,elev
+hsh,Hill Shade,elev
+hts,Height Spots,elev
+unc,Undersea features,elev
+env,Environmental,envi
+ebu,Earthquake buffer,evnt
+epi,Earthquake epicentre,evnt
+shk,Earthquake shake intensity,evnt
+fir,Fire location,evnt
+flo,Flood extent,evnt
+str,Storm track,evnt
+hea,Health facility (generic),heal
+ecl,Emergency clinic,heal
+epd,Epidemic,heal
+hos,Hospital,heal
+med,Medical facility,heal
+pha,Pharmacy / Chemist,heal
+aer,Aerial photography,imgy
+iko,Ikonos,imgy
+lsa,Landsat,imgy
+qbd,QuickBird,imgy
+sat,Generic satellite imagery,imgy
+spo,Spot,imgy
+ind,Industrial,land
+lea,Lease,land
+lnd,Landcover,land
+npk,National Park / Protected Area,land
+urb,Urban,land
+veg,Vegetation,land
+wal,Wall,land
+wwf,WWF,land
+dis,Warehouses / Distribution Centres,logs
+log,Logistics,logs
+bas,River Basin,phys
+bay,Bay,phys
+cav,Cave,phys
+dam,Dam,phys
+des,Desert,phys
+drn,Drainage,phys
+esc,Escapment,phys
+flt,Flat ground,phys
+geol,Geology,phys
+geophys,Geophysical,phys
+gey,Geyser,phys
+gul,Gulf,phys
+hed,Headland / promontory / point,phys
+hil,Hill features,phys
+ice,Ice & Glaciers,phys
+isl,Islands / islets,phys
+lag,Lagoon,phys
+lak,Lakes and waterbodies,phys
+lav,Lava flow,phys
+mar,Marsh / swamp,phys
+nat,Natural,phys
+nun,Nunatak,phys
+oas,Oasis,phys
+ocn,Ocean,phys
+pla,Plains / open expanses,phys
+ree,Reef,phys
+rid,Ridge,phys
+riv,River,phys
+sli,Landslide,phys
+slp,Slope,phys
+spr,Spring,phys
+sur,Surface,phys
+val,Valley,phys
+vol,Volcano location,phys
+wad,Wadi,phys
+wat,Watershed,phys
+wea,Weather,phys
+cus,Customs,pois
+gov,Government buildings,pois
+his,Historical sites,pois
+lod,Lodgings / hotels / guest houses,pois
+mon,Monument,pois
+nav,Navigational markers,pois
+off,Offices,pois
+rel,Religeous buildings,pois
+ser,Services / post offices,pois
+sit,Sites of interest,pois
+spt,Sport facilities,pois
+twr,Towers,pois
+vet,Veterinary Facilities,pois
+wei,Weir,pois
+wel,Well,pois
+zoo,Zoo,pois
+cul,Cultural region,popu
+eth,Ethnic group,popu
+lan,Language distribution,popu
+pop,Population distribution,popu
+cem,Cemetery,rcvy
+sca,Map scan,scan
+erw,Explosive Remnants of War,scty
+haz,Hazards,scty
+min,Mine fields,scty
+mts,Mine threat status (roads),scty
+sbu,Security buffer,scty
+sec,Security status,scty
+uxo,Unexploded Ordnance,scty
+shl,Shelter,shel
+evc,Evacuation shelter,shel
+cmp,Camp,stle
+stl,Settlement (city / town / populated place),stle
+tel,Mobile Telephone Coverage,telc
+vhf,VHF radio mast,telc
+air,Airport / Airstrip,tran
+brg,Bridge,tran
+bst,Bus station,tran
+can,Canal,tran
+fer,Ferry,tran
+hlz,Heliport,tran
+hwy,Highway,tran
+por,Seaport,tran
+rdi,Road distances,tran
+rds,Road,tran
+rrd,Railway / railroad,tran
+rst,Railway station,tran
+tun,Tunnel,tran
+chn,Channels,trans
+frd,Fords / crossings,trans
+gat,Gates / barriers,trans
+trx,Tracks,trans
+com,Communication structure / radio / TV mast,util
+fue,Fuel depot,util
+fst,Fuel station,util
+law,Police / prisons / law inforcement,util
+mil,Military installations,util
+mor,Morgue and location for storage of dead,util
+ppl,Pipeline,util
+pst,Power Station,util
+pwl,Power Line,util
+rsq,Rescue services / coast guards,util
+san,Sanitation / waste facilities / landfill,util
+was,Water and sanitation,wash

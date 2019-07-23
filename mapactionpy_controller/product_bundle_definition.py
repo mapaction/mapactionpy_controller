@@ -39,12 +39,14 @@ class LayerSpec:
         self.layer_display_name = spec['layer_display_name']
         self.search_definition = spec['search_definition']
         self.data_source_path = spec['data_source_path']
+        self.data_name = spec['data_name']
         self.rendering = spec['rendering']
         self.definition_query = spec['definition_query']
         self.visable = spec['visable']
 
     def __eq__(self, other):
         comp = [
+                self.data_name == other.data_name,
                 self.map_frame == other.map_frame,
                 self.layer_group == other.layer_group,
                 self.layer_display_name == other.layer_display_name,

@@ -8,6 +8,7 @@ r'''{
        "layer_display_name": "Admin - AffectedCountry - py",
        "search_definition": "^{e.affected_country_iso3}_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
        "data_source_path": "",
+       "data_name": "",
        "rendering": "Admin - AffectedCountry - py",
        "definition_query": "None",
        "visable": "Yes"
@@ -25,6 +26,7 @@ r'''{
        "layer_display_name": "Admin - SurroundingCountry - py",
        "search_definition": "^(?!({e.affected_country_iso3}))_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
        "data_source_path": "",
+       "data_name": "",
        "rendering": "Admin - SurroundingCountry - py",
        "definition_query": "ADM0_NAME <> '[reference country]'",
        "visable": "Yes"
@@ -42,6 +44,7 @@ recipe_with_positive_iso3_code = \
        "layer_display_name": "Admin - AffectedCountry - py",
        "search_definition": "^moz_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
        "data_source_path": "",
+       "data_name": "",
        "rendering": "Admin - AffectedCountry - py",
        "definition_query": "None",
        "visable": "Yes"
@@ -59,6 +62,7 @@ r'''{
        "layer_display_name": "Admin - SurroundingCountry - py",
        "search_definition": "^(?!(moz))_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
        "data_source_path": "",
+       "data_name": "",
        "rendering": "Admin - SurroundingCountry - py",
        "definition_query": "ADM0_NAME <> '[reference country]'",
        "visable": "Yes"
@@ -76,6 +80,7 @@ r'''{
        "layer_display_name": "Admin - AffectedCountry - py",
        "search_definition": "^moz_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
        "data_source_path": "D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp",
+       "data_name": "moz_admn_ad0_py_s0_unknown_pp",
        "rendering": "Admin - AffectedCountry - py",
        "definition_query": "None",
        "visable": "Yes"

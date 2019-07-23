@@ -30,8 +30,8 @@ class CrashMoveFolder:
             self.qgis_templates = os.path.join(
                 self.path, obj['qgis_templates'])
             self.export_dir = os.path.join(self.path, obj['export_dir'])
-            self.dnc_lookup_dir = os.path.join(
-                self.path, obj['dnc_lookup_dir'])
+            self.dnc_definition = os.path.join(
+                self.path, obj['dnc_definition'])
             self.default_jpeg_red_dpi = obj['default_jpeg_red_dpi']
             self.default_pdf_red_dpi = obj['default_pdf_red_dpi']
             self.default_emf_red_dpi = obj['default_emf_red_dpi']

@@ -1,0 +1,34 @@
+Value,Description
+3www,Who-What-Where
+admn,Admin
+affd,Affected population / area
+agri,Agriculture
+assm,Assessment / survey / field visit
+bldg,Building
+carto,Cartographic
+cash,Cash transfers
+cccm,Camp Coordination and Management
+educ,Education
+elev,Elevation
+envi,Environmental aspects
+evnt,Event characteristics
+fsec,Food Security
+heal,Health and medical
+imgy,Imagery
+land,Land use
+logs,Logistics
+nutr,Nutrition
+phys,Physical features
+pois,Points of interest
+popu,Population baseline
+prot,Protection
+rcvy,Early recovery
+scan,Map scans
+scty,Security and safety
+shel,Shelter
+stle,Settlements
+telc,Emergency Telecommunications
+tran,Transport
+sar,Search and rescue
+util,Utilities
+wash,Water Sanitation and Hygiene

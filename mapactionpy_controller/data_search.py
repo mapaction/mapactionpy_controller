@@ -20,18 +20,22 @@ class DataSearch():
 
     def update_recipe_with_datasources(self, recipe):
         for lyr in recipe.layers:
-            lyr.data_source_path = self._find_datasource(lyr)
+            lyr.data_source_path, lyr.data_name = self._find_data(lyr)
 
         return recipe
 
-    def _find_datasource(self, lyr):
-        found = []
+    def _find_data(self, lyr):
+        found_datasources = []
+        found_datanames = []
         for root, dirs, files in os.walk(self.cmf.active_data):
             for f in files:
                 if re.match(lyr.search_definition, f):
-                    found.append(os.path.normpath(os.path.join(root, f)))
+                    found_datasources.append(
+                        os.path.normpath(os.path.join(root, f)))
+                    found_datanames.append(
+                        os.path.splitext(os.path.basename(f))[0])
 
-        return ';'.join(found)
+        return ';'.join(found_datasources), ';'.join(found_datanames),
 
 
 def _is_valid_file(parser, arg):

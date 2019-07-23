@@ -1,0 +1,11 @@
+Value,Description
+doc,Document with spatial info
+ln,Line / polyline
+pt,Point
+py,Polygon / area
+rca,Raster Catalog
+ras,Raster georegistered
+rasunreg,Raster not georegistered
+tab,Table
+tin,TIN
+unkwn,Unknown

@@ -7,6 +7,7 @@
         "layer_display_name": "Settlement - Places - pt",
         "search_definition": "^{e.affected_country_iso3}_stle_stl_pt_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Settlement - Places - pt",
         "definition_query": "\"SettleType\" IN ('national_capital', 'city')",
         "visable": "Yes"
@@ -17,6 +18,7 @@
         "layer_display_name": "Transport - Airports - pt",
         "search_definition": "^{e.affected_country_iso3}_trans_air_pt_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Transport - Airports - pt",
         "definition_query": "None",
         "visable": "Yes"
@@ -27,6 +29,7 @@
         "layer_display_name": "Transport - Seaports - pt",
         "search_definition": "^{e.affected_country_iso3}_trans_por_pt_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Transport - Seaports - pt",
         "definition_query": "None",
         "visable": "Yes"
@@ -37,6 +40,7 @@
         "layer_display_name": "Elevation- Coastline - ln",
         "search_definition": "^{e.affected_country_iso3}_elev_cst_ln_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Elevation- Coastline - ln",
         "definition_query": "none",
         "visable": "Yes"
@@ -47,6 +51,7 @@
         "layer_display_name": "Borders - Admin1 - ln",
         "search_definition": "^{e.affected_country_iso3}_admn_ad1_ln_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Borders - Admin1 - ln",
         "definition_query": "None",
         "visable": "Yes"
@@ -57,6 +62,7 @@
         "layer_display_name": "Borders - Admin2 - ln",
         "search_definition": "^{e.affected_country_iso3}_admn_ad2_ln_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Borders - Admin2 - ln",
         "definition_query": "None",
         "visable": "Yes"
@@ -67,6 +73,7 @@
         "layer_display_name": "Transport - Rail - ln",
         "search_definition": "^{e.affected_country_iso3}_tran_rrd_ln_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Transport - Rail - ln",
         "definition_query": "None",
         "visable": "Yes"
@@ -77,6 +84,7 @@
         "layer_display_name": "Transport - Road - ln",
         "search_definition": "^{e.affected_country_iso3}_tran_rds_ln_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Transport - Road - ln",
         "definition_query": "None",
         "visable": "Yes"
@@ -87,6 +95,7 @@
         "layer_display_name": "Cartography - Feather - pt",
         "search_definition": "^(?!({e.affected_country_iso3}))_carto_fea_py_s0_mapaction_pp(_(.+)",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Cartography - Feather - pt",
         "definition_query": "None",
         "visable": "Yes"
@@ -97,6 +106,7 @@
         "layer_display_name": "Physical - Waterbody - py",
         "search_definition": "tbd",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Physical - Waterbody - py",
         "definition_query": "None",
         "visable": "Yes"
@@ -107,6 +117,7 @@
         "layer_display_name": "Physical - River - ln",
         "search_definition": "^{e.affected_country_iso3}_phys_riv_ln_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Physical - River - ln",
         "definition_query": "None",
         "visable": "Yes"
@@ -117,6 +128,7 @@
         "layer_display_name": "Admin - Admin2 - py",
         "search_definition": "^{e.affected_country_iso3}_admn_ad2_py_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Admin - Admin2 - py",
         "definition_query": "None",
         "visable": "Yes"
@@ -127,6 +139,7 @@
         "layer_display_name": "Admin - Admin1 - py",
         "search_definition": "^{e.affected_country_iso3}_admn_ad1_py_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Admin - Admin1 - py",
         "definition_query": "None",
         "visable": "Yes"
@@ -137,6 +150,7 @@
         "layer_display_name": "Admin - AffectedCountry - py",
         "search_definition": "^{e.affected_country_iso3}_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Admin - AffectedCountry - py",
         "definition_query": "None",
         "visable": "Yes"
@@ -147,6 +161,7 @@
         "layer_display_name": "Admin - SurroundingCountry - py",
         "search_definition": "^(?!({e.affected_country_iso3}))_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Admin - SurroundingCountry - py",
         "definition_query": "ADM0_NAME <> '[reference country]'",
         "visable": "Yes"
@@ -157,6 +172,7 @@
         "layer_display_name": "Physical - Sea - py",
         "search_definition": "^{e.affected_country_iso3}_phys_ocn_ln_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Physical - Sea - py",
         "definition_query": "None",
         "visable": "Yes"
@@ -167,6 +183,7 @@
         "layer_display_name": "Elevation - DEM - ras",
         "search_definition": "^{e.affected_country_iso3}_elev_dem_ras_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Elevation - DEM - ras",
         "definition_query": "None",
         "visable": "Yes"
@@ -177,6 +194,7 @@
         "layer_display_name": "Elevation - Hillshade - ras",
         "search_definition": "^{e.affected_country_iso3}_elev_hsh_ras_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Elevation - Hillshade - ras",
         "definition_query": "None",
         "visable": "Yes"
@@ -187,6 +205,7 @@
         "layer_display_name": "Elevation - Curvature - ras",
         "search_definition": "tbd",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Elevation - Curvature - ras",
         "definition_query": "None",
         "visable": "Yes"
@@ -197,6 +216,7 @@
         "layer_display_name": "Legend - Road - ln",
         "search_definition": "^{e.affected_country_iso3}_tran_rds_ln_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Legend - Road - ln",
         "definition_query": "None",
         "visable": "No"
@@ -207,6 +227,7 @@
         "layer_display_name": "Legend - WaterBody - py",
         "search_definition": "tbd",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Legend - WaterBody - py",
         "definition_query": "None",
         "visable": "No"
@@ -217,6 +238,7 @@
         "layer_display_name": "Elevation - Elevation - ras",
         "search_definition": "^{e.affected_country_iso3}_elev_dem_ras_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Elevation - Elevation - ras",
         "definition_query": "None",
         "visable": "No"
@@ -227,6 +249,7 @@
         "layer_display_name": "Location - Coastline - ln",
         "search_definition": "^{e.affected_country_iso3}_elev_cst_ln_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Location - Coastline - ln",
         "definition_query": "None",
         "visable": "Yes"
@@ -237,6 +260,7 @@
         "layer_display_name": "Location - Admin1 - ln",
         "search_definition": "^{e.affected_country_iso3}_admn_ad1_ln_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Location - Admin1 - ln",
         "definition_query": "None",
         "visable": "Yes"
@@ -247,6 +271,7 @@
         "layer_display_name": "Location - AffectedCountry - py",
         "search_definition": "^{e.affected_country_iso3}_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Location - AffectedCountry - py",
         "definition_query": "None",
         "visable": "Yes"
@@ -257,6 +282,7 @@
         "layer_display_name": "Location - SurroundingCountry - py",
         "search_definition": "^(?!({e.affected_country_iso3}))_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(_(.+))",
         "data_source_path": "",
+        "data_name": "",
         "rendering": "Location - SurroundingCountry - py",
         "definition_query": "\"ADM0_NAME\" <> '[reference country]'",
         "visable": "Yes"

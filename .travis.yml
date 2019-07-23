@@ -5,8 +5,11 @@ python:
   - "3.6"
 # command to install dependencies
 install:
+  - pip install python-coveralls
+  - pip install coverage
   - pip install jsonpickle
   - pip install .
 script:
-  - ls -l --recursive
-  - python ./mapactionpy_controller/tests/test_mapactionpy_controller.py
+  - coverage run --source ./mapactionpy_controller -m unittest discover -v ./mapactionpy_controller/tests
+after_success:
+  - coveralls

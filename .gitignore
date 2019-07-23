@@ -9,6 +9,7 @@
 
 # unittest results
 .pytest_cache/
-mapactionpy_controller/tests/.coverage
 .coverage
 .noseids
+.vscode/
+nosetests.xml
