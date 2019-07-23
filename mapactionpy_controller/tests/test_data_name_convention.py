@@ -2,6 +2,7 @@ import os.path
 import unittest
 from unittest import TestCase
 import fixtures
+import fixtures_dnc
 # works differently for python 2.7 and python 3.x
 try:
     from unittest import mock
