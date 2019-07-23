@@ -8,5 +8,4 @@ install:
   - pip install jsonpickle
   - pip install .
 script:
-  - ls -l --recursive
-  - python ./mapactionpy_controller/tests/test_mapactionpy_controller.py
+  - python -m unittest discover -v ./mapactionpy_controller/tests
