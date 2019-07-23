@@ -70,7 +70,3 @@ class TestMAController(TestCase):
         updated_test_recipe = ds.update_recipe_with_datasources(test_recipe)
         
         self.assertEqual(updated_test_recipe, reference_recipe)
-
-
-if __name__ == '__main__':
-    unittest.main()
