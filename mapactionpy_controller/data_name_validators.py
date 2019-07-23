@@ -33,7 +33,7 @@ class DataNameLookupClause(DataNameClause):
             with open(csv_path, 'rb') as csv_file:
                 self._init_known_values(csv_path, csv_file, lookup_field)
         else:
-            with open(csv_path, 'r', newline='') as csv_file:
+            with open(csv_path, 'r', newline='', encoding='iso-8859-1') as csv_file:
                 self._init_known_values(csv_path, csv_file, lookup_field)
 
     def _init_known_values(self, csv_path, csv_file, lookup_field):
