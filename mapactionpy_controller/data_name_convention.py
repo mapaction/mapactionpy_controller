@@ -45,7 +45,7 @@ class DataNameConvention:
 
     def validate(self, data_name):
         regex_res = self.regex.search(data_name)
-        print ('self.regex.search(data_name) = {}'.format(regex_res))
+        # print ('self.regex.search(data_name) = {}'.format(regex_res))
         result = True
         if regex_res:
             for key in self._clause_validation:

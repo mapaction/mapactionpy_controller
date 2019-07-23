@@ -47,7 +47,3 @@ class DataNameLookupClause(DataNameClause):
     def validate(self, clause_value):
         return self.known_values.has_key(clause_value)
 
-
-if __name__ == '__main__':
-    dnlc = DataNameLookupClause('source', r'D:\code\github\mapactionpy_controller\mapactionpy_controller\example\06_source.csv', 'Value')
-    print (dnlc.known_values)

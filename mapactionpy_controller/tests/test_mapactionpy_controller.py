@@ -62,6 +62,7 @@ class TestMAController(TestCase):
         mock_os.walk.return_value = fixtures.walk_single_admn_file_search_search
         mock_path.join.return_value = r'D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp'
         mock_path.normpath.return_value = r'D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp'
+        mock_path.splitext.return_value = (r'moz_admn_ad0_py_s0_unknown_pp', r'.shp')
         reference_recipe = MapRecipe(
             None, str_def=fixtures.recipe_result_one_dataset_per_layer)
         test_recipe = MapRecipe(None, str_def=fixtures.recipe_with_positive_iso3_code)

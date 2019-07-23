@@ -16,7 +16,7 @@ from mapactionpy_controller.data_name_validators import DataNameFreeTextClause
 from mapactionpy_controller.data_name_validators import DataNameLookupClause
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 
-class TestMAController(TestCase):
+class TestDataNameConvention(TestCase):
 
     def setUp(self):
         parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
