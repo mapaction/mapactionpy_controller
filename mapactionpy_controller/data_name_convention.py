@@ -1,11 +1,16 @@
+import os
 import json
 import re
 from numpy import genfromtxt
+from mapactionpy_controller.data_name_validators import DataNameClause
+from mapactionpy_controller.data_name_validators import DataNameFreeTextClause
+from mapactionpy_controller.data_name_validators import DataNameLookupClause
 
 class DataNameConvention:
     def __init__(self, dnc_json_path, str_def = None):
         self.dnc_json_path = dnc_json_path
-        self.clause_validation = {}
+        self.dnc_lookup_dir = os.path.dirname(self.dnc_json_path)
+        self._clause_validation = {}
 
         if str_def is not None:
             json_contents = json.loads(str_def)
@@ -14,52 +19,42 @@ class DataNameConvention:
                 json_contents = json.load(json_file)
 
         self.regex = re.compile(json_contents['pattern'])
-        #for grp, idx in list(r.groupindex.items()):
-        #    self.layers.append(LayerSpec(layer))
-        
-        def _validation_clause_defs(clauses_cont): 
-            self.map_frame = clauses_cont['map_frame']
-            self.layer_group = clauses_cont['layer_group']
 
+        rx_grp_list = self.regex.groupindex.keys()
 
-        def validate(self, dataname):
-            pass
+        for clause_def in json_contents['clauses']:
+            # print (clause_def)
+            clause_name = clause_def['name']
+            validation_method = clause_def['validation']
+            if clause_name not in rx_grp_list:
+                raise DataNameException(
+                    'Error in {}. Mismatch between clause definition {} ' 
+                    'and groups name in regular expresion {}'.format(
+                        dnc_json_path, clause_def, self.regex.pattern))
 
+            if validation_method == 'csv_lookup':
+                csv_path = os.path.join(self.dnc_lookup_dir, clause_def['filename'])
+                dnlc = DataNameLookupClause(
+                    clause_name, csv_path, clause_def['lookup_field'])
+                self._clause_validation[clause_name] = dnlc
+            elif validation_method == 'free_text':
+                self._clause_validation[clause_name] = DataNameFreeTextClause()
+            else:
+                raise DataNameException('Error in {} '
+                                        'invalid validation type {}'.format(dnc_json_path, validation_method))
 
-class DataNameClause:
-    def __init__(self, name, validation, filename=None, lookup_field=None):
-        self.name = name
-        # TODO ought to check for valid comments here
-        self.validation_type = validation
-        self._validator = _create_validator(validation, filename, lookup_field)
- 
-    def validate(self, clause_value):
-        return self._validator(clause_value)
+    def validate(self, data_name):
+        regex_res = self.regex.search(data_name)
+        print ('self.regex.search(data_name) = {}'.format(regex_res))
+        result = True
+        if regex_res:
+            for key in self._clause_validation:
+                v = self._clause_validation[key]
+                result = result and v.validate(regex_res.group(key))
 
-    def _create_validator(self, validation, filename=None, lookup_field=None):
-        self.known_values = []
-        if validation == 'csv_lookup':
-            return _csv_validator(filenamem lookup_field)
-        elif validation == 'free_text':
-            return lambda : True
+            return result
         else:
-            raise DataNameError('invalid validation type'):
-
-
-    def _csv_validator(self, filename, lookup_field):
-        with open(csv_path, 'rb') as csv_file:
-                self.filename = filename
-                csv_reader = csv.DictReader(
-                    csv_file, delimiter=',', quotechar='"')
-                for row in csv_reader:
-                    self.known_values.append(row)
-
-                if lookup_field in csv_reader.fieldnames:
-                    self.lookup_field = lookup_field
-                else:
-                    raise DataNameException('invalid validation type'):
-        
-        return lambda clause_value: any([x[self.lookup_field] in clause_value for x in self.known_values])
+            return None
 
 
 class DataNameException(Exception):
@@ -67,11 +62,5 @@ class DataNameException(Exception):
 
 
 class DataNameInstance:
-    def __init__(self, dnc):
+    def __init__(self):
         pass
-
-
-
-
-if __name__ == '__main__':
-    dnc = DataNameConvention()
