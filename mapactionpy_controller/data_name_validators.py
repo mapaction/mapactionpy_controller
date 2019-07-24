@@ -7,12 +7,12 @@ import six
 # https://stackoverflow.com/a/25300153
 class DataNameClause:
     def __init__(self):
-        if type(self) is DataNameClause:
+        if self.__class__ is DataNameClause:
             raise NotImplementedError(
                 'DataNameClause is an abstract class and cannot be instantiated directly')
 
     def validate(self, clause_value):
-        if type(self) is DataNameClause:
+        if self.__class__ is DataNameClause:
             raise NotImplementedError(
                 'DataNameClause is an abstract class and the `validate` method cannot be called directly')
 
@@ -21,8 +21,8 @@ class DataNameFreeTextClause(DataNameClause):
     def __init__(self):
         pass
 
-    def validate(self, *args):
-        return True
+    def validate(self, clause_value):
+        return True if clause_value is None else clause_value
 
 
 class DataNameLookupClause(DataNameClause):
@@ -53,5 +53,8 @@ class DataNameLookupClause(DataNameClause):
 
 
     def validate(self, clause_value):
-        return clause_value in self.known_values
+        if clause_value in self.known_values:
+            return self.known_values[clause_value]
+        else:
+            return None
 

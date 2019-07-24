@@ -46,13 +46,15 @@ class DataNameConvention:
     def validate(self, data_name):
         regex_res = self.regex.search(data_name)
         # print ('self.regex.search(data_name) = {}'.format(regex_res))
-        result = True
         if regex_res:
+            result = {}
             for key in self._clause_validation:
                 v = self._clause_validation[key]
-                result = result and v.validate(regex_res.group(key))
+                # result = result and v.validate(regex_res.group(key))
+                result[key] = v.validate(regex_res.group(key))
 
-            return result
+            dni = DataNameInstance(result)
+            return dni
         else:
             return None
 
@@ -62,5 +64,9 @@ class DataNameException(Exception):
 
 
 class DataNameInstance:
-    def __init__(self):
-        pass
+    def __init__(self, clause_dict):
+        self._clauses = clause_dict
+        self.is_valid = all(self._clauses.values())
+
+    def clause(self, clause_name):
+        return self._clauses[clause_name]
