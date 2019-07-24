@@ -1,17 +1,14 @@
-import jsonpickle
 import os
-import unittest
 from unittest import TestCase
 import fixtures
-from mapactionpy_controller.product_bundle_definition import MapRecipe, LayerSpec
+from mapactionpy_controller.product_bundle_definition import MapRecipe
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.data_search import DataSearch
-from mapactionpy_controller.event import Event
 
 # works differently for python 2.7 and python 3.x
 try:
     from unittest import mock
-except ImportError as ie:
+except ImportError:
     import mock
 
 
@@ -52,13 +49,15 @@ class TestMAController(TestCase):
 
         # case where there is exactly one dataset per query
         mock_os.walk.return_value = fixtures.walk_single_admn_file_search_search
-        mock_path.join.return_value = r'D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp'
-        mock_path.normpath.return_value = r'D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp'
+        mock_path.join.return_value = \
+            r'D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp'
+        mock_path.normpath.return_value = \
+            r'D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp'
         mock_path.splitext.return_value = (r'moz_admn_ad0_py_s0_unknown_pp', r'.shp')
         reference_recipe = MapRecipe(
             None, str_def=fixtures.recipe_result_one_dataset_per_layer)
         test_recipe = MapRecipe(None, str_def=fixtures.recipe_with_positive_iso3_code)
         self.assertNotEqual(test_recipe, reference_recipe)
         updated_test_recipe = ds.update_recipe_with_datasources(test_recipe)
-        
+
         self.assertEqual(updated_test_recipe, reference_recipe)
