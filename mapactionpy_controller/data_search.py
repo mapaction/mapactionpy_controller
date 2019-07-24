@@ -6,6 +6,7 @@ from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.event import Event
 from mapactionpy_controller.product_bundle_definition import MapRecipe
 
+
 class DataSearch():
     def __init__(self, cmf):
         self.cmf = cmf
@@ -45,14 +46,17 @@ def _is_valid_file(parser, arg):
     else:
         return arg
 
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-r", "--recipe-file", dest="recipe_file", required=True,
                         help="path to recipe json file.", metavar="FILE", type=lambda x: _is_valid_file(parser, x))
     parser.add_argument("-c", "--cmf", dest="crash_move_folder", required=True,
-                        help="path the Crash Move Folder descriptor file.", metavar="FILE", type=lambda x: _is_valid_file(parser, x))
+                        help="path the Crash Move Folder descriptor file.", metavar="FILE",
+                        type=lambda x: _is_valid_file(parser, x))
     parser.add_argument("-o", "--output-file", dest="output_file", required=False,
-                        help="(optional) path to the ouptut file. If omited the output is printed to stdout.", metavar="FILE")
+                        help="(optional) path to the ouptut file. If omited the output is printed to stdout.",
+                        metavar="FILE")
 
     args = parser.parse_args()
     org_recipe = MapRecipe(args.recipe_file)
@@ -63,11 +67,11 @@ def main():
 
     json_recipe = jsonpickle.encode(updated_recipe, unpicklable=False)
 
-    if not args.output_file is None:
+    if args.output_file is not None:
         with open(args.output_file, 'w') as f:
             f.write(json_recipe)
     else:
-        print (json_recipe)
+        print(json_recipe)
 
 
 if __name__ == '__main__':
