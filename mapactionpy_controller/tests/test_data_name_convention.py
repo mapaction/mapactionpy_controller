@@ -40,7 +40,12 @@ class TestDataNameConvention(TestCase):
         # mismatch between key listed in json file and columns in csv files
         # mismatch between csv file described in json file.
         self.assertTrue(False)
-    
+
+
+    def test_abstract_validator(self):
+        self.assertRaises(NotImplementedError, DataNameClause)
+
+
     def test_get_other_dnc_attributes(self):
         dnc = DataNameConvention(self.dnc_json_path)
         # dni is None if no match with regex
