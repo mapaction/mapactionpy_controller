@@ -4,9 +4,10 @@ import json
 class MapRecipe:
     '''
         Opens the recipe file specificed by recipe_json_path and creates a MapRecipe object accordingly.
-        If str_def is not None then this is treated as a string representation of the json recipe. `recipeJsonFile` is ignored is str_def is not None. This is primarily used for testing.
+        If str_def is not None then this is treated as a string representation of the json recipe.
+        `recipeJsonFile` is ignored is str_def is not None. This is primarily used for testing.
     '''
-    def __init__(self, recipe_json_path, str_def = None):
+    def __init__(self, recipe_json_path, str_def=None):
         self.recipe_json_path = recipe_json_path
         self.title = ""
         self.layers = []

@@ -1,13 +1,13 @@
 import os
 import json
 import re
-from numpy import genfromtxt
-from mapactionpy_controller.data_name_validators import DataNameClause
+# from mapactionpy_controller.data_name_validators import DataNameClause
 from mapactionpy_controller.data_name_validators import DataNameFreeTextClause
 from mapactionpy_controller.data_name_validators import DataNameLookupClause
 
+
 class DataNameConvention:
-    def __init__(self, dnc_json_path, str_def = None):
+    def __init__(self, dnc_json_path, str_def=None):
         self.dnc_json_path = dnc_json_path
         self.dnc_lookup_dir = os.path.dirname(self.dnc_json_path)
         self._clause_validation = {}
@@ -28,7 +28,7 @@ class DataNameConvention:
             validation_method = clause_def['validation']
             if clause_name not in rx_grp_list:
                 raise DataNameException(
-                    'Error in {}. Mismatch between clause definition {} ' 
+                    'Error in {}. Mismatch between clause definition {} '
                     'and groups name in regular expresion {}'.format(
                         dnc_json_path, clause_def, self.regex.pattern))
 

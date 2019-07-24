@@ -2,6 +2,7 @@ import csv
 import mapactionpy_controller as mac
 import six
 
+
 # abstract class
 # Done using the "old-school" methed described here, without using the abs module
 # https://stackoverflow.com/a/25300153
@@ -51,10 +52,8 @@ class DataNameLookupClause(DataNameClause):
             non_lookup_keys = [x for x in row.keys() if x != lookup_field]
             self.known_values[pk] = {n: row[n] for n in non_lookup_keys}
 
-
     def validate(self, clause_value):
         if clause_value in self.known_values:
             return self.known_values[clause_value]
         else:
             return None
-

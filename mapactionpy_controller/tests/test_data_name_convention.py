@@ -1,27 +1,19 @@
 import os.path
 import unittest
 from unittest import TestCase
-import fixtures
-import fixtures_dnc
-# works differently for python 2.7 and python 3.x
-try:
-    from unittest import mock
-except ImportError as ie:
-    import mock
+# import fixtures
+# import fixtures_dnc
 
 from mapactionpy_controller.data_name_convention import DataNameConvention
-from mapactionpy_controller.data_name_convention import DataNameException
-from mapactionpy_controller.data_name_convention import DataNameInstance
 from mapactionpy_controller.data_name_validators import DataNameClause
-from mapactionpy_controller.data_name_validators import DataNameFreeTextClause
-from mapactionpy_controller.data_name_validators import DataNameLookupClause
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
+
 
 class TestDataNameConvention(TestCase):
 
     def setUp(self):
         parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-        
+
         self.dnc_json_path = os.path.join(
             parent_dir, 'example', 'data_naming_convention.json')
 
@@ -41,10 +33,8 @@ class TestDataNameConvention(TestCase):
         # mismatch between csv file described in json file.
         self.assertTrue(False)
 
-
     def test_abstract_validator(self):
         self.assertRaises(NotImplementedError, DataNameClause)
-        
 
     def test_get_other_dnc_attributes(self):
         dnc = DataNameConvention(self.dnc_json_path)
@@ -52,7 +42,7 @@ class TestDataNameConvention(TestCase):
         dni = dnc.validate(r'lka_admnad3_py_s0_wfpocha.pp.shp')
         self.assertIsNone(dni)
 
-        # dni.is_valid is False as not all clauses are found in lookups, 
+        # dni.is_valid is False as not all clauses are found in lookups,
         # but details for the valid clauses are found.
         dni = dnc.validate(r'aaa_admn_ad3_py_s0_wfp_pp')
         self.assertFalse(dni.is_valid)
@@ -87,7 +77,6 @@ class TestDataNameConvention(TestCase):
         dni = dnc.validate(r'lka_admn_ad3_py_s0_wfp_pp_myfreetext')
         self.assertTrue(dni.is_valid)
         self.assertEqual(dni.clause('freetext'), 'myfreetext')
-
 
     def test_name_validation(self):
         dnc = DataNameConvention(self.dnc_json_path)

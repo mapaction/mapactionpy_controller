@@ -1,6 +1,7 @@
 import json
 import os
-#from jsonschema import validate
+# from jsonschema import validate
+
 
 class CrashMoveFolder:
     def __init__(self, cmf_path):
@@ -14,7 +15,7 @@ class CrashMoveFolder:
         with open(cmf_path, 'r') as f:
             txt = f.read()
             # print(txt)
-            #validate(txt, json_schema)
+            # validate(txt, json_schema)
             obj = json.loads(txt)
 
             # Doubtless there is a more elegant way to do this.
@@ -35,4 +36,3 @@ class CrashMoveFolder:
             self.default_jpeg_red_dpi = obj['default_jpeg_red_dpi']
             self.default_pdf_red_dpi = obj['default_pdf_red_dpi']
             self.default_emf_red_dpi = obj['default_emf_red_dpi']
-

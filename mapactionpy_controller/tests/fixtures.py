@@ -1,3 +1,4 @@
+# flake8: noqa
 recipe_without_positive_iso3_code = \
 r'''{
     "title": "{e.affectedcountry}: Overview Map",
