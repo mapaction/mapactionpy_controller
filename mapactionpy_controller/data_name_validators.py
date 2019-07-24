@@ -7,12 +7,12 @@ import six
 # https://stackoverflow.com/a/25300153
 class DataNameClause:
     def __init__(self):
-        if type(self) is DataNameClause:
+        if self.__class__ is DataNameClause:
             raise NotImplementedError(
                 'DataNameClause is an abstract class and cannot be instantiated directly')
 
     def validate(self, clause_value):
-        if type(self) is DataNameClause:
+        if self.__class__ is DataNameClause:
             raise NotImplementedError(
                 'DataNameClause is an abstract class and the `validate` method cannot be called directly')
 

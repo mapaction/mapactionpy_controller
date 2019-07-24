@@ -44,7 +44,7 @@ class TestDataNameConvention(TestCase):
 
     def test_abstract_validator(self):
         self.assertRaises(NotImplementedError, DataNameClause)
-
+        
 
     def test_get_other_dnc_attributes(self):
         dnc = DataNameConvention(self.dnc_json_path)

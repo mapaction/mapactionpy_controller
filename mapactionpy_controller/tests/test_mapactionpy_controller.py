@@ -28,14 +28,6 @@ class TestMAController(TestCase):
             parent_dir, 'example', 'cmf_description.json')
         self.cmf = CrashMoveFolder(cmf_descriptor_path)
 
-    @unittest.SkipTest
-    def test_alway_fail(self):
-        self.assertTrue(False)
-
-    @unittest.SkipTest
-    def test_alway_pass(self):
-        self.assertTrue(True)
-
     def test_substitute_iso3_in_regex(self):
         ds = DataSearch(self.cmf)
 
