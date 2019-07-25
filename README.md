@@ -38,6 +38,39 @@ This object may be manipulated by
 (**Note2**: in the MapExportTool the information within the CrashMoveFolder and Event used to be encapsulated in the operational_config.xml file. This mixed _state_ about the event/emergency and _configuration_ about the local paths to and within the crash move folder.  )
 
 
+Using the DataNameConvention and related classes
+----
+**DataNameConvention** represents the _convention_ itself. At its core is a regular expression. Each named group (clause) within the Regex as additionally validation, which is implenmented by a DataNameClause. DataNameConvention has a dictionary of DataNameClause objects. A individual name is tested by using the `.validate(data_name_str)` method. If the data name does not match the regex the value None is returned. If the regex matches a DataNameInstance object will be returned, whether or not all of the clauses pass.
+
+**DataNameClause** is an abstract class. Callers are unlikely to need to directly access this class or any concrete examples. Concrete examples are DataNameFreeTextClause and DataNameLookupClause. When the `.validate(data_name_str)` method is called on a DataNameConvention object, it will call `.validate(clause_str)` in each individual DataNameClause obj. 
+
+**DataNameInstance** represents the _result_ of a specific data name test and is returned by DataNameConvention.validate(). The `.is_valid` indicates whether or not all of the clauses validate. The results for individual clauses can be access via the `.clause(clause_name)` method. If the clause did not validate then `None` will be returned. Else a dictionary of suplenmentary information about that clause value will be returned.
+
+Example code:
+```
+dnc = DataNameConvention(path_to_dnc_json_definition)
+
+# regex does not match
+dni = dnc.validate('abcde')
+self.assertIsNone(dni)
+
+# regex does matches, but some clauses fail lookup in csv file
+dni = dnc.validate(r'aaa_admn_ad3_py_s0_wfp_pp')
+
+if dni.is_valid:
+	print('the dataname is valid')
+else:
+	print('the dataname is not valid')
+	
+for clause in dni.clause_validation:
+	clause_details = dni.clause(clause)
+	if clause_details:
+		print('The extra information associated with clause name {} are {}'.format(clause, clause_details)
+	else:
+		print('The enoreous clause was {} '.format(clause)
+```
+
+
 Using the Data Serach tool from the commandline
 ----
 ```
@@ -60,7 +93,7 @@ In no particular order:
 
  [] Improve the constructors for the main state classes. It should be possible to round-robin between the instance and the json representation. eg there should be tests which look something like this:
 ```
-    assert my_recipe == MapRecipe.fromJOSN(my_recipe>toJSON())
+    assert my_recipe == MapRecipe.fromJOSN(my_recipe.toJSON())
 ```   
 The `jsonpickle` module is particularly well suited for this.
 
