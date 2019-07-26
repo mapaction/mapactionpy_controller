@@ -4,7 +4,7 @@ import fixtures
 from mapactionpy_controller.product_bundle_definition import MapRecipe
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.data_search import DataSearch
-
+import jsonpickle
 # works differently for python 2.7 and python 3.x
 try:
     from unittest import mock
@@ -24,6 +24,25 @@ class TestMAController(TestCase):
         cmf_descriptor_path = os.path.join(
             parent_dir, 'example', 'cmf_description.json')
         self.cmf = CrashMoveFolder(cmf_descriptor_path)
+
+    def test_serialise_and_deserialise_map_recipe(self):
+        recipes_fixtures = [
+            fixtures.recipe_with_positive_iso3_code,
+            fixtures.recipe_result_one_dataset_per_layer,
+            fixtures.recipe_without_positive_iso3_code
+        ]
+
+        for fixture_str in recipes_fixtures:
+            test_recipe = MapRecipe(None, str_def=fixture_str)
+
+            self.assertEqual(test_recipe,
+                             jsonpickle.decode(jsonpickle.encode(test_recipe)))
+            self.assertEqual(test_recipe,
+                             MapRecipe(None, str_def=jsonpickle.encode(test_recipe, unpicklable=False)))
+            self.assertEqual(test_recipe,
+                             MapRecipe(None, str_def=jsonpickle.encode(test_recipe)))
+            self.assertNotEqual(test_recipe,
+                                MapRecipe(None, str_def=fixtures.recipe_with_negative_iso3_code))
 
     def test_substitute_iso3_in_regex(self):
         ds = DataSearch(self.cmf)

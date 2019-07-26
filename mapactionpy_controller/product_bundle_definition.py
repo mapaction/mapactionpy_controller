@@ -7,12 +7,13 @@ class MapRecipe:
         If str_def is not None then this is treated as a string representation of the json recipe.
         `recipeJsonFile` is ignored is str_def is not None. This is primarily used for testing.
     '''
+
     def __init__(self, recipe_json_path, str_def=None):
         self.recipe_json_path = recipe_json_path
         self.title = ""
         self.layers = []
 
-        if str_def is not None:
+        if str_def:
             json_contents = json.loads(str_def)
         else:
             with open(self.recipe_json_path) as json_file:
@@ -47,15 +48,15 @@ class LayerSpec:
 
     def __eq__(self, other):
         comp = [
-                self.data_name == other.data_name,
-                self.map_frame == other.map_frame,
-                self.layer_group == other.layer_group,
-                self.layer_display_name == other.layer_display_name,
-                self.search_definition == other.search_definition,
-                self.data_source_path == other.data_source_path,
-                self.rendering == other.rendering,
-                self.definition_query == other.definition_query,
-                self.visable == other.visable
+            self.data_name == other.data_name,
+            self.map_frame == other.map_frame,
+            self.layer_group == other.layer_group,
+            self.layer_display_name == other.layer_display_name,
+            self.search_definition == other.search_definition,
+            self.data_source_path == other.data_source_path,
+            self.rendering == other.rendering,
+            self.definition_query == other.definition_query,
+            self.visable == other.visable
         ]
 
         return all(comp)
