@@ -12,7 +12,7 @@ r'''{
        "data_name": "",
        "rendering": "Admin - AffectedCountry - py",
        "definition_query": "None",
-       "visable": "Yes"
+       "visible": "Yes"
    }
     ]
 }'''
@@ -30,7 +30,7 @@ r'''{
        "data_name": "",
        "rendering": "Admin - SurroundingCountry - py",
        "definition_query": "ADM0_NAME <> '[reference country]'",
-       "visable": "Yes"
+       "visible": "Yes"
    }
     ]
 }'''
@@ -48,7 +48,7 @@ recipe_with_positive_iso3_code = \
        "data_name": "",
        "rendering": "Admin - AffectedCountry - py",
        "definition_query": "None",
-       "visable": "Yes"
+       "visible": "Yes"
    }
     ]
 }'''
@@ -66,7 +66,7 @@ r'''{
        "data_name": "",
        "rendering": "Admin - SurroundingCountry - py",
        "definition_query": "ADM0_NAME <> '[reference country]'",
-       "visable": "Yes"
+       "visible": "Yes"
    }
     ]
 }'''
@@ -84,7 +84,7 @@ r'''{
        "data_name": "moz_admn_ad0_py_s0_unknown_pp",
        "rendering": "Admin - AffectedCountry - py",
        "definition_query": "None",
-       "visable": "Yes"
+       "visible": "Yes"
    }
     ]
 }'''

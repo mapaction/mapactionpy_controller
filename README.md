@@ -29,22 +29,22 @@ There are three classes which are designed for reuse in other modules. For each 
 
 * **MapRecipe** : An object that represents a recipe (as read from a json file).  
 This object may be manipulated by 
-(eg the data_search tool, updates the datasources fields )
-* **CrashMoveFolder** : An object that describes the CrashMoveFolder and its contents. There should be no need to hardcode any path (absolute or relevate) to anywhere in a crash move folder
-* **Event** : This decribes the real-world humanitarian event to which the Crash Move Folder cooresponds.
+(e.g. the data_search tool, updates the datasources fields )
+* **CrashMoveFolder** : An object that describes the CrashMoveFolder and its contents. There should be no need to hardcode any path (absolute or relative) to anywhere in a crash move folder
+* **Event** : This decribes the real-world humanitarian event to which the Crash Move Folder corresponds.
 
-(**Note1:**) The name `Event` matches the naming of the equivilent concept on the Map & Data Respository (see https://github.com/mapaction/ckanext-mapactionevent). However it is rather too generic in this context. A more decriptive name for this class would be helpful.
+(**Note1:**) The name `Event` matches the naming of the equivalent concept on the Map & Data Respository (see https://github.com/mapaction/ckanext-mapactionevent). However it is rather too generic in this context. A more descriptive name for this class would be helpful.
 
-(**Note2**: in the MapExportTool the information within the CrashMoveFolder and Event used to be encapsulated in the operational_config.xml file. This mixed _state_ about the event/emergency and _configuration_ about the local paths to and within the crash move folder.  )
+(**Note2**: in the MapExportTool the information within the CrashMoveFolder and Event used to be encapsulated in the `operational_config.xml` file. This mixed _state_ about the event/emergency and _configuration_ about the local paths to and within the crash move folder.  )
 
 
 Using the DataNameConvention and related classes
 ----
-**DataNameConvention** represents the _convention_ itself. At its core is a regular expression. Each named group (clause) within the Regex as additionally validation, which is implenmented by a DataNameClause. DataNameConvention has a dictionary of DataNameClause objects. A individual name is tested by using the `.validate(data_name_str)` method. If the data name does not match the regex the value None is returned. If the regex matches a DataNameInstance object will be returned, whether or not all of the clauses pass.
+**DataNameConvention** represents the _convention_ itself. At its core is a regular expression. Each named group (clause) within the Regex as additionally validation, which is implemented by a DataNameClause. DataNameConvention has a dictionary of DataNameClause objects. A individual name is tested by using the `.validate(data_name_str)` method. If the data name does not match the regex the value None is returned. If the regex matches a DataNameInstance object will be returned, whether or not all of the clauses pass.
 
 **DataNameClause** is an abstract class. Callers are unlikely to need to directly access this class or any concrete examples. Concrete examples are DataNameFreeTextClause and DataNameLookupClause. When the `.validate(data_name_str)` method is called on a DataNameConvention object, it will call `.validate(clause_str)` in each individual DataNameClause obj. 
 
-**DataNameInstance** represents the _result_ of a specific data name test and is returned by DataNameConvention.validate(). The `.is_valid` indicates whether or not all of the clauses validate. The results for individual clauses can be access via the `.clause(clause_name)` method. If the clause did not validate then `None` will be returned. Else a dictionary of suplenmentary information about that clause value will be returned.
+**DataNameInstance** represents the _result_ of a specific data name test and is returned by `DataNameConvention.validate()`. The `.is_valid` indicates whether or not all of the clauses validate. The results for individual clauses can be access via the `.clause(clause_name)` method. If the clause did not validate then `None` will be returned. Else a dictionary of supplementary information about that clause value will be returned.
 
 Example code:
 ```
@@ -67,7 +67,7 @@ for clause in dni.clause_validation:
 	if clause_details:
 		print('The extra information associated with clause name {} are {}'.format(clause, clause_details)
 	else:
-		print('The enoreous clause was {} '.format(clause)
+		print('The erroneous clause was {} '.format(clause)
 ```
 
 
@@ -80,7 +80,7 @@ data_search.py: error: the following arguments are required: -r/--recipe-file, -
 > python data_search.py -r example/product_bundle_example.json -c example/cmf_description.json
 ```
 This command will output an updated recipe file with the 
-If the ouput file parameter (-o) is specificed than the updated recipe will be output to that file. Otherwise the updated recipe is sent to stdout.
+If the ouput file parameter (-o) is specified than the updated recipe will be output to that file. Otherwise the updated recipe is sent to stdout.
 
 Tests
 =====
@@ -91,16 +91,16 @@ Further development
 ===================
 In no particular order:
 
- [] Improve the constructors for the main state classes. It should be possible to round-robin between the instance and the json representation. eg there should be tests which look something like this:
+ [] Improve the constructors for the main state classes. It should be possible to round-robin between the instance and the json representation. E.g. there should be tests which look something like this:
 ```
-    assert my_recipe == MapRecipe.fromJOSN(my_recipe.toJSON())
+    assert my_recipe == MapRecipe.fromJSON(my_recipe.toJSON())
 ```   
 The `jsonpickle` module is particularly well suited for this.
 
- [] Implenment json schema validation for the various json files.
+ [] Implement json schema validation for the various json files.
 
  [] CrashMoveFolder class should check for the existance of all of the subdirectories in the constructor.
 
- [] Replace debug print statements with output to a logging libaray - to ensure that standard output is not corrupted with error/debug messages.
+ [] Replace debug print statements with output to a logging library - to ensure that standard output is not corrupted with error/debug messages.
 
  [] Better name for the `Event` class

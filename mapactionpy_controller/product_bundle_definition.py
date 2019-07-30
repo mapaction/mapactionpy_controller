@@ -43,7 +43,7 @@ class LayerSpec:
         self.data_name = spec['data_name']
         self.rendering = spec['rendering']
         self.definition_query = spec['definition_query']
-        self.visable = spec['visable']
+        self.visible = spec['visible']
 
     def __eq__(self, other):
         comp = [
@@ -55,7 +55,7 @@ class LayerSpec:
                 self.data_source_path == other.data_source_path,
                 self.rendering == other.rendering,
                 self.definition_query == other.definition_query,
-                self.visable == other.visable
+                self.visible == other.visible
         ]
 
         return all(comp)
