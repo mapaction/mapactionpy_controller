@@ -13,7 +13,7 @@ class MapRecipe:
         self.title = ""
         self.layers = []
 
-        if str_def is not None:
+        if str_def:
             json_contents = json.loads(str_def)
         else:
             with open(self.recipe_json_path) as json_file:

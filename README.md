@@ -127,9 +127,10 @@ Further development
 ===================
 In no particular order:
 
- [] Improve the constructors for the main state classes. It should be possible to round-robin between the instance and the json representation. E.g. there should be tests which look something like this:
+ [] Improve the constructors for the Event and CrashMoveFolder classes. It should be possible to round-robin between the instance and the json representation. eg there should be tests which look something like this:
 ```
-    assert my_recipe == MapRecipe.fromJSON(my_recipe.toJSON())
+    assert my_event == Event.fromJOSN(my_event.toJSON())
+    assert my_cmf == CrashMoveFolder.fromJOSN(my_cmf.toJSON())
 ```   
 The `jsonpickle` module is particularly well suited for this.
 
