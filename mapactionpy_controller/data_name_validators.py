@@ -26,14 +26,14 @@ class DataNameFreeTextClause(DataNameClause):
 
     def validate(self, clause_value):
         details = {self.clause_name: clause_value}
-        
+
         class DataClauseValues(namedtuple('DataClauseValues', details.keys())):
-            __slots__=()
+            __slots__ = ()
 
             @property
             def is_valid(self):
                 return True
-        
+
         return DataClauseValues(**details)
 
 
@@ -69,17 +69,15 @@ class DataNameLookupClause(DataNameClause):
             details = self.known_values[clause_value]
             valid_value = True
         else:
-            details={self.clause_name: clause_value}
+            details = {self.clause_name: clause_value}
             valid_value = False
 
         class DataClauseValues(namedtuple('DataClauseValues', details.keys())):
-            __slots__=()
+            __slots__ = ()
 
             @property
             def is_valid(self):
                 return valid_value
 
-
         # DataClauseValues = namedtuple('DataClauseValues', details.keys())
         return DataClauseValues(**details)
-
