@@ -1,11 +1,13 @@
 import csv
 import mapactionpy_controller as mac
 import six
-
+from collections import namedtuple
 
 # abstract class
 # Done using the "old-school" methed described here, without using the abs module
 # https://stackoverflow.com/a/25300153
+
+
 class DataNameClause:
     def __init__(self):
         if self.__class__ is DataNameClause:
@@ -54,6 +56,8 @@ class DataNameLookupClause(DataNameClause):
 
     def validate(self, clause_value):
         if clause_value in self.known_values:
-            return self.known_values[clause_value]
+            details = self.known_values[clause_value]
+            DataClauseValues = namedtuple('DataClauseValues', details.keys())
+            return DataClauseValues(**details)
         else:
             return None

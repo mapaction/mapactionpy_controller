@@ -1,6 +1,7 @@
 import os
 import json
 import re
+from collections import namedtuple
 # from mapactionpy_controller.data_name_validators import DataNameClause
 from mapactionpy_controller.data_name_validators import DataNameFreeTextClause
 from mapactionpy_controller.data_name_validators import DataNameLookupClause
@@ -50,11 +51,19 @@ class DataNameConvention:
             result = {}
             for key in self._clause_validation:
                 v = self._clause_validation[key]
+                # print('key={},\t v={}'.format(key, v.validate(regex_res.group(key))))
                 # result = result and v.validate(regex_res.group(key))
                 result[key] = v.validate(regex_res.group(key))
 
-            dni = DataNameInstance(result)
-            return dni
+            class DataNameResult(namedtuple(
+                    'DataNameResult', self._clause_validation.keys())):
+                __slots__ = ()
+
+                @property
+                def is_valid(self):
+                    return all(self._asdict().values())
+
+            return DataNameResult(**result)
         else:
             return None
 
@@ -63,10 +72,10 @@ class DataNameException(Exception):
     pass
 
 
-class DataNameInstance:
-    def __init__(self, clause_dict):
-        self._clauses = clause_dict
-        self.is_valid = all(self._clauses.values())
+# class DataNameInstance:
+#     def __init__(self, clause_dict):
+#         self._clauses = clause_dict
+#         self.is_valid = all(self._clauses.values())
 
-    def clause(self, clause_name):
-        return self._clauses[clause_name]
+#     def clause(self, clause_name):
+#         return self._clauses[clause_name]
