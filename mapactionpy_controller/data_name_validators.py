@@ -1,11 +1,13 @@
 import csv
 import mapactionpy_controller as mac
 import six
-
+from collections import namedtuple
 
 # abstract class
 # Done using the "old-school" methed described here, without using the abs module
 # https://stackoverflow.com/a/25300153
+
+
 class DataNameClause:
     def __init__(self):
         if self.__class__ is DataNameClause:
@@ -19,15 +21,25 @@ class DataNameClause:
 
 
 class DataNameFreeTextClause(DataNameClause):
-    def __init__(self):
-        pass
+    def __init__(self, clause_name):
+        self.clause_name = clause_name
 
     def validate(self, clause_value):
-        return True if clause_value is None else clause_value
+        details = {self.clause_name: clause_value}
+
+        class DataClauseValues(namedtuple('DataClauseValues', details.keys())):
+            __slots__ = ()
+
+            @property
+            def is_valid(self):
+                return True
+
+        return DataClauseValues(**details)
 
 
 class DataNameLookupClause(DataNameClause):
     def __init__(self, clause_name, csv_path, lookup_field):
+        self.clause_name = clause_name
         self.known_values = {}
 
         if six.PY2:
@@ -54,6 +66,18 @@ class DataNameLookupClause(DataNameClause):
 
     def validate(self, clause_value):
         if clause_value in self.known_values:
-            return self.known_values[clause_value]
+            details = self.known_values[clause_value]
+            valid_value = True
         else:
-            return None
+            details = {self.clause_name: clause_value}
+            valid_value = False
+
+        class DataClauseValues(namedtuple('DataClauseValues', details.keys())):
+            __slots__ = ()
+
+            @property
+            def is_valid(self):
+                return valid_value
+
+        # DataClauseValues = namedtuple('DataClauseValues', details.keys())
+        return DataClauseValues(**details)

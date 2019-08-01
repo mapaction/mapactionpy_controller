@@ -44,31 +44,67 @@ Using the DataNameConvention and related classes
 
 **DataNameClause** is an abstract class. Callers are unlikely to need to directly access this class or any concrete examples. Concrete examples are DataNameFreeTextClause and DataNameLookupClause. When the `.validate(data_name_str)` method is called on a DataNameConvention object, it will call `.validate(clause_str)` in each individual DataNameClause obj. 
 
-**DataNameInstance** represents the _result_ of a specific data name test and is returned by `DataNameConvention.validate()`. The `.is_valid` indicates whether or not all of the clauses validate. The results for individual clauses can be access via the `.clause(clause_name)` method. If the clause did not validate then `None` will be returned. Else a dictionary of supplementary information about that clause value will be returned.
+**DataNameResult** represents the _result_ of a specific data name test and is returned by `DataNameConvention.validate()`. The `.is_valid` property indicates whether or not all of the clauses validate. DataNameResult is a (namedtuple)[https://docs.python.org/2.7/library/collections.html#collections.namedtuple].
+
+ The results for individual clauses can be access via the `.clause(clause_name)` method. If the clause did not validate then `None` will be returned. Else a dictionary of supplementary information about that clause value will be returned.
 
 Example code:
 ```
 dnc = DataNameConvention(path_to_dnc_json_definition)
 
 # regex does not match
-dni = dnc.validate('abcde')
-self.assertIsNone(dni)
+dnr = dnc.validate('abcde')
+self.assertIsNone(dnr)
 
 # regex does matches, but some clauses fail lookup in csv file
-dni = dnc.validate(r'aaa_admn_ad3_py_s0_wfp_pp')
+dnr = dnc.validate(r'aaa_admn_ad3_py_s0_wfp_pp')
 
-if dni.is_valid:
+if dnr.is_valid:
 	print('the dataname is valid')
 else:
 	print('the dataname is not valid')
 	
-for clause in dni.clause_validation:
+# use the `_asdict()` method to loop through all clauses
+for clause in dnr._asdict().values():
 	clause_details = dni.clause(clause)
 	if clause_details:
 		print('The extra information associated with clause name {} are {}'.format(clause, clause_details)
 	else:
-		print('The erroneous clause was {} '.format(clause)
+		print('The erroneous value for clause {} was {} '.format(clause, clause_details)
+
+# Use the dnr object in template strings
+print('The {dnr.datatheme.Description} data was generously supplied by {dnr.source.Organisation}, downloaded '
+	'from {dnr.source.url}'.format(dnr=dnr))
 ```
+Output:
+```
+The erroneous value for clause `geoext` was `aaa`
+Extra information associated with clause `scale`:
+    Description = Global mapping
+    Scale_range = ? 5 000 000
+Extra information associated with clause `freetext`:
+    text = None
+Extra information associated with clause `perm`:
+    Description = Data public - Products public
+Extra information associated with clause `source`:
+    url =
+    Organisation = World Food Program
+    admn1PCode =
+    admn2Name =
+    admn2PCode =
+    admn1Name =
+Extra information associated with clause `datacat`:
+    Description = Admin
+Extra information associated with clause `geom`:
+    Description = Polygon / area
+Extra information associated with clause `datatheme`:
+    Category = admn
+    Description = Administrative boundary (level 3)
+
+
+The Administrative boundary (level 3) data was generously supplied by World Food Program, downloaded from https://www.wfp.org/
+```
+
 
 
 Using the Data Serach tool from the commandline

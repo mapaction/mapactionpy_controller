@@ -1,6 +1,6 @@
 # flake8: noqa
 recipe_without_positive_iso3_code = \
-r'''{
+    r'''{
     "title": "{e.affectedcountry}: Overview Map",
     "layers": [
    {
@@ -18,7 +18,7 @@ r'''{
 }'''
 
 recipe_without_negative_iso3_code = \
-r'''{
+    r'''{
     "title": "{e.affectedcountry}: Overview Map",
     "layers": [
        {
@@ -54,7 +54,7 @@ recipe_with_positive_iso3_code = \
 }'''
 
 recipe_with_negative_iso3_code = \
-r'''{
+    r'''{
     "title": "{e.affectedcountry}: Overview Map",
     "layers": [
        {
@@ -72,7 +72,7 @@ r'''{
 }'''
 
 recipe_result_one_dataset_per_layer = \
-r'''{
+    r'''{
     "title": "{e.affectedcountry}: Overview Map",
     "layers": [
    {
@@ -120,48 +120,48 @@ fixture_datasource_result_missing_layer = r"""
 """
 
 walk_single_admn_file_search_search = \
-[
-    (
-        "D:/MapAction/2019MOZ01/GIS/2_Active_Data",
-        ['202_admn'],
-        ['desktop.ini']
-    ),
-    (
-        "D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn",
-        [],
-        ['moz_admn_ad0_ln_s0_unknown_pp.CPG',
-         'moz_admn_ad0_ln_s0_unknown_pp.dbf',
-         'moz_admn_ad0_py_s0_unknown_pp.sbx',
-         'moz_admn_ad0_py_s0_unknown_pp.sbn',
-         'moz_admn_ad0_py_s0_unknown_pp.prj',
-         'moz_admn_ad0_py_s0_unknown_pp.dbf',
-         'moz_admn_ad0_ln_s0_unknown_pp.shp',
-         'moz_admn_ad0_ln_s0_unknown_pp.shx',
-         'moz_admn_ad0_py_s0_unknown_pp.CPG',
-         'moz_admn_ad0_ln_s0_unknown_pp.sbx',
-         'moz_admn_ad0_ln_s0_unknown_pp.prj',
-         'moz_admn_ad0_ln_s0_unknown_pp.sbn',
-         'moz_admn_ad1_py_s1_mapaction_pp.shx',
-         'moz_admn_ad1_ln_s1_mapaction_pp.shp.xml',
-         'moz_admn_ad1_ln_s1_mapaction_pp.prj',
-         'moz_admn_ad1_ln_s1_mapaction_pp.sbx',
-         'moz_admn_ad1_ln_s1_mapaction_pp.sbn',
-         'moz_admn_ad1_ln_s1_mapaction_pp.shp.LAPTOP-F7PICP7J.8304.13164.sr.lock',
-         'moz_admn_ad1_py_s1_mapaction_pp.shp.xml',
-         'moz_admn_ad1_py_s1_mapaction_pp.sbx',
-         'moz_admn_ad1_py_s1_mapaction_pp.sbn',
-         'moz_admn_ad1_py_s1_mapaction_pp.shp.LAPTOP-F7PICP7J.8304.13164.sr.lock',
-         'moz_admn_ad1_py_s1_mapaction_pp.prj',
-         'moz_admn_ad1_ln_s1_mapaction_pp.shx',
-         'moz_admn_ad1_py_s1_mapaction_pp.dbf',
-         'moz_admn_ad1_ln_s1_mapaction_pp.dbf',
-         'moz_admn_ad0_py_s0_unknown_pp.shx',
-         'moz_admn_ad1_ln_s1_mapaction_pp.CPG',
-         'moz_admn_ad0_py_s0_unknown_pp.shp',
-         'moz_admn_ad0_py_s0_unknown_pp.shp.xml',
-         'moz_admn_ad1_py_s1_mapaction_pp.CPG',
-         'moz_admn_ad1_py_s1_mapaction_pp.shp',
-         'moz_admn_ad1_ln_s1_mapaction_pp.shp',
-         'desktop.ini']
-    )
-]
+    [
+        (
+            "D:/MapAction/2019MOZ01/GIS/2_Active_Data",
+            ['202_admn'],
+            ['desktop.ini']
+        ),
+        (
+            "D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn",
+            [],
+            ['moz_admn_ad0_ln_s0_unknown_pp.CPG',
+             'moz_admn_ad0_ln_s0_unknown_pp.dbf',
+             'moz_admn_ad0_py_s0_unknown_pp.sbx',
+             'moz_admn_ad0_py_s0_unknown_pp.sbn',
+             'moz_admn_ad0_py_s0_unknown_pp.prj',
+             'moz_admn_ad0_py_s0_unknown_pp.dbf',
+             'moz_admn_ad0_ln_s0_unknown_pp.shp',
+             'moz_admn_ad0_ln_s0_unknown_pp.shx',
+             'moz_admn_ad0_py_s0_unknown_pp.CPG',
+             'moz_admn_ad0_ln_s0_unknown_pp.sbx',
+             'moz_admn_ad0_ln_s0_unknown_pp.prj',
+             'moz_admn_ad0_ln_s0_unknown_pp.sbn',
+             'moz_admn_ad1_py_s1_mapaction_pp.shx',
+             'moz_admn_ad1_ln_s1_mapaction_pp.shp.xml',
+             'moz_admn_ad1_ln_s1_mapaction_pp.prj',
+             'moz_admn_ad1_ln_s1_mapaction_pp.sbx',
+             'moz_admn_ad1_ln_s1_mapaction_pp.sbn',
+             'moz_admn_ad1_ln_s1_mapaction_pp.shp.LAPTOP-F7PICP7J.8304.13164.sr.lock',
+             'moz_admn_ad1_py_s1_mapaction_pp.shp.xml',
+             'moz_admn_ad1_py_s1_mapaction_pp.sbx',
+             'moz_admn_ad1_py_s1_mapaction_pp.sbn',
+             'moz_admn_ad1_py_s1_mapaction_pp.shp.LAPTOP-F7PICP7J.8304.13164.sr.lock',
+             'moz_admn_ad1_py_s1_mapaction_pp.prj',
+             'moz_admn_ad1_ln_s1_mapaction_pp.shx',
+             'moz_admn_ad1_py_s1_mapaction_pp.dbf',
+             'moz_admn_ad1_ln_s1_mapaction_pp.dbf',
+             'moz_admn_ad0_py_s0_unknown_pp.shx',
+             'moz_admn_ad1_ln_s1_mapaction_pp.CPG',
+             'moz_admn_ad0_py_s0_unknown_pp.shp',
+             'moz_admn_ad0_py_s0_unknown_pp.shp.xml',
+             'moz_admn_ad1_py_s1_mapaction_pp.CPG',
+             'moz_admn_ad1_py_s1_mapaction_pp.shp',
+             'moz_admn_ad1_ln_s1_mapaction_pp.shp',
+             'desktop.ini']
+        )
+    ]

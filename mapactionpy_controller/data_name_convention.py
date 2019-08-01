@@ -1,6 +1,7 @@
 import os
 import json
 import re
+from collections import namedtuple
 # from mapactionpy_controller.data_name_validators import DataNameClause
 from mapactionpy_controller.data_name_validators import DataNameFreeTextClause
 from mapactionpy_controller.data_name_validators import DataNameLookupClause
@@ -38,23 +39,28 @@ class DataNameConvention:
                     clause_name, csv_path, clause_def['lookup_field'])
                 self._clause_validation[clause_name] = dnlc
             elif validation_method == 'free_text':
-                self._clause_validation[clause_name] = DataNameFreeTextClause()
+                self._clause_validation[clause_name] = DataNameFreeTextClause('text')
             else:
                 raise DataNameException('Error in {} '
                                         'invalid validation type {}'.format(dnc_json_path, validation_method))
 
     def validate(self, data_name):
         regex_res = self.regex.search(data_name)
-        # print ('self.regex.search(data_name) = {}'.format(regex_res))
         if regex_res:
             result = {}
             for key in self._clause_validation:
                 v = self._clause_validation[key]
-                # result = result and v.validate(regex_res.group(key))
                 result[key] = v.validate(regex_res.group(key))
 
-            dni = DataNameInstance(result)
-            return dni
+            class DataNameResult(namedtuple(
+                    'DataNameResult', self._clause_validation.keys())):
+                __slots__ = ()
+
+                @property
+                def is_valid(self):
+                    return all(x.is_valid for x in self._asdict().values())
+
+            return DataNameResult(**result)
         else:
             return None
 
@@ -63,10 +69,10 @@ class DataNameException(Exception):
     pass
 
 
-class DataNameInstance:
-    def __init__(self, clause_dict):
-        self._clauses = clause_dict
-        self.is_valid = all(self._clauses.values())
+# class DataNameInstance:
+#     def __init__(self, clause_dict):
+#         self._clauses = clause_dict
+#         self.is_valid = all(self._clauses.values())
 
-    def clause(self, clause_name):
-        return self._clauses[clause_name]
+#     def clause(self, clause_name):
+#         return self._clauses[clause_name]
