@@ -28,7 +28,7 @@ class DataSearch():
     def _find_data(self, lyr):
         found_datasources = []
         found_datanames = []
-        for root, dirs, files in os.walk(self.cmf.active_data):
+        for root, dirs, files in os.walk(self.cmf.active_data):  # pylint: disable=unused-variable
             for f in files:
                 if re.match(lyr.search_definition, f):
                     found_datasources.append(

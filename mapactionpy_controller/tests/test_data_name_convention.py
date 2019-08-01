@@ -37,51 +37,53 @@ class TestDataNameConvention(TestCase):
         self.assertRaises(NotImplementedError, DataNameClause)
 
     def test_get_other_dnc_attributes(self):
+        # pylint: disable=no-member
         dnc = DataNameConvention(self.dnc_json_path)
         # dni is None if no match with regex
-        dni = dnc.validate(r'lka_admnad3_py_s0_wfpocha.pp.shp')
-        self.assertIsNone(dni)
+        dnr = dnc.validate(r'lka_admnad3_py_s0_wfpocha.pp.shp')
+        self.assertIsNone(dnr)
 
         # dni.is_valid is False as not all clauses are found in lookups,
         # but details for the valid clauses are found.
-        dni = dnc.validate(r'aaa_admn_ad3_py_s0_wfp_pp')
-        self.assertFalse(dni.is_valid)
-        self.assertIsNone(dni.clause('geoext'))
-        self.assertFalse(dni.clause('geoext'))
-        self.assertTrue(dni.clause('datacat'))
-        self.assertTrue(dni.clause('datatheme'))
-        self.assertTrue(dni.clause('geom'))
-        self.assertTrue(dni.clause('scale'))
-        self.assertTrue(dni.clause('source'))
-        self.assertTrue(dni.clause('perm'))
-        self.assertTrue(dni.clause('freetext'))
+        dnr = dnc.validate(r'aaa_admn_ad3_py_s0_wfp_pp')
+        self.assertFalse(dnr.is_valid)
+        self.assertFalse(dnr.geoext.is_valid)
+        self.assertFalse(dnr.geoext.is_valid)
+        self.assertTrue(dnr.datacat.is_valid)
+        self.assertTrue(dnr.datatheme.is_valid)
+        self.assertTrue(dnr.geom.is_valid)
+        self.assertTrue(dnr.scale.is_valid)
+        self.assertTrue(dnr.source.is_valid)
+        self.assertTrue(dnr.perm.is_valid)
+        self.assertTrue(dnr.freetext.is_valid)
 
         # clause details are found
         ref_datatheme = {'Description': 'Administrative boundary (level 3)', 'Category': 'admn'}
-        self.assertEqual(ref_datatheme, dni.clause('datatheme'))
+        self.assertEqual(ref_datatheme, dnr.datatheme._asdict())
         ref_source = {'Organisation': 'World Food Program', 'url': '',
                       'admn1Name': '', 'admn1PCode': '', 'admn2Name': '', 'admn2PCode': ''}
-        self.assertEqual(ref_source, dni.clause('source'))
+        self.assertEqual(ref_source, dnr.source._asdict())
 
         # with Free text clause present
-        dni = dnc.validate(r'aaa_admn_ad3_py_s0_wfp_pp_myfreetext')
-        self.assertFalse(dni.is_valid)
-        self.assertEqual(dni.clause('freetext'), 'myfreetext')
+        dnr = dnc.validate(r'aaa_admn_ad3_py_s0_wfp_pp_myfreetext')
+        self.assertFalse(dnr.is_valid)
+        self.assertEqual(dnr.freetext.text, 'myfreetext')
 
         # Fully valid name without Free text clause
-        dni = dnc.validate(r'lka_admn_ad3_py_s0_wfp_pp')
-        self.assertTrue(dni.is_valid)
-        self.assertEqual(dni.clause('freetext'), True)
+        dnr = dnc.validate(r'lka_admn_ad3_py_s0_wfp_pp')
+        self.assertTrue(dnr.is_valid)
+        self.assertEqual(dnr.freetext.is_valid, True)
+        self.assertIsNone(dnr.freetext.text)
 
         # Fully valid name with Free text clause present
-        dni = dnc.validate(r'lka_admn_ad3_py_s0_wfp_pp_myfreetext')
-        self.assertTrue(dni.is_valid)
-        self.assertEqual(dni.clause('freetext'), 'myfreetext')
+        dnr = dnc.validate(r'lka_admn_ad3_py_s0_wfp_pp_myfreetext')
+        self.assertTrue(dnr.is_valid)
+        self.assertEqual(dnr.freetext.text, 'myfreetext')
 
     def test_name_validation(self):
         dnc = DataNameConvention(self.dnc_json_path)
         # pass valid names
-        dni = dnc.validate(r'lka_admn_ad2_py_s5_unocha_pp_myfreetext')
+        dnr = dnc.validate(r'lka_admn_ad2_py_s5_unocha_pp_myfreetext')
         self.assertTrue(dnc.validate(r'lka_admn_ad2_py_s5_unocha_pp_freetext'))
         self.assertTrue(dnc.validate(r'lka_admn_ad2_py_s5_unocha_pp_free_text'))
         self.assertTrue(dnc.validate(r'lka_admn_ad3_py_s0_wfp_pp'))
@@ -94,9 +96,9 @@ class TestDataNameConvention(TestCase):
         self.assertFalse(dnc.validate(
             r'lka_admn_ccc_py_s5_ocha_pp_free_text').is_valid)
         # fail - clauses listed in wrong order
-        dni = dnc.validate(r'lka_admn_ad3_py_s0_wfpocha_pp')
-        self.assertFalse(False if dni is None else dni.is_valid)
-        dni = dnc.validate(r'lka_ad3_admn_py_s0_wfpocha_pp')
-        self.assertFalse(False if dni is None else dni.is_valid)
-        dni = dnc.validate(r'lka_admn_ad3_py_0s_pp_wfpocha')
-        self.assertFalse(False if dni is None else dni.is_valid)
+        dnr = dnc.validate(r'lka_admn_ad3_py_s0_wfpocha_pp')
+        self.assertFalse(False if dnr is None else dnr.is_valid)
+        dnr = dnc.validate(r'lka_ad3_admn_py_s0_wfpocha_pp')
+        self.assertFalse(False if dnr is None else dnr.is_valid)
+        dnr = dnc.validate(r'lka_admn_ad3_py_0s_pp_wfpocha')
+        self.assertFalse(False if dnr is None else dnr.is_valid)
