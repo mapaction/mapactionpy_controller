@@ -39,20 +39,17 @@ class DataNameConvention:
                     clause_name, csv_path, clause_def['lookup_field'])
                 self._clause_validation[clause_name] = dnlc
             elif validation_method == 'free_text':
-                self._clause_validation[clause_name] = DataNameFreeTextClause()
+                self._clause_validation[clause_name] = DataNameFreeTextClause('text')
             else:
                 raise DataNameException('Error in {} '
                                         'invalid validation type {}'.format(dnc_json_path, validation_method))
 
     def validate(self, data_name):
         regex_res = self.regex.search(data_name)
-        # print ('self.regex.search(data_name) = {}'.format(regex_res))
         if regex_res:
             result = {}
             for key in self._clause_validation:
                 v = self._clause_validation[key]
-                # print('key={},\t v={}'.format(key, v.validate(regex_res.group(key))))
-                # result = result and v.validate(regex_res.group(key))
                 result[key] = v.validate(regex_res.group(key))
 
             class DataNameResult(namedtuple(
@@ -61,7 +58,7 @@ class DataNameConvention:
 
                 @property
                 def is_valid(self):
-                    return all(self._asdict().values())
+                    return all(x.is_valid for x in self._asdict().values())
 
             return DataNameResult(**result)
         else:

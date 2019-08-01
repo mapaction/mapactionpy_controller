@@ -47,15 +47,15 @@ class TestDataNameConvention(TestCase):
         # but details for the valid clauses are found.
         dnr = dnc.validate(r'aaa_admn_ad3_py_s0_wfp_pp')
         self.assertFalse(dnr.is_valid)
-        self.assertIsNone(dnr.geoext)
-        self.assertFalse(dnr.geoext)
-        self.assertTrue(dnr.datacat)
-        self.assertTrue(dnr.datatheme)
-        self.assertTrue(dnr.geom)
-        self.assertTrue(dnr.scale)
-        self.assertTrue(dnr.source)
-        self.assertTrue(dnr.perm)
-        self.assertTrue(dnr.freetext)
+        self.assertFalse(dnr.geoext.is_valid)
+        self.assertFalse(dnr.geoext.is_valid)
+        self.assertTrue(dnr.datacat.is_valid)
+        self.assertTrue(dnr.datatheme.is_valid)
+        self.assertTrue(dnr.geom.is_valid)
+        self.assertTrue(dnr.scale.is_valid)
+        self.assertTrue(dnr.source.is_valid)
+        self.assertTrue(dnr.perm.is_valid)
+        self.assertTrue(dnr.freetext.is_valid)
 
         # clause details are found
         ref_datatheme = {'Description': 'Administrative boundary (level 3)', 'Category': 'admn'}
@@ -67,17 +67,18 @@ class TestDataNameConvention(TestCase):
         # with Free text clause present
         dnr = dnc.validate(r'aaa_admn_ad3_py_s0_wfp_pp_myfreetext')
         self.assertFalse(dnr.is_valid)
-        self.assertEqual(dnr.freetext, 'myfreetext')
+        self.assertEqual(dnr.freetext.text, 'myfreetext')
 
         # Fully valid name without Free text clause
         dnr = dnc.validate(r'lka_admn_ad3_py_s0_wfp_pp')
         self.assertTrue(dnr.is_valid)
-        self.assertEqual(dnr.freetext, True)
+        self.assertEqual(dnr.freetext.is_valid, True)
+        self.assertIsNone(dnr.freetext.text)
 
         # Fully valid name with Free text clause present
         dnr = dnc.validate(r'lka_admn_ad3_py_s0_wfp_pp_myfreetext')
         self.assertTrue(dnr.is_valid)
-        self.assertEqual(dnr.freetext, 'myfreetext')
+        self.assertEqual(dnr.freetext.text, 'myfreetext')
 
     def test_name_validation(self):
         dnc = DataNameConvention(self.dnc_json_path)
