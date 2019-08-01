@@ -44,9 +44,8 @@ Using the DataNameConvention and related classes
 
 **DataNameClause** is an abstract class. Callers are unlikely to need to directly access this class or any concrete examples. Concrete examples are DataNameFreeTextClause and DataNameLookupClause. When the `.validate(data_name_str)` method is called on a DataNameConvention object, it will call `.validate(clause_str)` in each individual DataNameClause obj. 
 
-**DataNameResult** represents the _result_ of a specific data name test and is returned by `DataNameConvention.validate()`. The `.is_valid` property indicates whether or not all of the clauses validate. DataNameResult is a (namedtuple)[https://docs.python.org/2.7/library/collections.html#collections.namedtuple].
-
- The results for individual clauses can be access via the `.clause(clause_name)` method. If the clause did not validate then `None` will be returned. Else a dictionary of supplementary information about that clause value will be returned.
+**DataNameResult** represents the _result_ of a specific data name test and is returned by `DataNameConvention.validate()`. The `.is_valid` property indicates whether or not all of the clauses validate. DataNameResult is a [namedtuple](https://docs.python.org/2.7/library/collections.html#collections.namedtuple).
+The values for individual clauses can be directly accessed using dotted property notation (eg  via members such as  `dnr.datatheme.Description` or `dnr.source.Organisation`. If whether or not the clause validated is returned by the `.is_valid` property (eg . `dnr.datatheme.is_valid`).
 
 Example code:
 ```
