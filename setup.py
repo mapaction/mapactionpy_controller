@@ -1,15 +1,16 @@
 from setuptools import setup
-
+from setuptools import setup, find_packages
 
 def readme():
-    with open('README.md') as f:
+    here = path.abspath(path.dirname(__file__))
+    with open(os.path.join(here, 'README.md')) as f:
         return f.read()
 
 
 setup(name='mapactionpy_controller',
       version='0.1',
       description='Controls the workflow of map and infographic production',
-      long_description=long_description,
+      long_description=readme(),
       long_description_content_type="text/markdown",
       url='http://github.com/mapaction/mapactionpy_controller',
       author='MapAction',
