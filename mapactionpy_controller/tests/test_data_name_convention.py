@@ -1,12 +1,16 @@
 import os.path
 import unittest
+import six
 from unittest import TestCase
-# import fixtures
-# import fixtures_dnc
-
-from mapactionpy_controller.data_name_convention import DataNameConvention
-from mapactionpy_controller.data_name_validators import DataNameClause
+from mapactionpy_controller.data_name_convention import DataNameConvention, DataNameException
+from mapactionpy_controller.data_name_validators import DataNameClause, DataNameLookupClause
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
+
+# works differently for python 2.7 and python 3.x
+if six.PY2:
+    import mock  # noqa: F401
+else:
+    from unittest import mock  # noqa: F401
 
 
 class TestDataNameConvention(TestCase):
@@ -17,14 +21,27 @@ class TestDataNameConvention(TestCase):
         self.dnc_json_path = os.path.join(
             parent_dir, 'example', 'data_naming_convention.json')
 
+        self.test_files_dir = os.path.join(parent_dir, 'tests', 'testfiles')
+
         cmf_descriptor_path = os.path.join(
             parent_dir, 'example', 'cmf_description.json')
         self.cmf = CrashMoveFolder(cmf_descriptor_path)
         self.cmf.dnc_lookup_dir = os.path.join(parent_dir, 'example')
 
-    @unittest.SkipTest
     def test_load_csv_files_for_data_name_validator(self):
-        self.assertTrue(False)
+        failing_csv = os.path.join(self.test_files_dir, '06_source_lookup_duplicate_prikey.csv')
+        working_csv = os.path.join(self.cmf.dnc_lookup_dir, '06_source.csv')
+
+        # Test with a valid csv table
+        dnlc = DataNameLookupClause('test', working_csv, 'Value')
+        self.assertEqual(dnlc.lookup_field, 'Value')
+
+        # Test with an valid csv file but a mismatch between primary key parameter and file contents
+        self.assertRaises(DataNameException, DataNameLookupClause,
+                          'test', working_csv, 'inexistant-primary-key')
+
+        # Test with an invalid csv table (duplicate primary key)
+        self.assertRaises(DataNameException, DataNameLookupClause, 'test', failing_csv, 'Value')
 
     @unittest.SkipTest
     def test_load_dnc_definition(self):

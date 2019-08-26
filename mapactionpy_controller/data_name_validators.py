@@ -29,6 +29,7 @@ class DataNameFreeTextClause(DataNameClause):
 class DataNameLookupClause(DataNameClause):
     def __init__(self, clause_name, csv_path, lookup_field):
         self.known_values = {}
+        self.filename = csv_path
 
         if six.PY2:
             with open(csv_path, 'rb') as csv_file:
@@ -38,9 +39,9 @@ class DataNameLookupClause(DataNameClause):
                 self._init_known_values(csv_path, csv_file, lookup_field)
 
     def _init_known_values(self, csv_path, csv_file, lookup_field):
-        self.filename = csv_path
         csv_reader = csv.DictReader(
             csv_file, delimiter=',', quotechar='"')
+
         if lookup_field in csv_reader.fieldnames:
             self.lookup_field = lookup_field
         else:
@@ -49,8 +50,12 @@ class DataNameLookupClause(DataNameClause):
 
         for row in csv_reader:
             pk = row[lookup_field]
-            non_lookup_keys = [x for x in row.keys() if x != lookup_field]
-            self.known_values[pk] = {n: row[n] for n in non_lookup_keys}
+            if pk not in self.known_values:
+                non_lookup_keys = [x for x in row.keys() if x != lookup_field]
+                self.known_values[pk] = {n: row[n] for n in non_lookup_keys}
+            else:
+                raise mac.data_name_convention.DataNameException(
+                    'Duplicate primary key {} in file {}'.format(pk, csv_path))
 
     def validate(self, clause_value):
         if clause_value in self.known_values:
