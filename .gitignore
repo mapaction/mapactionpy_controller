@@ -9,7 +9,7 @@
 
 # unittest results
 .pytest_cache/
-.coverage
+
 .noseids
 .vscode/
 nosetests.xml
