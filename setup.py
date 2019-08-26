@@ -1,6 +1,6 @@
-from setuptools import setup
 from setuptools import setup, find_packages
 from os import path
+
 
 def readme():
     here = path.abspath(path.dirname(__file__))
@@ -17,7 +17,7 @@ setup(name='mapactionpy_controller',
       author='MapAction',
       author_email='github@mapaction.com',
       license='GPL3',
-      packages=setuptools.find_packages(),
+      packages=find_packages(),
       test_suite='unittest',
       tests_require=['unittest'],
       zip_safe=False,
@@ -27,4 +27,4 @@ setup(name='mapactionpy_controller',
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",
-    ],)
+      ])
