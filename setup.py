@@ -1,9 +1,10 @@
 from setuptools import setup
 from setuptools import setup, find_packages
+from os import path
 
 def readme():
     here = path.abspath(path.dirname(__file__))
-    with open(os.path.join(here, 'README.md')) as f:
+    with open(path.join(here, 'README.md')) as f:
         return f.read()
 
 
