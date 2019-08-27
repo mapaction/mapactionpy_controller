@@ -1,3 +1,4 @@
+import subprocess
 from setuptools import setup, find_packages
 from os import path
 
@@ -8,8 +9,13 @@ def readme():
         return f.read()
 
 
+def get_git_revision_short_hash():
+    ver = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'])
+    return ver.decode('ascii').strip()
+
+
 setup(name='mapactionpy_controller',
-      version='0.1',
+      version='0.1-dev{}'.format(get_git_revision_short_hash()),
       description='Controls the workflow of map and infographic production',
       long_description=readme(),
       long_description_content_type="text/markdown",
