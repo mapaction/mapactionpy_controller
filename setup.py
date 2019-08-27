@@ -1,6 +1,6 @@
 import subprocess
 from setuptools import setup, find_packages
-from os import path
+from os import path, environ
 
 
 def readme():
@@ -8,14 +8,18 @@ def readme():
     with open(path.join(here, 'README.md')) as f:
         return f.read()
 
+def get_dev_build_number():
+    travis_build = environ.get('TRAVIS_BUILD_NUMBER')
 
-def get_git_revision_short_hash():
-    ver = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'])
-    return ver.decode('ascii').strip()
+    if travis_build:
+        return '.dev{}'.format(travis_build)
+    else:
+        ver = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'])
+        return '+local.{}'.format(ver.decode('ascii').strip())
 
 
 setup(name='mapactionpy_controller',
-      version='0.1-dev{}'.format(get_git_revision_short_hash()),
+      version='0.1{}'.format(get_dev_build_number()),
       description='Controls the workflow of map and infographic production',
       long_description=readme(),
       long_description_content_type="text/markdown",
