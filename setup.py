@@ -8,6 +8,7 @@ def readme():
     with open(path.join(here, 'README.md')) as f:
         return f.read()
 
+
 def get_dev_build_number():
     travis_build = environ.get('TRAVIS_BUILD_NUMBER')
 
