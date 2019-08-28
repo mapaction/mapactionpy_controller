@@ -20,7 +20,7 @@ def get_dev_build_number():
 
 
 setup(name='mapactionpy_controller',
-      version='0.1{}'.format(get_dev_build_number()),
+      version='0.2{}'.format(get_dev_build_number()),
       description='Controls the workflow of map and infographic production',
       long_description=readme(),
       long_description_content_type="text/markdown",
