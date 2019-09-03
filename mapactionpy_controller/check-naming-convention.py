@@ -1,7 +1,8 @@
 import argparse
 import os
 from crash_move_folder import CrashMoveFolder
-import data_name_convention 
+import data_name_convention
+
 
 def is_valid_file(parser, arg):
     if not os.path.exists(arg):
@@ -9,6 +10,8 @@ def is_valid_file(parser, arg):
         return False
     else:
         return arg
+
+
 """
 
 def is_valid_directory(parser, arg):
@@ -19,6 +22,7 @@ def is_valid_directory(parser, arg):
         return False
 """
 
+
 def test_contents_of_dir(dir, name_conv_definition, file_ext):
     dnc = data_name_convention.DataNameConvention(name_conv_definition)
     dnc.regex.groupindex
@@ -28,13 +32,11 @@ def test_contents_of_dir(dir, name_conv_definition, file_ext):
             basename, extension = os.path.splitext(f)
             if extension in file_ext:
                 result = dnc.validate(basename)
-                #print("filename: to test {}".format(f))
-
                 if not result:
                     print("error filename does not match regex: {}".format(f))
                 elif result.is_valid:
                     pass
-                    #print("valid filename: {}".format(f))
+                    # print("valid filename: {}".format(f))
                 else:
                     print("one or more clauses not found in lookup tables : {}".format(f))
                     rdict = result._asdict()
@@ -46,22 +48,21 @@ def test_contents_of_dir(dir, name_conv_definition, file_ext):
                                 clausename,
                                 cdict[clausename],
                                 rdict[clausename].is_valid))
-                        
-
 
 
 def main(args):
     cmf = CrashMoveFolder(args.cmf_config_path)
-    
-    #test data names
+
+    # test data names
     test_contents_of_dir(cmf.active_data, cmf.dnc_definition, '.shp')
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description='This tool checks the conformance with the naming-convention for selected files within the Crash Move Folder'
+        description=('This tool checks the conformance with the naming-convention for selected'
+                     'files within the Crash Move Folder')
     )
-    parser.add_argument("cmf_config_path", help="path to layer directory", metavar="FILE", 
+    parser.add_argument("cmf_config_path", help="path to layer directory", metavar="FILE",
                         type=lambda x: is_valid_file(parser, x))
 
     args = parser.parse_args()
