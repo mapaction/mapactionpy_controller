@@ -2,10 +2,8 @@
     "pattern": "^(?P<mapframe>.*?)-(?P<scale>.*?)-(?P<geom>.*?)-(?P<cartographicuse>.+)",
     "clauses":[
         {
-            "name":"geoext",
-            "validation":"csv_lookup",
-            "filename":"01_geoextent.csv",
-            "lookup_field":"Value"
+            "name": "mapframe",
+            "validation": "free_text"
         },
         {
             "name": "scale",

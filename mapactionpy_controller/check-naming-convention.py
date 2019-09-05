@@ -12,26 +12,19 @@ def is_valid_file(parser, arg):
         return arg
 
 
-"""
-
-def is_valid_directory(parser, arg):
-    if os.path.isdir(arg):
-        return arg
-    else:
-        parser.error("The directory %s does not exist!" % arg)
-        return False
-"""
-
-
 def test_contents_of_dir(dir, name_conv_definition, file_ext):
-    dnc = data_name_convention.DataNameConvention(name_conv_definition)
-    dnc.regex.groupindex
+    nc = data_name_convention.DataNameConvention(name_conv_definition)
+    nc.regex.groupindex
+
+    print("*****************")
+    print("CHECKING DIR {}".format(dir))
+    print("*****************")
 
     for root, dirs, files in os.walk(dir):  # pylint: disable=unused-variable
         for f in files:
             basename, extension = os.path.splitext(f)
             if extension in file_ext:
-                result = dnc.validate(basename)
+                result = nc.validate(basename)
                 if not result:
                     print("error filename does not match regex: {}".format(f))
                 elif result.is_valid:
@@ -41,7 +34,7 @@ def test_contents_of_dir(dir, name_conv_definition, file_ext):
                     print("one or more clauses not found in lookup tables : {}".format(f))
                     rdict = result._asdict()
 
-                    for clausename in dnc.regex.groupindex:
+                    for clausename in nc.regex.groupindex:
                         cdict = rdict[clausename]._asdict()
                         if (clausename in cdict) and not rdict[clausename].is_valid:
                             print("{} clause value {} is_valid = {}".format(
@@ -55,6 +48,12 @@ def main(args):
 
     # test data names
     test_contents_of_dir(cmf.active_data, cmf.dnc_definition, '.shp')
+
+    # test layer names
+    test_contents_of_dir(cmf.layer_redering, cmf.layer_nc_definition, '.lyr')
+
+    # test mxd names
+    test_contents_of_dir(cmf.mxd_products, cmf.mxd_nc_definition, '.mxd')
 
 
 if __name__ == "__main__":

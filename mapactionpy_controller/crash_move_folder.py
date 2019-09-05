@@ -28,11 +28,16 @@ class CrashMoveFolder:
                 self.path, obj['layer_redering'])
             self.mxd_templates = os.path.join(
                 self.path, obj['mxd_templates'])
+            self.mxd_products = os.path.join( self.path, obj['mxd_products'])
             self.qgis_templates = os.path.join(
                 self.path, obj['qgis_templates'])
             self.export_dir = os.path.join(self.path, obj['export_dir'])
             self.dnc_definition = os.path.join(
                 self.path, obj['dnc_definition'])
+            self.layer_nc_definition = os.path.join(
+                self.path, obj['layer_nc_definition'])
+            self.mxd_nc_definition = os.path.join(
+                self.path, obj['mxd_nc_definition'])
             self.default_jpeg_red_dpi = obj['default_jpeg_red_dpi']
             self.default_pdf_red_dpi = obj['default_pdf_red_dpi']
             self.default_emf_red_dpi = obj['default_emf_red_dpi']
