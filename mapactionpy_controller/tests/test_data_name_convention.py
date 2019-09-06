@@ -1,5 +1,4 @@
 import os.path
-import unittest
 import six
 from unittest import TestCase
 from mapactionpy_controller.data_name_convention import DataNameConvention, DataNameException
@@ -38,17 +37,22 @@ class TestDataNameConvention(TestCase):
 
         # Test with an valid csv file but a mismatch between primary key parameter and file contents
         self.assertRaises(DataNameException, DataNameLookupClause,
-                          'test', working_csv, 'inexistant-primary-key')
+                          'test', working_csv, 'non-existant-primary-key')
 
         # Test with an invalid csv table (duplicate primary key)
         self.assertRaises(DataNameException, DataNameLookupClause, 'test', failing_csv, 'Value')
 
-    @unittest.SkipTest
     def test_load_dnc_definition(self):
-        # dnc = DataNameConvention(self.dnc_json_path)
-        # mismatch between key listed in json file and columns in csv files
-        # mismatch between csv file described in json file.
-        self.assertTrue(False)
+        test_convention_files = (
+            'fixture_name_convention_clause_def_and_regex_groupname_mismatch.json',
+            'fixture_name_convention_clause_def_not_in_regex_groupname.json',
+            'fixture_name_convention_missing_clause_def.json',
+            'fixture_name_convention_unsupported_validation_type.json'
+        )
+
+        for test_filename in test_convention_files:
+            test_filepath = os.path.join(self.test_files_dir, test_filename)
+            self.assertRaises(DataNameException, DataNameConvention, test_filepath)
 
     def test_abstract_validator(self):
         self.assertRaises(NotImplementedError, DataNameClause)

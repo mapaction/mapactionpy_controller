@@ -14,10 +14,8 @@ class DataNameClause:
             raise NotImplementedError(
                 'DataNameClause is an abstract class and cannot be instantiated directly')
 
-    def validate(self, clause_value):
-        if self.__class__ is DataNameClause:
-            raise NotImplementedError(
-                'DataNameClause is an abstract class and the `validate` method cannot be called directly')
+    def validate(self, clause_value, **kwargs):
+        pass
 
 
 class DataNameFreeTextClause(DataNameClause):

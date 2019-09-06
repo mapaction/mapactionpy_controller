@@ -5,7 +5,7 @@ class MapRecipe:
     '''
         Opens the recipe file specificed by recipe_json_path and creates a MapRecipe object accordingly.
         If str_def is not None then this is treated as a string representation of the json recipe.
-        `recipeJsonFile` is ignored is str_def is not None. This is primarily used for testing.
+        `recipeJsonFile` is ignored if str_def is not None. This is primarily used for testing.
     '''
 
     def __init__(self, recipe_json_path, str_def=None):
@@ -32,6 +32,11 @@ class MapRecipe:
 
         listcomp = list(map(lambda sl, ol: sl == ol, self.layers, other.layers))
         return all(listcomp)
+
+    # See https://stackoverflow.com/a/25176504/3837936
+    def __ne__(self, other):
+        """Overrides the default implementation (unnecessary in Python 3)"""
+        return not self.__eq__(other)
 
 
 class LayerSpec:
