@@ -23,6 +23,19 @@ class TestMAController(TestCase):
         self.cmf_descriptor_path = os.path.join(self.parent_dir, 'example', 'cmf_description.json')
         self.cmf = CrashMoveFolder(self.cmf_descriptor_path, verify_on_creation=False)
 
+    def test_equality_of_map_recipes(self):
+        test_recipe1 = MapRecipe(None, fixtures.recipe_with_positive_iso3_code)
+        test_recipe2 = MapRecipe(None, fixtures.recipe_with_positive_iso3_code)
+
+        self.assertEqual(test_recipe1, test_recipe2)
+        test_recipe1.title = "something different"
+        self.assertNotEqual(test_recipe1, test_recipe2)
+
+        test_recipe3 = MapRecipe(None, fixtures.recipe_with_positive_iso3_code)
+        self.assertEqual(test_recipe2, test_recipe3)
+        test_recipe3.layers.pop()
+        self.assertNotEqual(test_recipe2, test_recipe3)
+
     def test_serialise_and_deserialise_map_recipe(self):
         recipes_fixtures = [
             fixtures.recipe_with_positive_iso3_code,
