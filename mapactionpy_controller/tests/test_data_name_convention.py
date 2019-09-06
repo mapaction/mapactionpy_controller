@@ -57,6 +57,17 @@ class TestDataNameConvention(TestCase):
     def test_abstract_validator(self):
         self.assertRaises(NotImplementedError, DataNameClause)
 
+        # Dummy implenmentation of calling the validate() method on DataNameClause
+        class TestDateNameClause(DataNameClause):
+            def validate(self, clause_value, **kwargs):
+                if six.PY2:
+                    return super(TestDateNameClause, self).validate(clause_value, **kwargs)
+                else:
+                    return super().validate(clause_value, **kwargs)
+
+        tdnc = TestDateNameClause()
+        self.assertRaises(NotImplementedError, tdnc.validate, 'test')
+
     def test_get_other_dnc_attributes(self):
         # pylint: disable=no-member
         dnc = DataNameConvention(self.dnc_json_path)
