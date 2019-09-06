@@ -1,0 +1,25 @@
+{
+    "pattern": "^(?P<mapframe>.*?)-(?P<scale>.*?)-(?P<geom>.*?)-(?P<cartographicuse>.+)",
+    "clauses":[
+        {
+            "name": "mapframe",
+            "validation": "free_text"
+        },
+        {
+            "name": "scale",
+            "validation": "csv_lookup",
+            "filename": "05_scale.csv",
+            "lookup_field": "Value"
+        },
+        {
+            "name": "geom",
+            "validation": "csv_lookup",
+            "filename": "04_geometry.csv",
+            "lookup_field": "Value"
+        },
+        {
+            "name": "cartographicuse",
+            "validation": "free_text"
+        }
+    ]
+}
