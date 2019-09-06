@@ -25,7 +25,7 @@ class TestDataNameConvention(TestCase):
 
         cmf_descriptor_path = os.path.join(
             parent_dir, 'example', 'cmf_description.json')
-        self.cmf = CrashMoveFolder(cmf_descriptor_path)
+        self.cmf = CrashMoveFolder(cmf_descriptor_path, verify_on_creation=False)
         self.cmf.dnc_lookup_dir = os.path.join(parent_dir, 'example')
 
     def test_load_csv_files_for_data_name_validator(self):
@@ -75,31 +75,33 @@ class TestDataNameConvention(TestCase):
         self.assertTrue(dnr.freetext.is_valid)
 
         # clause details are found
-        ref_datatheme = {'Description': 'Administrative boundary (level 3)', 'Category': 'admn'}
+        ref_datatheme = {'Value': 'ad3', 'Description': 'Administrative boundary (level 3)', 'Category': 'admn'}
         self.assertEqual(ref_datatheme, dnr.datatheme._asdict())
-        ref_source = {'Organisation': 'World Food Program', 'url': '',
+        # self.assertEqual(ref_datatheme, dnr.datatheme._asdict())
+
+        ref_source = {'Value': 'wfp', 'Organisation': 'World Food Program', 'url': '',
                       'admn1Name': '', 'admn1PCode': '', 'admn2Name': '', 'admn2PCode': ''}
         self.assertEqual(ref_source, dnr.source._asdict())
 
         # with Free text clause present
         dnr = dnc.validate(r'aaa_admn_ad3_py_s0_wfp_pp_myfreetext')
         self.assertFalse(dnr.is_valid)
-        self.assertEqual(dnr.freetext.text, 'myfreetext')
+        self.assertEqual(dnr.freetext.Value, 'myfreetext')
 
         # Fully valid name without Free text clause
         dnr = dnc.validate(r'lka_admn_ad3_py_s0_wfp_pp')
         self.assertTrue(dnr.is_valid)
         self.assertEqual(dnr.freetext.is_valid, True)
-        self.assertIsNone(dnr.freetext.text)
+        self.assertIsNone(dnr.freetext.Value)
 
         # Fully valid name with Free text clause present
         dnr = dnc.validate(r'lka_admn_ad3_py_s0_wfp_pp_myfreetext')
         self.assertTrue(dnr.is_valid)
-        self.assertEqual(dnr.freetext.text, 'myfreetext')
+        self.assertEqual(dnr.freetext.Value, 'myfreetext')
 
     def test_name_validation(self):
         dnc = DataNameConvention(self.dnc_json_path)
-        # pass valid names
+        # # pass valid names
         dnr = dnc.validate(r'lka_admn_ad2_py_s5_unocha_pp_myfreetext')
         self.assertTrue(dnc.validate(r'lka_admn_ad2_py_s5_unocha_pp_freetext'))
         self.assertTrue(dnc.validate(r'lka_admn_ad2_py_s5_unocha_pp_free_text'))
@@ -119,3 +121,21 @@ class TestDataNameConvention(TestCase):
         self.assertFalse(False if dnr is None else dnr.is_valid)
         dnr = dnc.validate(r'lka_admn_ad3_py_0s_pp_wfpocha')
         self.assertFalse(False if dnr is None else dnr.is_valid)
+
+        # Clauses in upper case
+        # Clauses with mixed case
+        # Entire name in upper case
+        self.assertTrue(dnc.validate(r'lKa_admn_ad3_py_s0_wfp_pp').is_valid)
+        self.assertTrue(dnc.validate(r'LKA_admn_ad3_py_s0_wfp_pp').is_valid)
+        self.assertTrue(dnc.validate(r'lka_aDmn_ad3_py_s0_wfp_pp').is_valid)
+        self.assertTrue(dnc.validate(r'lka_ADMN_ad3_py_s0_wfp_pp').is_valid)
+        self.assertTrue(dnc.validate(r'lka_admn_aD3_py_s0_wfp_pp').is_valid)
+        self.assertTrue(dnc.validate(r'lka_admn_AD3_py_s0_wfp_pp').is_valid)
+        self.assertTrue(dnc.validate(r'lka_admn_ad3_Py_s0_wfp_pp').is_valid)
+        self.assertTrue(dnc.validate(r'lka_admn_ad3_PY_s0_wfp_pp').is_valid)
+        self.assertTrue(dnc.validate(r'lka_admn_ad3_py_S0_wfp_pp').is_valid)
+        self.assertTrue(dnc.validate(r'lka_admn_ad3_py_s0_wFp_pp').is_valid)
+        self.assertTrue(dnc.validate(r'lka_admn_ad3_py_s0_WFP_pp').is_valid)
+        self.assertTrue(dnc.validate(r'lka_admn_ad3_py_s0_wfp_pP').is_valid)
+        self.assertTrue(dnc.validate(r'lka_admn_ad3_py_s0_wfp_PP').is_valid)
+        self.assertTrue(dnc.validate(r'LKA_ADMN_AD3_PY_S0_WFP_PP').is_valid)

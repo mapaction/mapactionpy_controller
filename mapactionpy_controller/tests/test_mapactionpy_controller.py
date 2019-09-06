@@ -15,15 +15,13 @@ except ImportError:
 class TestMAController(TestCase):
 
     def setUp(self):
-        parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+        self.parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
-        recipe_descriptor_path = os.path.join(
-            parent_dir, 'example', 'product_bundle_example.json')
-        self.recipe = MapRecipe(recipe_descriptor_path)
+        self.recipe_descriptor_path = os.path.join(self.parent_dir, 'example', 'product_bundle_example.json')
+        self.recipe = MapRecipe(self.recipe_descriptor_path)
 
-        cmf_descriptor_path = os.path.join(
-            parent_dir, 'example', 'cmf_description.json')
-        self.cmf = CrashMoveFolder(cmf_descriptor_path)
+        self.cmf_descriptor_path = os.path.join(self.parent_dir, 'example', 'cmf_description.json')
+        self.cmf = CrashMoveFolder(self.cmf_descriptor_path, verify_on_creation=False)
 
     def test_serialise_and_deserialise_map_recipe(self):
         recipes_fixtures = [
@@ -35,14 +33,10 @@ class TestMAController(TestCase):
         for fixture_str in recipes_fixtures:
             test_recipe = MapRecipe(None, str_def=fixture_str)
 
-            self.assertEqual(test_recipe,
-                             jsonpickle.decode(jsonpickle.encode(test_recipe)))
-            self.assertEqual(test_recipe,
-                             MapRecipe(None, str_def=jsonpickle.encode(test_recipe, unpicklable=False)))
-            self.assertEqual(test_recipe,
-                             MapRecipe(None, str_def=jsonpickle.encode(test_recipe)))
-            self.assertNotEqual(test_recipe,
-                                MapRecipe(None, str_def=fixtures.recipe_with_negative_iso3_code))
+            self.assertEqual(test_recipe, jsonpickle.decode(jsonpickle.encode(test_recipe)))
+            self.assertEqual(test_recipe, MapRecipe(None, str_def=jsonpickle.encode(test_recipe, unpicklable=False)))
+            self.assertEqual(test_recipe, MapRecipe(None, str_def=jsonpickle.encode(test_recipe)))
+            self.assertNotEqual(test_recipe, MapRecipe(None, str_def=fixtures.recipe_with_negative_iso3_code))
 
     def test_substitute_iso3_in_regex(self):
         ds = DataSearch(self.cmf)
@@ -80,3 +74,17 @@ class TestMAController(TestCase):
         updated_test_recipe = ds.update_recipe_with_datasources(test_recipe)
 
         self.assertEqual(updated_test_recipe, reference_recipe)
+
+    def test_cmf_path_validation(self):
+        # test validation on creation (for failing case)
+        self.assertRaises(ValueError, CrashMoveFolder, self.cmf_descriptor_path, verify_on_creation=True)
+        # test validation is correctly disabled on creation, for a json file we know would otherwise fail:
+        test_cmf = CrashMoveFolder(self.cmf_descriptor_path, verify_on_creation=False)
+        self.assertIsInstance(test_cmf, CrashMoveFolder)
+
+        # create a valid
+        test_cmf_path = os.path.join(self.parent_dir, 'example', 'cmf_description_flat_test.json')
+        test_cmf = CrashMoveFolder(test_cmf_path)
+        self.assertTrue(test_cmf.verify_paths())
+        test_cmf.active_data = os.path.join(self.parent_dir, 'DOES-NOT-EXIST')
+        self.assertFalse(test_cmf.verify_paths())

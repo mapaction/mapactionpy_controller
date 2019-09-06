@@ -61,7 +61,7 @@ class DataNameLookupClause(DataNameClause):
                 'invalid validation lookup_field primary key {} in file {}'.format(lookup_field, csv_path))
 
         for row in csv_reader:
-            pk = row[lookup_field]
+            pk = row[lookup_field].lower()
             if pk not in self.known_values:
                 non_lookup_keys = [x for x in row.keys() if x != lookup_field]
                 self.known_values[pk] = {n: row[n] for n in non_lookup_keys}
@@ -70,11 +70,14 @@ class DataNameLookupClause(DataNameClause):
                     'Duplicate primary key {} in file {}'.format(pk, csv_path))
 
     def validate(self, clause_value):
-        if clause_value in self.known_values:
+        clause_value = clause_value.lower()
+        if clause_value in self.known_values.keys():
             details = self.known_values[clause_value]
+            details[self.lookup_field] = clause_value
             valid_value = True
         else:
-            details = {self.clause_name: clause_value}
+            # print("{}".format(clause_value))
+            details = {self.lookup_field: clause_value}
             valid_value = False
 
         class DataClauseValues(namedtuple('DataClauseValues', details.keys())):

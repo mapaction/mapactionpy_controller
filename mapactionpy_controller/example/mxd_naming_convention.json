@@ -1,0 +1,17 @@
+{
+    "pattern": "^(ma|MA)(?P<mapnumber>\\d{3,})[-_][vV](?P<versionnumber>\\d+)([-_](?P<freetext>.+))?",
+    "clauses":[
+        {
+            "name": "mapnumber",
+            "validation": "free_text"
+        },
+        {
+            "name": "versionnumber",
+            "validation": "free_text"
+        },
+        {
+            "name": "freetext",
+            "validation": "free_text"
+        }
+    ]
+}

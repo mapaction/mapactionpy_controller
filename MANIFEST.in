@@ -1,4 +1,3 @@
-include README.rst
-include schemas/cmf-v0.1.schema
-include schemas/event.schema
-include schemas/productbundle.schema
+include README.md
+recursive-include schemas/ *.schema
+recursive-include example *
