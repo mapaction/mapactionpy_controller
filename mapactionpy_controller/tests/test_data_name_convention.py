@@ -30,7 +30,6 @@ class TestDataNameConvention(TestCase):
     def test_load_csv_files_for_data_name_validator(self):
         failing_csv = os.path.join(self.test_files_dir, '06_source_lookup_duplicate_prikey.csv')
         working_csv = os.path.join(self.cmf.dnc_lookup_dir, '06_source.csv')
-        nonexistant_csv = os.path.join(self.cmf.dnc_lookup_dir, 'does_not_exist.csv')
 
         # Test with a valid csv table
         dnlc = DataNameLookupClause('test', working_csv, 'Value')
@@ -42,9 +41,6 @@ class TestDataNameConvention(TestCase):
 
         # Test with an invalid csv table (duplicate primary key)
         self.assertRaises(DataNameException, DataNameLookupClause, 'test', failing_csv, 'Value')
-
-        # Test attempting to load a nonexistant csv file
-        self.assertRaises(FileNotFoundError, DataNameLookupClause, 'test', nonexistant_csv, 'Value')  # noqa: F821
 
     def test_load_dnc_definition(self):
         test_convention_files = (
