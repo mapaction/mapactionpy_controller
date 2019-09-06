@@ -8,30 +8,30 @@ from mapactionpy_controller.data_name_validators import DataNameLookupClause
 
 
 class DataNameConvention:
-    def __init__(self, dnc_json_path, str_def=None):
+    def __init__(self, dnc_json_path):
         self.dnc_json_path = dnc_json_path
         self.dnc_lookup_dir = os.path.dirname(self.dnc_json_path)
         self._clause_validation = {}
 
-        if str_def is not None:
-            json_contents = json.loads(str_def)
-        else:
-            with open(self.dnc_json_path) as json_file:
-                json_contents = json.load(json_file)
+        with open(self.dnc_json_path) as json_file:
+            json_contents = json.load(json_file)
 
         self.regex = re.compile(json_contents['pattern'])
 
         rx_grp_list = self.regex.groupindex.keys()
 
+        json_clause_names = set()
         for clause_def in json_contents['clauses']:
-            # print (clause_def)
+            json_clause_names.add(clause_def['name'])
+
+        if not (set(rx_grp_list) == json_clause_names):
+            raise DataNameException(
+                'Error in {}. Mismatch between clause definition {} '
+                'and groups name in regular expresion {}')
+
+        for clause_def in json_contents['clauses']:
             clause_name = clause_def['name']
             validation_method = clause_def['validation']
-            if clause_name not in rx_grp_list:
-                raise DataNameException(
-                    'Error in {}. Mismatch between clause definition {} '
-                    'and groups name in regular expresion {}'.format(
-                        dnc_json_path, clause_def, self.regex.pattern))
 
             if validation_method == 'csv_lookup':
                 csv_path = os.path.join(self.dnc_lookup_dir, clause_def['filename'])
