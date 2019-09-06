@@ -25,7 +25,7 @@ class TestDataNameConvention(TestCase):
 
         cmf_descriptor_path = os.path.join(
             parent_dir, 'example', 'cmf_description.json')
-        self.cmf = CrashMoveFolder(cmf_descriptor_path)
+        self.cmf = CrashMoveFolder(cmf_descriptor_path, verify_on_creation=False)
         self.cmf.dnc_lookup_dir = os.path.join(parent_dir, 'example')
 
     def test_load_csv_files_for_data_name_validator(self):
@@ -75,31 +75,29 @@ class TestDataNameConvention(TestCase):
         self.assertTrue(dnr.freetext.is_valid)
 
         # clause details are found
-        ref_datatheme = {'Description': 'Administrative boundary (level 3)', 'Category': 'admn'}
-        print(ref_datatheme)
-        print(dnr.datatheme._asdict())
+        ref_datatheme = {'Value': 'ad3', 'Description': 'Administrative boundary (level 3)', 'Category': 'admn'}
         self.assertEqual(ref_datatheme, dnr.datatheme._asdict())
         # self.assertEqual(ref_datatheme, dnr.datatheme._asdict())
 
-        ref_source = {'Organisation': 'World Food Program', 'url': '',
+        ref_source = {'Value': 'wfp', 'Organisation': 'World Food Program', 'url': '',
                       'admn1Name': '', 'admn1PCode': '', 'admn2Name': '', 'admn2PCode': ''}
         self.assertEqual(ref_source, dnr.source._asdict())
 
         # with Free text clause present
         dnr = dnc.validate(r'aaa_admn_ad3_py_s0_wfp_pp_myfreetext')
         self.assertFalse(dnr.is_valid)
-        self.assertEqual(dnr.freetext.value, 'myfreetext')
+        self.assertEqual(dnr.freetext.Value, 'myfreetext')
 
         # Fully valid name without Free text clause
         dnr = dnc.validate(r'lka_admn_ad3_py_s0_wfp_pp')
         self.assertTrue(dnr.is_valid)
         self.assertEqual(dnr.freetext.is_valid, True)
-        self.assertIsNone(dnr.freetext.value)
+        self.assertIsNone(dnr.freetext.Value)
 
         # Fully valid name with Free text clause present
         dnr = dnc.validate(r'lka_admn_ad3_py_s0_wfp_pp_myfreetext')
         self.assertTrue(dnr.is_valid)
-        self.assertEqual(dnr.freetext.text, 'myfreetext')
+        self.assertEqual(dnr.freetext.Value, 'myfreetext')
 
     def test_name_validation(self):
         dnc = DataNameConvention(self.dnc_json_path)

@@ -73,11 +73,11 @@ class DataNameLookupClause(DataNameClause):
         clause_value = clause_value.lower()
         if clause_value in self.known_values.keys():
             details = self.known_values[clause_value]
-            details[self.clause_name] = clause_value
+            details[self.lookup_field] = clause_value
             valid_value = True
         else:
             # print("{}".format(clause_value))
-            details = {self.clause_name: clause_value}
+            details = {self.lookup_field: clause_value}
             valid_value = False
 
         class DataClauseValues(namedtuple('DataClauseValues', details.keys())):

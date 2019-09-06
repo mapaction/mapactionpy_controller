@@ -1,5 +1,5 @@
 {
-    "pattern": "^(?P<geoext>.*?)_(?P<datacat>.*?)_(?P<datatheme>.*?)_(?P<geom>.*?)_(?P<scale>.*?)_(?P<source>.*?)_(?P<perm>[phm][phm])(_(?P<freetext>.+))?",
+    "pattern": "^(?P<geoext>.*?)_(?P<datacat>.*?)_(?P<datatheme>.*?)_(?P<geom>.*?)_(?P<scale>.*?)_(?P<source>.*?)_(?P<perm>[phmPHM][phmPHM])(_(?P<freetext>.+))?",
     "clauses":[
         {
             "name":"geoext",

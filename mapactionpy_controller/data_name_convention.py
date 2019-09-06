@@ -39,7 +39,7 @@ class DataNameConvention:
                     clause_name, csv_path, clause_def['lookup_field'])
                 self._clause_validation[clause_name] = dnlc
             elif validation_method == 'free_text':
-                self._clause_validation[clause_name] = DataNameFreeTextClause('value')
+                self._clause_validation[clause_name] = DataNameFreeTextClause('Value')
             else:
                 raise DataNameException('Error in {} '
                                         'invalid validation type {}'.format(dnc_json_path, validation_method))
