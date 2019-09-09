@@ -15,7 +15,7 @@ class CrashMoveFolder:
             self.event_description_file = os.path.join(self.path, obj['event_description_file'])
             self.original_data = os.path.join(self.path, obj['original_data'])
             self.active_data = os.path.join(self.path, obj['active_data'])
-            self.layer_redering = os.path.join(self.path, obj['layer_redering'])
+            self.layer_rendering = os.path.join(self.path, obj['layer_rendering'])
             self.mxd_templates = os.path.join(self.path, obj['mxd_templates'])
             self.mxd_products = os.path.join(self.path, obj['mxd_products'])
             self.qgis_templates = os.path.join(self.path, obj['qgis_templates'])
@@ -28,7 +28,7 @@ class CrashMoveFolder:
             self.default_emf_red_dpi = obj['default_emf_red_dpi']
 
         if verify_on_creation and (not self.verify_paths()):
-            raise ValueError("Unable to verify existance of all files and directories defined in "
+            raise ValueError("Unable to verify existence of all files and directories defined in "
                              "CrashMoveFolder {}".format(cmf_path))
 
     def verify_paths(self):
@@ -36,7 +36,7 @@ class CrashMoveFolder:
             # dirs
             os.path.isdir(self.original_data),
             os.path.isdir(self.active_data),
-            os.path.isdir(self.layer_redering),
+            os.path.isdir(self.layer_rendering),
             os.path.isdir(self.mxd_templates),
             os.path.isdir(self.mxd_products),
             os.path.isdir(self.qgis_templates),
