@@ -99,5 +99,8 @@ class TestMAController(TestCase):
         test_cmf_path = os.path.join(self.parent_dir, 'example', 'cmf_description_flat_test.json')
         test_cmf = CrashMoveFolder(test_cmf_path)
         self.assertTrue(test_cmf.verify_paths())
+        test_cmf_path = os.path.join(self.parent_dir, 'example', 'cmf_description_reletive_paths_test.json')
+        test_cmf = CrashMoveFolder(test_cmf_path)
+        self.assertTrue(test_cmf.verify_paths())
         test_cmf.active_data = os.path.join(self.parent_dir, 'DOES-NOT-EXIST')
         self.assertFalse(test_cmf.verify_paths())

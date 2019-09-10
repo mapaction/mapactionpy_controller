@@ -42,12 +42,11 @@ class DataSearch():
 def _is_valid_file(parser, arg):
     if not os.path.exists(arg):
         parser.error("The file %s does not exist!" % arg)
-        return False
     else:
         return arg
 
 
-def main():
+def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-r", "--recipe-file", dest="recipe_file", required=True,
                         help="path to recipe json file.", metavar="FILE", type=lambda x: _is_valid_file(parser, x))
@@ -58,7 +57,12 @@ def main():
                         help="(optional) path to the ouptut file. If omited the output is printed to stdout.",
                         metavar="FILE")
 
-    args = parser.parse_args()
+    return parser.parse_args()
+
+
+def main():
+    args = get_args()
+
     org_recipe = MapRecipe(args.recipe_file)
 
     ds = DataSearch(CrashMoveFolder(args.crash_move_folder))
