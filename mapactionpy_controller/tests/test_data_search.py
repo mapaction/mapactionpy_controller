@@ -1,9 +1,9 @@
 from unittest import TestCase
 import mapactionpy_controller.data_search as data_search
+from mapactionpy_controller.product_bundle_definition import MapRecipe
 import sys
 import os
 import six
-import StringIO
 
 # works differently for python 2.7 and python 3.x
 if six.PY2:
@@ -17,12 +17,10 @@ else:
 class TestDataSearch(TestCase):
 
     def setUp(self):
-        parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-        self.cmf_descriptor_path = os.path.join(
-            parent_dir, 'example', 'cmf_description_flat_test.json')
-        self.recipe_file = os.path.join(parent_dir, 'example', 'product_bundle_example.json')
-        self.non_existant_file = os.path.join(parent_dir, 'example', 'non-existant-file.json')
-        self.output_file = os.path.join(parent_dir, 'example', 'delete-me-test-output-file.json')
+        self.parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+        self.cmf_descriptor_path = os.path.join(self.parent_dir, 'example', 'cmf_description_flat_test.json')
+        self.recipe_file = os.path.join(self.parent_dir, 'example', 'product_bundle_example.json')
+        self.non_existant_file = os.path.join(self.parent_dir, 'example', 'non-existant-file.json')
 
         # self.ds = data_search.DataSearch(cmf_descriptor_path)
 
@@ -42,40 +40,38 @@ class TestDataSearch(TestCase):
         with self.assertRaises(SystemExit):
             data_search.get_args()
 
-    @mock.patch('json.dump')
-    @mock.patch('builtins.open', new_callable=mock_open())
-    def test_data_search_main(self, m, m_json):
+    # @mock.patch('json.dump')
+    # @mock.patch('builtins.open', new_callable=mock_open())
+    def test_data_search_main(self):
+        output_file_for_testing = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'delete-me-test-output-file.json')
+
         sys.argv[1:] = ['--cmf', self.cmf_descriptor_path,
                         '--recipe-file', self.recipe_file,
-                        '--output-file', self.output_file]
+                        '--output-file', output_file_for_testing]
 
-        dummy_file = StringIO.StringIO()
+        # check that the output file doesn't already exist. Run the main method and then check that it does exist
+        # afterwards.
+        if os.path.exists(output_file_for_testing):
+            os.remove(output_file_for_testing)
 
-        m.return_value = dummy_file
+        self.assertFalse(os.path.exists(output_file_for_testing))
         data_search.main()
-        print(dummy_file.getvalue())
+        self.assertTrue(os.path.exists(output_file_for_testing))
 
-        # m.assert_called_once_with(self.output_file, 'w')
-        # In this case we don't expect the data serach to find anything, therefore the recipe
-        # should be returned unchanged.
-        # handle = m()
-        m.write.assert_called_once_with('self.recipe_file')
-        # handle.write.assert_called_once_with('self.recipe_file')
+        # In this case we don't expect many changes to the input and output recipes
+        # - The data serach to find anything, therefore the no changes to the data_source_path
+        # - The data_search regexs should be updated with the country ISO3 code
+        # - The changes title remains the same
+        # - The number of layers remains the same
+        input_recipe = MapRecipe(self.recipe_file)
+        output_recipe = MapRecipe(output_file_for_testing)
 
-        # outfile = StringIO.StringIO()
+        print("input {} output {}".format(len(output_recipe.layers), len(input_recipe.layers)))
 
-        # with self.assertRaises(SystemExit):
+        self.assertEqual(input_recipe.title, output_recipe.title)
+        self.assertEqual(len(output_recipe.layers), len(input_recipe.layers))
 
-        # with patch('builtins.open', new_callable=mock_open()) as m:
-        #     with patch('json.dump') as m_json:
-        #         self.mc.save_data_to_file(self.data)
-
-        #         # simple assertion that your open was called
-        #         m.assert_called_with('/tmp/data.json', 'w')
-
-        #         # assert that you called m_json with your data
-        #         m_json.assert_called_with(self.data, m.return_value)
-
-        # sys.argv[1:] = ['-v']
-        # with self.assertRaises(SystemExit):
-        #     data_search.get_args()
+        # Finally remove the file so that it isn't present for future tests
+        os.remove(output_file_for_testing)
+        self.assertFalse(os.path.exists(output_file_for_testing))

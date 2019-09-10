@@ -65,3 +65,7 @@ class LayerSpec:
         ]
 
         return all(comp)
+
+    def __ne__(self, other):
+        """Overrides the default implementation (unnecessary in Python 3)"""
+        return not self.__eq__(other)

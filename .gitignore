@@ -13,3 +13,4 @@
 .noseids
 .vscode/
 nosetests.xml
+mapactionpy_controller/tests/testfiles/delete-me-test-output-file.json
