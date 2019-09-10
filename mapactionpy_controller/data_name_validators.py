@@ -8,14 +8,16 @@ from collections import namedtuple
 # https://stackoverflow.com/a/25300153
 
 
-class DataNameClause:
+class DataNameClause(object):
     def __init__(self):
         if self.__class__ is DataNameClause:
             raise NotImplementedError(
                 'DataNameClause is an abstract class and cannot be instantiated directly')
 
     def validate(self, clause_value, **kwargs):
-        pass
+        # if self.__class__ is DataNameClause:
+        raise NotImplementedError(
+            'DataNameClause is an abstract class and the `validate` method cannot be called directly')
 
 
 class DataNameFreeTextClause(DataNameClause):
