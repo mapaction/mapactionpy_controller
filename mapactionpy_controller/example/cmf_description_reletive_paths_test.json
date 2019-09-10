@@ -1,0 +1,16 @@
+{
+   "event_description_file": "event_description.json",
+   "original_data": "../example",
+   "active_data": "../example",
+   "layer_redering": "../example",
+   "mxd_templates": "../example",
+   "mxd_products": "../example",
+   "qgis_templates": "../example",
+   "export_dir": "../example",
+   "dnc_definition": "../example/data_naming_convention.json",
+   "layer_nc_definition": "../example/layer_file_naming_convention.json",
+   "mxd_nc_definition": "../example/mxd_naming_convention.json",
+   "default_jpeg_red_dpi": "300",
+   "default_pdf_red_dpi": "300",
+   "default_emf_red_dpi": "300"
+}
