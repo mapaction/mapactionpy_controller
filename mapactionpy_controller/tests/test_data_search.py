@@ -41,7 +41,7 @@ class TestDataSearch(TestCase):
 
         with self.assertRaises(SystemExit):
             data_search.get_args()
-        
+
     @mock.patch('json.dump')
     @mock.patch('builtins.open', new_callable=mock_open())
     def test_data_search_main(self, m, m_json):
@@ -58,20 +58,17 @@ class TestDataSearch(TestCase):
         # m.assert_called_once_with(self.output_file, 'w')
         # In this case we don't expect the data serach to find anything, therefore the recipe
         # should be returned unchanged.
-        handle = m()
+        # handle = m()
         m.write.assert_called_once_with('self.recipe_file')
         # handle.write.assert_called_once_with('self.recipe_file')
 
+        # outfile = StringIO.StringIO()
 
-        #outfile = StringIO.StringIO()
-
-        #with self.assertRaises(SystemExit):
-
+        # with self.assertRaises(SystemExit):
 
         # with patch('builtins.open', new_callable=mock_open()) as m:
         #     with patch('json.dump') as m_json:
         #         self.mc.save_data_to_file(self.data)
-
 
         #         # simple assertion that your open was called
         #         m.assert_called_with('/tmp/data.json', 'w')
