@@ -12,6 +12,7 @@ else:
     from unittest import mock  # noqa: F401
     from unittest.mock import mock_open, patch  # noqa: F401
 
+
 class TestCheckNamingConventionTool(TestCase):
 
     def setUp(self):
