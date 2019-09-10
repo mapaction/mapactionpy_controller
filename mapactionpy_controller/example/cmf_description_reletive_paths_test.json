@@ -2,7 +2,7 @@
    "event_description_file": "event_description.json",
    "original_data": "../example",
    "active_data": "../example",
-   "layer_redering": "../example",
+   "layer_rendering": "../example",
    "mxd_templates": "../example",
    "mxd_products": "../example",
    "qgis_templates": "../example",
