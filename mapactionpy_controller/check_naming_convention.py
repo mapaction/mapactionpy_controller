@@ -1,7 +1,7 @@
 import argparse
 import os
-from crash_move_folder import CrashMoveFolder
-import data_name_convention
+from mapactionpy_controller.crash_move_folder import CrashMoveFolder
+import mapactionpy_controller.data_name_convention as data_name_convention
 
 
 def is_valid_file(parser, arg):
@@ -43,20 +43,22 @@ def test_contents_of_dir(dir, name_conv_definition, file_ext):
                                 rdict[clausename].is_valid))
 
 
-def main(args):
+def main():
+    args = get_args()
+
     cmf = CrashMoveFolder(args.cmf_config_path)
 
     # test data names
     test_contents_of_dir(cmf.active_data, cmf.dnc_definition, '.shp')
 
     # test layer names
-    test_contents_of_dir(cmf.layer_redering, cmf.layer_nc_definition, '.lyr')
+    test_contents_of_dir(cmf.layer_rendering, cmf.layer_nc_definition, '.lyr')
 
     # test mxd names
     test_contents_of_dir(cmf.mxd_products, cmf.mxd_nc_definition, '.mxd')
 
 
-if __name__ == "__main__":
+def get_args():
     parser = argparse.ArgumentParser(
         description=('This tool checks the conformance with the naming-convention for selected'
                      'files within the Crash Move Folder')
@@ -64,5 +66,8 @@ if __name__ == "__main__":
     parser.add_argument("cmf_config_path", help="path to layer directory", metavar="FILE",
                         type=lambda x: is_valid_file(parser, x))
 
-    args = parser.parse_args()
-    main(args)
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    main()
