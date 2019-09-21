@@ -41,7 +41,8 @@ def test_contents_of_dir(dir, name_conv_definition, file_ext):
                             print("\t{} is not a recongised value for the clause {}".format(
                                 clause_details.Value,
                                 clausename))
-                            print
+
+                    print
 
 
 def main():
