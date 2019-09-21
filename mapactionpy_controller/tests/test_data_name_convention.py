@@ -154,3 +154,9 @@ class TestDataNameConvention(TestCase):
         self.assertTrue(dnc.validate(r'lka_admn_ad3_py_s0_wfp_pP').is_valid)
         self.assertTrue(dnc.validate(r'lka_admn_ad3_py_s0_wfp_PP').is_valid)
         self.assertTrue(dnc.validate(r'LKA_ADMN_AD3_PY_S0_WFP_PP').is_valid)
+
+        result = dnc.validate('khm_tran_trn_py_s0_osm_pp_transport')
+        self.assertTrue(result.geoext.is_valid)
+        self.assertTrue(result.datatheme.is_valid)
+        self.assertTrue(result.datacat.is_valid)
+        self.assertTrue(result.scale.is_valid)
