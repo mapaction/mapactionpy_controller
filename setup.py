@@ -18,7 +18,7 @@ def get_dev_build_number():
         try:
             ver = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'])
             return '+local.{}'.format(ver.decode('ascii').strip())
-        except OSError:
+        except Exception:
             return ''
 
 
