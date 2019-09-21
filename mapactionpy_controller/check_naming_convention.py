@@ -35,12 +35,14 @@ def test_contents_of_dir(dir, name_conv_definition, file_ext):
                     rdict = result._asdict()
 
                     for clausename in nc.regex.groupindex:
-                        cdict = rdict[clausename]._asdict()
-                        if (clausename in cdict) and not rdict[clausename].is_valid:
-                            print("{} clause value {} is_valid = {}".format(
-                                clausename,
-                                cdict[clausename],
-                                rdict[clausename].is_valid))
+                        clause_details = rdict[clausename]
+                        # print(clausename, cdict)
+                        if not clause_details.is_valid:
+                            print("\t{} is not a recongised value for the clause {}".format(
+                                clause_details.Value,
+                                clausename))
+
+                    print
 
 
 def main():
