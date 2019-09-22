@@ -57,7 +57,7 @@ class DataNameLookupClause(DataNameClause):
         if lookup_field in csv_reader.fieldnames:
             self.lookup_field = lookup_field
         else:
-            raise mac.data_name_convention.DataNameException(
+            raise mac.name_convention.DataNameException(
                 'invalid validation lookup_field primary key {} in file {}'.format(lookup_field, csv_path))
 
         for row in csv_reader:
@@ -66,7 +66,7 @@ class DataNameLookupClause(DataNameClause):
                 non_lookup_keys = [x for x in row.keys() if x != lookup_field]
                 self.known_values[pk] = {n: row[n] for n in non_lookup_keys}
             else:
-                raise mac.data_name_convention.DataNameException(
+                raise mac.name_convention.DataNameException(
                     'Duplicate primary key {} in file {}'.format(pk, csv_path))
 
     def validate(self, clause_value):

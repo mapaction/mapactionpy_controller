@@ -1,7 +1,7 @@
 import argparse
 import os
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
-import mapactionpy_controller.data_name_convention as data_name_convention
+import mapactionpy_controller.name_convention as data_name_convention
 
 
 def is_valid_file(parser, arg):

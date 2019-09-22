@@ -3,8 +3,8 @@ import json
 import re
 from collections import namedtuple
 # from mapactionpy_controller.data_name_validators import DataNameClause
-from mapactionpy_controller.data_name_validators import DataNameFreeTextClause
-from mapactionpy_controller.data_name_validators import DataNameLookupClause
+from mapactionpy_controller.name_clause_validators import DataNameFreeTextClause, DataNameLookupClause
+#from mapactionpy_controller.data_name_validators import DataNameLookupClause
 
 
 class DataNameConvention:

@@ -1,8 +1,8 @@
 import os.path
 import six
 from unittest import TestCase
-from mapactionpy_controller.data_name_convention import DataNameConvention, DataNameException
-from mapactionpy_controller.data_name_validators import DataNameClause, DataNameLookupClause
+from mapactionpy_controller.name_convention import DataNameConvention, DataNameException
+from mapactionpy_controller.name_clause_validators import DataNameClause, DataNameLookupClause
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 
 # works differently for python 2.7 and python 3.x
