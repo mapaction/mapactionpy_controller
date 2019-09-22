@@ -8,19 +8,19 @@ from collections import namedtuple
 # https://stackoverflow.com/a/25300153
 
 
-class DataNameClause(object):
+class NamingClause(object):
     def __init__(self):
-        if self.__class__ is DataNameClause:
+        if self.__class__ is NamingClause:
             raise NotImplementedError(
-                'DataNameClause is an abstract class and cannot be instantiated directly')
+                'NamingClause is an abstract class and cannot be instantiated directly')
 
     def validate(self, clause_value, **kwargs):
-        # if self.__class__ is DataNameClause:
+        # if self.__class__ is NamingClause:
         raise NotImplementedError(
-            'DataNameClause is an abstract class and the `validate` method cannot be called directly')
+            'NamingClause is an abstract class and the `validate` method cannot be called directly')
 
 
-class DataNameFreeTextClause(DataNameClause):
+class NamingFreeTextClause(NamingClause):
     def __init__(self, clause_name):
         self.clause_name = clause_name
 
@@ -37,7 +37,7 @@ class DataNameFreeTextClause(DataNameClause):
         return DataClauseValues(**details)
 
 
-class DataNameLookupClause(DataNameClause):
+class NamingLookupClause(NamingClause):
     def __init__(self, clause_name, csv_path, lookup_field):
         self.clause_name = clause_name
         self.known_values = {}
@@ -57,7 +57,7 @@ class DataNameLookupClause(DataNameClause):
         if lookup_field in csv_reader.fieldnames:
             self.lookup_field = lookup_field
         else:
-            raise mac.data_name_convention.DataNameException(
+            raise mac.name_convention.NamingException(
                 'invalid validation lookup_field primary key {} in file {}'.format(lookup_field, csv_path))
 
         for row in csv_reader:
@@ -66,7 +66,7 @@ class DataNameLookupClause(DataNameClause):
                 non_lookup_keys = [x for x in row.keys() if x != lookup_field]
                 self.known_values[pk] = {n: row[n] for n in non_lookup_keys}
             else:
-                raise mac.data_name_convention.DataNameException(
+                raise mac.name_convention.NamingException(
                     'Duplicate primary key {} in file {}'.format(pk, csv_path))
 
     def validate(self, clause_value):

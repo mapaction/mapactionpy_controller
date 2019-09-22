@@ -1,8 +1,8 @@
 import os.path
 import six
 from unittest import TestCase
-from mapactionpy_controller.data_name_convention import DataNameConvention, DataNameException
-from mapactionpy_controller.data_name_validators import DataNameClause, DataNameLookupClause
+from mapactionpy_controller.name_convention import NamingConvention, NamingException
+from mapactionpy_controller.name_clause_validators import NamingClause, NamingLookupClause
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 
 # works differently for python 2.7 and python 3.x
@@ -12,7 +12,7 @@ else:
     from unittest import mock  # noqa: F401
 
 
-class TestDataNameConvention(TestCase):
+class TestNamingConvention(TestCase):
 
     def setUp(self):
         parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -32,15 +32,15 @@ class TestDataNameConvention(TestCase):
         working_csv = os.path.join(self.cmf.dnc_lookup_dir, '06_source.csv')
 
         # Test with a valid csv table
-        dnlc = DataNameLookupClause('test', working_csv, 'Value')
+        dnlc = NamingLookupClause('test', working_csv, 'Value')
         self.assertEqual(dnlc.lookup_field, 'Value')
 
         # Test with an valid csv file but a mismatch between primary key parameter and file contents
-        self.assertRaises(DataNameException, DataNameLookupClause,
+        self.assertRaises(NamingException, NamingLookupClause,
                           'test', working_csv, 'non-existant-primary-key')
 
         # Test with an invalid csv table (duplicate primary key)
-        self.assertRaises(DataNameException, DataNameLookupClause, 'test', failing_csv, 'Value')
+        self.assertRaises(NamingException, NamingLookupClause, 'test', failing_csv, 'Value')
 
     def test_load_dnc_definition(self):
         test_convention_files = (
@@ -52,13 +52,13 @@ class TestDataNameConvention(TestCase):
 
         for test_filename in test_convention_files:
             test_filepath = os.path.join(self.test_files_dir, test_filename)
-            self.assertRaises(DataNameException, DataNameConvention, test_filepath)
+            self.assertRaises(NamingException, NamingConvention, test_filepath)
 
     def test_abstract_validator(self):
-        self.assertRaises(NotImplementedError, DataNameClause)
+        self.assertRaises(NotImplementedError, NamingClause)
 
-        # Dummy implenmentation of calling the validate() method on DataNameClause
-        class TestDateNameClause(DataNameClause):
+        # Dummy implenmentation of calling the validate() method on NamingClause
+        class TestDateNameClause(NamingClause):
             def validate(self, clause_value, **kwargs):
                 if six.PY2:
                     return super(TestDateNameClause, self).validate(clause_value, **kwargs)
@@ -70,7 +70,7 @@ class TestDataNameConvention(TestCase):
 
     def test_get_other_dnc_attributes(self):
         # pylint: disable=no-member
-        dnc = DataNameConvention(self.dnc_json_path)
+        dnc = NamingConvention(self.dnc_json_path)
         # dni is None if no match with regex
         dnr = dnc.validate(r'lka_admnad3_py_s0_wfpocha.pp.shp')
         self.assertIsNone(dnr)
@@ -115,7 +115,7 @@ class TestDataNameConvention(TestCase):
         self.assertEqual(dnr.freetext.Value, 'myfreetext')
 
     def test_name_validation(self):
-        dnc = DataNameConvention(self.dnc_json_path)
+        dnc = NamingConvention(self.dnc_json_path)
         # # pass valid names
         dnr = dnc.validate(r'lka_admn_ad2_py_s5_unocha_pp_myfreetext')
         self.assertTrue(dnc.validate(r'lka_admn_ad2_py_s5_unocha_pp_freetext'))
