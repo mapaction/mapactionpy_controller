@@ -13,7 +13,7 @@ def is_valid_file(parser, arg):
 
 
 def test_contents_of_dir(dir, name_conv_definition, file_ext):
-    nc = data_name_convention.DataNameConvention(name_conv_definition)
+    nc = data_name_convention.NamingConvention(name_conv_definition)
     nc.regex.groupindex
 
     print("*****************")

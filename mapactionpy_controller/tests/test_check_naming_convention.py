@@ -1,6 +1,5 @@
 from unittest import TestCase
 import mapactionpy_controller.check_naming_convention as check_naming_convention
-import mapactionpy_controller.check_naming_convention as check_naming_convention
 import sys
 import os
 import six
