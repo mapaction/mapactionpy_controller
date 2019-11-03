@@ -13,9 +13,9 @@
     "qgis_templates",
     "export_dir",
     "dnc_lookup_dir",
-    "default_jpeg_red_dpi",
-    "default_pdf_red_dpi",
-    "default_emf_red_dpi"
+    "map_definitions",
+    "layer_properties",
+    "arcgis_version"
   ],
   "properties": {
     "event_description_file": {
@@ -117,6 +117,16 @@
         "layerProperties.json"
       ],
       "pattern": "^(.*)$"
-    }
+    },
+    "arcgis_version": {
+      "$id": "#/properties/arcgis_version",
+      "type": "string",
+      "title": "Version of ArcGIS for MXD Templates",
+      "default": "",
+      "examples": [
+        "arcgis_10_6"
+      ],
+      "pattern": "^(.*)$"
+    }    
   }
 }
