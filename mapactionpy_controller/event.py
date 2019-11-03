@@ -22,6 +22,10 @@ class Event:
                 self.deployment_primary_email = obj['deployment_primary_email']
                 self.default_disclaimer_text = obj['default_disclaimer_text']
                 self.default_donors_text = obj['default_donors_text']
+                self.default_jpeg_res_dpi = obj['default_jpeg_res_dpi']
+                self.default_pdf_res_dpi = obj['default_pdf_res_dpi']
+                self.default_emf_res_dpi = obj['default_emf_res_dpi']
+                self.donors = obj['donors']
 
         finally:
             f.close()
