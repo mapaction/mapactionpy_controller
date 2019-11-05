@@ -5,6 +5,8 @@ from mapactionpy_controller.product_bundle_definition import MapRecipe
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.data_search import DataSearch
 import jsonpickle
+import six
+
 # works differently for python 2.7 and python 3.x
 try:
     from unittest import mock
@@ -105,8 +107,12 @@ class TestMAController(TestCase):
         with self.assertRaises(ValueError) as cm:
             test_cmf = CrashMoveFolder(cmf_partial_fail, verify_on_creation=True)
 
-        self.assertRegexpMatches(str(cm.exception), "mxd_templates")
-        self.assertNotRegexpMatches(str(cm.exception), "original_data")
+        if six.PY2:
+            self.assertRegexpMatches(str(cm.exception), "mxd_templates")
+            self.assertNotRegexpMatches(str(cm.exception), "original_data")
+        else:
+            self.assertRegex(str(cm.exception), "mxd_templates")
+            self.assertNotRegex(str(cm.exception), "original_data")
 
         # create a valid CMF object and then test paths, after creation
         test_cmf_path = os.path.join(self.parent_dir, 'example', 'cmf_description_flat_test.json')
