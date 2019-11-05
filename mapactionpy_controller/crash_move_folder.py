@@ -36,7 +36,7 @@ class CrashMoveFolder:
             failing_paths_str = "\n\t".join(failing_paths)
             raise ValueError("Unable to verify existence of all files and directories defined in "
                              "CrashMoveFolder '{}'. The values for these parameters could not be located:\n\t"
-                             "{}".format(cmf_path,failing_paths_str))
+                             "{}".format(cmf_path, failing_paths_str))
 
     def _verify_paths(self):
         results = {}
