@@ -35,7 +35,7 @@ setup(name='mapactionpy_controller',
       install_requires=[
           'jsonpickle',
           'six'
-      ]
+      ],
       test_suite='unittest',
       tests_require=['unittest'],
       zip_safe=False,
