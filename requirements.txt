@@ -1,0 +1,2 @@
+# Just install the current directory, which has the effect of delegating responsility for dependancies to setup.py
+.
