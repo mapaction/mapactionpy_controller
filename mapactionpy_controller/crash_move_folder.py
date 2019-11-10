@@ -17,7 +17,6 @@ class CrashMoveFolder:
             self.active_data = os.path.join(self.path, obj['active_data'])
             self.layer_rendering = os.path.join(self.path, obj['layer_rendering'])
             self.mxd_templates = os.path.join(self.path, obj['mxd_templates'])
-            self.automation = os.path.join(self.path, obj['automation'])
             self.mxd_products = os.path.join(self.path, obj['mxd_products'])
             self.qgis_templates = os.path.join(self.path, obj['qgis_templates'])
             self.export_dir = os.path.join(self.path, obj['export_dir'])
@@ -41,7 +40,6 @@ class CrashMoveFolder:
             os.path.isdir(self.layer_rendering),
             os.path.isdir(self.mxd_templates),
             os.path.isdir(self.mxd_products),
-            os.path.isdir(self.automation),
             os.path.isdir(self.qgis_templates),
             os.path.isdir(self.export_dir),
             # files
