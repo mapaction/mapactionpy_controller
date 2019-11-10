@@ -12,7 +12,7 @@ class CrashMoveFolder:
             obj = json.loads(f.read())
 
             # Doubtless there is a more elegant way to do this.
-            self.event_description_file = os.path.join(self.path, obj['event_description_file'])
+            #self.event_description_file = os.path.join(self.path, obj['event_description_file'])
             self.original_data = os.path.join(self.path, obj['original_data'])
             self.active_data = os.path.join(self.path, obj['active_data'])
             self.layer_rendering = os.path.join(self.path, obj['layer_rendering'])
@@ -43,7 +43,7 @@ class CrashMoveFolder:
             os.path.isdir(self.qgis_templates),
             os.path.isdir(self.export_dir),
             # files
-            os.path.exists(self.event_description_file),
+            #os.path.exists(self.event_description_file),
             os.path.exists(self.dnc_definition),
             os.path.exists(self.layer_nc_definition),
             os.path.exists(self.mxd_nc_definition),
