@@ -2,9 +2,9 @@ import json
 
 
 class Event:
-    def __init__(self, cmf):
+    def __init__(self, eventFilePath):
 
-        event_file = cmf.event_description_file
+        event_file = eventFilePath
         try:
             with open(event_file, 'r') as f:
                 obj = json.loads(f.read())
@@ -21,7 +21,7 @@ class Event:
                 self.default_publishing_base_url = obj['default_publishing_base_url']
                 self.deployment_primary_email = obj['deployment_primary_email']
                 self.default_disclaimer_text = obj['default_disclaimer_text']
-                self.default_donors_text = obj['default_donors_text']
+                self.default_donor_credits = obj['default_donor_credits']
                 self.default_jpeg_res_dpi = obj['default_jpeg_res_dpi']
                 self.default_pdf_res_dpi = obj['default_pdf_res_dpi']
                 self.default_emf_res_dpi = obj['default_emf_res_dpi']
