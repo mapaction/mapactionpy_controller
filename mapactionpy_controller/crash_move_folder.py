@@ -12,7 +12,6 @@ class CrashMoveFolder:
             obj = json.loads(f.read())
 
             # Doubtless there is a more elegant way to do this.
-            #self.event_description_file = os.path.join(self.path, obj['event_description_file'])
             self.original_data = os.path.join(self.path, obj['original_data'])
             self.active_data = os.path.join(self.path, obj['active_data'])
             self.layer_rendering = os.path.join(self.path, obj['layer_rendering'])
@@ -88,6 +87,6 @@ class CrashMoveFolder:
                 if (category == "reference"):
                     templateFileName = templateFileName + "_bottom"
                 templateFileName = templateFileName + ".mxd"
-                if (os.path.exists(os.path.join(self.mxd_templates, )) == False):
+                if not os.path.exists(self.mxd_templates):
                     result = False
         return result
