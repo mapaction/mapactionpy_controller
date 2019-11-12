@@ -7,7 +7,7 @@ class CrashMoveFolder:
     def __init__(self, cmf_path, verify_on_creation=True):
 
         self.path = os.path.dirname(cmf_path)
-        
+
         with open(cmf_path, 'r') as f:
             obj = json.loads(f.read())
 
@@ -25,10 +25,10 @@ class CrashMoveFolder:
             self.data_nc_definition = os.path.join(self.path, obj['dnc_definition'])
             self.layer_nc_definition = os.path.join(self.path, obj['layer_nc_definition'])
             self.mxd_nc_definition = os.path.join(self.path, obj['mxd_nc_definition'])
-            self.map_definitions = os.path.join(self.path, obj['map_definitions'])            
-            self.layer_properties = os.path.join(self.path, obj['layer_properties'])       
-            self.arcgis_version = obj['arcgis_version'] 
-            self.categories = obj['categories'] 
+            self.map_definitions = os.path.join(self.path, obj['map_definitions'])
+            self.layer_properties = os.path.join(self.path, obj['layer_properties'])
+            self.arcgis_version = obj['arcgis_version']
+            self.categories = obj['categories']
 
         # paths_checked = self._verify_paths()
         if verify_on_creation and (not self.verify_paths()):
@@ -68,7 +68,7 @@ class CrashMoveFolder:
             os.path.isdir(self.qgis_templates),
             os.path.isdir(self.export_dir),
             # files
-            #os.path.exists(self.event_description_file),
+            # os.path.exists(self.event_description_file),
             os.path.exists(self.dnc_definition),
             os.path.exists(self.layer_nc_definition),
             os.path.exists(self.mxd_nc_definition),
@@ -80,15 +80,14 @@ class CrashMoveFolder:
         return all(results)
 
     def verify_mxds(self):
-        result=True
+        result = True
         for category in (self.categories):
             for orientation in ['landscape', 'portrait']:
-                templateFileName=self.arcgis_version + "_" + category + "_" + orientation
+                templateFileName = self.arcgis_version + "_" + category + "_" + orientation
 
                 if (category == "reference"):
                     templateFileName = templateFileName + "_bottom"
-                templateFileName = templateFileName + ".mxd"       
+                templateFileName = templateFileName + ".mxd"
                 if (os.path.exists(os.path.join(self.mxd_templates, )) == False):
                     result = False
-        return result        
-
+        return result
