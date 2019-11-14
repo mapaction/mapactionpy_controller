@@ -68,7 +68,7 @@ class CrashMoveFolder:
             os.path.isdir(self.export_dir),
             # files
             # os.path.exists(self.event_description_file),
-            os.path.exists(self.dnc_definition),
+            os.path.exists(self.data_nc_definition),
             os.path.exists(self.layer_nc_definition),
             os.path.exists(self.mxd_nc_definition),
             os.path.exists(self.map_definitions),
