@@ -1,5 +1,4 @@
 {
-   "event_description_file": "event_description.json",
    "original_data": "GIS/1_Original_Data",
    "active_data": "GIS/2_Active_Data",
    "layer_rendering": "GIS/3_Mapping/31_Resources/312_Layer_files",

@@ -1,5 +1,4 @@
 {
-   "event_description_file": "event_description.json",
    "original_data": ".",
    "active_data": ".",
    "layer_rendering": ".",
@@ -10,7 +9,7 @@
    "dnc_definition": "data_naming_convention.json",
    "layer_nc_definition": "layer_file_naming_convention.json",
    "mxd_nc_definition": "mxd_naming_convention.json",
-   "map_definitions": "GIS/3_Mapping/31_Resources/316_Automation/mapCookbook.json",
-   "layer_properties": "GIS/3_Mapping/31_Resources/316_Automation/layerProperties.json",
+   "map_definitions": "dummy_mapCookbook.json",
+   "layer_properties": "dummy_layerProperties.json",
    "arcgis_version": "arcgis_10_6"
 }

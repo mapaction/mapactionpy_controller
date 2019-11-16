@@ -8,9 +8,9 @@ from mapactionpy_controller.product_bundle_definition import MapRecipe
 
 
 class DataSearch():
-    def __init__(self, cmf):
-        self.cmf = cmf
-        self.event = Event(self.cmf)
+    def __init__(self, event):
+        self.event = event
+        self.cmf = CrashMoveFolder(self.event.cmf_descriptor_path)
 
     def update_search_with_event_details(self, recipe):
         for lyr in recipe.layers:
@@ -50,8 +50,8 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-r", "--recipe-file", dest="recipe_file", required=True,
                         help="path to recipe json file.", metavar="FILE", type=lambda x: _is_valid_file(parser, x))
-    parser.add_argument("-c", "--cmf", dest="crash_move_folder", required=True,
-                        help="path the Crash Move Folder descriptor file.", metavar="FILE",
+    parser.add_argument("-e", "--event", dest="event_path", required=True,
+                        help="path the Event descriptor file.", metavar="FILE",
                         type=lambda x: _is_valid_file(parser, x))
     parser.add_argument("-o", "--output-file", dest="output_file", required=False,
                         help="(optional) path to the ouptut file. If omited the output is printed to stdout.",
@@ -65,7 +65,7 @@ def main():
 
     org_recipe = MapRecipe(args.recipe_file)
 
-    ds = DataSearch(CrashMoveFolder(args.crash_move_folder))
+    ds = DataSearch(Event(args.event_path))
     updated_recipe = ds.update_search_with_event_details(org_recipe)
     updated_recipe = ds.update_recipe_with_datasources(updated_recipe)
 
