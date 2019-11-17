@@ -51,7 +51,7 @@ def main():
     cmf = CrashMoveFolder(args.cmf_config_path)
 
     # test data names
-    test_contents_of_dir(cmf.active_data, cmf.dnc_definition, '.shp')
+    test_contents_of_dir(cmf.active_data, cmf.data_nc_definition, '.shp')
 
     # test layer names
     test_contents_of_dir(cmf.layer_rendering, cmf.layer_nc_definition, '.lyr')

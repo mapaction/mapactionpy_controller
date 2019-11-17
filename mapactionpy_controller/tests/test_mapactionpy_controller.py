@@ -4,7 +4,9 @@ import fixtures
 from mapactionpy_controller.product_bundle_definition import MapRecipe
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.data_search import DataSearch
+from mapactionpy_controller.event import Event
 import jsonpickle
+import six
 # works differently for python 2.7 and python 3.x
 try:
     from unittest import mock
@@ -21,7 +23,9 @@ class TestMAController(TestCase):
         self.recipe = MapRecipe(self.recipe_descriptor_path)
 
         self.cmf_descriptor_path = os.path.join(self.parent_dir, 'example', 'cmf_description.json')
-        self.cmf = CrashMoveFolder(self.cmf_descriptor_path, verify_on_creation=False)
+        # self.cmf = CrashMoveFolder(self.cmf_descriptor_path, verify_on_creation=False)
+        self.event_descriptor_path = os.path.join(self.parent_dir, 'example', 'event_description.json')
+        self.event = Event(self.event_descriptor_path)
 
     def test_equality_of_map_recipes(self):
         test_recipe1 = MapRecipe(None, fixtures.recipe_with_positive_iso3_code)
@@ -52,7 +56,7 @@ class TestMAController(TestCase):
             self.assertNotEqual(test_recipe, MapRecipe(None, str_def=fixtures.recipe_with_negative_iso3_code))
 
     def test_substitute_iso3_in_regex(self):
-        ds = DataSearch(self.cmf)
+        ds = DataSearch(self.event)
 
         reference_recipe = MapRecipe(
             None, str_def=fixtures.recipe_with_positive_iso3_code)
@@ -71,7 +75,7 @@ class TestMAController(TestCase):
     @mock.patch('mapactionpy_controller.data_search.os.path')
     @mock.patch('mapactionpy_controller.data_search.os')
     def test_search_for_shapefiles(self, mock_os, mock_path):
-        ds = DataSearch(self.cmf)
+        ds = DataSearch(self.event)
 
         # case where there is exactly one dataset per query
         mock_os.walk.return_value = fixtures.walk_single_admn_file_search_search
@@ -89,13 +93,30 @@ class TestMAController(TestCase):
         self.assertEqual(updated_test_recipe, reference_recipe)
 
     def test_cmf_path_validation(self):
-        # test validation on creation (for failing case)
+
+        cmf_partial_fail = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'fixture_cmf_description_one_file_and_one_dir_not_valid.json')
+
+        # test validation on creation (for failing case) using default parameters
+        self.assertRaises(ValueError, CrashMoveFolder, self.cmf_descriptor_path)
+        # force validation on creation, for a json file we know would otherwise fail:
         self.assertRaises(ValueError, CrashMoveFolder, self.cmf_descriptor_path, verify_on_creation=True)
         # test validation is correctly disabled on creation, for a json file we know would otherwise fail:
         test_cmf = CrashMoveFolder(self.cmf_descriptor_path, verify_on_creation=False)
         self.assertIsInstance(test_cmf, CrashMoveFolder)
 
-        # create a valid
+        # check message included in the ValueError:
+        with self.assertRaises(ValueError) as cm:
+            test_cmf = CrashMoveFolder(cmf_partial_fail, verify_on_creation=True)
+
+        if six.PY2:
+            self.assertRegexpMatches(str(cm.exception), "mxd_templates")
+            self.assertNotRegexpMatches(str(cm.exception), "original_data")
+        else:
+            self.assertRegex(str(cm.exception), "mxd_templates")
+            self.assertNotRegex(str(cm.exception), "original_data")
+
+        # create a valid CMF object and then test paths, after creation
         test_cmf_path = os.path.join(self.parent_dir, 'example', 'cmf_description_flat_test.json')
         test_cmf = CrashMoveFolder(test_cmf_path)
         self.assertTrue(test_cmf.verify_paths())

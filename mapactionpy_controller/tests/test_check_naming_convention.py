@@ -25,7 +25,7 @@ class TestCheckNamingConventionTool(TestCase):
         sys.argv[1:] = [self.cmf_descriptor_path]
 
         args = check_naming_convention.get_args()
-        self.assertEquals(self.cmf_descriptor_path, args.cmf_config_path)
+        self.assertEqual(self.cmf_descriptor_path, args.cmf_config_path)
 
         sys.argv[1:] = []
         with self.assertRaises(SystemExit):
