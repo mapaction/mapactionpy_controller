@@ -19,23 +19,22 @@ class TestDataSearch(TestCase):
     def setUp(self):
         self.parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         self.cmf_descriptor_path = os.path.join(self.parent_dir, 'example', 'cmf_description_flat_test.json')
-        self.event_descriptor_path = os.path.join(self.parent_dir, 'example', 'event_description.json')
         self.recipe_file = os.path.join(self.parent_dir, 'example', 'product_bundle_example.json')
         self.non_existant_file = os.path.join(self.parent_dir, 'example', 'non-existant-file.json')
 
         # self.ds = data_search.DataSearch(cmf_descriptor_path)
 
     def test_args(self):
-        sys.argv[1:] = ['--event', self.event_descriptor_path,
+        sys.argv[1:] = ['--cmf', self.cmf_descriptor_path,
                         '--recipe-file', self.recipe_file,
                         '--output-file', 'somefile']
         args = data_search.get_args()
-        self.assertEqual(self.event_descriptor_path, args.event_path)
-        self.assertEqual(self.recipe_file, args.recipe_file)
-        self.assertEqual('somefile', args.output_file)
+        self.assertEquals(self.cmf_descriptor_path, args.crash_move_folder)
+        self.assertEquals(self.recipe_file, args.recipe_file)
+        self.assertEquals('somefile', args.output_file)
 
     def test_non_existant_files_args(self):
-        sys.argv[1:] = ['--event', self.event_descriptor_path,
+        sys.argv[1:] = ['--cmf', self.cmf_descriptor_path,
                         '--recipe-file', self.non_existant_file]
 
         with self.assertRaises(SystemExit):
@@ -47,7 +46,7 @@ class TestDataSearch(TestCase):
         output_file_for_testing = os.path.join(
             self.parent_dir, 'tests', 'testfiles', 'delete-me-test-output-file.json')
 
-        sys.argv[1:] = ['--event', self.event_descriptor_path,
+        sys.argv[1:] = ['--cmf', self.cmf_descriptor_path,
                         '--recipe-file', self.recipe_file,
                         '--output-file', output_file_for_testing]
 
