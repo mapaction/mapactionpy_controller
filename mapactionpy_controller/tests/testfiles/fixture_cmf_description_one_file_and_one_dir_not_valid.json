@@ -6,7 +6,7 @@
    "mxd_products": ".",
    "qgis_templates": ".",
    "export_dir": ".",
-   "dnc_definition": "data_naming_convention.json",
+   "data_nc_definition": "data_naming_convention.json",
    "layer_nc_definition": "layer_file_naming_convention.json",
    "mxd_nc_definition": "mxd_naming_convention.json",
    "map_definitions": "GIS/3_Mapping/31_Resources/316_Automation/mapCookbook.json",

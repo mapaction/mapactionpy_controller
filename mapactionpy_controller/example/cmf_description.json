@@ -6,7 +6,7 @@
    "mxd_products": "GIS/3_Mapping/33_MXD_Maps",
    "qgis_templates": "GIS/3_Mapping/39_QGIS_Templates",
    "export_dir": "GIS/3_Mapping/34_Map_Products_MapAction",
-   "dnc_definition": "GIS/2_Active_Data/200_data_name_lookup/data_naming_convention.json",
+   "data_nc_definition": "GIS/2_Active_Data/200_data_name_lookup/data_naming_convention.json",
    "layer_nc_definition": "GIS/2_Active_Data/200_data_name_lookup/layer_file_naming_convention.json",
    "mxd_nc_definition": "GIS/2_Active_Data/200_data_name_lookup/mxd_naming_convention.json",
    "map_definitions": "GIS/3_Mapping/31_Resources/316_Automation/mapCookbook.json",

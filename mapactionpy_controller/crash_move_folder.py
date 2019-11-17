@@ -21,7 +21,7 @@ class CrashMoveFolder:
             self.qgis_templates = os.path.join(self.path, obj['qgis_templates'])
             self.export_dir = os.path.join(self.path, obj['export_dir'])
             # 5 files (alphabeltical order just for readablity)
-            self.data_nc_definition = os.path.join(self.path, obj['dnc_definition'])
+            self.data_nc_definition = os.path.join(self.path, obj['data_nc_definition'])
             self.layer_nc_definition = os.path.join(self.path, obj['layer_nc_definition'])
             self.layer_properties = os.path.join(self.path, obj['layer_properties'])
             self.map_definitions = os.path.join(self.path, obj['map_definitions'])
