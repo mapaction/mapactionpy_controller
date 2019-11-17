@@ -1,0 +1,17 @@
+{
+    "pattern": "^(?P<arcmapversion>arcgis_\\d\\d_\\d)[-_](?P<templatestyle>(reference|thematic))[-_](?P<orientation>(landscape|portrait))",
+    "clauses":[
+        {
+            "name": "arcmapversion",
+            "validation": "free_text"
+        },
+        {
+            "name": "templatestyle",
+            "validation": "free_text"
+        },
+        {
+            "name": "orientation",
+            "validation": "free_text"
+        }
+    ]
+}

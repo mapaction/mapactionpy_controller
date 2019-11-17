@@ -25,7 +25,8 @@ class CrashMoveFolder:
             self.layer_nc_definition = os.path.join(self.path, obj['layer_nc_definition'])
             self.layer_properties = os.path.join(self.path, obj['layer_properties'])
             self.map_definitions = os.path.join(self.path, obj['map_definitions'])
-            self.mxd_nc_definition = os.path.join(self.path, obj['mxd_nc_definition'])
+            self.mxd_nc_definition = os.path.join(self.path, obj['mxd_products_nc_definition'])
+            self.mxd_template_nc_definition = os.path.join(self.path, obj['mxd_template_nc_definition'])
             # others
             self.arcgis_version = obj['arcgis_version']
             # self.categories = obj['categories']

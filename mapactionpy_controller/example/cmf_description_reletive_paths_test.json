@@ -8,7 +8,8 @@
    "export_dir": "../example",
    "data_nc_definition": "../example/data_naming_convention.json",
    "layer_nc_definition": "../example/layer_file_naming_convention.json",
-   "mxd_nc_definition": "../example/mxd_naming_convention.json",
+   "mxd_products_nc_definition": "../example/mxd_naming_convention.json",
+   "mxd_template_nc_definition": "../example/mxd_template_naming_convention.json",
    "map_definitions": "../example/dummy_mapCookbook.json",
    "layer_properties": "../example/dummy_layerProperties.json",
    "arcgis_version": "arcgis_10_6"

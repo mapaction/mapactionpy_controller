@@ -59,6 +59,9 @@ def main():
     # test mxd names
     test_contents_of_dir(cmf.mxd_products, cmf.mxd_nc_definition, '.mxd')
 
+    # test mxd template names
+    test_contents_of_dir(cmf.mxd_templates, cmf.mxd_template_nc_definition, '.mxd')
+
 
 def get_args():
     parser = argparse.ArgumentParser(
