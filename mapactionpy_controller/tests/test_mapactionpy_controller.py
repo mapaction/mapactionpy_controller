@@ -4,6 +4,7 @@ import fixtures
 from mapactionpy_controller.product_bundle_definition import MapRecipe
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.data_search import DataSearch
+from mapactionpy_controller.event import Event
 import jsonpickle
 # works differently for python 2.7 and python 3.x
 try:
@@ -21,7 +22,9 @@ class TestMAController(TestCase):
         self.recipe = MapRecipe(self.recipe_descriptor_path)
 
         self.cmf_descriptor_path = os.path.join(self.parent_dir, 'example', 'cmf_description.json')
-        self.cmf = CrashMoveFolder(self.cmf_descriptor_path, verify_on_creation=False)
+        # self.cmf = CrashMoveFolder(self.cmf_descriptor_path, verify_on_creation=False)
+        self.event_descriptor_path = os.path.join(self.parent_dir, 'example', 'event_description.json')
+        self.event = Event(self.event_descriptor_path)
 
     def test_equality_of_map_recipes(self):
         test_recipe1 = MapRecipe(None, fixtures.recipe_with_positive_iso3_code)
@@ -52,7 +55,7 @@ class TestMAController(TestCase):
             self.assertNotEqual(test_recipe, MapRecipe(None, str_def=fixtures.recipe_with_negative_iso3_code))
 
     def test_substitute_iso3_in_regex(self):
-        ds = DataSearch(self.cmf)
+        ds = DataSearch(self.event)
 
         reference_recipe = MapRecipe(
             None, str_def=fixtures.recipe_with_positive_iso3_code)
@@ -71,7 +74,7 @@ class TestMAController(TestCase):
     @mock.patch('mapactionpy_controller.data_search.os.path')
     @mock.patch('mapactionpy_controller.data_search.os')
     def test_search_for_shapefiles(self, mock_os, mock_path):
-        ds = DataSearch(self.cmf)
+        ds = DataSearch(self.event)
 
         # case where there is exactly one dataset per query
         mock_os.walk.return_value = fixtures.walk_single_admn_file_search_search

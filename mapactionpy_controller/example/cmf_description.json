@@ -1,5 +1,4 @@
 {
-   "event_description_file": "event_description.json",
    "original_data": "GIS/1_Original_Data",
    "active_data": "GIS/2_Active_Data",
    "layer_rendering": "GIS/3_Mapping/31_Resources/312_Layer_files",
@@ -10,7 +9,7 @@
    "dnc_definition": "GIS/2_Active_Data/200_data_name_lookup/data_naming_convention.json",
    "layer_nc_definition": "GIS/2_Active_Data/200_data_name_lookup/layer_file_naming_convention.json",
    "mxd_nc_definition": "GIS/2_Active_Data/200_data_name_lookup/mxd_naming_convention.json",
-   "default_jpeg_red_dpi": "300",
-   "default_pdf_red_dpi": "300",
-   "default_emf_red_dpi": "300"
+   "map_definitions": "GIS/3_Mapping/31_Resources/316_Automation/mapCookbook.json",
+   "layer_properties": "GIS/3_Mapping/31_Resources/316_Automation/layerProperties.json",
+   "arcgis_version": "arcgis_10_6"
 }
