@@ -116,10 +116,11 @@ class TestMAController(TestCase):
             self.assertRegex(str(cm.exception), "mxd_templates")
             self.assertNotRegex(str(cm.exception), "original_data")
 
-        # create a valid CMF object and then test paths, after creation        test_cmf_path = os.path.join(self.parent_dir, 'example', 'cmf_description_flat_test.json')
-        test_cmf_path = os.path.join(self.parent_dir, 'example', 'cmf_description_reletive_paths_test.json')
+        # create a valid CMF object and then test paths, after creation        
+        test_cmf_path = os.path.join(self.parent_dir, 'example', 'cmf_description_flat_test.json')
         test_cmf = CrashMoveFolder(test_cmf_path)
         self.assertTrue(test_cmf.verify_paths())
+        test_cmf_path = os.path.join(self.parent_dir, 'example', 'cmf_description_reletive_paths_test.json')
         test_cmf = CrashMoveFolder(test_cmf_path)
         self.assertTrue(test_cmf.verify_paths())
         test_cmf.active_data = os.path.join(self.parent_dir, 'DOES-NOT-EXIST')
