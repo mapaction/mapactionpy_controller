@@ -99,7 +99,8 @@ class TestMAController(TestCase):
 
         # test validation on creation (for failing case) using default parameters
         self.assertRaises(ValueError, CrashMoveFolder, self.cmf_descriptor_path)
-        # force validation on creation, for a json file we know would otherwise fail:        self.assertRaises(ValueError, CrashMoveFolder, self.cmf_descriptor_path, verify_on_creation=True)
+        # force validation on creation, for a json file we know would otherwise fail:
+        self.assertRaises(ValueError, CrashMoveFolder, self.cmf_descriptor_path, verify_on_creation=True)
         # test validation is correctly disabled on creation, for a json file we know would otherwise fail:
         test_cmf = CrashMoveFolder(self.cmf_descriptor_path, verify_on_creation=False)
         self.assertIsInstance(test_cmf, CrashMoveFolder)
