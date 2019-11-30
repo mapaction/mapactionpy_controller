@@ -8,20 +8,35 @@ Installing
 To install for development purposes:
 Clone the github repo then from the root of your local clone:
 ```
-python -m pip install --user -e .
+python -m pip install mapactionpy_controller
 ```
 
-To install for use non-development purposes:
-Clone the github repo then from the root of your local clone:
+To install a specific version for testing see the relevant commandline from here:
+https://pypi.org/project/mapactionpy-controller/#history
+
+
+Commandline Usage
+==========
+Check the compliance with the Data Naming Convention, MXD Naming Convention, MXD Template Naming Convention and Layer Naming Convetion.
 ```
-python -m pip install .
+> python.exe -m mapactionpy_controller.check_naming_convention /path/to/current/cmf/2019gbr01/cmf_description.json
 ```
 
-todo:
-[] enable installation via pypi.
+
+Using the Data Serach tool from the commandline
+----
+```
+> python.exe -m mapactionpy_controller.data_search
+usage: data_search [-h] -r FILE -c FILE [-o FILE]
+data_search.py: error: the following arguments are required: -r/--recipe-file, -c/--cmf
+
+> python -m mapactionpy_controller.data_search -r example/product_bundle_example.json -c example/cmf_description.json
+```
+This command will output an updated recipe file with the 
+If the ouput file parameter (-o) is specified than the updated recipe will be output to that file. Otherwise the updated recipe is sent to stdout.
 
 
-Usage
+Programmatic Usage
 =====
 Using the MapRecipe, CrashMoveFolder and Event classes
 ----
@@ -103,40 +118,3 @@ Extra information associated with clause `datatheme`:
 
 The Administrative boundary (level 3) data was generously supplied by World Food Program, downloaded from https://www.wfp.org/
 ```
-
-
-
-Using the Data Serach tool from the commandline
-----
-```
-> python.exe data_search.py
-usage: data_search.py [-h] -r FILE -c FILE [-o FILE]
-data_search.py: error: the following arguments are required: -r/--recipe-file, -c/--cmf
-> python data_search.py -r example/product_bundle_example.json -c example/cmf_description.json
-```
-This command will output an updated recipe file with the 
-If the ouput file parameter (-o) is specified than the updated recipe will be output to that file. Otherwise the updated recipe is sent to stdout.
-
-Tests
-=====
-The test coverage appears OK (~86%). However this risks overstating the effectiveness of these tests with only a few error conditions included at present.
-
-
-Further development
-===================
-In no particular order:
-
- [] Improve the constructors for the Event and CrashMoveFolder classes. It should be possible to round-robin between the instance and the json representation. eg there should be tests which look something like this:
-```
-    assert my_event == Event.fromJOSN(my_event.toJSON())
-    assert my_cmf == CrashMoveFolder.fromJOSN(my_cmf.toJSON())
-```   
-The `jsonpickle` module is particularly well suited for this.
-
- [] Implement json schema validation for the various json files.
-
- [] CrashMoveFolder class should check for the existance of all of the subdirectories in the constructor.
-
- [] Replace debug print statements with output to a logging library - to ensure that standard output is not corrupted with error/debug messages.
-
- [] Better name for the `Event` class

@@ -9,21 +9,31 @@ def readme():
         return f.read()
 
 
-def get_dev_build_number():
+_base_version = '0.4'
+
+
+def _get_version_number():
     travis_build = environ.get('TRAVIS_BUILD_NUMBER')
+    travis_tag = environ.get('TRAVIS_TAG')
+    # TRAVIS
+    # TRAVIS_TAG
+    # TRAVIS_BRANCH
 
     if travis_build:
-        return '.dev{}'.format(travis_build)
+        if travis_tag:
+            return travis_tag
+        else:
+            return '{}.dev{}'.format(_base_version, travis_build)
     else:
         try:
             ver = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'])
-            return '+local.{}'.format(ver.decode('ascii').strip())
+            return '{}+local.{}'.format(_base_version, ver.decode('ascii').strip())
         except Exception:
             return ''
 
 
 setup(name='mapactionpy_controller',
-      version='0.3{}'.format(get_dev_build_number()),
+      version=_get_version_number(),
       description='Controls the workflow of map and infographic production',
       long_description=readme(),
       long_description_content_type="text/markdown",
