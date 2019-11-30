@@ -8,7 +8,9 @@ def readme():
     with open(path.join(here, 'README.md')) as f:
         return f.read()
 
+
 _base_version = '0.4'
+
 
 def _get_version_number():
     travis_build = environ.get('TRAVIS_BUILD_NUMBER')
