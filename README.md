@@ -5,8 +5,7 @@ Master branch [![Build Status](https://travis-ci.org/mapaction/mapactionpy_contr
 
 Installing
 ==========
-To install for development purposes:
-Clone the github repo then from the root of your local clone:
+To install the latest stable release via PyPi:
 ```
 python -m pip install mapactionpy_controller
 ```

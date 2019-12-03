@@ -9,15 +9,12 @@ def readme():
         return f.read()
 
 
-_base_version = '0.4'
+_base_version = '0.5'
 
 
 def _get_version_number():
     travis_build = environ.get('TRAVIS_BUILD_NUMBER')
     travis_tag = environ.get('TRAVIS_TAG')
-    # TRAVIS
-    # TRAVIS_TAG
-    # TRAVIS_BRANCH
 
     if travis_build:
         if travis_tag:
