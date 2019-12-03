@@ -21,4 +21,5 @@ deploy:
   distributions: "sdist bdist_wheel"
   skip_existing: true
   on:
-    branches: master
+    all_branches: true
+    condition: ${TRAVIS_BRANCH,,} =~ ^(master|${TRAVIS_TAG,,})$
