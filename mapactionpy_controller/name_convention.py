@@ -1,18 +1,16 @@
-import os
+from pydoc import locate
 import json
 import re
 from collections import namedtuple
-# from mapactionpy_controller.data_name_validators import NamingClause
-from mapactionpy_controller.name_clause_validators import NamingFreeTextClause, NamingLookupClause
+from mapactionpy_controller.name_clause_validators import NamingClause
 
 
 class NamingConvention:
-    def __init__(self, dnc_json_path):
-        self.dnc_json_path = dnc_json_path
-        self.dnc_lookup_dir = os.path.dirname(self.dnc_json_path)
+    def __init__(self, nc_json_path):
+        self.nc_json_path = nc_json_path
         self._clause_validation = {}
 
-        with open(self.dnc_json_path) as json_file:
+        with open(self.nc_json_path) as json_file:
             json_contents = json.load(json_file)
 
         self.regex = re.compile(json_contents['pattern'])
@@ -30,18 +28,33 @@ class NamingConvention:
 
         for clause_def in json_contents['clauses']:
             clause_name = clause_def['name']
-            validation_method = clause_def['validation']
+            validator_name = clause_def['validator']
 
-            if validation_method == 'csv_lookup':
-                csv_path = os.path.join(self.dnc_lookup_dir, clause_def['filename'])
-                dnlc = NamingLookupClause(
-                    clause_name, csv_path, clause_def['lookup_field'])
+            try:
+                Validator = locate(validator_name)
+                # Instantiate the class (pass arguments to the constructor, if needed)
+                dnlc = Validator(self.nc_json_path, **clause_def)
+            except TypeError:
+                raise NamingException('Error in {}. The validation type {} cannot be loaded'
+                                      ''.format(self.nc_json_path, validator_name))
+
+            if isinstance(dnlc, NamingClause):
                 self._clause_validation[clause_name] = dnlc
-            elif validation_method == 'free_text':
-                self._clause_validation[clause_name] = NamingFreeTextClause('Value')
             else:
-                raise NamingException('Error in {} '
-                                      'invalid validation type {}'.format(dnc_json_path, validation_method))
+                raise NamingException('Error in {} invalid validation '
+                                      ' type {}'.format(self.nc_json_path, validator_name))
+
+# """             if validation_method == 'csv_lookup':
+#                 csv_path = os.path.join(self.dnc_lookup_dir, clause_def['filename'])
+#                 dnlc = NamingLookupClause(
+#                     clause_name, csv_path, clause_def['lookup_field'])
+#                 self._clause_validation[clause_name] = dnlc
+#             elif validation_method == 'free_text':
+#                 self._clause_validation[clause_name] = NamingFreeTextClause('Value')
+#             else:
+#                 raise NamingException('Error in {} '
+#                                       'invalid validation type {}'.format(dnc_json_path, validation_method))
+# """
 
     def validate(self, data_name):
         regex_res = self.regex.search(data_name)

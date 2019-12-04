@@ -3,19 +3,23 @@
     "clauses": [
         {
             "name": "mapauthor",
-            "validation": "free_text"
+            "validator": "mapactionpy_controller.name_clause_validators.NamingFreeTextClause",
+            "alias": "Value"
         },
         {
             "name": "mapnumber",
-            "validation": "free_text"
+            "validator": "mapactionpy_controller.name_clause_validators.NamingFreeTextClause",
+            "alias": "Value"
         },
         {
             "name": "versionnumber",
-            "validation": "free_text"
+            "validator": "mapactionpy_controller.name_clause_validators.NamingFreeTextClause",
+            "alias": "Value"
         },
         {
             "name": "freetext",
-            "validation": "free_text"
+            "validator": "mapactionpy_controller.name_clause_validators.NamingFreeTextClause",
+            "alias": "Value"
         }
     ]
 }
