@@ -41,20 +41,9 @@ class NamingConvention:
             if isinstance(dnlc, NamingClause):
                 self._clause_validation[clause_name] = dnlc
             else:
-                raise NamingException('Error in {} invalid validation '
-                                      ' type {}'.format(self.nc_json_path, validator_name))
-
-# """             if validation_method == 'csv_lookup':
-#                 csv_path = os.path.join(self.dnc_lookup_dir, clause_def['filename'])
-#                 dnlc = NamingLookupClause(
-#                     clause_name, csv_path, clause_def['lookup_field'])
-#                 self._clause_validation[clause_name] = dnlc
-#             elif validation_method == 'free_text':
-#                 self._clause_validation[clause_name] = NamingFreeTextClause('Value')
-#             else:
-#                 raise NamingException('Error in {} '
-#                                       'invalid validation type {}'.format(dnc_json_path, validation_method))
-# """
+                raise NamingException('Error in {}. The specificied validator class {} is not '
+                                      'an instance of mapactionpy_controller.name_convention.NameClause'
+                                      ''.format(self.nc_json_path, validator_name))
 
     def validate(self, data_name):
         regex_res = self.regex.search(data_name)

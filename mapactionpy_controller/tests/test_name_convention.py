@@ -12,6 +12,17 @@ else:
     from unittest import mock  # noqa: F401
 
 
+class DummyClass(object):
+    """
+    Used within TestNamingConvention.test_load_dnc_definition() to test the case
+    that a valid class is supplied, but one which doesn't inherit from
+    mapactionpy_controller.name_convention.NameClause
+    """
+
+    def __init__(self, dummy_path, **kwargs):
+        pass
+
+
 class TestNamingConvention(TestCase):
 
     def setUp(self):
@@ -43,11 +54,13 @@ class TestNamingConvention(TestCase):
                           name='test', lookup_field='Value')
 
     def test_load_dnc_definition(self):
+
         test_convention_files = (
             'fixture_name_convention_clause_def_and_regex_groupname_mismatch.json',
             'fixture_name_convention_clause_def_not_in_regex_groupname.json',
             'fixture_name_convention_missing_clause_def.json',
-            'fixture_name_convention_unsupported_validation_type.json'
+            'fixture_name_convention_incorrect_validation_class.json',
+            'fixture_name_convention_nonexistant_validation_class.json'
         )
 
         for test_filename in test_convention_files:
