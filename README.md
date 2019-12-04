@@ -2,6 +2,7 @@ About
 =====
 
 Master branch [![Build Status](https://travis-ci.org/mapaction/mapactionpy_controller.svg?branch=master)](https://travis-ci.org/mapaction/mapactionpy_controller) [![Coverage Status](https://coveralls.io/repos/github/mapaction/mapactionpy_controller/badge.svg?branch=master)](https://coveralls.io/github/mapaction/mapactionpy_controller?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/2cd96643c21a0cedaa57/maintainability)](https://codeclimate.com/github/mapaction/mapactionpy_controller/maintainability)
 
 Installing
 ==========

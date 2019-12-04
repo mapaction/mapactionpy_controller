@@ -1,10 +1,9 @@
 {
     "pattern": "^(ma|MA)(?P<mapnumber>\\d{3,})[-_][vV](?P<versionnumber>\\d+)([-_](?P<freetext>.+))?",
-    "clauses":[
+    "clauses": [
         {
             "name": "mapnumber",
-            "validator": "mapactionpy_controller.name_clause_validators.NamingFreeTextClause",
-            "alias": "Value"
+            "validator": "unsupported.validation.Type"
         },
         {
             "name": "versionnumber",

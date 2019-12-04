@@ -3,23 +3,25 @@
     "clauses":[
         {
             "name": "mapframe",
-            "validation": "free_text"
+            "validator": "mapactionpy_controller.name_clause_validators.NamingFreeTextClause",
+            "alias": "Value"
         },
         {
             "name": "scale",
-            "validation": "csv_lookup",
+            "validator": "mapactionpy_controller.name_clause_validators.NamingLookupClause",
             "filename": "05_scale.csv",
             "lookup_field": "Value"
         },
         {
             "name": "geom",
-            "validation": "csv_lookup",
+            "validator": "mapactionpy_controller.name_clause_validators.NamingLookupClause",
             "filename": "04_geometry.csv",
             "lookup_field": "Value"
         },
         {
             "name": "cartographicuse",
-            "validation": "free_text"
+            "validator": "mapactionpy_controller.name_clause_validators.NamingFreeTextClause",
+            "alias": "Value"
         }
     ]
 }
