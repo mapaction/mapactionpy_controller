@@ -55,6 +55,12 @@ This object may be manipulated by
 
 Using the DataNameConvention and related classes
 ----
+The `naming_convention` sub-module provides a framework for specifying a naming convention (such as for file or table). A naming convention is specified in a json configuration file and consists of:
+1) A regular expression, with named groups
+2) For each named group in the regex, details of a class which can provide futher validation of that value in that named group.
+
+Exmples of the naming convention config files are in the `examples` directory, including MapAction's DataNamingConvention, MXDNamingConvention and LayerfileNamingConvention.
+
 **DataNameConvention** represents the _convention_ itself. At its core is a regular expression. Each named group (clause) within the Regex as additionally validation, which is implemented by a DataNameClause. DataNameConvention has a dictionary of DataNameClause objects. A individual name is tested by using the `.validate(data_name_str)` method. If the data name does not match the regex the value None is returned. If the regex matches a DataNameInstance object will be returned, whether or not all of the clauses pass.
 
 **DataNameClause** is an abstract class. Callers are unlikely to need to directly access this class or any concrete examples. Concrete examples are DataNameFreeTextClause and DataNameLookupClause. When the `.validate(data_name_str)` method is called on a DataNameConvention object, it will call `.validate(clause_str)` in each individual DataNameClause obj. 
