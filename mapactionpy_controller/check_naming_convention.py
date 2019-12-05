@@ -38,7 +38,7 @@ def test_contents_of_dir(dir, name_conv_definition, file_ext):
                         clause_details = rdict[clausename]
                         # print(clausename, cdict)
                         if not clause_details.is_valid:
-                            print("\t{} is not a recongised value for the clause {}".format(
+                            print("\t{} is not a recognised value for the clause {}".format(
                                 clause_details.Value,
                                 clausename))
 
