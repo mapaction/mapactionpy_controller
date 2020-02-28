@@ -15,6 +15,7 @@ def is_valid_file(parser, arg):
 def test_contents_of_dir(dir, name_conv_definition, file_ext):
     nc = data_name_convention.NamingConvention(name_conv_definition)
     nc.regex.groupindex
+    result = 0
 
     print("*****************")
     print("CHECKING DIR {}".format(dir))
@@ -27,12 +28,14 @@ def test_contents_of_dir(dir, name_conv_definition, file_ext):
                 result = nc.validate(basename)
                 if not result:
                     print("error filename does not match regex: {}".format(f))
+                    result += 1
                 elif result.is_valid:
                     pass
                     # print("valid filename: {}".format(f))
                 else:
                     print("one or more clauses not found in lookup tables : {}".format(f))
                     rdict = result._asdict()
+                    result += 1
 
                     for clausename in nc.regex.groupindex:
                         clause_details = rdict[clausename]
@@ -44,20 +47,25 @@ def test_contents_of_dir(dir, name_conv_definition, file_ext):
 
                     print
 
+    return result
+
 
 def main():
     args = get_args()
-
     cmf = CrashMoveFolder(args.cmf_config_path)
+    result = 0
 
     # test data names
-    test_contents_of_dir(cmf.active_data, cmf.data_nc_definition, '.shp')
+    result += test_contents_of_dir(cmf.active_data, cmf.data_nc_definition, '.shp')
 
     # test layer names
-    test_contents_of_dir(cmf.layer_rendering, cmf.layer_nc_definition, '.lyr')
+    result += test_contents_of_dir(cmf.layer_rendering, cmf.layer_nc_definition, '.lyr')
 
     # test mxd names
-    test_contents_of_dir(cmf.mxd_products, cmf.mxd_nc_definition, '.mxd')
+    result += test_contents_of_dir(cmf.mxd_products, cmf.mxd_nc_definition, '.mxd')
+
+    # Quit with the exist code
+    return result
 
 
 def get_args():
@@ -72,4 +80,5 @@ def get_args():
 
 
 if __name__ == "__main__":
-    main()
+    result = main()
+    exit(result)
