@@ -45,7 +45,7 @@ class CrashMoveFolder:
         results['active_data'] = os.path.isdir(self.active_data)
         results['export_dir'] = os.path.isdir(self.export_dir)
         results['layer_rendering'] = os.path.isdir(self.layer_rendering)
-        results['legend_images'] = os.path.isdir(self.legend_images)		
+        results['legend_images'] = os.path.isdir(self.legend_images)
         results['mxd_products'] = os.path.isdir(self.mxd_products)
         results['mxd_templates'] = os.path.isdir(self.mxd_templates)
         results['original_data'] = os.path.isdir(self.original_data)
