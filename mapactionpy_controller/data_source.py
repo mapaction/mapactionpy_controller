@@ -1,8 +1,6 @@
 # TODO: asmith 2020/03/04
 #
-# 1) This whole file should be moved to the mapactionpy_controller module.
-#
-# 2) Compare this class to the implementation here:
+# Compare this class to the implementation here:
 #       cmf_watcher.cmf_handler._hash_files(...)
 # I think the implenmentation here (ie in the DataSource class) handles shapefiles better - notably
 # handling lock files. However the use case in the cmf_watcher module is different and creating a

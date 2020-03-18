@@ -1,5 +1,3 @@
-# TODO: asmith 2020/03/04
-# This whole file should be moved to the mapactionpy_controller module.
 import json
 from map_layer import MapLayer
 

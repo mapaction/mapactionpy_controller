@@ -1,5 +1,3 @@
-# TODO: asmith 2020/03/04
-# This whole file should be moved to the mapactionpy_controller module.
 from xml.etree.ElementTree import Element, SubElement, tostring
 import xml.dom.minidom
 
