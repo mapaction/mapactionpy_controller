@@ -1,5 +1,5 @@
-from MapCookbook import MapCookbook
-from LayerProperties import LayerProperties
+from mapactionpy_controller.map_cookbook import MapCookbook
+from mapactionpy_controller.layer_properties import LayerProperties
 import os
 import argparse
 # import collections
@@ -49,9 +49,9 @@ def get_unique_lyr_names(cookbook, lyr_props, lyr_dir):
 
 def main(args):
     cb = MapCookbook(args.cookbookFile)
-    cb.parse()
+    cb._parse()
     lyrs = LayerProperties(args.layerConfig)
-    lyrs.parse()
+    lyrs._parse()
 
     cb_unique_lyrs, lp_unique_lyrs, files_unique = get_unique_lyr_names(
         cb, lyrs, args.layerDirectory)

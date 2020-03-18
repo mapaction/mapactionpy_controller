@@ -1,4 +1,4 @@
-from map_recipe import MapRecipe
+from mapactionpy_controller.map_recipe import MapRecipe
 import json
 
 

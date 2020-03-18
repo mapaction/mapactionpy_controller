@@ -1,5 +1,5 @@
 import json
-from map_layer import MapLayer
+from mapactionpy_controller.map_layer import MapLayer
 
 
 class LayerProperties:

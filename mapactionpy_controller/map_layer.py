@@ -1,4 +1,4 @@
-from label_class import LabelClass
+from mapactionpy_controller.label_class import LabelClass
 
 
 class MapLayer:
