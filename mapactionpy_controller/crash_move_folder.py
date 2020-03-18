@@ -12,15 +12,16 @@ class CrashMoveFolder:
             obj = json.loads(f.read())
 
             # Doubtless there is a more elegant way to do this.
-            # 7 directories (alphabeltical order just for readablity)
+            # 8 directories (alphabetical order just for readability)
             self.original_data = os.path.join(self.path, obj['original_data'])
             self.active_data = os.path.join(self.path, obj['active_data'])
             self.layer_rendering = os.path.join(self.path, obj['layer_rendering'])
+            self.legend_images = os.path.join(self.path, obj['legend_images'])
             self.mxd_templates = os.path.join(self.path, obj['mxd_templates'])
             self.mxd_products = os.path.join(self.path, obj['mxd_products'])
             self.qgis_templates = os.path.join(self.path, obj['qgis_templates'])
             self.export_dir = os.path.join(self.path, obj['export_dir'])
-            # 5 files (alphabeltical order just for readablity)
+            # 5 files (alphabetical order just for readablity)
             self.data_nc_definition = os.path.join(self.path, obj['data_nc_definition'])
             self.layer_nc_definition = os.path.join(self.path, obj['layer_nc_definition'])
             self.layer_properties = os.path.join(self.path, obj['layer_properties'])
@@ -40,15 +41,16 @@ class CrashMoveFolder:
     def _get_path_verification_as_dict(self):
         results = {}
 
-        # 7 dirs (alphabeltical order just for readablity)
+        # 8 dirs (alphabetical order just for readability)
         results['active_data'] = os.path.isdir(self.active_data)
         results['export_dir'] = os.path.isdir(self.export_dir)
         results['layer_rendering'] = os.path.isdir(self.layer_rendering)
+        results['legend_images'] = os.path.isdir(self.legend_images)
         results['mxd_products'] = os.path.isdir(self.mxd_products)
         results['mxd_templates'] = os.path.isdir(self.mxd_templates)
         results['original_data'] = os.path.isdir(self.original_data)
         results['qgis_templates'] = os.path.isdir(self.qgis_templates)
-        # 5 files (alphabeltical order just for readablity)
+        # 5 files (alphabetical order just for readability)
         results['data_nc_definition'] = os.path.exists(self.data_nc_definition)
         results['layer_nc_definition'] = os.path.exists(self.layer_nc_definition)
         results['layer_properties'] = os.path.exists(self.layer_properties)

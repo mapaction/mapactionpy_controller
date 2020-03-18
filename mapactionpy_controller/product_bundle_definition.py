@@ -3,7 +3,7 @@ import json
 
 class MapRecipe:
     '''
-        Opens the recipe file specificed by recipe_json_path and creates a MapRecipe object accordingly.
+        Opens the recipe file specified by recipe_json_path and creates a MapRecipe object accordingly.
         If str_def is not None then this is treated as a string representation of the json recipe.
         `recipeJsonFile` is ignored if str_def is not None. This is primarily used for testing.
     '''
