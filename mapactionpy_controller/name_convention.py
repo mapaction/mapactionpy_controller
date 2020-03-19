@@ -41,7 +41,7 @@ class NamingConvention:
             if isinstance(dnlc, NamingClause):
                 self._clause_validation[clause_name] = dnlc
             else:
-                raise NamingException('Error in {}. The specificied validator class {} is not '
+                raise NamingException('Error in {}. The specified validator class {} is not '
                                       'an instance of mapactionpy_controller.name_convention.NameClause'
                                       ''.format(self.nc_json_path, validator_name))
 
