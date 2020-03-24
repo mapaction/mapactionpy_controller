@@ -4,6 +4,12 @@ from unittest import TestCase
 from mapactionpy_controller.layer_properties import LayerProperties
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 
+# works differently for python 2.7 and python 3.x
+try:
+    from unittest import mock
+except ImportError:
+    import mock
+
 
 class TestLayerProperties(TestCase):
 
@@ -32,17 +38,46 @@ class TestLayerProperties(TestCase):
         self.assertRaises(ValueError, LayerProperties, self.path_to_invalid_cmf_des, "test")
 
     def test_verify_with_rendering_files(self):
-        self.fail()
+        # self.fail()
 
-        # list_four_lyr_files = [
-        #     'mainmap-tran-rds-ln-s0-allmaps.lyr',
-        #     'mainmap-tran-rds-ln-s1-allmaps.lyr',
-        #     'mainmap-tran-rds-ln-s2-allmaps.lyr',
-        #     'mainmap-tran-rrd-ln-s0-allmaps.lyr'
-        # ]
+        # load a valid CMF
+        test_cmf = CrashMoveFolder(self.path_to_valid_cmf_des)
+        # Overwright the Layer Properties file path with
+        # mapactionpy_controller\tests\testfiles\fixture_layer_properties_four_layers.json
+        test_cmf.layer_properties = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'fixture_layer_properties_four_layers.json')
+
+        layer_rendering_test_root = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'test_layer_rendering')
+        test_cmf.layer_rendering
 
         # 1) Exact match of .lyr files and layer properties
+        test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_exact_match')
+        print (test_cmf.layer_rendering)
+        lyr_lp = LayerProperties(test_cmf, '.lyr', verify_on_creation=True)
+        self.assertTrue(lyr_lp.verify_match_with_layer_rendering_dir())
+
+        qml_lp = LayerProperties(test_cmf, '.qml', verify_on_creation=True)
+        self.assertTrue(qml_lp.verify_match_with_layer_rendering_dir())
+
         # 2) .lyr files which don't have layer properties entries
+        test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'five_files')
+        self.assertRaises(ValueError, LayerProperties, test_cmf, '.lyr')
+        self.assertRaises(ValueError, LayerProperties, test_cmf, '.qml')
+
         # 3) layer properties entries which don't have cooresponding .lyr files.
+        test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'three_files')
+        self.assertRaises(ValueError, LayerProperties, test_cmf, '.lyr')
+        self.assertRaises(ValueError, LayerProperties, test_cmf, '.qml')
+
         # 4) Both 2 & 3 combined
-        # 5) Both 2 & 3 combined, but for .qml files
+        test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_mis_match')
+        self.assertRaises(ValueError, LayerProperties, test_cmf, '.lyr')
+        self.assertRaises(ValueError, LayerProperties, test_cmf, '.qml')
+
+        # 6) Overrided validation checks in constructor
+        test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_mis_match')
+        long_lived_lp = LayerProperties(test_cmf, '.lyr', verify_on_creation=False)
+        self.assertFalse(long_lived_lp.verify_match_with_layer_rendering_dir())
+        long_lived_lp.cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_exact_match')
+        self.assertTrue(long_lived_lp.verify_match_with_layer_rendering_dir())

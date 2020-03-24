@@ -1,0 +1,72 @@
+{
+	"layerProperties": [
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_stle_stl_pt_s0_allmaps",
+			"RegExp": "^[a-z]{3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "fclass IN ('national_capital', 'city', 'capital', 'town')",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [{
+					"className": "National Capital",
+					"expression": "[name]",
+					"SQLQuery": "(\"fclass\" = 'national_capital')",
+					"showClassLabels": true
+				},
+				{
+					"className": "Admin 1 Capital",
+					"expression": "[name]",
+					"SQLQuery": "(\"fclass\" = 'town')",
+					"showClassLabels": true
+				}
+			]
+		},
+		{
+			"MapFrame": "Location map",
+			"LayerName": "locationmap_stle_stl_pt_s0_locationmaps",
+			"RegExp": "^[a-z]{3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "fclass IN ('national_capital', 'capital')",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [{
+					"className": "National Capital",
+					"expression": "[name]",
+					"SQLQuery": "(\"fclass\" = 'national_capital')",
+					"showClassLabels": true
+				}
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_tran_por_pt_s0_allmaps",
+			"RegExp": "^[a-z]{3}_tran_sea_pt_(.*?)_(.*?)_([phm][phm])_(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s0-py-surroundingcountries",
+			"RegExp": "aoi_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": false,
+			"LabelClasses": [{
+					"className": "This",
+					"expression": "[NAME_0]",
+					"SQLQuery": "(\"NAME_0\" = '{COUNTRY_NAME}')",
+					"showClassLabels": false
+				},
+				{
+					"className": "Other",
+					"expression": "[NAME_0]",
+					"SQLQuery": "(\"NAME_0\" <> '{COUNTRY_NAME}')",
+					"showClassLabels": true
+				}
+			]
+		}
+	]
+}

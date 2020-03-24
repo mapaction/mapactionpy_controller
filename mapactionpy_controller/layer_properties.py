@@ -33,9 +33,9 @@ class LayerProperties:
             if cmf.verify_paths():
                 self.cmf = cmf
             else:
-                raise ValueError('The `cmf` parameter for LayerProperties.__init__() can accept'
+                raise ValueError('The `cmf` parameter for LayerProperties.__init__() can only accept'
                                  'values where the paths verify. eg `cmf.verify_paths() == True`.'
-                                 'The value passed failed this test')
+                                 'The value passed in this case failed this test')
         except AttributeError:
             self.cmf = CrashMoveFolder(cmf, verify_on_creation=True)
 
@@ -43,8 +43,13 @@ class LayerProperties:
         self.properties = {}  # Dictionary
         self._parse()
 
-        if verify_on_creation:
-            self.verify_match_with_layer_rendering_dir()
+        if verify_on_creation and (not self.verify_match_with_layer_rendering_dir()):
+            raise ValueError('There is a mismatch between:'
+                             ' (a) The layers described in the layer_properties.json file'
+                             ' and (b) The layers files, with the relevant file extension, listed in the'
+                             ' `cmf.layer_rendering` directory.'
+                             ' Either ensure that these files match, or create the LayerProperties object using the'
+                             ' parameter `verify_on_creation=False`')
 
     def _parse(self):
         """
@@ -57,18 +62,27 @@ class LayerProperties:
                 self.properties[mapLayer.layerName] = mapLayer
 
     def verify_match_with_layer_rendering_dir(self):
+        """
+        Ensures that there is a one-to-one correspondance between
+        * The layers described in the layer_properties.json file
+        * The layers files, with the relevant file extension, listed in the `cmf.layer_rendering` directory
+        By default this method is called from the constructor. It can also be called at any later time, in case the
+        contents of the `cmf.layer_rendering` directory has changes on disk.
+        NB: Changes to the `layer_properties.json` on disk are NOT accomadated but repeated calling of this method.
+        """
         lp_unique_lyrs = set()
         files_unique = set()
 
-        for l in self.properties:
-            lp_unique_lyrs.add(l.layerName)
+        for layer_name in self.properties:
+            lp_unique_lyrs.add(layer_name)
 
         dir_content = os.listdir(self.cmf.layer_rendering)
-        for f in filter(os.path.isfile, dir_content):
+        for f in dir_content:
+            f_path = os.path.join(self.cmf.layer_rendering, f)
             filename, fileext = os.path.splitext(f)
-            if fileext == self.extension:
+            if (os.path.isfile(f_path)) and (fileext == self.extension):
                 files_unique.add(filename)
 
         sym_diff = lp_unique_lyrs.symmetric_difference(files_unique)
 
-        return len(sym_diff)
+        return not len(sym_diff)
