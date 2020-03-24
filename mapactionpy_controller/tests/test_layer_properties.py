@@ -53,7 +53,7 @@ class TestLayerProperties(TestCase):
 
         # 1) Exact match of .lyr files and layer properties
         test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_exact_match')
-        print (test_cmf.layer_rendering)
+        print(test_cmf.layer_rendering)
         lyr_lp = LayerProperties(test_cmf, '.lyr', verify_on_creation=True)
         self.assertTrue(lyr_lp.verify_match_with_layer_rendering_dir())
 
