@@ -1,3 +1,6 @@
+# TODO: asmith 20/03/2020
+# merge this file and Classes with those brought over from the mapactionpy_arcmap module
+
 import json
 
 
