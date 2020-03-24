@@ -61,11 +61,13 @@ def main(cmf_desc, layer_file_extension):
                    cmf.map_definitions
                ))
         if len(cb_only):
-            msg = msg + 'These layers are only mentioned in the MapCookbook json file and not in Layer Properties json file:\n\t'
-            msg = msg + "\n\t".join(cb_only)
+            msg = msg + 'These layers are only mentioned in the MapCookbook json file and not in Layer'
+            msg = msg + ' Properties json file:\n\t'
+            msg = msg + '\n\t'.join(cb_only)
         if len(lp_only):
-            msg = msg + "\nThese layers are only mentioned in the Layer Properties json file and not in the MapCookbook json file:\n\t"
-            msg = msg + "\n\t".join(lp_only)
+            msg = msg + '\nThese layers are only mentioned in the Layer Properties json file and not in the'
+            msg = msg + ' MapCookbook json file: \n\t'
+            msg = msg + '\n\t'.join(lp_only)
 
         print(msg)
         exit(2)

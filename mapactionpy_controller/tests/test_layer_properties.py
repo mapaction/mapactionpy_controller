@@ -4,12 +4,6 @@ from unittest import TestCase
 from mapactionpy_controller.layer_properties import LayerProperties
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 
-# works differently for python 2.7 and python 3.x
-try:
-    from unittest import mock
-except ImportError:
-    import mock
-
 
 class TestLayerProperties(TestCase):
 

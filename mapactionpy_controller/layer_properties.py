@@ -85,7 +85,7 @@ class LayerProperties:
         NB: Changes to the `layer_properties.json` on disk are NOT accomadated but repeated calling of this method.
 
         :returns: A tuple of sets:
-            * The first set is the set of layers which are in Layer Properties json file, but are in the Layer 
+            * The first set is the set of layers which are in Layer Properties json file, but are in the Layer
               Rendering Directory.
             * The secound set is the set of layers which are in the Layer Rendering Directory, but not in the in Layer
               Properties json file.
