@@ -84,7 +84,12 @@ class LayerProperties:
         contents of the `cmf.layer_rendering` directory has changes on disk.
         NB: Changes to the `layer_properties.json` on disk are NOT accomadated but repeated calling of this method.
 
-        :returns:
+        :returns: A tuple of sets:
+            * The first set is the set of layers which are in Layer Properties json file, but are in the Layer 
+              Rendering Directory.
+            * The secound set is the set of layers which are in the Layer Rendering Directory, but not in the in Layer
+              Properties json file.
+        In the "ideal" senario, both sets both be empty.
         """
         lp_unique_lyrs = set()
         files_unique = set()
