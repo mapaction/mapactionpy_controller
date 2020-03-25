@@ -18,7 +18,6 @@ class LayerProperties:
             * cmf: Either a CrashMoveFolder object or a path to a cmf_description.json file. If it
                    is a CrashMoveFolder object and cmf.verify_paths() returns False then an
                    ValueError exception will be rasied.
-                   TODO note the type of exception
             * extension: The file extension of the layer_rendering file type. (typically `.lyr` for
                          ESRI Layer files, `'.qml` for QGIS style)
 
@@ -27,8 +26,6 @@ class LayerProperties:
             `verify_match_with_layer_rendering_dir()` will be called from the constructor.
 
         """
-        # @TODO Integrate validation utility here...
-
         try:
             if cmf.verify_paths():
                 self.cmf = cmf
@@ -46,24 +43,29 @@ class LayerProperties:
         if verify_on_creation:
             lp_only, files_only = self.get_difference_with_layer_rendering_dir()
             if len(lp_only) or len(files_only):
-                msg = ('There is a mismatch between:\n'
-                       ' (a) The layers described in the layer_properties.json file "{}"\n'
-                       ' and (b) The layers files, with file extension "{}", listed in the'
-                       ' `cmf.layer_rendering` directory "{}".\n'
-                       ' Either ensure that these files match, or create the LayerProperties object using the'
-                       ' parameter `verify_on_creation=False`\n'.format(
-                           self.cmf.layer_properties,
-                           self.extension,
-                           self.cmf.layer_rendering
-                       ))
-
-                if len(lp_only):
-                    msg = msg + " The following layers are only in layer properties json file:\n\t"
-                    msg = msg + "\n\t".join(lp_only)
-                if len(files_only):
-                    msg = msg + " The following files are only in layer rendering directory:"
-                    msg = msg + "\n\t".join(files_only)
+                msg = self._get_verify_failure_message(lp_only, files_only)
                 raise ValueError(msg)
+
+    def _get_verify_failure_message(self, lp_only, files_only):
+        msg = ('There is a mismatch between:\n'
+               ' (a) The layers described in the layer_properties.json file "{}"\n'
+               ' and (b) The layers files, with file extension "{}", listed in the'
+               ' `cmf.layer_rendering` directory "{}".\n'
+               ' Either ensure that these files match, or create the LayerProperties object using the'
+               ' parameter `verify_on_creation=False`\n'.format(
+                   self.cmf.layer_properties,
+                   self.extension,
+                   self.cmf.layer_rendering
+               ))
+
+        if len(lp_only):
+            msg = msg + " The following layers are only in layer properties json file:\n\t"
+            msg = msg + "\n\t".join(lp_only)
+        if len(files_only):
+            msg = msg + " The following files are only in layer rendering directory:"
+            msg = msg + "\n\t".join(files_only)
+
+        return msg
 
     def _parse(self):
         """
