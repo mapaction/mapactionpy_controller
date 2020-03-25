@@ -4,12 +4,6 @@ from unittest import TestCase
 from mapactionpy_controller.layer_properties import LayerProperties
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 
-# works differently for python 2.7 and python 3.x
-try:
-    from unittest import mock
-except ImportError:
-    import mock
-
 
 class TestLayerProperties(TestCase):
 
@@ -53,12 +47,12 @@ class TestLayerProperties(TestCase):
 
         # 1) Exact match of .lyr files and layer properties
         test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_exact_match')
-        print (test_cmf.layer_rendering)
+        print(test_cmf.layer_rendering)
         lyr_lp = LayerProperties(test_cmf, '.lyr', verify_on_creation=True)
-        self.assertTrue(lyr_lp.verify_match_with_layer_rendering_dir())
+        self.assertFalse(all(lyr_lp.get_difference_with_layer_rendering_dir()))
 
         qml_lp = LayerProperties(test_cmf, '.qml', verify_on_creation=True)
-        self.assertTrue(qml_lp.verify_match_with_layer_rendering_dir())
+        self.assertFalse(all(qml_lp.get_difference_with_layer_rendering_dir()))
 
         # 2) .lyr files which don't have layer properties entries
         test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'five_files')
@@ -78,6 +72,6 @@ class TestLayerProperties(TestCase):
         # 6) Overrided validation checks in constructor
         test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_mis_match')
         long_lived_lp = LayerProperties(test_cmf, '.lyr', verify_on_creation=False)
-        self.assertFalse(long_lived_lp.verify_match_with_layer_rendering_dir())
+        self.assertTrue(all(long_lived_lp.get_difference_with_layer_rendering_dir()))
         long_lived_lp.cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_exact_match')
-        self.assertTrue(long_lived_lp.verify_match_with_layer_rendering_dir())
+        self.assertFalse(all(long_lived_lp.get_difference_with_layer_rendering_dir()))

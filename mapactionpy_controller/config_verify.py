@@ -1,8 +1,8 @@
 from mapactionpy_controller.map_cookbook import MapCookbook
 from mapactionpy_controller.layer_properties import LayerProperties
+from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 import os
 import argparse
-# import collections
 
 
 def is_valid_file(parser, arg):
@@ -21,51 +21,59 @@ def is_valid_directory(parser, arg):
         return False
 
 
-# def check_undefined_lyrs_in_cookbook(cb, lyrs):
-# def check_unused_lyrs_in_lyr_properties(cb, lyrs):
-# def check_lyrs_in_config_missing_lyrfile(lyr_props, lyr_dir):
-# def check_lyrfiles_in_dir_not_in_lyr_props(lyr_props, lyr_dir):
-
-
-def get_unique_lyr_names(cookbook, lyr_props, lyr_dir):
+def get_unique_lyr_names(cookbook, lyr_props):
     cb_unique_lyrs = set()
     lp_unique_lyrs = set()
-    files_unique = set()
 
-    for recipe in cookbook.get_products():
+    for recipe in cookbook.products.values():
         for l in recipe.layers:
-            cb_unique_lyrs.add(l.name)
+            # print(l['name'], l)
+            cb_unique_lyrs.add(l['name'])
 
     for l in lyr_props.properties:
-        lp_unique_lyrs.add(l.layerName)
+        # print l
+        lp_unique_lyrs.add(l)
 
-    for root, dirs, files in os.walk(lyr_dir):
-        for f in files:
-            if '.lyr' in f:
-                files_unique.add(os.path.splitext(f)[0])
-
-    return (cb_unique_lyrs, lp_unique_lyrs, files_unique)
+    return (cb_unique_lyrs, lp_unique_lyrs)
 
 
-def main(args):
-    cb = MapCookbook(args.cookbookFile)
-    cb._parse()
-    lyrs = LayerProperties(args.layerConfig)
-    lyrs._parse()
+def main(cmf_desc, layer_file_extension):
+    cmf = CrashMoveFolder(cmf_desc)
 
-    cb_unique_lyrs, lp_unique_lyrs, files_unique = get_unique_lyr_names(
-        cb, lyrs, args.layerDirectory)
-    all = cb_unique_lyrs.union(lp_unique_lyrs).union(files_unique)
+    try:
+        lyrs = LayerProperties(cmf, layer_file_extension, verify_on_creation=True)
+        print("layer properties json and layer rendering dir match just fine")
+    except ValueError as ve:
+        print(ve.message)
+        exit(1)
 
-    print('in_cookbook?,\t in_layerpros?,\t in_lyr_dir?,\t layername')
+    cb = MapCookbook(cmf.map_definitions)
+    cb_unique_lyrs, lp_unique_lyrs = get_unique_lyr_names(cb, lyrs)
 
-    for l in all:
-        in_cookbook = l in cb_unique_lyrs
-        in_lyr_props = l in lp_unique_lyrs
-        in_lyr_dir = l in files_unique
+    cb_only = cb_unique_lyrs.difference(lp_unique_lyrs)
+    lp_only = lp_unique_lyrs.difference(cb_only)
 
-        if in_cookbook:
-            print("\t".join(map(str, (in_cookbook, in_lyr_props, in_lyr_dir, l))))
+    if len(cb_only) or len(lp_only):
+        msg = ('There is a mismatch between the layer_properties.json file:\n\t"{}"\n'
+               'and the MapCookbook.json file:\n\t"{}"\n'
+               'One or more layer names occur in only one of these files.\n'.format(
+                   cmf.layer_properties,
+                   cmf.map_definitions
+               ))
+        if len(cb_only):
+            msg = msg + 'These layers are only mentioned in the MapCookbook json file and not in Layer'
+            msg = msg + ' Properties json file:\n\t'
+            msg = msg + '\n\t'.join(cb_only)
+        if len(lp_only):
+            msg = msg + '\nThese layers are only mentioned in the Layer Properties json file and not in the'
+            msg = msg + ' MapCookbook json file: \n\t'
+            msg = msg + '\n\t'.join(lp_only)
+
+        print(msg)
+        exit(2)
+    else:
+        print("layer properties json and MapCookbook json match just fine")
+        exit(0)
 
 
 # TODO: asmith 2020/03/04
@@ -76,17 +84,10 @@ if __name__ == "__main__":
         description='This tool checks the internal self-consistency of the cookbook file, layerProperties file and the'  # noqa
                     ' layerfiles within the layerDirectory'
     )
-    parser.add_argument("-b", "--cookbook", dest="cookbookFile", required=True,
-                        help="path to cookbook json file", metavar="FILE", type=lambda x: is_valid_file(parser, x))
-    parser.add_argument("-l", "--layerConfig", dest="layerConfig", required=True,
-                        help="path to layer config json file", metavar="FILE", type=lambda x: is_valid_file(parser, x))
-    parser.add_argument("-ld", "--layerDirectory", dest="layerDirectory", required=True,
-                        help="path to layer directory", metavar="FILE", type=lambda x: is_valid_directory(parser, x))
+    parser.add_argument("-c", "--cmf", dest="cmf_desc", required=True,
+                        help="path to CMF description file", metavar="FILE", type=lambda x: is_valid_file(parser, x))
+    parser.add_argument("-e", "--layer-file-extension", dest="layer_file_extension", required=True,
+                        help="file extension layer files which will be checked against the layer_properties.json file")
 
     args = parser.parse_args()
-    main(args)
-
-# this_dir = os.path.abspath(os.path.dirname(__file__))
-# example_cookbook_path = os.path.join(this_dir, 'Config', 'mapCookbook.json')
-# example_lyr_props__path = os.path.join(
-#    this_dir, 'Config', 'layerProperties.json')
+    main(args.cmf_desc, args.layer_file_extension)

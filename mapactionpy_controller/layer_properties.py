@@ -43,13 +43,27 @@ class LayerProperties:
         self.properties = {}  # Dictionary
         self._parse()
 
-        if verify_on_creation and (not self.verify_match_with_layer_rendering_dir()):
-            raise ValueError('There is a mismatch between:'
-                             ' (a) The layers described in the layer_properties.json file'
-                             ' and (b) The layers files, with the relevant file extension, listed in the'
-                             ' `cmf.layer_rendering` directory.'
-                             ' Either ensure that these files match, or create the LayerProperties object using the'
-                             ' parameter `verify_on_creation=False`')
+        if verify_on_creation:
+            lp_only, files_only = self.get_difference_with_layer_rendering_dir()
+            if len(lp_only) or len(files_only):
+                msg = ('There is a mismatch between:\n'
+                       ' (a) The layers described in the layer_properties.json file "{}"\n'
+                       ' and (b) The layers files, with file extension "{}", listed in the'
+                       ' `cmf.layer_rendering` directory "{}".\n'
+                       ' Either ensure that these files match, or create the LayerProperties object using the'
+                       ' parameter `verify_on_creation=False`\n'.format(
+                           self.cmf.layer_properties,
+                           self.extension,
+                           self.cmf.layer_rendering
+                       ))
+
+                if len(lp_only):
+                    msg = msg + " The following layers are only in layer properties json file:\n\t"
+                    msg = msg + "\n\t".join(lp_only)
+                if len(files_only):
+                    msg = msg + " The following files are only in layer rendering directory:"
+                    msg = msg + "\n\t".join(files_only)
+                raise ValueError(msg)
 
     def _parse(self):
         """
@@ -61,7 +75,7 @@ class LayerProperties:
                 mapLayer = MapLayer(layer)
                 self.properties[mapLayer.layerName] = mapLayer
 
-    def verify_match_with_layer_rendering_dir(self):
+    def get_difference_with_layer_rendering_dir(self):
         """
         Ensures that there is a one-to-one correspondance between
         * The layers described in the layer_properties.json file
@@ -69,6 +83,13 @@ class LayerProperties:
         By default this method is called from the constructor. It can also be called at any later time, in case the
         contents of the `cmf.layer_rendering` directory has changes on disk.
         NB: Changes to the `layer_properties.json` on disk are NOT accomadated but repeated calling of this method.
+
+        :returns: A tuple of sets:
+            * The first set is the set of layers which are in Layer Properties json file, but are in the Layer
+              Rendering Directory.
+            * The secound set is the set of layers which are in the Layer Rendering Directory, but not in the in Layer
+              Properties json file.
+        In the "ideal" senario, both sets both be empty.
         """
         lp_unique_lyrs = set()
         files_unique = set()
@@ -83,6 +104,8 @@ class LayerProperties:
             if (os.path.isfile(f_path)) and (fileext == self.extension):
                 files_unique.add(filename)
 
-        sym_diff = lp_unique_lyrs.symmetric_difference(files_unique)
+        # sym_diff = lp_unique_lyrs.symmetric_difference(files_unique)
+        lp_only = lp_unique_lyrs.difference(files_unique)
+        files_only = files_unique.difference(lp_unique_lyrs)
 
-        return not len(sym_diff)
+        return lp_only, files_only
