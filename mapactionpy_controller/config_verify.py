@@ -40,13 +40,20 @@ def get_unique_lyr_names(cookbook, lyr_props):
 def main(cmf_desc, layer_file_extension):
     cmf = CrashMoveFolder(cmf_desc)
 
+    print('-------------------------------------\n')
     try:
         lyrs = LayerProperties(cmf, layer_file_extension, verify_on_creation=True)
-        print("layer properties json and layer rendering dir match just fine")
+        print('No inconsistancy detected between:\n'
+              ' * the contents of the layer properties json file:\n\t{props}\n'
+              ' * and layer rendering dir:\n\t{render}\n'.format(
+                  props=cmf.layer_properties,
+                  render=cmf.layer_rendering
+              ))
     except ValueError as ve:
         print(ve.message)
         exit(1)
 
+    print('-------------------------------------\n')
     cb = MapCookbook(cmf.map_definitions)
     cb_unique_lyrs, lp_unique_lyrs = get_unique_lyr_names(cb, lyrs)
 
@@ -70,9 +77,16 @@ def main(cmf_desc, layer_file_extension):
             msg = msg + '\n\t'.join(lp_only)
 
         print(msg)
+        print('-------------------------------------\n')
         exit(2)
     else:
-        print("layer properties json and MapCookbook json match just fine")
+        print('No inconsistancy detected between:\n'
+              ' * the contents of the layer properties json file:\n\t{props}\n'
+              ' * and the contents of the MapCookbook json:\n\t{cbook}\n'.format(
+                  props=cmf.layer_properties,
+                  cbook=cmf.map_definitions
+              ))
+        print('-------------------------------------\n')
         exit(0)
 
 
