@@ -59,10 +59,10 @@ class LayerProperties:
                ))
 
         if len(lp_only):
-            msg = msg + " The following layers are only in layer properties json file:\n\t"
+            msg = msg + "\nThe following layers are only in layer properties json file:\n\t"
             msg = msg + "\n\t".join(lp_only)
         if len(files_only):
-            msg = msg + " The following files are only in layer rendering directory:"
+            msg = msg + "\nThe following files are only in layer rendering directory:\n\t"
             msg = msg + "\n\t".join(files_only)
 
         return msg

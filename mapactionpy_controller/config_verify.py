@@ -51,7 +51,7 @@ def main(cmf_desc, layer_file_extension):
     cb_unique_lyrs, lp_unique_lyrs = get_unique_lyr_names(cb, lyrs)
 
     cb_only = cb_unique_lyrs.difference(lp_unique_lyrs)
-    lp_only = lp_unique_lyrs.difference(cb_only)
+    lp_only = lp_unique_lyrs.difference(cb_unique_lyrs)
 
     if len(cb_only) or len(lp_only):
         msg = ('There is a mismatch between the layer_properties.json file:\n\t"{}"\n'
