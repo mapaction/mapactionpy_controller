@@ -11,6 +11,6 @@
   "layer_nc_definition": "../example/layer_file_naming_convention.json",
   "mxd_nc_definition": "../example/mxd_naming_convention.json",
   "map_definitions": "../example/dummy_mapCookbook.json",
-  "layer_properties": "../example/dummy_layerProperties.json",
+  "layer_properties": "../example/layer_properties.json",
   "arcgis_version": "arcgis_10_6"
 }
