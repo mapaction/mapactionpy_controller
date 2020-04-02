@@ -43,9 +43,6 @@ def get_install_requires():
 
 def get_gis_environment():
     gis_dependancies = []
-    v = version.LooseVersion(_base_version)
-    next_minor_version = '{}.{}'.format(v.version[0], v.version[1]+1)
-    print('current version: {},   next minor version: {}'.format(_base_version, next_minor_version))
 
     # The key is the module name that is detected
     # The value is the module name that will be installed if the key is detected.
@@ -57,12 +54,8 @@ def get_gis_environment():
     for env_mod, target_mod in possible_envs.items():
         try:
             importlib.import_module(env_mod)
-            gis_dependancies.append(
-                '{}>={},<{}'.format(target_mod, _base_version, next_minor_version)
-            )
-            print('Found: {}, therefore installing {}'.format(env_mod, target_mod))
+            gis_dependancies.append(target_mod)
         except ImportError:
-            print('Could not locate: {}'.format(env_mod))
             pass
 
     return gis_dependancies
@@ -79,6 +72,10 @@ setup(name='mapactionpy_controller',
       license='GPL3',
       packages=find_packages(),
       install_requires=get_install_requires(),
+      extras_require={
+          'mapactionpy_arcmap': ['arcpy'],
+          'mapactionpy_qgis': ['qgis.core']
+      },
       test_suite='unittest',
       tests_require=['unittest'],
       zip_safe=False,
