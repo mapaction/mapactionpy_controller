@@ -11,7 +11,7 @@ def readme():
         return f.read()
 
 
-_base_version = '0.10'
+_base_version = '0.11'
 
 
 def _get_version_number():
@@ -43,8 +43,9 @@ def get_install_requires():
 
 def get_gis_environment():
     gis_dependancies = []
-    v = version.StrictVersion(_base_version)
+    v = version.LooseVersion(_base_version)
     next_minor_version = '{}.{}'.format(v.version[0], v.version[1]+1)
+    print('current version: {},   next minor version: {}'.format(_base_version, next_minor_version))
 
     # The key is the module name that is detected
     # The value is the module name that will be installed if the key is detected.
@@ -56,8 +57,12 @@ def get_gis_environment():
     for env_mod, target_mod in possible_envs.items():
         try:
             importlib.import_module(env_mod)
-            gis_dependancies.append('{}>={},<{}'.format(target_mod, _base_version, next_minor_version))
+            gis_dependancies.append(
+                '{}>={},<{}'.format(target_mod, _base_version, next_minor_version)
+            )
+            print ('Found: {}, therefore installing {}'.format(env_mod, target_mod))
         except ImportError:
+            print ('Could not locate: {}'.format(env_mod))
             pass
 
     return gis_dependancies
