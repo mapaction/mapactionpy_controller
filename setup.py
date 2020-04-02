@@ -9,7 +9,7 @@ def readme():
         return f.read()
 
 
-_base_version = '0.5'
+_base_version = '0.10'
 
 
 def _get_version_number():
@@ -29,6 +29,34 @@ def _get_version_number():
             return ''
 
 
+def get_install_requires():
+    dependancies = [
+        'jsonpickle',
+        'six'
+    ]
+    dependancies.append(get_gis_environment())
+
+    return dependancies
+
+
+def get_gis_environment():
+    gis_dependancies = []
+
+    try:
+        import arcpy
+        gis_dependancies.append('mapactionpy_arcmap>={},<{}'.format(_base_version, (_base_version+0.1)))
+    except ImportError:
+        pass
+
+    try:
+        import qgis.core
+        gis_dependancies.append('mapactionpy_qgis>={},<{}'.format(_base_version, (_base_version+0.1)))
+    except ImportError:
+        pass
+
+    return gis_dependancies
+
+
 setup(name='mapactionpy_controller',
       version=_get_version_number(),
       description='Controls the workflow of map and infographic production',
@@ -39,10 +67,7 @@ setup(name='mapactionpy_controller',
       author_email='github@mapaction.com',
       license='GPL3',
       packages=find_packages(),
-      install_requires=[
-          'jsonpickle',
-          'six'
-      ],
+      install_requires=get_install_requires(),
       test_suite='unittest',
       tests_require=['unittest'],
       zip_safe=False,
