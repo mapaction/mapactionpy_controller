@@ -21,6 +21,17 @@ def is_valid_directory(parser, arg):
         return False
 
 
+def check_cmf_description(args):
+    try:
+        CrashMoveFolder(args.cmf_desc)
+        print('The Crash Move Folder description file open correctly:\n"{}"\n'.format(
+            args.cmf_desc
+        ))
+    except ValueError as ve:
+        print(ve.message)
+        exit(1)
+
+
 def get_unique_lyr_names(cookbook, lyr_props):
     cb_unique_lyrs = set()
     lp_unique_lyrs = set()
@@ -37,12 +48,10 @@ def get_unique_lyr_names(cookbook, lyr_props):
     return (cb_unique_lyrs, lp_unique_lyrs)
 
 
-def main(cmf_desc, layer_file_extension):
-    cmf = CrashMoveFolder(cmf_desc)
-
-    print('-------------------------------------\n')
+def check_lyr_props_vs_rendering_dir(args):
     try:
-        lyrs = LayerProperties(cmf, layer_file_extension, verify_on_creation=True)
+        cmf = CrashMoveFolder(args.cmf_desc)
+        LayerProperties(cmf, args.layer_file_extension, verify_on_creation=True)
         print('No inconsistancy detected between:\n'
               ' * the contents of the layer properties json file:\n\t{props}\n'
               ' * and layer rendering dir:\n\t{render}\n'.format(
@@ -53,7 +62,10 @@ def main(cmf_desc, layer_file_extension):
         print(ve.message)
         exit(1)
 
-    print('-------------------------------------\n')
+
+def check_lyr_props_vs_map_cookbook(args):
+    cmf = CrashMoveFolder(args.cmf_desc)
+    lyrs = LayerProperties(cmf, '', verify_on_creation=False)
     cb = MapCookbook(cmf.map_definitions)
     cb_unique_lyrs, lp_unique_lyrs = get_unique_lyr_names(cb, lyrs)
 
@@ -87,21 +99,63 @@ def main(cmf_desc, layer_file_extension):
                   cbook=cmf.map_definitions
               ))
         print('-------------------------------------\n')
-        exit(0)
+
+
+def get_args():
+    parser = argparse.ArgumentParser(
+        description='This tool checks the internal self-consistency various components of the Crash Move Folder,'
+                    ' including several of the contained configuration files. Use sub-commands to specify which checks'
+                    ' should be completed, or the special sub-comand `all` for all checks.'
+    )
+    parser.add_argument("-c", "--cmf", dest="cmf_desc", required=True,
+                        help="path to CMF description file", metavar="FILE", type=lambda x: is_valid_file(parser, x))
+
+    subparsers = parser.add_subparsers(title='subcommands',
+                                       description='valid subcommands',
+                                       help='additional help')
+
+    # `all` to call all sub commands
+    parser_all = subparsers.add_parser('all')
+    parser_all.description = ('Call all of the avilable subcommands to check validity')
+    parser_all.set_defaults(func=check_all)
+
+    parser_cmf_only = subparsers.add_parser('cmf-only')
+    parser_cmf_only.description = ('Just checks the validity of the cmf_description file. This includes checking'
+                                   ' that each of the file and directory paths specified are valid')
+    parser_cmf_only.set_defaults(func=check_cmf_description)
+
+    parser_lp_vs_rendering = subparsers.add_parser('lp-vs-rendering')
+    parser_lp_vs_rendering.description = ('This tool checks the internal self-consistency of the cookbook file, layerProperties file and the'  # noqa
+                                   ' layerfiles within the layerDirectory')
+    parser_lp_vs_rendering.add_argument("-e", "--layer-file-extension", dest="layer_file_extension", required=True,
+                                        help="file extension layer files which will be checked against the layer_properties.json file")
+    parser_lp_vs_rendering.set_defaults(func=check_lyr_props_vs_rendering_dir)
+
+    parser_lp_vs_cb = subparsers.add_parser('lp-vs-cb')
+    parser_lp_vs_cb.description = ('This tool checks the internal self-consistency of the cookbook file, layerProperties file and the'  # noqa
+                                   ' layerfiles within the layerDirectory')
+    parser_lp_vs_cb.set_defaults(func=check_lyr_props_vs_map_cookbook)
+
+    return parser.parse_args()
+
+# TODO look up a better way to handle the `all` option. Is there a way to extract each of teh functions from
+# the subparsers.get_defaults() method?
+
+
+def check_all(args):
+    check_cmf_description(args)
+    check_lyr_props_vs_rendering_dir(args)
+    check_lyr_props_vs_map_cookbook(args)
+
+
+def run_checks(args):
+    if not args:
+        args = get_args()
+    args.func(args)
 
 
 # TODO: asmith 2020/03/04
 # This commandline interface and arg parser should be merged with other commandline interfaces
 # such as the one in mapactionpy_controller.check_naming_convention.py
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description='This tool checks the internal self-consistency of the cookbook file, layerProperties file and the'  # noqa
-                    ' layerfiles within the layerDirectory'
-    )
-    parser.add_argument("-c", "--cmf", dest="cmf_desc", required=True,
-                        help="path to CMF description file", metavar="FILE", type=lambda x: is_valid_file(parser, x))
-    parser.add_argument("-e", "--layer-file-extension", dest="layer_file_extension", required=True,
-                        help="file extension layer files which will be checked against the layer_properties.json file")
-
-    args = parser.parse_args()
-    main(args.cmf_desc, args.layer_file_extension)
+    run_checks(None)
