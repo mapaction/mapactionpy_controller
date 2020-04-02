@@ -1,4 +1,3 @@
-import distutils.version as version
 import importlib
 import subprocess
 from setuptools import setup, find_packages
