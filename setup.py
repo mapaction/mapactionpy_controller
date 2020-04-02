@@ -1,3 +1,5 @@
+import distutils.version as version
+import importlib
 import subprocess
 from setuptools import setup, find_packages
 from os import path, environ
@@ -9,7 +11,7 @@ def readme():
         return f.read()
 
 
-_base_version = '0.6'
+_base_version = '0.10'
 
 
 def _get_version_number():
@@ -29,6 +31,37 @@ def _get_version_number():
             return ''
 
 
+def get_install_requires():
+    dependancies = [
+        'jsonpickle',
+        'six'
+    ]
+    dependancies.append(get_gis_environment())
+
+    return dependancies
+
+
+def get_gis_environment():
+    gis_dependancies = []
+    v = version.StrictVersion(_base_version)
+    next_minor_version = '{}.{}'.format(v.version[0], v.version[1]+1)
+
+    # The key is the module name that is detected
+    # The value is the module name that will be installed if the key is detected.
+    possible_envs = {
+        'arcpy': 'mapactionpy_arcmap',
+        'qgis.core': 'mapactionpy_qgis'
+    }
+
+    for env_mod, target_mod in possible_envs.items():
+        try:
+            importlib.import_module(env_mod)
+            gis_dependancies.append('{}>={},<{}'.format(target_mod, _base_version, next_minor_version))
+        except ImportError:
+            pass
+
+    return gis_dependancies
+
 setup(name='mapactionpy_controller',
       version=_get_version_number(),
       description='Controls the workflow of map and infographic production',
@@ -39,10 +72,7 @@ setup(name='mapactionpy_controller',
       author_email='github@mapaction.com',
       license='GPL3',
       packages=find_packages(),
-      install_requires=[
-          'jsonpickle',
-          'six'
-      ],
+      install_requires=get_install_requires(),
       test_suite='unittest',
       tests_require=['unittest'],
       zip_safe=False,
