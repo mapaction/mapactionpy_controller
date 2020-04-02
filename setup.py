@@ -60,9 +60,9 @@ def get_gis_environment():
             gis_dependancies.append(
                 '{}>={},<{}'.format(target_mod, _base_version, next_minor_version)
             )
-            print ('Found: {}, therefore installing {}'.format(env_mod, target_mod))
+            print('Found: {}, therefore installing {}'.format(env_mod, target_mod))
         except ImportError:
-            print ('Could not locate: {}'.format(env_mod))
+            print('Could not locate: {}'.format(env_mod))
             pass
 
     return gis_dependancies
