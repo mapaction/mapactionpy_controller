@@ -3,6 +3,8 @@ import sys
 from unittest import TestCase
 
 import mapactionpy_controller.config_verify as config_verify
+from mapactionpy_controller.layer_properties import LayerProperties
+from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 
 
 class TestConfigVerify(TestCase):
