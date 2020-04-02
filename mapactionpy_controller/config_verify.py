@@ -104,8 +104,8 @@ class ConfigVerifier():
     def get_args(self):
         parser = argparse.ArgumentParser(
             description='This tool checks the internal self-consistency various components of the Crash Move Folder,'
-                        ' including several of the contained configuration files. Use sub-commands to specify which checks'
-                        ' should be completed, or the special sub-comand `all` for all checks.'
+                        ' including several of the contained configuration files. Use sub-commands to specify which'
+                        ' checks should be completed, or the special sub-comand `all` for all checks.'
         )
         parser.add_argument("-c", "--cmf", dest="cmf_desc", required=True,
                             help="path to CMF description file", metavar="FILE",
@@ -126,15 +126,24 @@ class ConfigVerifier():
         parser_cmf_only.set_defaults(func=self.check_cmf_description)
 
         parser_lp_vs_rendering = subparsers.add_parser('lp-vs-rendering')
-        parser_lp_vs_rendering.description = ('This tool checks the internal self-consistency of the cookbook file, layerProperties file and the'  # noqa
-                                    ' layerfiles within the layerDirectory')
-        parser_lp_vs_rendering.add_argument("-e", "--layer-file-extension", dest="layer_file_extension", required=True,
-                                            help="file extension layer files which will be checked against the layer_properties.json file")
+        parser_lp_vs_rendering.description = (
+            'This tool checks the internal self-consistency of the cookbook file, layerProperties file and the'
+            ' layerfiles within the layerDirectory'
+        )
+        parser_lp_vs_rendering.add_argument(
+            '-e',
+            '--layer-file-extension',
+            dest='layer_file_extension',
+            required=True,
+            help='file extension layer files which will be checked against the layer_properties.json file'
+        )
         parser_lp_vs_rendering.set_defaults(func=self.check_lyr_props_vs_rendering_dir)
 
         parser_lp_vs_cb = subparsers.add_parser('lp-vs-cb')
-        parser_lp_vs_cb.description = ('This tool checks the internal self-consistency of the cookbook file, layerProperties file and the'  # noqa
-                                    ' layerfiles within the layerDirectory')
+        parser_lp_vs_cb.description = (
+            'This tool checks the internal self-consistency of the cookbook file, layerProperties file and the'
+            ' layerfiles within the layerDirectory'
+        )
         parser_lp_vs_cb.set_defaults(func=self.check_lyr_props_vs_map_cookbook)
 
         return parser.parse_args()
