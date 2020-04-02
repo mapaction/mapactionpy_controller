@@ -31,6 +31,20 @@ class TestLayerProperties(TestCase):
         # 4) test with invalid cmd file
         self.assertRaises(ValueError, LayerProperties, self.path_to_invalid_cmf_des, "test")
 
+    def test_zero_length_file_extention(self):
+        test_cmf = CrashMoveFolder(self.path_to_valid_cmf_des)
+
+        test_lp1 = LayerProperties(test_cmf, '', verify_on_creation=False)
+        self.assertIsInstance(test_lp1, LayerProperties)
+
+        layer_rendering_test_root = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'test_layer_rendering')
+        test_cmf.layer_properties = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'fixture_layer_properties_four_layers.json')
+        test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_exact_match')
+        test_lp2 = LayerProperties(test_cmf, '', verify_on_creation=True)
+        self.assertIsInstance(test_lp2, LayerProperties)
+
     def test_verify_with_rendering_files(self):
         # self.fail()
 
