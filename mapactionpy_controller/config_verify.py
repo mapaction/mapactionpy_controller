@@ -5,7 +5,6 @@ import os
 import argparse
 
 
-
 def is_valid_file(parser, arg):
     if not os.path.exists(arg):
         parser.error("The file %s does not exist!" % arg)
@@ -35,7 +34,7 @@ class ConfigVerifier():
         except ValueError as ve:
             print(ve.message)
             exit(1)
-            
+
     def get_unique_lyr_names(self, cookbook, lyr_props):
         cb_unique_lyrs = set()
         lp_unique_lyrs = set()
@@ -56,11 +55,11 @@ class ConfigVerifier():
             cmf = CrashMoveFolder(args.cmf_desc)
             LayerProperties(cmf, args.layer_file_extension, verify_on_creation=True)
             print('No inconsistancy detected between:\n'
-                ' * the contents of the layer properties json file:\n\t{props}\n'
-                ' * and layer rendering dir:\n\t{render}\n'.format(
-                    props=cmf.layer_properties,
-                    render=cmf.layer_rendering
-                ))
+                  ' * the contents of the layer properties json file:\n\t{props}\n'
+                  ' * and layer rendering dir:\n\t{render}\n'.format(
+                      props=cmf.layer_properties,
+                      render=cmf.layer_rendering
+                  ))
         except ValueError as ve:
             print(ve.message)
             exit(1)
@@ -76,11 +75,11 @@ class ConfigVerifier():
 
         if len(cb_only) or len(lp_only):
             msg = ('There is a mismatch between the layer_properties.json file:\n\t"{}"\n'
-                'and the MapCookbook.json file:\n\t"{}"\n'
-                'One or more layer names occur in only one of these files.\n'.format(
-                    cmf.layer_properties,
-                    cmf.map_definitions
-                ))
+                   'and the MapCookbook.json file:\n\t"{}"\n'
+                   'One or more layer names occur in only one of these files.\n'.format(
+                       cmf.layer_properties,
+                       cmf.map_definitions
+                   ))
             if len(cb_only):
                 msg = msg + 'These layers are only mentioned in the MapCookbook json file and not in Layer'
                 msg = msg + ' Properties json file:\n\t'
@@ -95,47 +94,56 @@ class ConfigVerifier():
             exit(2)
         else:
             print('No inconsistancy detected between:\n'
-                ' * the contents of the layer properties json file:\n\t{props}\n'
-                ' * and the contents of the MapCookbook json:\n\t{cbook}\n'.format(
-                    props=cmf.layer_properties,
-                    cbook=cmf.map_definitions
-                ))
+                  ' * the contents of the layer properties json file:\n\t{props}\n'
+                  ' * and the contents of the MapCookbook json:\n\t{cbook}\n'.format(
+                      props=cmf.layer_properties,
+                      cbook=cmf.map_definitions
+                  ))
             print('-------------------------------------\n')
 
     def get_args(self):
         parser = argparse.ArgumentParser(
             description='This tool checks the internal self-consistency various components of the Crash Move Folder,'
-                        ' including several of the contained configuration files. Use sub-commands to specify which checks'
-                        ' should be completed, or the special sub-comand `all` for all checks.'
+                        ' including several of the contained configuration files. Use sub-commands to specify which'
+                        ' checks should be completed, or the special sub-comand `all` for all checks.'
         )
         parser.add_argument("-c", "--cmf", dest="cmf_desc", required=True,
-                            help="path to CMF description file", metavar="FILE", 
+                            help="path to CMF description file", metavar="FILE",
                             type=lambda x: is_valid_file(parser, x))
 
         subparsers = parser.add_subparsers(title='subcommands',
-                                        description='valid subcommands',
-                                        help='additional help')
+                                           description='valid subcommands',
+                                           help='additional help')
 
         # `all` to call all sub commands
         parser_all = subparsers.add_parser('all')
         parser_all.description = ('Call all of the avilable subcommands to check validity')
         parser_all.set_defaults(func=self.check_all)
-        
+
         parser_cmf_only = subparsers.add_parser('cmf-only')
         parser_cmf_only.description = ('Just checks the validity of the cmf_description file. This includes checking'
-                                    ' that each of the file and directory paths specified are valid')
+                                       ' that each of the file and directory paths specified are valid')
         parser_cmf_only.set_defaults(func=self.check_cmf_description)
 
         parser_lp_vs_rendering = subparsers.add_parser('lp-vs-rendering')
-        parser_lp_vs_rendering.description = ('This tool checks the internal self-consistency of the cookbook file, layerProperties file and the'  # noqa
-                                    ' layerfiles within the layerDirectory')
-        parser_lp_vs_rendering.add_argument("-e", "--layer-file-extension", dest="layer_file_extension", required=True,
-                                            help="file extension layer files which will be checked against the layer_properties.json file")
+        parser_lp_vs_rendering.description = (
+            'This tool checks the internal self-consistency of the cookbook file, layerProperties file and the'
+            ' layerfiles within the layerDirectory'
+        )
+        parser_lp_vs_rendering.add_argument(
+            '-e',
+            '--layer-file-extension',
+            dest='layer_file_extension',
+            required=True,
+            help='file extension layer files which will be checked against the layer_properties.json file'
+        )
         parser_lp_vs_rendering.set_defaults(func=self.check_lyr_props_vs_rendering_dir)
 
         parser_lp_vs_cb = subparsers.add_parser('lp-vs-cb')
-        parser_lp_vs_cb.description = ('This tool checks the internal self-consistency of the cookbook file, layerProperties file and the'  # noqa
-                                    ' layerfiles within the layerDirectory')
+        parser_lp_vs_cb.description = (
+            'This tool checks the internal self-consistency of the cookbook file, layerProperties file and the'
+            ' layerfiles within the layerDirectory'
+        )
         parser_lp_vs_cb.set_defaults(func=self.check_lyr_props_vs_map_cookbook)
 
         return parser.parse_args()
