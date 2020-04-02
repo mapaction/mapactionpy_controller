@@ -62,6 +62,7 @@ def get_gis_environment():
 
     return gis_dependancies
 
+
 setup(name='mapactionpy_controller',
       version=_get_version_number(),
       description='Controls the workflow of map and infographic production',
