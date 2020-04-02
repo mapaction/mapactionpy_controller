@@ -1,3 +1,5 @@
+import distutils.version as version
+import importlib
 import subprocess
 from setuptools import setup, find_packages
 from os import path, environ
@@ -41,21 +43,24 @@ def get_install_requires():
 
 def get_gis_environment():
     gis_dependancies = []
+    v = version.StrictVersion(_base_version)
+    next_minor_version = '{}.{}'.format(v.version[0], v.version[1]+1)
 
-    try:
-        import arcpy
-        gis_dependancies.append('mapactionpy_arcmap>={},<{}'.format(_base_version, (_base_version+0.1)))
-    except ImportError:
-        pass
+    # The key is the module name that is detected
+    # The value is the module name that will be installed if the key is detected.
+    possible_envs = {
+        'arcpy': 'mapactionpy_arcmap',
+        'qgis.core': 'mapactionpy_qgis'
+    }
 
-    try:
-        import qgis.core
-        gis_dependancies.append('mapactionpy_qgis>={},<{}'.format(_base_version, (_base_version+0.1)))
-    except ImportError:
-        pass
+    for env_mod, target_mod in possible_envs.items():
+        try:
+            importlib.import_module(env_mod)
+            gis_dependancies.append('{}>={},<{}'.format(target_mod, _base_version, next_minor_version))
+        except ImportError:
+            pass
 
     return gis_dependancies
-
 
 setup(name='mapactionpy_controller',
       version=_get_version_number(),

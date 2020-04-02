@@ -35,6 +35,7 @@ class ConfigVerifier():
         except ValueError as ve:
             print(ve.message)
             exit(1)
+            
     def get_unique_lyr_names(self, cookbook, lyr_props):
         cb_unique_lyrs = set()
         lp_unique_lyrs = set()
@@ -49,6 +50,7 @@ class ConfigVerifier():
             lp_unique_lyrs.add(l)
 
         return (cb_unique_lyrs, lp_unique_lyrs)
+
     def check_lyr_props_vs_rendering_dir(self, args):
         try:
             cmf = CrashMoveFolder(args.cmf_desc)
