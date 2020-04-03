@@ -21,4 +21,4 @@ deploy:
   skip_existing: true
   on:
     all_branches: true
-    condition: ${TRAVIS_BRANCH,,} =~ ^(master|${TRAVIS_TAG,,})$
+    # condition: ${TRAVIS_BRANCH,,} =~ ^(master|${TRAVIS_TAG,,})$
