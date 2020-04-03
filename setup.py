@@ -3,7 +3,7 @@ import subprocess
 from setuptools import setup, find_packages
 from os import path, environ
 
-_base_version = '0.11'
+_base_version = '0.12'
 
 root_dir = path.abspath(path.dirname(__file__))
 
@@ -13,6 +13,8 @@ def readme():
         return f.read()
 
 
+# See https://packaging.python.org/guides/single-sourcing-package-version/
+# This uses method 4 on this list combined with other methods.
 def _get_version_number():
     travis_build = environ.get('TRAVIS_BUILD_NUMBER')
     travis_tag = environ.get('TRAVIS_TAG')
