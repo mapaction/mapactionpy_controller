@@ -3,31 +3,36 @@ import subprocess
 from setuptools import setup, find_packages
 from os import path, environ
 
+_base_version = '0.11'
+
+root_dir = path.abspath(path.dirname(__file__))
 
 def readme():
-    here = path.abspath(path.dirname(__file__))
-    with open(path.join(here, 'README.md')) as f:
+    with open(path.join(root_dir, 'README.md')) as f:
         return f.read()
-
-
-_base_version = '0.11'
 
 
 def _get_version_number():
     travis_build = environ.get('TRAVIS_BUILD_NUMBER')
     travis_tag = environ.get('TRAVIS_TAG')
-
+    
     if travis_build:
         if travis_tag:
-            return travis_tag
+            version = travis_tag
         else:
-            return '{}.dev{}'.format(_base_version, travis_build)
+            version = '{}.dev{}'.format(_base_version, travis_build)
+        
+        with open(path.join(root_dir, 'VERSION'), 'w') as version_file:
+            version_file.write(version.strip())
     else:
         try:
             ver = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'])
-            return '{}+local.{}'.format(_base_version, ver.decode('ascii').strip())
+            version = '{}+local.{}'.format(_base_version, ver.decode('ascii').strip())
         except Exception:
-            return ''
+            with open(path.join(root_dir, 'VERSION')) as version_file:
+                version = version_file.read().strip()
+    
+    return version
 
 
 def get_install_requires():
