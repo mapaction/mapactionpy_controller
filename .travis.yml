@@ -1,4 +1,6 @@
 language: python
+os: linux
+dist: xenial
 python:
 - '2.7'
 - '3.6'
@@ -14,7 +16,7 @@ after_success:
 - coveralls
 deploy:
   provider: pypi
-  user: asmith_mapaction
+  username: asmith_mapaction
   password:
     secure: B9A4Mwrxc2fhTzh1L+MSdkEzArW1WHOjLuTmn3CqDFObbDAdli1daMcOCZby1uWu2HmcPc7ICdfCDkPTRanTl3uoyZbVLT5e6TK31nEfqo5egZLjMq7qMTkMw+sFfeOu7Uo+WhGiW5dLkIsa1qK9Y/qQ/8U5G4YUmF7zskS1TUMAYnnhqUlv2P/lhhbz/8LrX4FLupx5QN2OPWpsoV08uM3X65/uARa/XmE5T91sPkzvOvQ9TvkbzmmDrxcLF06kIqL2PSYfF6SVT6QZ8Yq2cn8MnKhwfVekuIb4X7ETvHSTAZ+GPf6RC5yxUOemffkr+P6b9chcZSWOIhkWbGkhj3a8k1OlFbVeyCpPJWbR8SOZ2SLBcMzgNeNwP3J3XuflP5HiGD+HrWmWUi90YLf72CKoq/xzGHpODC2sS2oOHYxXdvpKR+G615BOmy23OeIOMJhXMMyr7yZJL+xFOF1N1J8anIxAWArX/NqiO6aPu8cPGkYUu/iVLRefzGo+lvXYygxkYGcsgUoyl1iC2DcvXheFQoCTZPRQOFIk7EpCO3rxy1LvO1DUTWsu5RH2oow+opdqY/tuMGm2LYYceg6QAqZwveO2sJJnnogJ7FgJOlKgWY/XeSxuUiHUt8c5g0fLyPduvnOS/m5FRSaH76b/L2sAZfNHZo+RqB1egc2LIKA=
   distributions: "sdist"
