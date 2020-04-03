@@ -7,6 +7,7 @@ _base_version = '0.11'
 
 root_dir = path.abspath(path.dirname(__file__))
 
+
 def readme():
     with open(path.join(root_dir, 'README.md')) as f:
         return f.read()
@@ -15,13 +16,13 @@ def readme():
 def _get_version_number():
     travis_build = environ.get('TRAVIS_BUILD_NUMBER')
     travis_tag = environ.get('TRAVIS_TAG')
-    
+
     if travis_build:
         if travis_tag:
             version = travis_tag
         else:
             version = '{}.dev{}'.format(_base_version, travis_build)
-        
+
         with open(path.join(root_dir, 'VERSION'), 'w') as version_file:
             version_file.write(version.strip())
     else:
@@ -31,7 +32,7 @@ def _get_version_number():
         except Exception:
             with open(path.join(root_dir, 'VERSION')) as version_file:
                 version = version_file.read().strip()
-    
+
     return version
 
 
