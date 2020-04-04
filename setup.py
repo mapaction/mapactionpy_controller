@@ -41,6 +41,7 @@ def _get_version_number():
 def get_install_requires():
     dependancies = [
         'jsonpickle',
+        'pycountry',
         'six'
     ]
     dependancies.append(get_gis_environment())
