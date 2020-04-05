@@ -6,7 +6,7 @@ import decimal
 
 
 class Event:
-    def __init__(self, event_file, orientation = None):
+    def __init__(self, event_file, orientation=None):
 
         self.path = os.path.dirname(event_file)
         with open(event_file, 'r') as f:
@@ -35,7 +35,7 @@ class Event:
             # self.donors = obj['donors']
             self.country_name = self.countryName()
 
-            self.set_orientation(orientation) 
+            self.set_orientation(orientation)
 
     def countryName(self):
         self.country_name = None
@@ -73,9 +73,10 @@ class Event:
     def set_orientation(self, orientation):
         if (orientation is not None):
             # Set member orientation to override value
-            self.orientation = orientation 
-        else:    
-            url = "https://nominatim.openstreetmap.org/search?country=" + self.country_name.replace(" ", "+") + "&format=json"
+            self.orientation = orientation
+        else:
+            url = "https://nominatim.openstreetmap.org/search?country=" + \
+                self.country_name.replace(" ", "+") + "&format=json"
             resp = requests.get(url=url)
 
             jsonObject = resp.json()
@@ -108,4 +109,3 @@ class Event:
                     self.orientation = "landscape"
             else:
                 raise Exception("Error: Could not derive country extent from " + url)
-

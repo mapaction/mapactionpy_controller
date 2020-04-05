@@ -8,7 +8,7 @@ class MapDoc:
     #
     # <?xml version="1.0" ?>
     # <mapdoc>
-	#    <mapdata>
+    #    <mapdata>
 
     def __init__(self, mapdata):
         self.mapdata = mapdata

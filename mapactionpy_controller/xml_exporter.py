@@ -3,6 +3,7 @@ import pycountry
 from mapactionpy_controller.map_data import MapData
 from mapactionpy_controller.map_doc import MapDoc
 
+
 class XmlExporter:
     def __init__(self, event, chef):
         self.event = event
@@ -36,10 +37,10 @@ class XmlExporter:
         exportPropertiesDict["glideno"] = self.event.glide_number
         exportPropertiesDict["title"] = params["productName"]
         exportPropertiesDict["countries"] = self.event.country_name
-        exportPropertiesDict["xmin"] =params["xmin"]
-        exportPropertiesDict["ymin"] =params["ymin"]
-        exportPropertiesDict["xmax"] =params["xmax"]
-        exportPropertiesDict["ymax"] =params["ymax"]
+        exportPropertiesDict["xmin"] = params["xmin"]
+        exportPropertiesDict["ymin"] = params["ymin"]
+        exportPropertiesDict["xmax"] = params["xmax"]
+        exportPropertiesDict["ymax"] = params["ymax"]
         exportPropertiesDict["ref"] = params["coreFileName"]
         exportPropertiesDict["mxdfilename"] = params["coreFileName"]
         exportPropertiesDict["paperxmax"] = ""

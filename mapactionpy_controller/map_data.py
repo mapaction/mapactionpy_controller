@@ -5,6 +5,7 @@
 # <mapdoc>
 #    <mapdata>
 
+
 class MapData:
     def __init__(self, row):
         # Constructor.  Creates an instance of MapData for the Export XML
