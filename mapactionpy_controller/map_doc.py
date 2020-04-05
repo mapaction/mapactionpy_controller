@@ -3,16 +3,17 @@ import xml.dom.minidom
 
 
 class MapDoc:
-    # TODO: asmith 2020/03/04
-    # See the MapData class for comments about that class. I would suggest that this constructor
-    # should accept it's parameters without requiring a MapData object. Possiblt as kwargs, meaning
-    # that a dict could be directly passed to it.
+    # Required to generate 'mapdoc' XML document
+    # Needs mapdata in its own class so that it's held in the inner mapdata block:
+    #
+    # <?xml version="1.0" ?>
+    # <mapdoc>
+	#    <mapdata>
+
     def __init__(self, mapdata):
         self.mapdata = mapdata
 
-    # TODO: asmith 2020/03/04
-    # This method name need a verb in it. to_xml() or something like that?
-    def xml(self):
+    def to_xml(self):
         mapDoc = Element('mapdoc')
 
         mapdata = SubElement(mapDoc, 'mapdata')
