@@ -15,15 +15,15 @@ To install a specific version for testing see the relevant commandline from here
 https://pypi.org/project/mapactionpy-controller/#history
 
 
-Commandline Usage
+Command-line Usage
 ==========
-Check the compliance with the Data Naming Convention, MXD Naming Convention, MXD Template Naming Convention and Layer Naming Convetion.
+Check the compliance with the Data Naming Convention, MXD Naming Convention, MXD Template Naming Convention and Layer Naming Convention.
 ```
 > python.exe -m mapactionpy_controller.check_naming_convention /path/to/current/cmf/2019gbr01/cmf_description.json
 ```
 
 
-Using the Data Serach tool from the commandline
+Using the Data Search tool from the command-line
 ----
 ```
 > python.exe -m mapactionpy_controller.data_search
@@ -46,7 +46,7 @@ There are three classes which are designed for reuse in other modules. For each 
 This object may be manipulated by 
 (e.g. the data_search tool, updates the datasources fields )
 * **CrashMoveFolder** : An object that describes the CrashMoveFolder and its contents. There should be no need to hardcode any path (absolute or relative) to anywhere in a crash move folder
-* **Event** : This decribes the real-world humanitarian event to which the Crash Move Folder corresponds.
+* **Event** : This describes the real-world humanitarian event to which the Crash Move Folder corresponds.
 
 (**Note1:**) The name `Event` matches the naming of the equivalent concept on the Map & Data Respository (see https://github.com/mapaction/ckanext-mapactionevent). However it is rather too generic in this context. A more descriptive name for this class would be helpful.
 
@@ -59,14 +59,14 @@ The `naming_convention` sub-module provides a framework for specifying a naming 
 1) A regular expression, with named groups
 2) For each named group in the regex, details of a class which can provide futher validation of that value in that named group.
 
-Exmples of the naming convention config files are in the `examples` directory, including MapAction's DataNamingConvention, MXDNamingConvention and LayerfileNamingConvention.
+Examples of the naming convention config files are in the `examples` directory, including MapAction's DataNamingConvention, MXDNamingConvention and LayerfileNamingConvention.
 
 **DataNameConvention** represents the _convention_ itself. At its core is a regular expression. Each named group (clause) within the Regex as additionally validation, which is implemented by a DataNameClause. DataNameConvention has a dictionary of DataNameClause objects. A individual name is tested by using the `.validate(data_name_str)` method. If the data name does not match the regex the value None is returned. If the regex matches a DataNameInstance object will be returned, whether or not all of the clauses pass.
 
 **DataNameClause** is an abstract class. Callers are unlikely to need to directly access this class or any concrete examples. Concrete examples are DataNameFreeTextClause and DataNameLookupClause. When the `.validate(data_name_str)` method is called on a DataNameConvention object, it will call `.validate(clause_str)` in each individual DataNameClause obj. 
 
 **DataNameResult** represents the _result_ of a specific data name test and is returned by `DataNameConvention.validate()`. The `.is_valid` property indicates whether or not all of the clauses validate. DataNameResult is a [namedtuple](https://docs.python.org/2.7/library/collections.html#collections.namedtuple).
-The values for individual clauses can be directly accessed using dotted property notation (eg  via members such as  `dnr.datatheme.Description` or `dnr.source.Organisation`. If whether or not the clause validated is returned by the `.is_valid` property (eg . `dnr.datatheme.is_valid`).
+The values for individual clauses can be directly accessed using dotted property notation (e.g.  via members such as  `dnr.datatheme.Description` or `dnr.source.Organisation`. If whether or not the clause validated is returned by the `.is_valid` property (eg . `dnr.datatheme.is_valid`).
 
 Example code:
 ```
