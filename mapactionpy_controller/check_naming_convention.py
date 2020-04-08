@@ -15,6 +15,7 @@ def is_valid_file(parser, arg):
 def test_contents_of_dir(dir, name_conv_definition, file_ext):
     nc = data_name_convention.NamingConvention(name_conv_definition)
     nc.regex.groupindex
+    return_code = 0
 
     print("*****************")
     print("CHECKING DIR {}".format(dir))
@@ -27,37 +28,44 @@ def test_contents_of_dir(dir, name_conv_definition, file_ext):
                 result = nc.validate(basename)
                 if not result:
                     print("error filename does not match regex: {}".format(f))
+                    return_code += 1
                 elif result.is_valid:
                     pass
                     # print("valid filename: {}".format(f))
                 else:
                     print("one or more clauses not found in lookup tables : {}".format(f))
                     rdict = result._asdict()
+                    return_code += 1
 
                     for clausename in nc.regex.groupindex:
                         clause_details = rdict[clausename]
                         # print(clausename, cdict)
                         if not clause_details.is_valid:
-                            print("\t{} is not a recongised value for the clause {}".format(
+                            print("\t{} is not a recognised value for the clause {}".format(
                                 clause_details.Value,
                                 clausename))
 
                     print
 
+    return return_code
+
 
 def main():
     args = get_args()
-
     cmf = CrashMoveFolder(args.cmf_config_path)
+    return_code = 0
 
     # test data names
-    test_contents_of_dir(cmf.active_data, cmf.data_nc_definition, '.shp')
+    return_code += test_contents_of_dir(cmf.active_data, cmf.data_nc_definition, '.shp')
 
     # test layer names
-    test_contents_of_dir(cmf.layer_rendering, cmf.layer_nc_definition, '.lyr')
+    return_code += test_contents_of_dir(cmf.layer_rendering, cmf.layer_nc_definition, '.lyr')
 
     # test mxd names
-    test_contents_of_dir(cmf.mxd_products, cmf.mxd_nc_definition, '.mxd')
+    return_code += test_contents_of_dir(cmf.mxd_products, cmf.mxd_nc_definition, '.mxd')
+
+    # Quit with the exist code
+    return return_code
 
     # test mxd template names
     test_contents_of_dir(cmf.mxd_templates, cmf.mxd_template_nc_definition, '.mxd')
@@ -75,4 +83,5 @@ def get_args():
 
 
 if __name__ == "__main__":
-    main()
+    result = main()
+    exit(result)

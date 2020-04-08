@@ -34,4 +34,4 @@ class TestCheckNamingConventionTool(TestCase):
     def test_check_naming_convention_main(self):
         sys.argv[1:] = [self.cmf_descriptor_path]
 
-        check_naming_convention.main()
+        self.assertEqual(check_naming_convention.main(), 0)

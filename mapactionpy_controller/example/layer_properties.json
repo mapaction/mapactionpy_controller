@@ -1,0 +1,670 @@
+{
+	"layerProperties": [
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_stle_stl_pt_s0_allmaps",
+			"RegExp": "^[a-z]{3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "fclass IN ('national_capital', 'city', 'capital', 'town')",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [{
+					"className": "National Capital",
+					"expression": "[name]",
+					"SQLQuery": "(\"fclass\" = 'national_capital')",
+					"showClassLabels": true
+				},
+				{
+					"className": "Admin 1 Capital",
+					"expression": "[name]",
+					"SQLQuery": "(\"fclass\" = 'town')",
+					"showClassLabels": true
+				}
+			]
+		},
+		{
+			"MapFrame": "Location map",
+			"LayerName": "locationmap_stle_stl_pt_s0_locationmaps",
+			"RegExp": "^[a-z]{3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "fclass IN ('national_capital', 'capital')",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [{
+					"className": "National Capital",
+					"expression": "[name]",
+					"SQLQuery": "(\"fclass\" = 'national_capital')",
+					"showClassLabels": true
+				}
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s0-pt-pois",
+			"RegExp": "^[a-z]{3}_pois_poi_pt_(.*?)_(.*?)_([phm][phm])_(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_tran_por_pt_s0_allmaps",
+			"RegExp": "^[a-z]{3}_tran_sea_pt_(.*?)_(.*?)_([phm][phm])_(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_tran_air_pt_s0_allmaps",
+			"RegExp": "^[a-z]{3}_tran_air_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "type IN ('medium_airport', 'large_airport')",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s1-ln-surroundingcountries",
+			"RegExp": "^[a-z]{3}_admn_ad0_ln_(.*?)_(.*?)_*([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s0-ln-admin0",
+			"RegExp": "^[a-z]{3}_admn_ad0_ln_(.*?)_(.*?)_*([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_admin_ad1_ln_s0_reference",
+			"RegExp": "^[a-z]{3}_admn_ad1_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_admin_ad1_ln_s0_thematic",
+			"RegExp": "^[a-z]{3}_admn_ad1_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_admin_ad0_ln_s0_allmaps",
+			"RegExp": "^[a-z]{3}_admn_ad0_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s0-ln-admin1-black",
+			"RegExp": "^[a-z]{3}_admn_ad1_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s0-ln-admin2-black",
+			"RegExp": "^[a-z]{3}_admn_ad2_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s1-ln-admin1",
+			"RegExp": "^[a-z]{3}_admn_ad1_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s0-ln-admin2",
+			"RegExp": "^[a-z]{3}_admn_ad2_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s1-ln-admin2",
+			"RegExp": "^[a-z]{3}_admn_ad2_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s1-ln-admin3",
+			"RegExp": "^[a-z]{3}_admn_ad3_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_tran_rds_ln_s0_allmaps",
+			"RegExp": "^[a-z]{3}_tran_rds_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "fclass = 'primary'",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_tran_rrd_ln_s0_allmaps",
+			"RegExp": "^[a-z]{3}_tran_rrd_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_phys_riv_ln_s0_reference",
+			"RegExp": "^[a-z]{3}_phys_riv_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "fclass IN ('river')",
+			"Display": true,
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_elev_cst_ln_s0_allmaps",
+			"RegExp": "^[a-z]{3}_elev_cst_ln_(.*?)_(.*?)_([phm][phm])_(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": false,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "legend_elev_dem_ras_s0_reference",
+			"RegExp": "^[a-z]{3}_elev_dem_ras_(.*?)_(.*?)_([phm][phm])(.*?).tif$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},		
+		{
+			"MapFrame": "Main map",
+			"LayerName": "legend_tran_rds_ln_s0_allmaps",
+			"RegExp": "^[a-z]{3}_tran_rds_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": false,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "legend_phys_wat_py_s0_reference",
+			"RegExp": "^[a-z]{3}_phys_wat_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": false,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s0-py-admin1",
+			"RegExp": "^[a-z]{3}_admn_ad1_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [{
+				"className": "Admin 1 Name and PCode",
+				"expression": "[ADM1_NAME] &vbNewLine & [ADM1_PCODE]",
+				"SQLQuery": "(\"NAME_0\" = '{COUNTRY_NAME}'",
+				"showClassLabels": true
+			}]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s0-py-admin1-purple-text-only",
+			"RegExp": "^[a-z]{3}_admn_ad1_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [{
+				"className": "Admin 1 Name and PCode",
+				"expression": "[ADM1_NAME] &vbNewLine & [ADM1_PCODE]",
+				"SQLQuery": "(\"NAME_0\" = '{COUNTRY_NAME}'",
+				"showClassLabels": true
+			}]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_admin_ad1_py_s0_reference",
+			"RegExp": "^[a-z]{3}_admn_ad1_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [{
+				"className": "Admin 1 Name and PCode",
+				"expression": "[ADM1_NAME] &vbNewLine & [ADM1_PCODE]",
+				"SQLQuery": "(\"NAME_0\" = '{COUNTRY_NAME}'",
+				"showClassLabels": true
+			}]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s1-py-ddpadmin1",
+			"RegExp": "^[a-z]{3}_admn_ad1_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": false,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s0-py-admin2-purple-text-only",
+			"RegExp": "^[a-z]{3}_admn_ad2_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [{
+				"className": "Admin 2 Name",
+				"expression": "[NAME_2]",
+				"SQLQuery": "",
+				"showClassLabels": true
+			}]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s0-py-admin2-grey-text",
+			"RegExp": "^[a-z]{3}_admn_ad2_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [{
+				"className": "Admin 2 Name",
+				"expression": "[NAME_2]",
+				"SQLQuery": "",
+				"showClassLabels": true
+			}]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s0-py-admin2",
+			"RegExp": "^[a-z]{3}_admn_ad2_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [{
+				"className": "Admin 2 Name and PCode",
+				"expression": "[NAME_2] &vbNewLine & [ADM2_PCODE]",
+				"SQLQuery": "(\"ADM0_EN\" = '{COUNTRY_NAME}'",
+				"showClassLabels": true
+			}]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s1-py-admin2",
+			"RegExp": "^[a-z]{3}_admn_ad2_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s2-py-admin3",
+			"RegExp": "^[a-z]{3}_admn_ad3_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s3-py-admin4",
+			"RegExp": "^[a-z]{3}_admn_ad4_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_phys_sea_py_s0_allmaps",
+			"RegExp": "^[a-z]{3}_phys_sea_py_(.*?)_(.*?)_pp(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": false,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_carto_fea_py_s0_allmaps",
+			"RegExp": "^[a-z]{3}_carto_fea_py_(.*?)_(.*?)_pp(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": false,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_phys_wat_py_s0_allmaps",
+			"RegExp": "^[a-z]{3}_phys_wat_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": false,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_admin_ad0_py_s0_reference",
+			"RegExp": "^[a-z]{3}_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "\"NAME_0\" = '{COUNTRY_NAME}'",
+			"Display": false,
+			"AddToLegend": false,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_admin_ad0_py_s0_thematic",
+			"RegExp": "^[a-z]{3}_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "\"NAME_0\" = '{COUNTRY_NAME}'",
+			"Display": false,
+			"AddToLegend": false,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s0-py-affectedcountry",
+			"RegExp": "^[a-z]{3}_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "\"NAME_0\" = '{COUNTRY_NAME}'",
+			"Display": false,
+			"AddToLegend": false,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s0-py-surroundingcountries",
+			"RegExp": "aoi_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": false,
+			"LabelClasses": [{
+					"className": "This",
+					"expression": "[NAME_0]",
+					"SQLQuery": "(\"NAME_0\" = '{COUNTRY_NAME}')",
+					"showClassLabels": false
+				},
+				{
+					"className": "Other",
+					"expression": "[NAME_0]",
+					"SQLQuery": "(\"NAME_0\" <> '{COUNTRY_NAME}')",
+					"showClassLabels": true
+				}
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_phys_sea_py_s0_allmaps",
+			"RegExp": "^[a-z]{3}_phys_ocn_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": false,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "Imagery - Imagery",
+			"RegExp": "^[a-z]{3}_img_aer_ras_su_unknown_mp_tile_\\d*.TIF$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s0-ras-population",
+			"RegExp": "^[a-z]{3}_popu_pop_ras_(.*?)_(.*?)_([phm][phm])(.*?).tif$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": false,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_elev_dem_ras_s0_reference",
+			"RegExp": "^[a-z]{3}_elev_dem_ras_(.*?)_(.*?)_([phm][phm])(.*?).tif$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": false,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap_elev_hsh_ras_s0_reference",
+			"RegExp": "^[a-z]{3}_elev_hsh_ras_(.*?)_(.*?)_([phm][phm])(.*?).tif$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": false,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s0-ras-curvature",
+			"RegExp": "^[a-z]{3}_elev_cur_ras_(.*?)_(.*?)_([phm][phm])(.*?).tif$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": false,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Main map",
+			"LayerName": "mainmap-s0-ras-population",
+			"RegExp": "^[a-z]{3}_popu_pop_ras_(.*?)_(.*?)_([phm][phm])(.*?).tif$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Location map",
+			"LayerName": "locationmap_elev_cst_ln_s0_locationmaps",
+			"RegExp": "^[a-z]{3}_elev_cst_ln_(.*?)_(.*?)_([phm][phm])_(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": false,
+			"LabelClasses": [
+
+			]
+		},
+		{ 
+			"MapFrame": "Location map",
+			"LayerName": "locationmap-s0-ln-admin0",
+			"RegExp": "^[a-z]{3}_admn_ad0_ln_s0_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": false,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Location map",
+			"LayerName": "locationmap-s0-ln-admin1",
+			"RegExp": "^[a-z]{3}_admn_ad0_ln_s0_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Location map",
+			"LayerName": "locationmap-s1-ln-admin2",
+			"RegExp": "^[a-z]{3}_admn_ad2_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": false,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Location map",
+			"LayerName": "locationmap_admin_ad0_ln_s0_locationmaps",
+			"RegExp": "^[a-z]{3}_admn_ad0_ln_s0_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Location map",
+			"LayerName": "locationmap-s0-py-surroundingcountries",
+			"RegExp": "^[a-z]{3}_admn_ad0_py_s0_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "\"NAME_0\" <> '{COUNTRY_NAME}'",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": []
+		},
+		{
+			"MapFrame": "Location map",
+			"LayerName": "locationmap_admin_ad0_py_s0_locationmaps",
+			"RegExp": "^[a-z]{3}_admn_ad0_py_s0_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "\"NAME_0\" = '{COUNTRY_NAME}'",
+			"Display": true,
+			"AddToLegend": true,
+			"LabelClasses": []
+		},		
+		{
+			"MapFrame": "Location map",
+			"LayerName": "mainmap_admin_ad1_py_s0_thematic",
+			"RegExp": "^[a-z]{3}_admn_ad1_py_s0_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": false,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Location map",
+			"LayerName": "locationmap_phys_sea_py_s0_locationmaps",
+			"RegExp": "^[a-z]{3}_phys_ocn_py_s0_(.*?)_([phm][phm])(.*?).shp$",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": false,
+			"LabelClasses": [
+
+			]
+		},
+		{
+			"MapFrame": "Location map",
+			"LayerName": "locationmap-s0-py-extent",
+			"RegExp": "",
+			"DefinitionQuery": "",
+			"Display": true,
+			"AddToLegend": false,
+			"LabelClasses": [
+
+			]
+		}
+	]
+}

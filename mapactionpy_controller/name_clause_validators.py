@@ -1,15 +1,16 @@
 import csv
 import mapactionpy_controller as mac
+import os
 import six
 from collections import namedtuple
 
 # abstract class
-# Done using the "old-school" methed described here, without using the abs module
+# Done using the "old-school" method described here, without using the abs module
 # https://stackoverflow.com/a/25300153
 
 
 class NamingClause(object):
-    def __init__(self):
+    def __init__(self, nc_json_path, ** kwargs):
         if self.__class__ is NamingClause:
             raise NotImplementedError(
                 'NamingClause is an abstract class and cannot be instantiated directly')
@@ -21,11 +22,12 @@ class NamingClause(object):
 
 
 class NamingFreeTextClause(NamingClause):
-    def __init__(self, clause_name):
-        self.clause_name = clause_name
+    def __init__(self, nc_json_path, ** kwargs):
+        self.clause_name = kwargs['name']
+        self.alias = kwargs['alias']
 
     def validate(self, clause_value):
-        details = {self.clause_name: clause_value}
+        details = {self.alias: clause_value}
 
         class DataClauseValues(namedtuple('DataClauseValues', details.keys())):
             __slots__ = ()
@@ -38,17 +40,19 @@ class NamingFreeTextClause(NamingClause):
 
 
 class NamingLookupClause(NamingClause):
-    def __init__(self, clause_name, csv_path, lookup_field):
-        self.clause_name = clause_name
+    def __init__(self, nc_json_path, **kwargs):
+        self.clause_name = kwargs['name']
         self.known_values = {}
-        self.filename = csv_path
+        lookup_field = kwargs['lookup_field']
+        nc_lookup_dir = os.path.dirname(nc_json_path)
+        self.csv_filepath = os.path.join(nc_lookup_dir, kwargs['filename'])
 
         if six.PY2:
-            with open(csv_path, 'rb') as csv_file:
-                self._init_known_values(csv_path, csv_file, lookup_field)
+            with open(self.csv_filepath, 'rb') as csv_file:
+                self._init_known_values(self.csv_filepath, csv_file, lookup_field)
         else:
-            with open(csv_path, 'r', newline='', encoding='iso-8859-1') as csv_file:
-                self._init_known_values(csv_path, csv_file, lookup_field)
+            with open(self.csv_filepath, 'r', newline='', encoding='iso-8859-1') as csv_file:
+                self._init_known_values(self.csv_filepath, csv_file, lookup_field)
 
     def _init_known_values(self, csv_path, csv_file, lookup_field):
         csv_reader = csv.DictReader(

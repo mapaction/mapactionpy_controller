@@ -1,5 +1,6 @@
 import json
 import os
+import pycountry
 
 
 class Event:
@@ -31,3 +32,15 @@ class Event:
             self.default_disclaimer_text = obj['default_disclaimer_text']
             self.default_donor_credits = obj['default_donor_credits']
             # self.donors = obj['donors']
+            self.country_name = self.countryName()
+
+    def countryName(self):
+        self.country_name = None
+        if (self.affected_country_iso3 is not None):
+            country = pycountry.countries.get(alpha_3=self.affected_country_iso3.upper())
+            if (country is None):
+                raise Exception('Event', ('Could not derive country with alpha-3 code: ' +
+                                          self.affected_country_iso3.upper()))
+            else:
+                self.country_name = country.name
+        return self.country_name

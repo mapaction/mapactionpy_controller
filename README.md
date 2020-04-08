@@ -2,26 +2,41 @@ About
 =====
 
 Master branch [![Build Status](https://travis-ci.org/mapaction/mapactionpy_controller.svg?branch=master)](https://travis-ci.org/mapaction/mapactionpy_controller) [![Coverage Status](https://coveralls.io/repos/github/mapaction/mapactionpy_controller/badge.svg?branch=master)](https://coveralls.io/github/mapaction/mapactionpy_controller?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/2cd96643c21a0cedaa57/maintainability)](https://codeclimate.com/github/mapaction/mapactionpy_controller/maintainability)
 
 Installing
 ==========
-To install for development purposes:
-Clone the github repo then from the root of your local clone:
+To install the latest stable release via PyPi:
 ```
-python -m pip install --user -e .
-```
-
-To install for use non-development purposes:
-Clone the github repo then from the root of your local clone:
-```
-python -m pip install .
+python -m pip install mapactionpy_controller
 ```
 
-todo:
-[] enable installation via pypi.
+To install a specific version for testing see the relevant commandline from here:
+https://pypi.org/project/mapactionpy-controller/#history
 
 
-Usage
+Commandline Usage
+==========
+Check the compliance with the Data Naming Convention, MXD Naming Convention, MXD Template Naming Convention and Layer Naming Convetion.
+```
+> python.exe -m mapactionpy_controller.check_naming_convention /path/to/current/cmf/2019gbr01/cmf_description.json
+```
+
+
+Using the Data Serach tool from the commandline
+----
+```
+> python.exe -m mapactionpy_controller.data_search
+usage: data_search [-h] -r FILE -c FILE [-o FILE]
+data_search.py: error: the following arguments are required: -r/--recipe-file, -c/--cmf
+
+> python -m mapactionpy_controller.data_search -r example/product_bundle_example.json -c example/cmf_description.json
+```
+This command will output an updated recipe file with the 
+If the ouput file parameter (-o) is specified than the updated recipe will be output to that file. Otherwise the updated recipe is sent to stdout.
+
+
+Programmatic Usage
 =====
 Using the MapRecipe, CrashMoveFolder and Event classes
 ----
@@ -40,6 +55,12 @@ This object may be manipulated by
 
 Using the DataNameConvention and related classes
 ----
+The `naming_convention` sub-module provides a framework for specifying a naming convention (such as for file or table). A naming convention is specified in a json configuration file and consists of:
+1) A regular expression, with named groups
+2) For each named group in the regex, details of a class which can provide futher validation of that value in that named group.
+
+Exmples of the naming convention config files are in the `examples` directory, including MapAction's DataNamingConvention, MXDNamingConvention and LayerfileNamingConvention.
+
 **DataNameConvention** represents the _convention_ itself. At its core is a regular expression. Each named group (clause) within the Regex as additionally validation, which is implemented by a DataNameClause. DataNameConvention has a dictionary of DataNameClause objects. A individual name is tested by using the `.validate(data_name_str)` method. If the data name does not match the regex the value None is returned. If the regex matches a DataNameInstance object will be returned, whether or not all of the clauses pass.
 
 **DataNameClause** is an abstract class. Callers are unlikely to need to directly access this class or any concrete examples. Concrete examples are DataNameFreeTextClause and DataNameLookupClause. When the `.validate(data_name_str)` method is called on a DataNameConvention object, it will call `.validate(clause_str)` in each individual DataNameClause obj. 
@@ -104,39 +125,3 @@ Extra information associated with clause `datatheme`:
 The Administrative boundary (level 3) data was generously supplied by World Food Program, downloaded from https://www.wfp.org/
 ```
 
-
-
-Using the Data Serach tool from the commandline
-----
-```
-> python.exe data_search.py
-usage: data_search.py [-h] -r FILE -c FILE [-o FILE]
-data_search.py: error: the following arguments are required: -r/--recipe-file, -c/--cmf
-> python data_search.py -r example/product_bundle_example.json -c example/cmf_description.json
-```
-This command will output an updated recipe file with the 
-If the ouput file parameter (-o) is specified than the updated recipe will be output to that file. Otherwise the updated recipe is sent to stdout.
-
-Tests
-=====
-The test coverage appears OK (~86%). However this risks overstating the effectiveness of these tests with only a few error conditions included at present.
-
-
-Further development
-===================
-In no particular order:
-
- [] Improve the constructors for the Event and CrashMoveFolder classes. It should be possible to round-robin between the instance and the json representation. eg there should be tests which look something like this:
-```
-    assert my_event == Event.fromJOSN(my_event.toJSON())
-    assert my_cmf == CrashMoveFolder.fromJOSN(my_cmf.toJSON())
-```   
-The `jsonpickle` module is particularly well suited for this.
-
- [] Implement json schema validation for the various json files.
-
- [] CrashMoveFolder class should check for the existance of all of the subdirectories in the constructor.
-
- [] Replace debug print statements with output to a logging library - to ensure that standard output is not corrupted with error/debug messages.
-
- [] Better name for the `Event` class

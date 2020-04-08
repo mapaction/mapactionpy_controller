@@ -1,29 +1,76 @@
+import importlib
 import subprocess
 from setuptools import setup, find_packages
 from os import path, environ
 
+_base_version = '0.12'
+
+root_dir = path.abspath(path.dirname(__file__))
+
 
 def readme():
-    here = path.abspath(path.dirname(__file__))
-    with open(path.join(here, 'README.md')) as f:
+    with open(path.join(root_dir, 'README.md')) as f:
         return f.read()
 
 
-def get_dev_build_number():
+# See https://packaging.python.org/guides/single-sourcing-package-version/
+# This uses method 4 on this list combined with other methods.
+def _get_version_number():
     travis_build = environ.get('TRAVIS_BUILD_NUMBER')
+    travis_tag = environ.get('TRAVIS_TAG')
 
     if travis_build:
-        return '.dev{}'.format(travis_build)
+        if travis_tag:
+            version = travis_tag
+        else:
+            version = '{}.dev{}'.format(_base_version, travis_build)
+
+        with open(path.join(root_dir, 'VERSION'), 'w') as version_file:
+            version_file.write(version.strip())
     else:
         try:
             ver = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'])
-            return '+local.{}'.format(ver.decode('ascii').strip())
+            version = '{}+local.{}'.format(_base_version, ver.decode('ascii').strip())
         except Exception:
-            return ''
+            with open(path.join(root_dir, 'VERSION')) as version_file:
+                version = version_file.read().strip()
+
+    return version
+
+
+def get_install_requires():
+    dependancies = [
+        'jsonpickle',
+        'pycountry',
+        'six'
+    ]
+    dependancies.append(get_gis_environment())
+
+    return dependancies
+
+
+def get_gis_environment():
+    gis_dependancies = []
+
+    # The key is the module name that is detected
+    # The value is the module name that will be installed if the key is detected.
+    possible_envs = {
+        'arcpy': 'mapactionpy_arcmap',
+        'qgis.core': 'mapactionpy_qgis'
+    }
+
+    for env_mod, target_mod in possible_envs.items():
+        try:
+            importlib.import_module(env_mod)
+            gis_dependancies.append(target_mod)
+        except ImportError:
+            pass
+
+    return gis_dependancies
 
 
 setup(name='mapactionpy_controller',
-      version='0.3{}'.format(get_dev_build_number()),
+      version=_get_version_number(),
       description='Controls the workflow of map and infographic production',
       long_description=readme(),
       long_description_content_type="text/markdown",
@@ -32,10 +79,11 @@ setup(name='mapactionpy_controller',
       author_email='github@mapaction.com',
       license='GPL3',
       packages=find_packages(),
-      install_requires=[
-          'jsonpickle',
-          'six'
-      ],
+      install_requires=get_install_requires(),
+      extras_require={
+          'mapactionpy_arcmap': ['arcpy'],
+          'mapactionpy_qgis': ['qgis.core']
+      },
       test_suite='unittest',
       tests_require=['unittest'],
       zip_safe=False,
