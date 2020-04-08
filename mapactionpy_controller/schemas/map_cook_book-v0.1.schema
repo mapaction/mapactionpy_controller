@@ -1,0 +1,104 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The Root Schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "required": [
+        "mapnumber",
+        "category",
+        "product",
+        "export",
+        "layers",
+        "summary"
+    ],
+    "properties": {
+        "mapnumber": {
+            "$id": "#/properties/mapnumber",
+            "type": "string",
+            "title": "The Mapnumber Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "MA001"
+            ]
+        },
+        "category": {
+            "$id": "#/properties/category",
+            "type": "string",
+            "title": "The Category Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Reference"
+            ]
+        },
+        "product": {
+            "$id": "#/properties/product",
+            "type": "string",
+            "title": "The Product Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Country Overview with Admin 1 Boundaries and Topography"
+            ]
+        },
+        "export": {
+            "$id": "#/properties/export",
+            "type": "boolean",
+            "title": "The Export Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": false,
+            "examples": [
+                true
+            ]
+        },
+        "layers": {
+            "$id": "#/properties/layers",
+            "type": "array",
+            "title": "The Layers Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "items": {
+                "$id": "#/properties/layers/items",
+                "type": "object",
+                "title": "The Items Schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": {},
+                "examples": [
+                    {
+                        "name": "mainmap-stle-stl-pt-s0-allmaps"
+                    },
+                    {
+                        "name": "mainmap-carto-fea-py-s0-allmaps"
+                    }
+                ],
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "$id": "#/properties/layers/items/properties/name",
+                        "type": "string",
+                        "title": "The Name Schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": "",
+                        "examples": [
+                            "mainmap-stle-stl-pt-s0-allmaps"
+                        ]
+                    }
+                }
+            }
+        },
+        "summary": {
+            "$id": "#/properties/summary",
+            "type": "string",
+            "title": "The Summary Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Country overview with topography displayed"
+            ]
+        }
+    }
+}
