@@ -3,15 +3,18 @@
     "clauses":[
         {
             "name": "arcmapversion",
-            "validation": "free_text"
+            "validator": "mapactionpy_controller.name_clause_validators.NamingFreeTextClause",
+            "alias": "Value"
         },
         {
             "name": "templatestyle",
-            "validation": "free_text"
+            "validator": "mapactionpy_controller.name_clause_validators.NamingFreeTextClause",
+            "alias": "Value"
         },
         {
             "name": "orientation",
-            "validation": "free_text"
+            "validator": "mapactionpy_controller.name_clause_validators.NamingFreeTextClause",
+            "alias": "Value"
         }
     ]
 }

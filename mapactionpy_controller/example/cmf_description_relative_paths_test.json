@@ -12,6 +12,6 @@
   "mxd_products_nc_definition": "../example/mxd_naming_convention.json",
   "mxd_template_nc_definition": "../example/mxd_template_naming_convention.json",
   "map_definitions": "../example/dummy_mapCookbook.json",
-  "layer_properties": "../example/layer_properties.json",
+  "layer_properties": "../example/dummy_layerProperties.json",
   "arcgis_version": "arcgis_10_6"
 }

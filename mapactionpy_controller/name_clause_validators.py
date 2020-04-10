@@ -36,6 +36,10 @@ class NamingFreeTextClause(NamingClause):
             def is_valid(self):
                 return True
 
+            @property
+            def get_message(self):
+                return 'Value "{}" is valid (as are all Free Text Clauses).'.format(clause_value)
+
         return DataClauseValues(**details)
 
 
@@ -62,7 +66,7 @@ class NamingLookupClause(NamingClause):
             self.lookup_field = lookup_field
         else:
             raise mac.name_convention.NamingException(
-                'invalid validation lookup_field primary key {} in file {}'.format(lookup_field, csv_path))
+                'invalid validation lookup_field primary key "{}" in file "{}"'.format(lookup_field, csv_path))
 
         for row in csv_reader:
             pk = row[lookup_field].lower()
@@ -71,7 +75,7 @@ class NamingLookupClause(NamingClause):
                 self.known_values[pk] = {n: row[n] for n in non_lookup_keys}
             else:
                 raise mac.name_convention.NamingException(
-                    'Duplicate primary key {} in file {}'.format(pk, csv_path))
+                    'Duplicate primary key "{}" in file "{}"'.format(pk, csv_path))
 
     def validate(self, clause_value):
         clause_value = clause_value.lower()
@@ -79,10 +83,18 @@ class NamingLookupClause(NamingClause):
             details = self.known_values[clause_value]
             details[self.lookup_field] = clause_value
             valid_value = True
+            message = '\t"{}" is a recognised value for the clause "{}"'.format(
+                clause_value,
+                self.clause_name
+            )
         else:
             # print("{}".format(clause_value))
             details = {self.lookup_field: clause_value}
             valid_value = False
+            message = '\t"{}" is not a recognised value for the clause "{}"'.format(
+                clause_value,
+                self.clause_name
+            )
 
         class DataClauseValues(namedtuple('DataClauseValues', details.keys())):
             __slots__ = ()
@@ -90,6 +102,10 @@ class NamingLookupClause(NamingClause):
             @property
             def is_valid(self):
                 return valid_value
+
+            @property
+            def get_message(self):
+                return message
 
         # DataClauseValues = namedtuple('DataClauseValues', details.keys())
         return DataClauseValues(**details)

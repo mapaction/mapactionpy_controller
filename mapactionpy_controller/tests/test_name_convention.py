@@ -84,13 +84,14 @@ class TestNamingConvention(TestCase):
     def test_get_other_dnc_attributes(self):
         # pylint: disable=no-member
         dnc = NamingConvention(self.dnc_json_path)
-        # dni is None if no match with regex
+        # dnr.is_parsable is False if no match with regex
         dnr = dnc.validate(r'lka_admnad3_py_s0_wfpocha.pp.shp')
-        self.assertIsNone(dnr)
+        self.assertFalse(dnr.is_parsable)
 
-        # dni.is_valid is False as not all clauses are found in lookups,
+        # dnr.is_valid is False as not all clauses are found in lookups,
         # but details for the valid clauses are found.
         dnr = dnc.validate(r'aaa_admn_ad3_py_s0_wfp_pp')
+        self.assertTrue(dnr.is_parsable)
         self.assertFalse(dnr.is_valid)
         self.assertFalse(dnr.geoext.is_valid)
         self.assertFalse(dnr.geoext.is_valid)
@@ -130,18 +131,16 @@ class TestNamingConvention(TestCase):
     def test_name_validation(self):
         dnc = NamingConvention(self.dnc_json_path)
         # # pass valid names
-        dnr = dnc.validate(r'lka_admn_ad2_py_s5_unocha_pp_myfreetext')
-        self.assertTrue(dnc.validate(r'lka_admn_ad2_py_s5_unocha_pp_freetext'))
-        self.assertTrue(dnc.validate(r'lka_admn_ad2_py_s5_unocha_pp_free_text'))
-        self.assertTrue(dnc.validate(r'lka_admn_ad3_py_s0_wfp_pp'))
+        # dnr = dnc.validate(r'lka_admn_ad2_py_s5_unocha_pp_myfreetext')
+        self.assertTrue(dnc.validate(r'lka_admn_ad2_py_s5_unocha_pp_freetext').is_parsable)
+        self.assertTrue(dnc.validate(r'lka_admn_ad2_py_s5_unocha_pp_free_text').is_parsable)
+        self.assertTrue(dnc.validate(r'lka_admn_ad3_py_s0_wfp_pp').is_parsable)
         # fail - fail regex
-        self.assertFalse(dnc.validate(r'lka_admnad3_py_s0_wfpocha.pp.shp'))
+        self.assertFalse(dnc.validate(r'lka_admnad3_py_s0_wfpocha.pp.shp').is_parsable)
         # fail - clauses not listed in csv
         self.assertFalse(dnc.validate(r'aaa_admn_ad3_py_s0_wfp_pp').is_valid)
-        self.assertFalse(dnc.validate(
-            r'lka_bbbb_ad2_py_s5_ocha_pp_freetext').is_valid)
-        self.assertFalse(dnc.validate(
-            r'lka_admn_ccc_py_s5_ocha_pp_free_text').is_valid)
+        self.assertFalse(dnc.validate(r'lka_bbbb_ad2_py_s5_ocha_pp_freetext').is_valid)
+        self.assertFalse(dnc.validate(r'lka_admn_ccc_py_s5_ocha_pp_free_text').is_valid)
         # fail - clauses listed in wrong order
         dnr = dnc.validate(r'lka_admn_ad3_py_s0_wfpocha_pp')
         self.assertFalse(False if dnr is None else dnr.is_valid)
@@ -167,3 +166,38 @@ class TestNamingConvention(TestCase):
         self.assertTrue(dnc.validate(r'lka_admn_ad3_py_s0_wfp_pP').is_valid)
         self.assertTrue(dnc.validate(r'lka_admn_ad3_py_s0_wfp_PP').is_valid)
         self.assertTrue(dnc.validate(r'LKA_ADMN_AD3_PY_S0_WFP_PP').is_valid)
+
+    def test_name_to_validate_property(self):
+        dnc = NamingConvention(self.dnc_json_path)
+
+        # test the full name is retrivable for a parsable name
+        dnr = dnc.validate(r'aaa_admn_ad3_py_s0_wfp_pp')
+        self.assertTrue(dnr.is_parsable)
+        self.assertEqual(dnr.name_to_validate, r'aaa_admn_ad3_py_s0_wfp_pp')
+        # test the full name is retrivable for a non-parsable name
+        dnr = dnc.validate(r'lka_admnad3_py_s0_wfpocha.pp.shp')
+        self.assertFalse(dnr.is_parsable)
+        self.assertEqual(dnr.name_to_validate, r'lka_admnad3_py_s0_wfpocha.pp.shp')
+
+    def test_get_message_property(self):
+        dnc = NamingConvention(self.dnc_json_path)
+
+        # message when dnr.is_parsable is False
+        dnr = dnc.validate(r'lka_admnad3_py_s0_wfpocha.pp.shp')
+        self.assertFalse(dnr.is_parsable)
+        print(dnr.get_message)
+        self.assertRegexpMatches(dnr.get_message, r'not parsable')
+
+        # message when dnr.is_parsable is True but dnr.is_valid is False
+        dnr = dnc.validate(r'aaa_admn_ad3_py_s0_wfp_pp')
+        self.assertTrue(dnr.is_parsable)
+        self.assertFalse(dnr.is_valid)
+        self.assertRegexpMatches(dnr.get_message, r'is parsable')
+        self.assertRegexpMatches(dnr.get_message, r'not valid')
+        print(dnr.get_message)
+
+        # message when dnr.is_valid is True
+        dnr = dnc.validate(r'lka_admn_ad3_py_s0_wfp_pp')
+        self.assertTrue(dnr.is_valid)
+        self.assertRegexpMatches(dnr.get_message, r'is valid')
+        print(dnr.get_message)

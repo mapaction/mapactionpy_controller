@@ -45,9 +45,10 @@ class NamingConvention:
                                       'an instance of mapactionpy_controller.name_convention.NameClause'
                                       ''.format(self.nc_json_path, validator_name))
 
-    def validate(self, data_name):
-        regex_res = self.regex.search(data_name)
+    def validate(self, name_to_validate):
+        regex_res = self.regex.search(name_to_validate)
         if regex_res:
+            # If there is a regex result, then the name can be parsed
             result = {}
             for key in self._clause_validation:
                 v = self._clause_validation[key]
@@ -58,12 +59,36 @@ class NamingConvention:
                 __slots__ = ()
 
                 @property
+                def name_to_validate(self):
+                    return name_to_validate
+
+                @property
+                def is_parsable(self):
+                    return True
+
+                @property
                 def is_valid(self):
                     return all(x.is_valid for x in self._asdict().values())
 
+                @property
+                def get_message(self):
+                    message = 'The name "{}" is parsable:\n'.format(name_to_validate)
+                    message = message + ('\n'.join(
+                        map(lambda x: x.get_message, self._asdict().values())
+                    ))
+                    return message
+
             return NamingResult(**result)
         else:
-            return None
+            # Basic NamingResult for cases where the name cannot be parsed
+            class NamingResult(namedtuple(
+                    'NamingResult', ('name_to_validate', 'is_parsable', 'is_valid', 'get_message'))):
+                __slots__ = ()
+
+            return NamingResult(
+                name_to_validate,
+                False, False, 'The name "{}" is not parsable'.format(name_to_validate)
+            )
 
 
 class NamingException(Exception):
