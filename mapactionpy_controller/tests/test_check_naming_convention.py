@@ -1,6 +1,5 @@
 from unittest import TestCase
 import mapactionpy_controller.check_naming_convention as check_naming_convention
-from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 import sys
 import os
 import six
