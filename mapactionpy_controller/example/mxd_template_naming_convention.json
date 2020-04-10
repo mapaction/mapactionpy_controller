@@ -1,0 +1,20 @@
+{
+    "pattern": "^(?P<arcmapversion>arcgis_\\d\\d_\\d)[-_](?P<templatestyle>(reference|thematic))[-_](?P<orientation>(landscape|portrait))",
+    "clauses":[
+        {
+            "name": "arcmapversion",
+            "validator": "mapactionpy_controller.name_clause_validators.NamingFreeTextClause",
+            "alias": "Value"
+        },
+        {
+            "name": "templatestyle",
+            "validator": "mapactionpy_controller.name_clause_validators.NamingFreeTextClause",
+            "alias": "Value"
+        },
+        {
+            "name": "orientation",
+            "validator": "mapactionpy_controller.name_clause_validators.NamingFreeTextClause",
+            "alias": "Value"
+        }
+    ]
+}

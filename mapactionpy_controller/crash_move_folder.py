@@ -26,7 +26,8 @@ class CrashMoveFolder:
             self.layer_nc_definition = os.path.join(self.path, obj['layer_nc_definition'])
             self.layer_properties = os.path.join(self.path, obj['layer_properties'])
             self.map_definitions = os.path.join(self.path, obj['map_definitions'])
-            self.mxd_nc_definition = os.path.join(self.path, obj['mxd_nc_definition'])
+            self.mxd_nc_definition = os.path.join(self.path, obj['mxd_products_nc_definition'])
+            self.mxd_template_nc_definition = os.path.join(self.path, obj['mxd_template_nc_definition'])
             # others
             self.arcgis_version = obj['arcgis_version']
             # self.categories = obj['categories']
@@ -62,16 +63,3 @@ class CrashMoveFolder:
     def verify_paths(self):
         # return all(all(_verify_paths().values()), self.verify_mxds())
         return all(self._get_path_verification_as_dict().values())
-
-    def verify_mxds(self):
-        result = True
-        for category in (self.categories):
-            for orientation in ['landscape', 'portrait']:
-                templateFileName = self.arcgis_version + "_" + category + "_" + orientation
-
-                if (category == "reference"):
-                    templateFileName = templateFileName + "_bottom"
-                templateFileName = templateFileName + ".mxd"
-                if not os.path.exists(self.mxd_templates):
-                    result = False
-        return result
