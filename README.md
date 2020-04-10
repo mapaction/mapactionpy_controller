@@ -65,7 +65,7 @@ Exmples of the naming convention config files are in the `examples` directory, i
 
 **DataNameClause** is an abstract class. Callers are unlikely to need to directly access this class or any concrete examples. Concrete examples are DataNameFreeTextClause and DataNameLookupClause. When the `.validate(data_name_str)` method is called on a DataNameConvention object, it will call `.validate(clause_str)` in each individual DataNameClause obj. 
 
-**DataNameResult** represents the _result_ of a specific data name test and is returned by `DataNameConvention.validate()`. The `.is_valid` property indicates whether or not all of the clauses validate. DataNameResult is a [namedtuple](https://docs.python.org/2.7/library/collections.html#collections.namedtuple).
+**DataNameResult** represents the _result_ of a specific data name test and is returned by `DataNameConvention.validate()`. The `.is_parsable` property indicated whether or not the name could be parsed by the DataNameConvention's regex. The `.is_valid` property indicates whether or not _all_ of the clauses validate. (`.is_valid` will always be `False` if `.is_parsable` is `False`). DataNameResult is a [namedtuple](https://docs.python.org/2.7/library/collections.html#collections.namedtuple).
 The values for individual clauses can be directly accessed using dotted property notation (eg  via members such as  `dnr.datatheme.Description` or `dnr.source.Organisation`. If whether or not the clause validated is returned by the `.is_valid` property (eg . `dnr.datatheme.is_valid`).
 
 Example code:
@@ -74,7 +74,7 @@ dnc = DataNameConvention(path_to_dnc_json_definition)
 
 # regex does not match
 dnr = dnc.validate('abcde')
-self.assertIsNone(dnr)
+self.assertFalse(dnr.is_parsable)
 
 # regex does matches, but some clauses fail lookup in csv file
 dnr = dnc.validate(r'aaa_admn_ad3_py_s0_wfp_pp')
