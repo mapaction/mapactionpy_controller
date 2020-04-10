@@ -1,5 +1,6 @@
 from unittest import TestCase
 import mapactionpy_controller.check_naming_convention as check_naming_convention
+from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 import sys
 import os
 import six
@@ -31,7 +32,29 @@ class TestCheckNamingConventionTool(TestCase):
         with self.assertRaises(SystemExit):
             check_naming_convention.get_args()
 
-    def test_check_naming_convention_main(self):
-        sys.argv[1:] = [self.cmf_descriptor_path]
+    def test_check_naming_convention_check_dir(self):
+        nc_desc_path = os.path.join(self.parent_dir, 'example', 'data_naming_convention.json')
 
-        self.assertEqual(check_naming_convention.main(), 0)
+        dir_of_valid_names = os.path.join(self.parent_dir, 'tests',
+                                          'testfiles', 'test_naming_convention', 'valid'
+                                          )
+
+        dir_of_invalid_names = os.path.join(self.parent_dir, 'tests',
+                                            'testfiles', 'test_naming_convention', 'invalid'
+                                            )
+
+        # point to empty directories
+        tmp_result = check_naming_convention.check_dir(self.parent_dir, nc_desc_path, '.shp', False)
+        self.assertEqual(tmp_result, 0)
+
+        # point to a compliant, populated directory
+        tmp_result = check_naming_convention.check_dir(dir_of_valid_names, nc_desc_path, '.shp', False)
+        self.assertEqual(tmp_result, 0)
+
+        # point to a non-compliant, populated directory
+        tmp_result = check_naming_convention.check_dir(dir_of_invalid_names, nc_desc_path, '.shp', True)
+        self.assertGreater(tmp_result, 0)
+
+        # point to a non-compliant, populated directory
+        tmp_result = check_naming_convention.check_dir(dir_of_invalid_names, nc_desc_path, '.shp', False)
+        self.assertGreater(tmp_result, 0)

@@ -1,7 +1,7 @@
 import argparse
 import os
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
-import mapactionpy_controller.name_convention as data_name_convention
+import mapactionpy_controller.name_convention as name_convention
 
 
 def is_valid_file(parser, arg):
@@ -12,42 +12,46 @@ def is_valid_file(parser, arg):
         return arg
 
 
-def test_contents_of_dir(dir, name_conv_definition, file_ext):
-    nc = data_name_convention.NamingConvention(name_conv_definition)
-    nc.regex.groupindex
-    return_code = 0
+def get_naming_results_for_dir(dir, nc, file_ext=''):
+    """
+    Returns:
+        - None if there are no naming convention violations
+        - An object describing the violations if they exist.
+    """
+    def _is_relevant_file(f):
+        f_path = os.path.join(dir, f)
+        extension = os.path.splitext(f)[1]
+        return (os.path.isfile(f_path)) and (extension == file_ext)
 
-    print("*****************")
-    print("CHECKING DIR {}".format(dir))
-    print("*****************")
+    filenames = os.listdir(dir)
+    filenames = filter(_is_relevant_file, filenames)
 
-    for root, dirs, files in os.walk(dir):  # pylint: disable=unused-variable
-        for f in files:
-            basename, extension = os.path.splitext(f)
-            if extension in file_ext:
-                result = nc.validate(basename)
-                if not result:
-                    print("error filename does not match regex: {}".format(f))
-                    return_code += 1
-                elif result.is_valid:
-                    pass
-                    # print("valid filename: {}".format(f))
-                else:
-                    print("one or more clauses not found in lookup tables : {}".format(f))
-                    rdict = result._asdict()
-                    return_code += 1
+    return [nc.validate(fi) for fi in filenames]
 
-                    for clausename in nc.regex.groupindex:
-                        clause_details = rdict[clausename]
-                        # print(clausename, cdict)
-                        if not clause_details.is_valid:
-                            print("\t{} is not a recognised value for the clause {}".format(
-                                clause_details.Value,
-                                clausename))
 
-                    print
+def extract_naming_results_messages(name_results, extract_failures_only=True):
+    messages = set()
 
-    return return_code
+    if extract_failures_only:
+        filtered_list = filter(lambda r: (not r.is_valid), name_results)
+    else:
+        filtered_list = name_results
+
+    for ncr in filtered_list:
+        messages.add(ncr.get_message)
+
+    return messages
+
+
+def check_dir(dir_to_check, nc_desc_file, extn_to_check, inc_valid):
+    nc = name_convention.NamingConvention(nc_desc_file)
+    nrs = get_naming_results_for_dir(dir_to_check, nc, extn_to_check)
+    msgs = extract_naming_results_messages(nrs, extract_failures_only=(not inc_valid))
+    if len(msgs):
+        print('\n'.join(msgs))
+
+    # count of all the invalid names
+    return sum(int(not r.is_valid) for r in nrs)
 
 
 def main():
@@ -55,20 +59,18 @@ def main():
     cmf = CrashMoveFolder(args.cmf_config_path)
     return_code = 0
 
-    # test data names
-    return_code += test_contents_of_dir(cmf.active_data, cmf.data_nc_definition, '.shp')
+    ncs_to_check = (
+        (cmf.active_data, cmf.data_nc_definition, '.shp'),
+        (cmf.layer_rendering, cmf.layer_nc_definition, '.lyr'),
+        (cmf.mxd_products, cmf.mxd_nc_definition, '.mxd'),
+        (cmf.mxd_templates, cmf.mxd_template_nc_definition, '.mxd')
+    )
 
-    # test layer names
-    return_code += test_contents_of_dir(cmf.layer_rendering, cmf.layer_nc_definition, '.lyr')
+    for dir_to_check, nc_desc_file, extn_to_check in ncs_to_check:
+        return_code += check_dir(dir_to_check, nc_desc_file, extn_to_check, args.inc_valid)
 
-    # test mxd names
-    return_code += test_contents_of_dir(cmf.mxd_products, cmf.mxd_nc_definition, '.mxd')
-
-    # Quit with the exist code
+    # Quit with the exit code
     return return_code
-
-    # test mxd template names
-    test_contents_of_dir(cmf.mxd_templates, cmf.mxd_template_nc_definition, '.mxd')
 
 
 def get_args():
@@ -78,6 +80,10 @@ def get_args():
     )
     parser.add_argument("cmf_config_path", help="path to layer directory", metavar="FILE",
                         type=lambda x: is_valid_file(parser, x))
+    parser.add_argument(
+        '--inc-valid', action='store_true',
+        help='Include valid: Print messages for valid names in addition to printing messages for failing names',
+    )
 
     return parser.parse_args()
 

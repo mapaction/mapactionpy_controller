@@ -53,6 +53,7 @@ class NamingConvention:
             for key in self._clause_validation:
                 v = self._clause_validation[key]
                 result[key] = v.validate(regex_res.group(key))
+                valid = all(x.is_valid for x in result.values())
 
             class NamingResult(namedtuple(
                     'NamingResult', self._clause_validation.keys())):
@@ -68,11 +69,15 @@ class NamingConvention:
 
                 @property
                 def is_valid(self):
-                    return all(x.is_valid for x in self._asdict().values())
+                    return valid
 
                 @property
                 def get_message(self):
-                    message = 'The name "{}" is parsable:\n'.format(name_to_validate)
+                    if valid:
+                        message = 'The name "{}" is parsable and valid:\n'.format(name_to_validate)
+                    else:
+                        message = 'The name "{}" is parsable but not valid:\n'.format(name_to_validate)
+
                     message = message + ('\n'.join(
                         map(lambda x: x.get_message, self._asdict().values())
                     ))
