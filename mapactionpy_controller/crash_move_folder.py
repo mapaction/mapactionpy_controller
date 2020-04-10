@@ -63,16 +63,3 @@ class CrashMoveFolder:
     def verify_paths(self):
         # return all(all(_verify_paths().values()), self.verify_mxds())
         return all(self._get_path_verification_as_dict().values())
-
-    def verify_mxds(self):
-        result = True
-        for category in (self.categories):
-            for orientation in ['landscape', 'portrait']:
-                templateFileName = self.arcgis_version + "_" + category + "_" + orientation
-
-                if (category == "reference"):
-                    templateFileName = templateFileName + "_bottom"
-                templateFileName = templateFileName + ".mxd"
-                if not os.path.exists(self.mxd_templates):
-                    result = False
-        return result
