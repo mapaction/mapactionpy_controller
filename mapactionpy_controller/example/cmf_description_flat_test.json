@@ -8,10 +8,9 @@
 	"layer_rendering": ".",
 	"legend_images": ".",
 	"map_definitions": "dummy_mapCookbook.json",
-	"mxd_products": ".",
-	"mxd_products_nc_definition": "mxd_naming_convention.json",
-	"mxd_template_nc_definition": "mxd_template_naming_convention.json",
-	"mxd_templates": ".",
-	"original_data": ".",
-	"qgis_templates": "."
+	"map_projects": ".",
+	"map_projects_nc_definition": "mxd_naming_convention.json",
+	"map_template_nc_definition": "mxd_template_naming_convention.json",
+	"map_templates": ".",
+	"original_data": "."
 }

@@ -8,10 +8,9 @@
 	"layer_rendering": "GIS/3_Mapping/31_Resources/312_Layer_files",
 	"legend_images": "GIS/3_Mapping/31_Resources/317_Legends",
 	"map_definitions": "GIS/3_Mapping/31_Resources/316_Automation/mapCookbook.json",
-	"mxd_products": "GIS/3_Mapping/33_MXD_Maps",
-	"mxd_products_nc_definition": "GIS/2_Active_Data/200_data_name_lookup/mxd_naming_convention.json",
-	"mxd_template_nc_definition": "GIS/2_Active_Data/200_data_name_lookup/mxd_template_naming_convention.json",
-	"mxd_templates": "GIS/3_Mapping/32_MXD_Templates/arcgis_10_6",
-	"original_data": "GIS/1_Original_Data",
-	"qgis_templates": "GIS/3_Mapping/39_QGIS_Templates"
+	"map_projects": "GIS/3_Mapping/33_MXD_Maps",
+	"map_projects_nc_definition": "GIS/2_Active_Data/200_data_name_lookup/mxd_naming_convention.json",
+	"map_template_nc_definition": "GIS/2_Active_Data/200_data_name_lookup/mxd_template_naming_convention.json",
+	"map_templates": "GIS/3_Mapping/32_MXD_Templates/arcgis_10_6",
+	"original_data": "GIS/1_Original_Data"
 }

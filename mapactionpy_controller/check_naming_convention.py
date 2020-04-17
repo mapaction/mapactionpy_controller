@@ -62,8 +62,10 @@ def main():
     ncs_to_check = (
         (cmf.active_data, cmf.data_nc_definition, '.shp'),
         (cmf.layer_rendering, cmf.layer_nc_definition, '.lyr'),
-        (cmf.mxd_products, cmf.mxd_nc_definition, '.mxd'),
-        (cmf.mxd_templates, cmf.mxd_template_nc_definition, '.mxd')
+        (cmf.map_projects, cmf.map_projects_nc_definition, '.qgs'),
+        (cmf.map_projects, cmf.map_projects_nc_definition, '.mxd'),
+        (cmf.map_templates, cmf.map_template_nc_definition, '.qgs'),
+        (cmf.map_templates, cmf.map_template_nc_definition, '.mxd')
     )
 
     for dir_to_check, nc_desc_file, extn_to_check in ncs_to_check:
