@@ -19,7 +19,7 @@ class TestLayerProperties(TestCase):
         test_lp = LayerProperties(test_cmf, "test", verify_on_creation=False)
         self.assertIsInstance(test_lp, LayerProperties)
 
-        # 2) test with valid cmd file
+        # 2) test with valid cmf file
         test_lp = LayerProperties(self.path_to_valid_cmf_des, "test", verify_on_creation=False)
         self.assertIsInstance(test_lp, LayerProperties)
 

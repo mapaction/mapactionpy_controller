@@ -67,7 +67,7 @@ class ConfigVerifier():
     def check_lyr_props_vs_map_cookbook(self, args):
         cmf = CrashMoveFolder(args.cmf_desc)
         lyrs = LayerProperties(cmf, '', verify_on_creation=False)
-        cb = MapCookbook(cmf.map_definitions)
+        cb = MapCookbook(cmf, lyrs)
         cb_unique_lyrs, lp_unique_lyrs = self.get_unique_lyr_names(cb, lyrs)
 
         cb_only = cb_unique_lyrs.difference(lp_unique_lyrs)
