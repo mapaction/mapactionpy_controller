@@ -61,7 +61,6 @@ class TestLayerProperties(TestCase):
 
         # 1) Exact match of .lyr files and layer properties
         test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_exact_match')
-        print(test_cmf.layer_rendering)
         lyr_lp = LayerProperties(test_cmf, '.lyr', verify_on_creation=True)
         self.assertFalse(all(lyr_lp.get_difference_with_layer_rendering_dir()))
 
@@ -89,3 +88,18 @@ class TestLayerProperties(TestCase):
         self.assertTrue(all(long_lived_lp.get_difference_with_layer_rendering_dir()))
         long_lived_lp.cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_exact_match')
         self.assertFalse(all(long_lived_lp.get_difference_with_layer_rendering_dir()))
+
+        # 7) Same results whether or not teh '.' character is included in the file extension
+        test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_exact_match')
+        # passing example with dot
+        lyr_lp = LayerProperties(test_cmf, '.lyr', verify_on_creation=True)
+        self.assertFalse(all(lyr_lp.get_difference_with_layer_rendering_dir()))
+        # passing example without dot
+        lyr_lp = LayerProperties(test_cmf, 'lyr', verify_on_creation=True)
+        self.assertFalse(all(lyr_lp.get_difference_with_layer_rendering_dir()))
+        # failing example with dot
+        test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_mis_match')
+        self.assertRaises(ValueError, LayerProperties, test_cmf, '.lyr')
+        # failing example without dot
+        test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_mis_match')
+        self.assertRaises(ValueError, LayerProperties, test_cmf, 'lyr')
