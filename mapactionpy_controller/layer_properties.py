@@ -36,7 +36,11 @@ class LayerProperties:
         except AttributeError:
             self.cmf = CrashMoveFolder(cmf, verify_on_creation=True)
 
-        self.extension = extension
+        if len(extension) == 0 or extension.startswith('.'):
+            self.extension = extension
+        else:
+            self.extension = '.{}'.format(extension)
+
         self.properties = {}  # Dictionary
         self._parse()
 

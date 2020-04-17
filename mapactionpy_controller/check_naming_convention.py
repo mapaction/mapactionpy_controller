@@ -62,6 +62,8 @@ def main():
     ncs_to_check = (
         (cmf.active_data, cmf.data_nc_definition, '.shp'),
         (cmf.layer_rendering, cmf.layer_nc_definition, '.lyr'),
+        (cmf.layer_rendering, cmf.layer_nc_definition, '.qml'),
+        (cmf.layer_rendering, cmf.layer_nc_definition, '.qlr'),
         (cmf.map_projects, cmf.map_projects_nc_definition, '.qgs'),
         (cmf.map_projects, cmf.map_projects_nc_definition, '.mxd'),
         (cmf.map_templates, cmf.map_template_nc_definition, '.qgs'),
