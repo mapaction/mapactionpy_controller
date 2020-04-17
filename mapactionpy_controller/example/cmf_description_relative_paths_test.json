@@ -9,8 +9,8 @@
 	"legend_images": "../example",
 	"map_definitions": "../example/dummy_mapCookbook.json",
 	"map_projects": "../example",
-	"map_projects_nc_definition": "../example/mxd_naming_convention.json",
-	"map_template_nc_definition": "../example/mxd_template_naming_convention.json",
+	"map_projects_nc_definition": "../example/map_project_naming_convention.json",
+	"map_template_nc_definition": "../example/map_template_naming_convention.json",
 	"map_templates": "../example",
 	"original_data": "../example"
 }
