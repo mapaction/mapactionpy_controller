@@ -4,20 +4,26 @@ import json
 
 class MapCookbook:
     """
-    MapCookbook - Contains recipes for Map Products
+    MapCookbook - Contains recipes for Map Products   
     """
 
-    def __init__(self, cookbookJsonFile):
+    def __init__(self, cmf, layer_props, verify_on_creation=True):
         """
         Sets path for Map Cookbook json file.
         Creates empty list of of products.
 
-        Arguments:
-           cookbookJsonFile {str} -- path to Map Cookbook json file "mapCookbook.json"
+        Positional Arguments:
+            * cmf {CrashMoveFolder} - a CrashMoveFolder object
+            * layer_props {LayerProperties} - a LayerProperties object
+        
+        Optional Named Arguments:
+            verify_on_creation {bool} - If True (default) then contents of the `cmf.map_definitions`
+            json file are compared to the `layer_props`. If the `cmf.map_definitions` contains references to
+            layers which are not described by the `layer_props` object then a ValueError will be raised.
         """
         # @TODO Add validation +
         # pass in LayerProperties object, and validate
-        self.cookbookJsonFile = cookbookJsonFile
+        self.cookbook_json_file = cmf.map_definitions
         self.products = {}
         self._parse()
 
@@ -25,7 +31,7 @@ class MapCookbook:
         """
         Reads product "recipes" from Map Cookbook json file
         """
-        with open(self.cookbookJsonFile) as json_file:
+        with open(self.cookbook_json_file) as json_file:
             jsonContents = json.load(json_file)
             for recipe in jsonContents['recipes']:
                 rec = MapRecipe(recipe)
