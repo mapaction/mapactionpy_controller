@@ -110,10 +110,10 @@ class TestMAController(TestCase):
             test_cmf = CrashMoveFolder(cmf_partial_fail, verify_on_creation=True)
 
         if six.PY2:
-            self.assertRegexpMatches(str(cm.exception), "mxd_templates")
+            self.assertRegexpMatches(str(cm.exception), "map_templates")
             self.assertNotRegexpMatches(str(cm.exception), "original_data")
         else:
-            self.assertRegex(str(cm.exception), "mxd_templates")
+            self.assertRegex(str(cm.exception), "map_templates")
             self.assertNotRegex(str(cm.exception), "original_data")
 
         # create a valid CMF object and then test paths, after creation

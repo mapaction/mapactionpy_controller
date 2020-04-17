@@ -1,8 +1,8 @@
 {
-    "pattern": "^(?P<arcmapversion>arcgis_\\d\\d_\\d)[-_](?P<templatestyle>(reference|thematic))[-_](?P<orientation>(landscape|portrait))",
+    "pattern": "^(?P<gissoftware>.*?)_(?P<templatestyle>(reference|thematic|all[-_]templates))_(?P<orientation>(landscape|portrait|.*?))",
     "clauses":[
         {
-            "name": "arcmapversion",
+            "name": "gissoftware",
             "validator": "mapactionpy_controller.name_clause_validators.NamingFreeTextClause",
             "alias": "Value"
         },

@@ -8,10 +8,9 @@
 	"layer_rendering": "../example",
 	"legend_images": "../example",
 	"map_definitions": "../example/dummy_mapCookbook.json",
-	"mxd_products": "../example",
-	"mxd_products_nc_definition": "../example/mxd_naming_convention.json",
-	"mxd_template_nc_definition": "../example/mxd_template_naming_convention.json",
-	"mxd_templates": "../example",
-	"original_data": "../example",
-	"qgis_templates": "../example"
+	"map_projects": "../example",
+	"map_projects_nc_definition": "../example/map_project_naming_convention.json",
+	"map_template_nc_definition": "../example/map_template_naming_convention.json",
+	"map_templates": "../example",
+	"original_data": "../example"
 }
