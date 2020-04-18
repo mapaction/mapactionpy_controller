@@ -1,0 +1,222 @@
+{
+	"recipes": [
+		{
+			"mapnumber": "MA001",
+			"category": "Reference",
+			"product": "Country Overview with Admin 1 Boundaries and Topography",
+			"export": true,
+			"layers": [
+				{
+					"name": "mainmap-stle-stl-pt-s0-allmaps"
+				},
+				{
+					"name": "mainmap-carto-fea-py-s0-allmaps"
+				},
+				{
+					"name": "mainmap-tran-por-pt-s0-allmaps"
+				},
+				{
+					"name": "mainmap-tran-air-pt-s0-allmaps"
+				},
+				{
+					"name": "mainmap-elev-cst-ln-s0-allmaps"
+				},
+				{
+					"name": "mainmap-admn-adx-ln-s0-reference"
+				},
+				{
+					"name": "mainmap-admn-ad1-ln-s0-reference"
+				},
+				{
+					"name": "mainmap-tran-rrd-ln-s0-allmaps"
+				},
+				{
+					"name": "mainmap-tran-rds-ln-s0-allmaps"
+				},
+				{
+					"name": "mainmap-phys-wat-py-s0-allmaps"
+				},
+				{
+					"name": "mainmap-phys-riv-ln-s0-reference"
+				},
+				{
+					"name": "mainmap-admn-adx-py-s0-surroundingcountries"
+				},
+				{
+					"name": "mainmap-elev-dem-ras-s0-reference"
+				},
+				{
+					"name": "mainmap-elev-hsh-ras-s0-reference"
+				},
+				{
+					"name": "mainmap-admn-ad1-py-s0-reference",
+					"zoomMultiplier": 0.1
+				},
+				{
+					"name": "locationmap-admn-adx-ln-s0-locationmaps"
+				},
+				{
+					"name": "locationmap-admn-ad0-py-s0-locationmaps",
+					"zoomMultiplier": 1
+				},
+				{
+					"name": "locationmap-elev-cst-ln-s0-locationmaps"
+				},
+				{
+					"name": "locationmap-admn-adx-py-s0-surroundingcountries"
+				}
+			],
+			"summary": "Country overview with topography displayed"
+		},
+		{
+			"mapnumber": "MA002",
+			"category": "Reference",
+			"product": "Country Overview with Admin 1 Boundaries",
+			"export": true,
+			"layers": [
+				{
+					"name": "mainmap-stle-stl-pt-s0-allmaps"
+				},
+				{
+					"name": "mainmap-carto-fea-py-s0-allmaps"
+				},
+				{
+					"name": "mainmap-elev-cst-ln-s0-allmaps"
+				},
+				{
+					"name": "mainmap-admn-adx-ln-s0-reference"
+				},
+				{
+					"name": "mainmap-admn-ad1-ln-s0-reference"
+				},
+				{
+					"name": "mainmap-admn-ad1-py-s0-reference",
+					"zoomMultiplier": 0.1
+				},
+				{
+					"name": "mainmap-admn-adx-py-s0-surroundingcountries"
+				},
+				{
+					"name": "locationmap-admn-adx-ln-s0-locationmaps"
+				},
+				{
+					"name": "locationmap-admn-ad0-py-s0-locationmaps",
+					"zoomMultiplier": 1
+				},
+				{
+					"name": "locationmap-elev-cst-ln-s0-locationmaps"
+				},
+				{
+					"name": "locationmap-admn-adx-py-s0-surroundingcountries"
+				}
+			],
+			"summary": "Country overview with detail of Admin 1 boundaries and major cities"
+		},
+		{
+			"mapnumber": "MA003",
+			"category": "Reference",
+			"product": "Country Overview with Admin 1 & 2 Boundaries",
+			"export": true,
+			"layers": [
+				{
+					"name": "mainmap-stle-stl-pt-s0-allmaps"
+				},
+				{
+					"name": "mainmap-carto-fea-py-s0-allmaps"
+				},
+				{
+					"name": "mainmap-elev-cst-ln-s0-allmaps"
+				},
+				{
+					"name": "mainmap-admn-adx-ln-s0-reference"
+				},
+				{
+					"name": "mainmap-admn-ad1-ln-s0-reference"
+				},
+				{
+					"name": "mainmap-admn-ad2-ln-s0-reference"
+				},
+				{
+					"name": "mainmap-admn-ad1-py-s0-reference",
+					"zoomMultiplier": 0.1
+				},
+				{
+					"name": "mainmap-admn-ad2-py-s0-reference"
+				},
+				{
+					"name": "mainmap-admn-adx-py-s0-surroundingcountries"
+				},
+				{
+					"name": "locationmap-admn-adx-ln-s0-locationmaps"
+				},
+				{
+					"name": "locationmap-admn-ad0-py-s0-locationmaps",
+					"zoomMultiplier": 1
+				},
+				{
+					"name": "locationmap-elev-cst-ln-s0-locationmaps"
+				},
+				{
+					"name": "locationmap-admn-adx-py-s0-surroundingcountries"
+				}
+			],
+			"summary": "Country overview with detail of Admin 1 & 2 boundaries and major cities"
+		},
+		{
+			"mapnumber": "MA004",
+			"category": "Reference",
+			"product": "Country Overview with Transport",
+			"export": true,
+			"layers": [
+				{
+					"name": "mainmap-stle-stl-pt-s0-allmaps"
+				},
+				{
+					"name": "mainmap-carto-fea-py-s0-allmaps"
+				},
+				{
+					"name": "mainmap-tran-por-pt-s0-allmaps"
+				},
+				{
+					"name": "mainmap-tran-air-pt-s0-allmaps"
+				},
+				{
+					"name": "mainmap-elev-cst-ln-s0-allmaps"
+				},
+				{
+					"name": "mainmap-admn-adx-ln-s0-reference"
+				},
+				{
+					"name": "mainmap-admn-ad1-ln-s0-reference"
+				},
+				{
+					"name": "mainmap-tran-rrd-ln-s0-allmaps"
+				},
+				{
+					"name": "mainmap-tran-rds-ln-s0-allmaps"
+				},
+				{
+					"name": "mainmap-admn-ad1-py-s0-reference",
+					"zoomMultiplier": 0.1
+				},
+				{
+					"name": "mainmap-admn-adx-py-s0-surroundingcountries"
+				},
+				{
+					"name": "locationmap-admn-adx-ln-s0-locationmaps"
+				},
+				{
+					"name": "locationmap-admn-ad0-py-s0-locationmaps",
+					"zoomMultiplier": 1
+				},
+				{
+					"name": "locationmap-elev-cst-ln-s0-locationmaps"
+				},
+				{
+					"name": "locationmap-admn-adx-py-s0-surroundingcountries"
+				}
+			],
+			"summary": "Shows country overview with transport information such as airports and ports"
+		}
+	]
+}

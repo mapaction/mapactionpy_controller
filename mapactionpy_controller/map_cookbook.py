@@ -33,7 +33,7 @@ class MapCookbook:
         self.layer_props = layer_props
 
         if verify_on_creation:
-            if not (layer_props == cmf.layer_properties):
+            if not (layer_props.cmf.layer_properties == cmf.layer_properties):
                 raise ValueError('Attempting to create a MapCookBook using a a CMF object and LayerProperties'
                                  ' object which point to different layer_properties.json files. This is probably'
                                  ' not what you want and may produce strange results. If you are sure this is want'
@@ -41,8 +41,8 @@ class MapCookbook:
                                  ' Values passed to the MapCookBook constructor\n'
                                  '   cmf.layer_properties={}\n'
                                  '   layer_props={}\n'.format(
-                                     self.layer_props,
-                                     layer_props
+                                     self.layer_props.cmf.layer_properties,
+                                     layer_props.cmf.layer_properties
                                  ))
 
             self.get_difference_with_layer_properties()
@@ -90,3 +90,5 @@ class MapCookbook:
             msg = msg + '\nThese layers are only mentioned in the Layer Properties json file and not in the'
             msg = msg + ' MapCookbook json file: \n\t'
             msg = msg + '\n\t'.join(lp_only)
+
+        return msg
