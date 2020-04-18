@@ -4,7 +4,7 @@ import json
 
 class MapCookbook:
     """
-    MapCookbook - Contains recipes for Map Products   
+    MapCookbook - Contains recipes for Map Products
     """
 
     def __init__(self, cmf, layer_props, verify_on_creation=True):
@@ -25,8 +25,8 @@ class MapCookbook:
             self.cookbook_json_file = cmf.map_definitions
         else:
             raise ValueError('The `cmf` parameter for MapCookbook.__init__() can only accept'
-                             'values where the paths verify. eg `cmf.verify_paths() == True`.'
-                             'The value passed in this case failed this test')
+                             ' values where the paths verify. eg `cmf.verify_paths() == True`.'
+                             ' The value passed in this case failed this test')
 
         self.products = {}
         self._parse_json_file()

@@ -1,4 +1,5 @@
 import os
+import six
 from unittest import TestCase
 
 from mapactionpy_controller.layer_properties import LayerProperties
@@ -28,7 +29,28 @@ class TestMapCookBook(TestCase):
         self.assertRaises(ValueError, MapCookbook, test_cmf, test_lp)
 
     def test_layer_props_and_cmf_mismatch(self):
-        self.fail()
+
+        # create and test_cmf and test_lp which refer different layer_prop.json files
+        cmf1 = CrashMoveFolder(self.path_to_valid_cmf_des)
+        test_lp = LayerProperties(cmf1, "test", verify_on_creation=False)
+        # now point the test_cmf to a different layer_props.json
+        cmf2 = CrashMoveFolder(self.path_to_valid_cmf_des)
+        cmf2.layer_properties = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'fixture_layer_properties_four_layers.json'
+        )
+
+        # check that a ValueError is raised when `verify_on_creation=True`
+        with self.assertRaises(ValueError) as ve:
+            MapCookbook(cmf2, test_lp, verify_on_creation=True)
+
+        if six.PY2:
+            self.assertRegexpMatches(str(ve.exception), "strange results")
+        else:
+            self.assertRegex(str(ve.exception), "strange results")
+
+        # check that a ValueError is not raised when `verify_on_creation=False`
+        test_mcb = MapCookbook(cmf2, test_lp, verify_on_creation=False)
+        self.assertIsInstance(test_mcb, MapCookbook)
 
     def test_layer_props_and_cookbook_mismatch(self):
         self.fail()
