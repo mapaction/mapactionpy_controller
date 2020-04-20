@@ -21,6 +21,18 @@ class MapCookbook:
             json file are compared to the `layer_props`. If the `cmf.map_definitions` contains references to
             layers which are not described by the `layer_props` object then a ValueError will be raised.
         """
+        self._check_cmf_param(cmf, layer_props, verify_on_creation)
+        self.products = {}
+        self._parse_json_file()
+        self.layer_props = layer_props
+
+        if verify_on_creation:
+            cb_only, lp_only = self.get_difference_with_layer_properties()
+            if len(cb_only) or len(lp_only):
+                msg = self._get_verify_failure_message(lp_only, cb_only)
+                raise ValueError(msg)
+
+    def _check_cmf_param(self, cmf, layer_props, verify_on_creation):
         if cmf.verify_paths():
             self.cookbook_json_file = cmf.map_definitions
         else:
@@ -28,27 +40,17 @@ class MapCookbook:
                              ' values where the paths verify. eg `cmf.verify_paths() == True`.'
                              ' The value passed in this case failed this test')
 
-        self.products = {}
-        self._parse_json_file()
-        self.layer_props = layer_props
-
-        if verify_on_creation:
-            if not (layer_props.cmf.layer_properties == cmf.layer_properties):
-                raise ValueError('Attempting to create a MapCookBook using a a CMF object and LayerProperties'
-                                 ' object which point to different layer_properties.json files. This is probably'
-                                 ' not what you want and may produce strange results. If you are sure this is want'
-                                 ' you require, then use `verify_on_creation=False` in the MapCookBook constructor.\n'
-                                 ' Values passed to the MapCookBook constructor\n'
-                                 '   cmf.layer_properties={}\n'
-                                 '   layer_props={}\n'.format(
-                                     self.layer_props.cmf.layer_properties,
-                                     layer_props.cmf.layer_properties
-                                 ))
-
-            cb_only, lp_only = self.get_difference_with_layer_properties()
-            if len(cb_only) or len(lp_only):
-                msg = self._get_verify_failure_message(lp_only, cb_only)
-                raise ValueError(msg)
+        if verify_on_creation and not (layer_props.cmf.layer_properties == cmf.layer_properties):
+            raise ValueError('Attempting to create a MapCookBook using a a CMF object and LayerProperties'
+                             ' object which point to different layer_properties.json files. This is probably'
+                             ' not what you want and may produce strange results. If you are sure this is want'
+                             ' you require, then use `verify_on_creation=False` in the MapCookBook constructor.\n'
+                             ' Values passed to the MapCookBook constructor\n'
+                             '   cmf.layer_properties={}\n'
+                             '   layer_props={}\n'.format(
+                                 cmf.layer_properties,
+                                 layer_props.cmf.layer_properties
+                             ))
 
     def _parse_json_file(self):
         """
