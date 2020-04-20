@@ -45,7 +45,10 @@ class MapCookbook:
                                      layer_props.cmf.layer_properties
                                  ))
 
-            self.get_difference_with_layer_properties()
+            cb_only, lp_only = self.get_difference_with_layer_properties()
+            if len(cb_only) or len(lp_only):
+                msg = self._get_verify_failure_message(lp_only, cb_only)
+                raise ValueError(msg)
 
     def _parse_json_file(self):
         """
@@ -59,21 +62,17 @@ class MapCookbook:
 
     def get_difference_with_layer_properties(self):
         cb_unique_lyrs = set()
-        lp_unique_lyrs = set()
 
         for recipe in self.products.values():
             for l in recipe.layers:
                 cb_unique_lyrs.add(l['name'])
 
-        for l in self.layer_props.properties:
-            lp_unique_lyrs.add(l)
+        lp_unique_lyrs = set(self.layer_props.properties)
 
         cb_only = cb_unique_lyrs.difference(lp_unique_lyrs)
         lp_only = lp_unique_lyrs.difference(cb_unique_lyrs)
 
-        if len(cb_only) or len(lp_only):
-            msg = self._get_verify_failure_message(lp_only, cb_only)
-            raise ValueError(msg)
+        return cb_only, lp_only
 
     def _get_verify_failure_message(self, lp_only, cb_only):
         msg = ('There is a mismatch between the layer_properties.json file:\n\t"{}"\n'

@@ -97,12 +97,9 @@ class LayerProperties:
               Properties json file.
         In the "ideal" senario, both sets both be empty.
         """
-        lp_unique_lyrs = set()
+        lp_unique_lyrs = set(self.properties)
+
         files_unique = set()
-
-        for layer_name in self.properties:
-            lp_unique_lyrs.add(layer_name)
-
         dir_content = os.listdir(self.cmf.layer_rendering)
         for f in dir_content:
             f_path = os.path.join(self.cmf.layer_rendering, f)
@@ -110,7 +107,6 @@ class LayerProperties:
             if (os.path.isfile(f_path)) and (fileext == self.extension):
                 files_unique.add(filename)
 
-        # sym_diff = lp_unique_lyrs.symmetric_difference(files_unique)
         lp_only = lp_unique_lyrs.difference(files_unique)
         files_only = files_unique.difference(lp_unique_lyrs)
 
