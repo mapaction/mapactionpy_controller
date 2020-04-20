@@ -47,10 +47,10 @@ class LayerProperties:
         if verify_on_creation:
             lp_only, files_only = self.get_difference_with_layer_rendering_dir()
             if len(lp_only) or len(files_only):
-                msg = self._get_verify_failure_message(lp_only, files_only)
+                msg = self._get_mismatch_with_layer_rendering_message(lp_only, files_only)
                 raise ValueError(msg)
 
-    def _get_verify_failure_message(self, lp_only, files_only):
+    def _get_mismatch_with_layer_rendering_message(self, lp_only, files_only):
         msg = ('There is a mismatch between:\n'
                ' (a) The layers described in the layer_properties.json file "{}"\n'
                ' and (b) The layers files, with file extension "{}", listed in the'
@@ -62,12 +62,13 @@ class LayerProperties:
                    self.cmf.layer_rendering
                ))
 
-        if len(lp_only):
-            msg = msg + "\nThe following layers are only in layer properties json file:\n\t"
-            msg = msg + "\n\t".join(lp_only)
-        if len(files_only):
-            msg = msg + "\nThe following files are only in layer rendering directory:\n\t"
-            msg = msg + "\n\t".join(files_only)
+        pair = ((lp_only, "The following layers are only present in layer properties json file:"),
+                (files_only, "The following files are only present in layer rendering directory:"))
+
+        for lyrs, s in pair:
+            if len(lyrs):
+                msg = msg + '\n{}\n\t'.format(s)
+                msg = msg + '\n\t'.join(lyrs)
 
         return msg
 

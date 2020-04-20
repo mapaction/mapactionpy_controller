@@ -83,13 +83,23 @@ class MapCookbook:
                    self.layer_props.cmf.layer_properties,
                    self.cookbook_json_file
                ))
-        if len(cb_only):
-            msg = msg + 'These layers are only mentioned in the MapCookbook json file and not in Layer'
-            msg = msg + ' Properties json file:\n\t'
-            msg = msg + '\n\t'.join(cb_only)
-        if len(lp_only):
-            msg = msg + '\nThese layers are only mentioned in the Layer Properties json file and not in the'
-            msg = msg + ' MapCookbook json file: \n\t'
-            msg = msg + '\n\t'.join(lp_only)
+        # if len(cb_only):
+        #     msg = msg + 'These layers are only mentioned in the MapCookbook json file and not in Layer'
+        #     msg = msg + ' Properties json file:\n\t'
+        #     msg = msg + '\n\t'.join(cb_only)
+        # if len(lp_only):
+        #     msg = msg + '\nThese layers are only mentioned in the Layer Properties json file and not in the'
+        #     msg = msg + ' MapCookbook json file: \n\t'
+        #     msg = msg + '\n\t'.join(lp_only)
+
+        pair = ((cb_only, 'These layers are only mentioned in the MapCookbook json file and not in Layer'
+                          ' Properties json file:'),
+                (lp_only, 'These layers are only mentioned in the Layer Properties json file and not in the'
+                          ' MapCookbook json file:'))
+
+        for lyrs, s in pair:
+            if len(lyrs):
+                msg = msg + '\n{}\n\t'.format(s)
+                msg = msg + '\n\t'.join(lyrs)
 
         return msg
