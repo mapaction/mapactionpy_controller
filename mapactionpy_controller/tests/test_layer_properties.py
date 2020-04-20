@@ -62,10 +62,10 @@ class TestLayerProperties(TestCase):
         # 1) Exact match of .lyr files and layer properties
         test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_exact_match')
         lyr_lp = LayerProperties(test_cmf, '.lyr', verify_on_creation=True)
-        self.assertFalse(all(lyr_lp.get_difference_with_layer_rendering_dir()))
+        self.assertFalse(lyr_lp.is_difference_with_layer_rendering_dir())
 
         qml_lp = LayerProperties(test_cmf, '.qml', verify_on_creation=True)
-        self.assertFalse(all(qml_lp.get_difference_with_layer_rendering_dir()))
+        self.assertFalse(qml_lp.is_difference_with_layer_rendering_dir())
 
         # 2) .lyr files which don't have layer properties entries
         test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'five_files')
@@ -85,18 +85,18 @@ class TestLayerProperties(TestCase):
         # 6) Overrided validation checks in constructor
         test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_mis_match')
         long_lived_lp = LayerProperties(test_cmf, '.lyr', verify_on_creation=False)
-        self.assertTrue(all(long_lived_lp.get_difference_with_layer_rendering_dir()))
+        self.assertTrue(long_lived_lp.is_difference_with_layer_rendering_dir())
         long_lived_lp.cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_exact_match')
-        self.assertFalse(all(long_lived_lp.get_difference_with_layer_rendering_dir()))
+        self.assertFalse(long_lived_lp.is_difference_with_layer_rendering_dir())
 
         # 7) Same results whether or not teh '.' character is included in the file extension
         test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_exact_match')
         # passing example with dot
         lyr_lp = LayerProperties(test_cmf, '.lyr', verify_on_creation=True)
-        self.assertFalse(all(lyr_lp.get_difference_with_layer_rendering_dir()))
+        self.assertFalse(lyr_lp.is_difference_with_layer_rendering_dir())
         # passing example without dot
         lyr_lp = LayerProperties(test_cmf, 'lyr', verify_on_creation=True)
-        self.assertFalse(all(lyr_lp.get_difference_with_layer_rendering_dir()))
+        self.assertFalse(lyr_lp.is_difference_with_layer_rendering_dir())
         # failing example with dot
         test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_mis_match')
         self.assertRaises(ValueError, LayerProperties, test_cmf, '.lyr')
