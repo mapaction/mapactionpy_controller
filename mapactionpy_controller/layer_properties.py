@@ -94,7 +94,7 @@ class LayerProperties:
             * `None`: if there are no differences between the LayerProperties and the `other_lyrs` set.
             * A message describing the differences between the two. The message is constructed by
               the `get_msg_func` supplied. The supplied funtion must accept two sets `lp_only` and `others_only`.
-              Each of the two sets incldue onyl those layers which occur uniquely in each. The message is 
+              Each of the two sets incldue onyl those layers which occur uniquely in each. The message is
               constructed like so:
                   msg = get_msg_func(lp_only, others_only)
         """
