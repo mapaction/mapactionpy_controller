@@ -1,0 +1,25 @@
+{
+	"recipes": [
+		{
+			"mapnumber": "MA001",
+			"category": "Reference",
+			"product": "Country Overview with Admin 1 Boundaries and Topography",
+			"export": true,
+			"layers": [
+				{
+					"name": "mainmap_tran_por_pt_s0_allmaps"
+				},
+				{
+					"name": "mainmap_stle_stl_pt_s0_allmaps"
+				},
+				{
+					"name": "mainmap-s0-py-surroundingcountries"
+				},
+				{
+					"name": "mainmap-tran-rds-ln-s0-allmaps"
+				}
+			],
+			"summary": "Country overview with topography displayed"
+		}
+	]
+}
