@@ -27,10 +27,6 @@ class MapCookbook:
         self.layer_props = layer_props
 
         if verify_on_creation:
-            # cb_only, lp_only = self.get_difference_with_layer_properties()
-            # if len(cb_only) or len(lp_only):
-            #     msg = self._get_verify_failure_message(lp_only, cb_only)
-            #     raise ValueError(msg)
             msg = self.layer_props.get_difference_with_other_layer_set(
                 self.get_all_included_lyrs_as_set(),
                 self._get_mismatch_wtih_lyr_props_message
@@ -68,20 +64,6 @@ class MapCookbook:
                 rec = MapRecipe(recipe)
                 self.products[recipe['product']] = rec
 
-    # def get_difference_with_layer_properties(self):
-    #     cb_unique_lyrs = set()
-
-    #     for recipe in self.products.values():
-    #         for l in recipe.layers:
-    #             cb_unique_lyrs.add(l['name'])
-
-    #     lp_unique_lyrs = set(self.layer_props.properties)
-
-    #     cb_only = cb_unique_lyrs.difference(lp_unique_lyrs)
-    #     lp_only = lp_unique_lyrs.difference(cb_unique_lyrs)
-
-    #     return cb_only, lp_only
-
     def get_all_included_lyrs_as_set(self):
         cb_unique_lyrs = set()
 
@@ -98,23 +80,10 @@ class MapCookbook:
                    self.layer_props.cmf.layer_properties,
                    self.cookbook_json_file
                ))
-        # if len(cb_only):
-        #     msg = msg + 'These layers are only mentioned in the MapCookbook json file and not in Layer'
-        #     msg = msg + ' Properties json file:\n\t'
-        #     msg = msg + '\n\t'.join(cb_only)
-        # if len(lp_only):
-        #     msg = msg + '\nThese layers are only mentioned in the Layer Properties json file and not in the'
-        #     msg = msg + ' MapCookbook json file: \n\t'
-        #     msg = msg + '\n\t'.join(lp_only)
 
         pair = ((cb_only, 'These layers are only mentioned in the MapCookbook json file and not in Layer'
                           ' Properties json file:'),
                 (lp_only, 'These layers are only mentioned in the Layer Properties json file and not in the'
                           ' MapCookbook json file:'))
 
-        for lyrs, s in pair:
-            if len(lyrs):
-                msg = msg + '\n{}\n\t'.format(s)
-                msg = msg + '\n\t'.join(lyrs)
-
-        return msg
+        return self.layer_props._msg_builder(pair, msg)
