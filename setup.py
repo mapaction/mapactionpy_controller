@@ -4,7 +4,7 @@ import sys
 from setuptools import setup, find_packages
 from os import path, environ
 
-_base_version = '0.12.2'
+_base_version = '0.12.3'
 
 root_dir = path.abspath(path.dirname(__file__))
 
