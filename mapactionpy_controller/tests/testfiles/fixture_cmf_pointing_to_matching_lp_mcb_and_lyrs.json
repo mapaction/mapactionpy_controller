@@ -1,0 +1,16 @@
+{
+	"active_data": ".",
+	"arcgis_version": "arcgis_10_6",
+	"data_nc_definition": "fixture_name_convention_incorrect_validation_class.json",
+	"export_dir": ".",
+	"layer_nc_definition": "fixture_name_convention_incorrect_validation_class.json",
+	"layer_properties": "fixture_layer_properties_four_layers.json",
+	"layer_rendering": "test_layer_rendering/four_files_exact_match",
+	"legend_images": ".",
+	"map_definitions": "fixture_cookbook_1map_4layers.json",
+	"map_projects": ".",
+	"map_projects_nc_definition": "fixture_name_convention_incorrect_validation_class.json",
+	"map_template_nc_definition": "fixture_name_convention_incorrect_validation_class.json",
+	"map_templates": ".",
+	"original_data": "."
+}

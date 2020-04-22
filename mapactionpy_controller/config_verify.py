@@ -32,23 +32,8 @@ class ConfigVerifier():
                 args.cmf_desc
             ))
         except ValueError as ve:
-            print(ve.message)
+            print(str(ve))
             exit(1)
-
-    def get_unique_lyr_names(self, cookbook, lyr_props):
-        cb_unique_lyrs = set()
-        lp_unique_lyrs = set()
-
-        for recipe in cookbook.products.values():
-            for l in recipe.layers:
-                # print(l['name'], l)
-                cb_unique_lyrs.add(l['name'])
-
-        for l in lyr_props.properties:
-            # print l
-            lp_unique_lyrs.add(l)
-
-        return (cb_unique_lyrs, lp_unique_lyrs)
 
     def check_lyr_props_vs_rendering_dir(self, args):
         try:
@@ -61,45 +46,23 @@ class ConfigVerifier():
                       render=cmf.layer_rendering
                   ))
         except ValueError as ve:
-            print(ve.message)
+            print(str(ve))
             exit(1)
 
     def check_lyr_props_vs_map_cookbook(self, args):
-        cmf = CrashMoveFolder(args.cmf_desc)
-        lyrs = LayerProperties(cmf, '', verify_on_creation=False)
-        cb = MapCookbook(cmf.map_definitions)
-        cb_unique_lyrs, lp_unique_lyrs = self.get_unique_lyr_names(cb, lyrs)
-
-        cb_only = cb_unique_lyrs.difference(lp_unique_lyrs)
-        lp_only = lp_unique_lyrs.difference(cb_unique_lyrs)
-
-        if len(cb_only) or len(lp_only):
-            msg = ('There is a mismatch between the layer_properties.json file:\n\t"{}"\n'
-                   'and the MapCookbook.json file:\n\t"{}"\n'
-                   'One or more layer names occur in only one of these files.\n'.format(
-                       cmf.layer_properties,
-                       cmf.map_definitions
-                   ))
-            if len(cb_only):
-                msg = msg + 'These layers are only mentioned in the MapCookbook json file and not in Layer'
-                msg = msg + ' Properties json file:\n\t'
-                msg = msg + '\n\t'.join(cb_only)
-            if len(lp_only):
-                msg = msg + '\nThese layers are only mentioned in the Layer Properties json file and not in the'
-                msg = msg + ' MapCookbook json file: \n\t'
-                msg = msg + '\n\t'.join(lp_only)
-
-            print(msg)
-            print('-------------------------------------\n')
-            exit(2)
-        else:
+        try:
+            cmf = CrashMoveFolder(args.cmf_desc)
+            lyrs = LayerProperties(cmf, '', verify_on_creation=False)
+            MapCookbook(cmf, lyrs, verify_on_creation=True)
             print('No inconsistancy detected between:\n'
                   ' * the contents of the layer properties json file:\n\t{props}\n'
                   ' * and the contents of the MapCookbook json:\n\t{cbook}\n'.format(
                       props=cmf.layer_properties,
                       cbook=cmf.map_definitions
                   ))
-            print('-------------------------------------\n')
+        except ValueError as ve:
+            print(str(ve))
+            exit(2)
 
     def get_args(self):
         parser = argparse.ArgumentParser(

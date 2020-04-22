@@ -1,0 +1,20 @@
+{
+    "pattern": "^(?P<gissoftware>.*?)_(?P<templatestyle>(reference|thematic|all[-_]templates))_(?P<orientation>(landscape|portrait|.*?))",
+    "clauses":[
+        {
+            "name": "gissoftware",
+            "validator": "mapactionpy_controller.name_clause_validators.NamingFreeTextClause",
+            "alias": "Value"
+        },
+        {
+            "name": "templatestyle",
+            "validator": "mapactionpy_controller.name_clause_validators.NamingFreeTextClause",
+            "alias": "Value"
+        },
+        {
+            "name": "orientation",
+            "validator": "mapactionpy_controller.name_clause_validators.NamingFreeTextClause",
+            "alias": "Value"
+        }
+    ]
+}

@@ -1,9 +1,10 @@
 import importlib
 import subprocess
+import sys
 from setuptools import setup, find_packages
 from os import path, environ
 
-_base_version = '0.12'
+_base_version = '0.12.2'
 
 root_dir = path.abspath(path.dirname(__file__))
 
@@ -41,6 +42,7 @@ def _get_version_number():
 def get_install_requires():
     dependancies = [
         'jsonpickle',
+        'pycountry',
         'six'
     ]
     dependancies.append(get_gis_environment())
@@ -59,11 +61,15 @@ def get_gis_environment():
     }
 
     for env_mod, target_mod in possible_envs.items():
+        sys.stderr.write('\nsys.path={}\n'.format(sys.path))
         try:
+            sys.stderr.write('\ntrying to import {}\n'.format(env_mod))
             importlib.import_module(env_mod)
             gis_dependancies.append(target_mod)
+            sys.stderr.write('\nsucessed importing {}, added {} to gis_dependancies\n'.format(env_mod, target_mod))
         except ImportError:
-            pass
+            sys.stderr.write('\nfailed to import {}\n'.format(env_mod))
+            # pass
 
     return gis_dependancies
 
@@ -78,11 +84,11 @@ setup(name='mapactionpy_controller',
       author_email='github@mapaction.com',
       license='GPL3',
       packages=find_packages(),
-      install_requires=get_install_requires(),
-      extras_require={
-          'mapactionpy_arcmap': ['arcpy'],
-          'mapactionpy_qgis': ['qgis.core']
-      },
+      install_requires=[
+          'jsonpickle',
+          'pycountry',
+          'six'
+      ],
       test_suite='unittest',
       tests_require=['unittest'],
       zip_safe=False,
