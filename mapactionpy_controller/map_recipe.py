@@ -1,18 +1,34 @@
+import json
+from jsonschema import validate
+from os import path
+
+
+def _get_schema():
+    root_dir = path.abspath(path.dirname(__file__))
+    schema_file = path.join(root_dir, 'schemas', 'map-recipe-v0.1.schema')
+    with open(schema_file) as sf:
+        return json.load(sf)
+
+
+def validate_json(recipe_def):
+    SCHEMA = _get_schema()
+    validate(recipe_def, SCHEMA)
+
 
 class MapRecipe:
     """
     MapRecipe - Ordered list of layers for each Map Product
     """
 
-    # TODO: asmith 2020/03/06
-    # Please could we use a more meaningful name than "row" for this parameter? Isn't it a dict?
-    def __init__(self, row):
-        self.mapnumber = row["mapnumber"]
-        self.category = row["category"]
-        self.export = row["export"]
-        self.product = row["product"]
-        self.layers = row["layers"]
-        self.summary = row["summary"]
+    def __init__(self, recipe_def):
+        validate_json(recipe_def)
+
+        self.mapnumber = recipe_def["mapnumber"]
+        self.category = recipe_def["category"]
+        self.export = recipe_def["export"]
+        self.product = recipe_def["product"]
+        self.layers = recipe_def["layers"]
+        self.summary = recipe_def["summary"]
         self.hasQueryColumnName = self.containsQueryColumn()
 
     def containsQueryColumn(self):

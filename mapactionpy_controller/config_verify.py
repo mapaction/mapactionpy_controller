@@ -35,6 +35,19 @@ class ConfigVerifier():
             print(str(ve))
             exit(1)
 
+    def check_json_file_schemas(self, args):
+        try:
+            # JSON schema validation is implicit in the creation of these objects
+            cmf = CrashMoveFolder(args.cmf_desc)
+            lp = LayerProperties(cmf, '', verify_on_creation=False)
+            MapCookbook(cmf, lp, verify_on_creation=False)
+            print('No json validation problems were detected in the parsing of these two'
+                  ' files:\n"{}"\n"{}"'.format(lp.cmf.layer_properties, cmf.map_definitions)
+                  )
+        except ValueError as ve:
+            print(str(ve))
+            exit(1)
+
     def check_lyr_props_vs_rendering_dir(self, args):
         try:
             cmf = CrashMoveFolder(args.cmf_desc)
@@ -109,6 +122,12 @@ class ConfigVerifier():
         )
         parser_lp_vs_cb.set_defaults(func=self.check_lyr_props_vs_map_cookbook)
 
+        parser_lp_vs_cb = subparsers.add_parser('check-schemas')
+        parser_lp_vs_cb.description = (
+            'This tool checks the compliance of the json schemas for the cookbook file and the layerProperties file'
+        )
+        parser_lp_vs_cb.set_defaults(func=self.check_json_file_schemas)
+
         return parser.parse_args()
 
     # TODO look up a better way to handle the `all` option. Is there a way to extract each of teh functions from
@@ -119,6 +138,7 @@ class ConfigVerifier():
         #        func = argparser.get_default('func')
         #        func(args)
         self.check_cmf_description(args)
+        self.check_json_file_schemas(args)
         self.check_lyr_props_vs_rendering_dir(args)
         self.check_lyr_props_vs_map_cookbook(args)
 
