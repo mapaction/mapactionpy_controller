@@ -1,3 +1,4 @@
+# flake8: noqa
 from jsonschema import validate
 import json
 import os
