@@ -39,17 +39,6 @@ def _get_version_number():
     return version
 
 
-def get_install_requires():
-    dependancies = [
-        'jsonpickle',
-        'pycountry',
-        'six'
-    ]
-    dependancies.append(get_gis_environment())
-
-    return dependancies
-
-
 def get_gis_environment():
     gis_dependancies = []
 
@@ -86,6 +75,7 @@ setup(name='mapactionpy_controller',
       packages=find_packages(),
       install_requires=[
           'jsonpickle',
+          'jsonschema',
           'pycountry',
           'six'
       ],
