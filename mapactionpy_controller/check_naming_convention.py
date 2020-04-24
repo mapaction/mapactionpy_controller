@@ -67,6 +67,7 @@ def main():
         (cmf.map_projects, cmf.map_projects_nc_definition, '.qgs'),
         (cmf.map_projects, cmf.map_projects_nc_definition, '.mxd'),
         (cmf.map_templates, cmf.map_template_nc_definition, '.qgs'),
+        (cmf.map_templates, cmf.map_template_nc_definition, '.pagx'),
         (cmf.map_templates, cmf.map_template_nc_definition, '.mxd')
     )
 
