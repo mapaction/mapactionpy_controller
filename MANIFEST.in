@@ -1,4 +1,4 @@
 include README.md
 include VERSION
-recursive-include schemas/ *.schema
-recursive-include example *
+recursive-include mapactionpy_controller/schemas/ *.schema
+recursive-include mapactionpy_controller/example/ *

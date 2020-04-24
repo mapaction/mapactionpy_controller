@@ -1,18 +1,22 @@
+from mapactionpy_controller import _get_validator_for_schema
+
+validate_against_schema = _get_validator_for_schema('map-recipe-v0.1.schema')
+
 
 class MapRecipe:
     """
     MapRecipe - Ordered list of layers for each Map Product
     """
 
-    # TODO: asmith 2020/03/06
-    # Please could we use a more meaningful name than "row" for this parameter? Isn't it a dict?
-    def __init__(self, row):
-        self.mapnumber = row["mapnumber"]
-        self.category = row["category"]
-        self.export = row["export"]
-        self.product = row["product"]
-        self.layers = row["layers"]
-        self.summary = row["summary"]
+    def __init__(self, recipe_def):
+        validate_against_schema(recipe_def)
+
+        self.mapnumber = recipe_def["mapnumber"]
+        self.category = recipe_def["category"]
+        self.export = recipe_def["export"]
+        self.product = recipe_def["product"]
+        self.layers = recipe_def["layers"]
+        self.summary = recipe_def["summary"]
         self.hasQueryColumnName = self.containsQueryColumn()
 
     def containsQueryColumn(self):

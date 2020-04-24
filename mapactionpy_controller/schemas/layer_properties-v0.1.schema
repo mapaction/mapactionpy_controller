@@ -1,0 +1,101 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The Root Schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "additionalProperties": true,
+    "required": [
+        "AddToLegend",
+        "DefinitionQuery",
+        "Display",
+        "LabelClasses",
+        "LayerName",
+        "MapFrame",
+        "RegExp"
+    ],
+    "properties": {
+        "AddToLegend": {
+            "$id": "#/properties/AddToLegend",
+            "type": "boolean",
+            "title": "The Addtolegend Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": false,
+            "examples": [
+                true
+            ]
+        },
+        "DefinitionQuery": {
+            "$id": "#/properties/DefinitionQuery",
+            "type": "string",
+            "title": "The Definitionquery Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "\"NAME_0\" = '{COUNTRY_NAME}'"
+            ]
+        },
+        "Display": {
+            "$id": "#/properties/Display",
+            "type": "boolean",
+            "title": "The Display Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": false,
+            "examples": [
+                true
+            ]
+        },
+        "LabelClasses": {
+            "$id": "#/properties/LabelClasses",
+            "type": "array",
+            "title": "The Labelclasses Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "examples": [
+                []
+            ],
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/LabelClasses/items",
+                "type": "object",
+                "title": "The Items Schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": null,
+                "examples": [
+                    null
+                ]
+            }
+        },
+        "LayerName": {
+            "$id": "#/properties/LayerName",
+            "type": "string",
+            "title": "The Layername Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "locationmap-admn-ad0-py-s0-locationmaps"
+            ]
+        },
+        "MapFrame": {
+            "$id": "#/properties/MapFrame",
+            "type": "string",
+            "title": "The Mapframe Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Location map"
+            ]
+        },
+        "RegExp": {
+            "$id": "#/properties/RegExp",
+            "type": "string",
+            "title": "The Regexp Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "^[a-z]{3}_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$"
+            ]
+        }
+    }
+}

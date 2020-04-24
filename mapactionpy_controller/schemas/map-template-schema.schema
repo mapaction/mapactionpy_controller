@@ -1,0 +1,121 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "http://example.com/example.json",
+	"type": "object",
+	"title": "The Root Schema",
+	"description": "The root schema comprises the entire JSON document.",
+	"default": {},
+	"additionalProperties": true,
+	"required": [
+		"map_no",
+		"timezone",
+		"map_producer",
+		"map_version",
+		"scale",
+		"title",
+		"mxd_name_label",
+		"glide_no_label",
+		"create_date_time",
+		"Main map",
+		"glide_no",
+		"data_sources",
+		"donor_credit",
+		"mxd_name",
+		"Location map",
+		"legend",
+		"spatial_reference_label",
+		"spatial_reference",
+		"country",
+		"create_date_time_label",
+		"summary",
+		"map_name",
+		"legend_jpg",
+		"disclaimer"
+	],
+	"properties": {
+		"map_no": {
+			"const": "TEXT_ELEMENT"
+		},
+		"north_arrow": {
+			"const": "MAPSURROUND_ELEMENT"
+		},
+		"scale_bar": {
+			"const": "MAPSURROUND_ELEMENT"
+		},
+		"map_name_label": {
+			"const": "TEXT_ELEMENT"
+		},
+		"timezone": {
+			"const": "TEXT_ELEMENT"
+		},
+		"map_producer": {
+			"const": "TEXT_ELEMENT"
+		},
+		"map_version": {
+			"const": "TEXT_ELEMENT"
+		},
+		"scale": {
+			"const": "TEXT_ELEMENT"
+		},
+		"mapaction_logo": {
+			"const": "PICTURE_ELEMENT"
+		},
+		"title": {
+			"const": "TEXT_ELEMENT"
+		},
+		"mxd_name_label": {
+			"const": "TEXT_ELEMENT"
+		},
+		"glide_no_label": {
+			"const": "TEXT_ELEMENT"
+		},
+		"create_date_time": {
+			"const": "TEXT_ELEMENT"
+		},
+		"Main map": {
+			"const": "DATAFRAME_ELEMENT"
+		},
+		"glide_no": {
+			"const": "TEXT_ELEMENT"
+		},
+		"data_sources": {
+			"const": "TEXT_ELEMENT"
+		},
+		"donor_credit": {
+			"const": "TEXT_ELEMENT"
+		},
+		"mxd_name": {
+			"const": "TEXT_ELEMENT"
+		},
+		"Location map": {
+			"const": "DATAFRAME_ELEMENT"
+		},
+		"legend": {
+			"const": "LEGEND_ELEMENT"
+		},
+		"spatial_reference_label": {
+			"const": "TEXT_ELEMENT"
+		},
+		"spatial_reference": {
+			"const": "TEXT_ELEMENT"
+		},
+		"country": {
+			"const": "TEXT_ELEMENT"
+		},
+		"create_date_time_label": {
+			"const": "TEXT_ELEMENT"
+		},
+		"summary": {
+			"const": "TEXT_ELEMENT"
+		},
+		"map_name": {
+			"const": "TEXT_ELEMENT"
+		},
+		"legend_jpg": {
+			"const": "PICTURE_ELEMENT"
+		},
+		"disclaimer": {
+			"const": "TEXT_ELEMENT"
+		}
+	}
+}
