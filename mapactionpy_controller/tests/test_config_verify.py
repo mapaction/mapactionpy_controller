@@ -62,4 +62,16 @@ class TestConfigVerify(TestCase):
         except SystemExit as se:
             self.fail(se)
 
-        # self.fail()
+    def test_check_config_file_schemas(self):
+        schema_errors_cmf_path = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'config_schemas',
+            'fixture_cmf_pointing_schema_errors.json'
+        )
+        sys.argv[1:] = ['-c', schema_errors_cmf_path, 'check-schemas']
+
+        with self.assertRaises(SystemExit):
+            config_verify.run_checks(None)
+
+        sys.argv[1:] = ['--cmf', self.all_matching_cmf_path, 'check-schemas']
+        config_verify.run_checks(None)
+        self.assertTrue(True)

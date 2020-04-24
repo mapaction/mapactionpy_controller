@@ -1,6 +1,7 @@
 from mapactionpy_controller.map_cookbook import MapCookbook
 from mapactionpy_controller.layer_properties import LayerProperties
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
+from jsonschema import ValidationError
 import os
 import argparse
 
@@ -44,7 +45,7 @@ class ConfigVerifier():
             print('No json validation problems were detected in the parsing of these two'
                   ' files:\n"{}"\n"{}"'.format(lp.cmf.layer_properties, cmf.map_definitions)
                   )
-        except ValueError as ve:
+        except ValidationError as ve:
             print(str(ve))
             exit(1)
 
