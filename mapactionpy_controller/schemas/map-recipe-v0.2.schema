@@ -12,7 +12,6 @@
 		"export",
 		"summary",
 		"template",
-		"runners",
 		"map_frames"
 	],
 	"properties": {
