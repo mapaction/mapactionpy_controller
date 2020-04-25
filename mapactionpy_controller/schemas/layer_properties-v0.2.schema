@@ -1,0 +1,174 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The Root Schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "additionalProperties": true,
+    "required": [
+        "LayerName",
+        "RegExp",
+        "schema_definition",
+        "DefinitionQuery",
+        "Display",
+        "AddToLegend",
+        "LabelClasses"
+    ],
+    "properties": {
+        "LayerName": {
+            "$id": "#/properties/LayerName",
+            "type": "string",
+            "title": "The Layername Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "mainmap_stle_stl_pt_s0_allmaps"
+            ]
+        },
+        "RegExp": {
+            "$id": "#/properties/RegExp",
+            "type": "string",
+            "title": "The Regexp Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "^[a-z]{3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$"
+            ]
+        },
+        "schema_definition": {
+            "$id": "#/properties/schema_definition",
+            "type": "string",
+            "title": "The Schema_definition Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "stle_ste_pt.schema"
+            ]
+        },
+        "DefinitionQuery": {
+            "$id": "#/properties/DefinitionQuery",
+            "type": "string",
+            "title": "The Definitionquery Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "fclass IN ('national_capital', 'city', 'capital', 'town')"
+            ]
+        },
+        "Display": {
+            "$id": "#/properties/Display",
+            "type": "boolean",
+            "title": "The Display Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": false,
+            "examples": [
+                true
+            ]
+        },
+        "AddToLegend": {
+            "$id": "#/properties/AddToLegend",
+            "type": "boolean",
+            "title": "The Addtolegend Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": false,
+            "examples": [
+                true
+            ]
+        },
+        "LabelClasses": {
+            "$id": "#/properties/LabelClasses",
+            "type": "array",
+            "title": "The Labelclasses Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "examples": [
+                [
+                    {
+                        "SQLQuery": "(\"fclass\" = 'national_capital')",
+                        "className": "National Capital",
+                        "expression": "[name]",
+                        "showClassLabels": true
+                    },
+                    {
+                        "showClassLabels": true,
+                        "SQLQuery": "(\"fclass\" = 'town')",
+                        "className": "Admin 1 Capital",
+                        "expression": "[name]"
+                    }
+                ]
+            ],
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/LabelClasses/items",
+                "type": "object",
+                "title": "The Items Schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": {},
+                "examples": [
+                    {
+                        "SQLQuery": "(\"fclass\" = 'national_capital')",
+                        "className": "National Capital",
+                        "expression": "[name]",
+                        "showClassLabels": true
+                    },
+                    {
+                        "SQLQuery": "(\"fclass\" = 'town')",
+                        "className": "Admin 1 Capital",
+                        "expression": "[name]",
+                        "showClassLabels": true
+                    }
+                ],
+                "additionalProperties": true,
+                "required": [
+                    "className",
+                    "expression",
+                    "SQLQuery",
+                    "showClassLabels"
+                ],
+                "properties": {
+                    "className": {
+                        "$id": "#/properties/LabelClasses/items/properties/className",
+                        "type": "string",
+                        "title": "The Classname Schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": "",
+                        "examples": [
+                            "National Capital"
+                        ]
+                    },
+                    "expression": {
+                        "$id": "#/properties/LabelClasses/items/properties/expression",
+                        "type": "string",
+                        "title": "The Expression Schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": "",
+                        "examples": [
+                            "[name]"
+                        ]
+                    },
+                    "SQLQuery": {
+                        "$id": "#/properties/LabelClasses/items/properties/SQLQuery",
+                        "type": "string",
+                        "title": "The Sqlquery Schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": "",
+                        "examples": [
+                            "(\"fclass\" = 'national_capital')"
+                        ]
+                    },
+                    "showClassLabels": {
+                        "$id": "#/properties/LabelClasses/items/properties/showClassLabels",
+                        "type": "boolean",
+                        "title": "The Showclasslabels Schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": false,
+                        "examples": [
+                            true
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}
