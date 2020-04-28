@@ -93,6 +93,19 @@ class MapRecipe:
         else:
             self.atlas = None
 
+    def get_lyrs_as_set(self):
+        unique_lyrs = set()
+        for mf in self.map_frames.values():
+            for l in mf.layers:
+                # Handle the fact that the layer may either be a RecipeLayer object
+                # or just a string (if there wasn't a correpsonding valuein the lyr_props file)
+                try:
+                    unique_lyrs.add(l['name'])
+                except TypeError:
+                    unique_lyrs.add(l)
+
+        return unique_lyrs
+
     def _parse_map_frames(self, map_frames_def, lyr_props):
         map_frames = {}
         for frame_def in map_frames_def:

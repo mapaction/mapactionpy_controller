@@ -68,14 +68,18 @@ class MapCookbook:
         cb_unique_lyrs = set()
 
         for recipe in self.products.values():
-            for mf in recipe.map_frames.values():
-                for l in mf.layers:
-                    # Handle the fact that the layer may either be a RecipeLayer object
-                    # or just a string (if there wasn't a correpsonding valuein the lyr_props file)
-                    try:
-                        cb_unique_lyrs.add(l['name'])
-                    except TypeError:
-                        cb_unique_lyrs.add(l)
+            # cb_unique_lyrs.add(l)
+            for l in recipe.get_lyrs_as_set():
+                cb_unique_lyrs.add(l)
+
+            # for mf in recipe.map_frames.values():
+            #     for l in mf.layers:
+            #         # Handle the fact that the layer may either be a RecipeLayer object
+            #         # or just a string (if there wasn't a correpsonding valuein the lyr_props file)
+            #         try:
+            #             cb_unique_lyrs.add(l['name'])
+            #         except TypeError:
+            #             cb_unique_lyrs.add(l)
 
         return cb_unique_lyrs
 
