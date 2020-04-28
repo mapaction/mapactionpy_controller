@@ -29,13 +29,11 @@ class RecipeFrame:
     def __init__(self, frame_def, lyr_props):
         # Required fields
         self.name = frame_def["name"]
-        # TODO Parse layers properly
         self.layers = self._parse_layers(frame_def["layers"], lyr_props)
-        # self.layers = frame_def["layers"]
 
         # Optional fields
         self.scale_text_element = frame_def.get('scale_text_element', None)
-        self.scale_text_element = frame_def.get('spatial_ref_text_element', None)
+        self.spatial_ref_text_element = frame_def.get('spatial_ref_text_element', None)
 
     def _parse_layers(self, lyrs_def, lyr_props):
         lyrs = {}
@@ -94,15 +92,17 @@ class MapRecipe:
             self.atlas = None
 
     def get_lyrs_as_set(self):
+        def get_lyr_name(lyr):
+            try:
+                return lyr['name']
+            except TypeError:
+                return lyr
+
         unique_lyrs = set()
         for mf in self.map_frames.values():
-            for l in mf.layers:
-                # Handle the fact that the layer may either be a RecipeLayer object
-                # or just a string (if there wasn't a correpsonding valuein the lyr_props file)
-                try:
-                    unique_lyrs.add(l['name'])
-                except TypeError:
-                    unique_lyrs.add(l)
+
+            lyrs = [get_lyr_name(l) for l in mf.layers]
+            unique_lyrs.update(lyrs)
 
         return unique_lyrs
 
