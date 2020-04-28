@@ -1,8 +1,9 @@
 from mapactionpy_controller.label_class import LabelClass
 from mapactionpy_controller import _get_validator_for_schema
 
-validate_against_recipe_schema = _get_validator_for_schema('map-recipe-v0.2.schema')
+validate_against_atlas_schema = _get_validator_for_schema('atlas-v0.2.schema')
 validate_against_layer_schema = _get_validator_for_schema('layer_properties-v0.2.schema')
+validate_against_recipe_schema = _get_validator_for_schema('map-recipe-v0.2.schema')
 
 
 class RecipeLayer:
@@ -14,7 +15,6 @@ class RecipeLayer:
         """
         validate_against_layer_schema(layer_def)
 
-        self.mapFrame = layer_def["MapFrame"]
         self.layerName = layer_def["LayerName"]
         self.regExp = layer_def["RegExp"]
         self.definitionQuery = layer_def["DefinitionQuery"]
@@ -30,13 +30,12 @@ class RecipeFrame:
         # Required fields
         self.name = frame_def["name"]
         # TODO Parse layers properly
-        # self.layers = self._parse_layers(frame_def["layers"], lyr_props)
-        self.layers = frame_def["layers"]
+        self.layers = self._parse_layers(frame_def["layers"], lyr_props)
+        # self.layers = frame_def["layers"]
+
         # Optional fields
-        if 'scale_text_element' in frame_def:
-            self.scale_text_element = frame_def['scale_text_element']
-        if 'spatial_ref_text_element' in frame_def:
-            self.scale_text_element = frame_def['spatial_ref_text_element']
+        self.scale_text_element = frame_def.get('scale_text_element', None)
+        self.scale_text_element = frame_def.get('spatial_ref_text_element', None)
 
     def _parse_layers(self, lyrs_def, lyr_props):
         lyrs = {}
@@ -53,6 +52,23 @@ class RecipeFrame:
         return lyrs
 
 
+class RecipeAtlas:
+    def __init__(self, atlas_def, recipe):
+        validate_against_atlas_schema(atlas_def)
+
+        # Required fields
+        self.map_frame = atlas_def[""]
+        self.layer_name = atlas_def[""]
+        self.column_name = atlas_def[""]
+
+        try:
+            lyrs = recipe.map_frames[self.map_frame]
+            lyr = lyrs[self.layer_name]
+            # TODO add a check that the named column is in the layer
+        except KeyError as ke:
+            raise ValueError(ke)
+
+
 class MapRecipe:
     """
     MapRecipe - Ordered list of layers for each Map Product
@@ -61,14 +77,21 @@ class MapRecipe:
     def __init__(self, recipe_def, lyr_props):
         validate_against_recipe_schema(recipe_def)
 
+        # Required fields
         self.mapnumber = recipe_def["mapnumber"]
         self.category = recipe_def["category"]
         self.export = recipe_def["export"]
         self.product = recipe_def["product"]
-        # self.layers = recipe_def["layers"]
         self.map_frames = self._parse_map_frames(recipe_def["map_frames"], lyr_props)
         self.summary = recipe_def["summary"]
-        self.hasQueryColumnName = self.containsQueryColumn()
+
+        # Optional fields
+        self.runners = recipe_def.get('runners', None)
+        atlas_def = recipe_def.get('atlas', None)
+        if atlas_def:
+            self.atlas = RecipeAtlas(atlas_def, self)
+        else:
+            self.atlas = None
 
     def _parse_map_frames(self, map_frames_def, lyr_props):
         map_frames = {}
@@ -78,20 +101,6 @@ class MapRecipe:
 
         return map_frames
 
-    def containsQueryColumn(self):
-        hasQueryColumnName = False
-        for mf in self.map_frames.values():
-            for layer in mf.layers:
-                # TODO asmith 2020/03/06
-                # Is this a terser way of achieving the same thing?
-                # ```
-                #    if 'columnName' in layer:
-                # ```
-                if (layer.get('columnName', None) is not None):
-                    hasQueryColumnName = True
-                    break
-        return hasQueryColumnName
-
-    # TODO
     def _do_something_to_check_scale_text_element_etc(self):
+        # TODO
         pass
