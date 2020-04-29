@@ -97,12 +97,12 @@ class TestMapCookBook(TestCase):
         cmf = CrashMoveFolder(
             os.path.join(self.parent_dir, 'example', 'cmf_description_relative_paths_test.json'))
         cmf.layer_properties = os.path.join(
-            self.parent_dir, 'tests', 'testfiles', 'atlases', 'fixture_layer_properties_for_atlas.json'
+            self.parent_dir, 'tests', 'testfiles', 'cookbooks', 'fixture_layer_properties_for_atlas.json'
         )
 
-        # 1) atlas matches other sections 'fixture_cookbook_with_atlas.json'
+        # 1) atlas matches other sections 'fixture_cookbook_good_with_atlas.json'
         cmf.map_definitions = os.path.join(
-            self.parent_dir, 'tests', 'testfiles', 'atlases', 'fixture_cookbook_with_atlas.json'
+            self.parent_dir, 'tests', 'testfiles', 'cookbooks', 'fixture_cookbook_good_with_atlas.json'
         )
         test_lp = LayerProperties(cmf, ".lyr", verify_on_creation=False)
         MapCookbook(cmf, test_lp, verify_on_creation=True)
@@ -121,7 +121,7 @@ class TestMapCookBook(TestCase):
 
         for test_cb in test_cb_names:
             cmf.map_definitions = os.path.join(
-                self.parent_dir, 'tests', 'testfiles', 'atlases', test_cb
+                self.parent_dir, 'tests', 'testfiles', 'cookbooks', test_cb
             )
             test_lp = LayerProperties(cmf, ".lyr", verify_on_creation=False)
             with self.assertRaises(ValueError) as ve:
@@ -129,9 +129,36 @@ class TestMapCookBook(TestCase):
 
     def test_load_recipe_with_layer_props_inc(self):
         # 1) with matching layer props schema
+
         # 2) with non-matching layer props schema
         # self.fail()
         pass
 
-    def test_do_something_to_check_scale_text_element_etc(self):
-        pass
+    def test_check_for_dup_text_elements(self):
+        cmf = CrashMoveFolder(
+            os.path.join(self.parent_dir, 'example', 'cmf_description_relative_paths_test.json'))
+        cmf.layer_properties = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'cookbooks', 'fixture_layer_properties_for_atlas.json'
+        )
+
+        # 1) Pass with "good" text elements in just one map_frame
+        cmf.map_definitions = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'cookbooks', 'fixture_cookbook_good_with_atlas.json'
+        )
+        test_lp = LayerProperties(cmf, ".lyr", verify_on_creation=False)
+        MapCookbook(cmf, test_lp, verify_on_creation=True)
+        self.assertTrue(True)
+
+        # 2) Fail with duplicate text elements in multiple map_frames
+        cmf.map_definitions = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'cookbooks', 'fixture_cookbook_with_dup_text_elements.json'
+        )
+        test_lp = LayerProperties(cmf, ".lyr", verify_on_creation=False)
+        with self.assertRaises(ValueError) as ve:
+            MapCookbook(cmf, test_lp, verify_on_creation=True)
+
+        fail_msg = 'More than one "map_frame" is linked to the Scale text element "scale"'
+        if six.PY2:
+            self.assertRegexpMatches(str(ve.exception), fail_msg)
+        else:
+            self.assertRegex(str(ve.exception), fail_msg)
