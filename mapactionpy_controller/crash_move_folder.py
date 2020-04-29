@@ -13,13 +13,14 @@ class CrashMoveFolder:
 
             # Doubtless there is a more elegant way to do this.
             # 8 directories (alphabetical order just for readability)
-            self.original_data = os.path.join(self.path, obj['original_data'])
             self.active_data = os.path.join(self.path, obj['active_data'])
+            self.data_schemas = os.path.join(self.path, obj['data_schemas'])
+            self.export_dir = os.path.join(self.path, obj['export_dir'])
             self.layer_rendering = os.path.join(self.path, obj['layer_rendering'])
             self.legend_images = os.path.join(self.path, obj['legend_images'])
-            self.map_templates = os.path.join(self.path, obj['map_templates'])
             self.map_projects = os.path.join(self.path, obj['map_projects'])
-            self.export_dir = os.path.join(self.path, obj['export_dir'])
+            self.map_templates = os.path.join(self.path, obj['map_templates'])
+            self.original_data = os.path.join(self.path, obj['original_data'])
             # 5 files (alphabetical order just for readablity)
             self.data_nc_definition = os.path.join(self.path, obj['data_nc_definition'])
             self.layer_nc_definition = os.path.join(self.path, obj['layer_nc_definition'])

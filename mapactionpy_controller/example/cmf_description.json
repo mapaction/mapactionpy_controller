@@ -2,6 +2,7 @@
 	"active_data": "GIS/2_Active_Data",
 	"arcgis_version": "arcgis_10_6",
 	"data_nc_definition": "GIS/2_Active_Data/200_data_name_lookup/data_naming_convention.json",
+	"data_schemas": "data_schemas",
 	"export_dir": "GIS/3_Mapping/34_Map_Products_MapAction",
 	"layer_nc_definition": "GIS/2_Active_Data/200_data_name_lookup/layer_file_naming_convention.json",
 	"layer_properties": "GIS/3_Mapping/31_Resources/316_Automation/layerProperties.json",

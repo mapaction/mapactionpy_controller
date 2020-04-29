@@ -5,6 +5,7 @@ from unittest import TestCase
 from mapactionpy_controller.layer_properties import LayerProperties
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.map_cookbook import MapCookbook
+import mapactionpy_controller.map_recipe as map_recipe
 
 
 class TestMapCookBook(TestCase):
@@ -91,3 +92,46 @@ class TestMapCookBook(TestCase):
                 self.assertRegex(str(ve.exception), "One or more layer names occur in only one of these files")
                 for s in strings_in_ex_msg:
                     self.assertRegex(str(ve.exception), s)
+
+    def test_recipe_atlas_constructor(self):
+        cmf = CrashMoveFolder(
+            os.path.join(self.parent_dir, 'example', 'cmf_description_relative_paths_test.json'))
+        cmf.layer_properties = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'atlases', 'fixture_layer_properties_for_atlas.json'
+        )
+
+        # 1) atlas matches other sections 'fixture_cookbook_with_atlas.json'
+        cmf.map_definitions = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'atlases', 'fixture_cookbook_with_atlas.json'
+        )
+        test_lp = LayerProperties(cmf, ".lyr", verify_on_creation=False)
+        MapCookbook(cmf, test_lp, verify_on_creation=True)
+        self.assertTrue(True)
+
+        # 2) mismatch map_frame name 'fixture_cookbook_atlas_mismatch_map_frame.json'
+        # 3) mismatch layer name (but present in other map frame) 'fixture_cookbook_atlas_mismatch_layer1.json'
+        # 4) mismatch layer name, not present elsewhere in the recipe. 'fixture_cookbook_atlas_mismatch_layer2.json'
+        # 5) mismatch column_names
+        test_cb_names = (
+            'fixture_cookbook_atlas_mismatch_map_frame.json',
+            'fixture_cookbook_atlas_mismatch_layer1.json',
+            'fixture_cookbook_atlas_mismatch_layer2.json',
+            'fixture_cookbook_atlas_mismatch_column_name.json'
+        )
+
+        for test_cb in test_cb_names:
+            cmf.map_definitions = os.path.join(
+                self.parent_dir, 'tests', 'testfiles', 'atlases', test_cb
+            )
+            test_lp = LayerProperties(cmf, ".lyr", verify_on_creation=False)
+            with self.assertRaises(ValueError) as ve:
+                MapCookbook(cmf, test_lp, verify_on_creation=True)
+
+    def test_load_recipe_with_layer_props_inc(self):
+        # 1) with matching layer props schema
+        # 2) with non-matching layer props schema
+        # self.fail()
+        pass
+
+    def test_do_something_to_check_scale_text_element_etc(self):
+        pass

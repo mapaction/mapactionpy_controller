@@ -2,6 +2,7 @@
 	"active_data": "../example",
 	"arcgis_version": "arcgis_10_6",
 	"data_nc_definition": "../example/data_naming_convention.json",
+	"data_schemas": "../example/data_schemas",
 	"export_dir": "../example",
 	"layer_nc_definition": "../example/layer_file_naming_convention.json",
 	"layer_properties": "../example/dummy_layerProperties.json",

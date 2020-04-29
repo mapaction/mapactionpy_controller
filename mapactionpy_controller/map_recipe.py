@@ -1,9 +1,12 @@
 from mapactionpy_controller.label_class import LabelClass
-from mapactionpy_controller import _get_validator_for_schema
+from mapactionpy_controller import _get_validator_for_config_schema
+import mapactionpy_controller.data_schemas as data_schemas
+from jsonschema import ValidationError
+from os import path
 
-validate_against_atlas_schema = _get_validator_for_schema('atlas-v0.2.schema')
-validate_against_layer_schema = _get_validator_for_schema('layer_properties-v0.2.schema')
-validate_against_recipe_schema = _get_validator_for_schema('map-recipe-v0.2.schema')
+validate_against_atlas_schema = _get_validator_for_config_schema('atlas-v0.2.schema')
+validate_against_layer_schema = _get_validator_for_config_schema('layer_properties-v0.2.schema')
+validate_against_recipe_schema = _get_validator_for_config_schema('map-recipe-v0.2.schema')
 
 
 class RecipeLayer:
@@ -18,6 +21,7 @@ class RecipeLayer:
         self.layerName = layer_def["LayerName"]
         self.regExp = layer_def["RegExp"]
         self.definitionQuery = layer_def["DefinitionQuery"]
+        self.schema_definition = layer_def["schema_definition"]
         self.display = layer_def["Display"]
         self.addToLegend = layer_def["AddToLegend"]
         self.labelClasses = list()
@@ -51,20 +55,40 @@ class RecipeFrame:
 
 
 class RecipeAtlas:
-    def __init__(self, atlas_def, recipe):
+    def __init__(self, atlas_def, recipe, lyr_props):
         validate_against_atlas_schema(atlas_def)
 
         # Required fields
-        self.map_frame = atlas_def[""]
-        self.layer_name = atlas_def[""]
-        self.column_name = atlas_def[""]
+        self.map_frame = atlas_def["map_frame"]
+        self.layer_name = atlas_def["layer_name"]
+        self.column_name = atlas_def["column_name"]
+
+        # Compare the atlas definition with the other parts of the recipe definition
+        try:
+            m_frame = recipe.map_frames[self.map_frame]
+        except KeyError as ke:
+            raise ValueError(
+                'The Map Recipe definition is invalid. The "atlas" section refers to a map_frame '
+                ' ({}) that does not exist in the "map_frames" section of the recipe.'.format(ke)
+            )
 
         try:
-            lyrs = recipe.map_frames[self.map_frame]
-            lyr = lyrs[self.layer_name]
-            # TODO add a check that the named column is in the layer
+            lyr = m_frame.layers[self.layer_name]
         except KeyError as ke:
-            raise ValueError(ke)
+            raise ValueError(
+                'The Map Recipe definition is invalid. The "atlas" section refers to a layer_name '
+                ' ({}) that does not exist in the relevant "map_frame" ({}) section of the recipe.'
+                ''.format(ke, self.map_frame)
+            )
+
+        schema_file = path.join(lyr_props.cmf.data_schemas, lyr.schema_definition)
+        schema = data_schemas.parse_yaml(schema_file)
+        if self.column_name not in schema['required']:
+            raise ValueError(
+                'The Map Recipe definition is invalid. The "atlas" section refers to a column_name '
+                ' ({}) that does not exist in the schema of the relevant layer ({}).'
+                ''.format(self.column_name, lyr.layerName)
+            )
 
 
 class MapRecipe:
@@ -87,9 +111,11 @@ class MapRecipe:
         self.runners = recipe_def.get('runners', None)
         atlas_def = recipe_def.get('atlas', None)
         if atlas_def:
-            self.atlas = RecipeAtlas(atlas_def, self)
+            self.atlas = RecipeAtlas(atlas_def, self, lyr_props)
         else:
             self.atlas = None
+
+        self._check_for_dup_text_elements()
 
     def get_lyrs_as_set(self):
         def get_lyr_name(lyr):
@@ -114,6 +140,26 @@ class MapRecipe:
 
         return map_frames
 
-    def _do_something_to_check_scale_text_element_etc(self):
+    def _check_for_dup_text_elements(self):
         # TODO
-        pass
+        # check that there is each scale_text_element and spatial_ref_text_element
+        # are only referred to by a single map_frame
+        scale_text_elements_set = set()
+        spatial_ref_text_elements_set = set()
+
+        def find_dups(elem, aggregate_set, msg):
+            if elem:
+                if elem in aggregate_set:
+                    raise ValueError(msg.format(elem))
+                else:
+                    aggregate_set.add(elem)
+
+        for mf in self.map_frames.values():
+            find_dups(mf.scale_text_element, scale_text_elements_set,
+                      'The Map Recipe definition is invalid. More than one "map_frame" is linked to the'
+                      ' Scale text element {}'
+                      )
+            find_dups(mf.spatial_ref_text_element, spatial_ref_text_elements_set,
+                      'The Map Recipe definition is invalid. More than one "map_frame" is linked to the'
+                      ' Spatial reference text element {}'
+                      )
