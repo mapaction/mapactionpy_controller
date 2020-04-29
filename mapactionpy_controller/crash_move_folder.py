@@ -44,6 +44,7 @@ class CrashMoveFolder:
 
         # 8 dirs (alphabetical order just for readability)
         results['active_data'] = os.path.isdir(self.active_data)
+        results['data_schemas'] = os.path.isdir(self.data_schemas)
         results['export_dir'] = os.path.isdir(self.export_dir)
         results['layer_rendering'] = os.path.isdir(self.layer_rendering)
         results['legend_images'] = os.path.isdir(self.legend_images)
