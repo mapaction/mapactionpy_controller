@@ -146,19 +146,19 @@ class MapRecipe:
         scale_text_elements_set = set()
         spatial_ref_text_elements_set = set()
 
-        def _find_dups(elem, aggregate_set, msg):
-            if elem:
-                if elem in aggregate_set:
-                    raise ValueError(msg.format(elem))
-                else:
-                    aggregate_set.add(elem)
-
         for mf in self.map_frames.values():
-            _find_dups(mf.scale_text_element, scale_text_elements_set,
-                       'The Map Recipe definition is invalid. More than one "map_frame" is linked to the'
-                       ' Scale text element "{}"'
-                       )
-            _find_dups(mf.spatial_ref_text_element, spatial_ref_text_elements_set,
-                       'The Map Recipe definition is invalid. More than one "map_frame" is linked to the'
-                       ' Spatial reference text element "{}"'
-                       )
+            self._find_dups(mf.scale_text_element, scale_text_elements_set,
+                            'The Map Recipe definition is invalid. More than one "map_frame" is linked to the'
+                            ' Scale text element "{}"'
+                            )
+            self._find_dups(mf.spatial_ref_text_element, spatial_ref_text_elements_set,
+                            'The Map Recipe definition is invalid. More than one "map_frame" is linked to the'
+                            ' Spatial reference text element "{}"'
+                            )
+
+    def _find_dups(self, elem, aggregate_set, msg):
+        if elem:
+            if elem in aggregate_set:
+                raise ValueError(msg.format(elem))
+            else:
+                aggregate_set.add(elem)
