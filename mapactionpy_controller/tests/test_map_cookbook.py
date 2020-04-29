@@ -5,7 +5,6 @@ from unittest import TestCase
 from mapactionpy_controller.layer_properties import LayerProperties
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.map_cookbook import MapCookbook
-import mapactionpy_controller.map_recipe as map_recipe
 
 
 class TestMapCookBook(TestCase):
@@ -124,7 +123,7 @@ class TestMapCookBook(TestCase):
                 self.parent_dir, 'tests', 'testfiles', 'cookbooks', test_cb
             )
             test_lp = LayerProperties(cmf, ".lyr", verify_on_creation=False)
-            with self.assertRaises(ValueError) as ve:
+            with self.assertRaises(ValueError):
                 MapCookbook(cmf, test_lp, verify_on_creation=True)
 
     def test_load_recipe_with_layer_props_inc(self):

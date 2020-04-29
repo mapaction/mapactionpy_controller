@@ -1,7 +1,6 @@
 from mapactionpy_controller.label_class import LabelClass
 from mapactionpy_controller import _get_validator_for_config_schema
 import mapactionpy_controller.data_schemas as data_schemas
-from jsonschema import ValidationError
 from os import path
 
 validate_against_atlas_schema = _get_validator_for_config_schema('atlas-v0.2.schema')
