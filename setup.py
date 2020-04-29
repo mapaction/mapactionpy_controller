@@ -77,6 +77,7 @@ setup(name='mapactionpy_controller',
           'jsonpickle',
           'jsonschema',
           'pycountry',
+          'requests',
           'pyyaml',
           'six'
       ],
