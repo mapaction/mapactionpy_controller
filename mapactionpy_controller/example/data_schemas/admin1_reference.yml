@@ -1,0 +1,10 @@
+required:
+    - name_en
+properties:
+    geometry_type:
+        items:
+            enum:
+                - MultiPolygon
+                - Polygon
+        additionalItems: false
+

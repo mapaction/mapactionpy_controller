@@ -1,0 +1,21 @@
+{
+	"LayerName": "mainmap_stle_stl_pt_s0_allmaps",
+	"RegExp": "^[a-z]{3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+	"schema_definition": "stle_ste_pt.schema",
+	"DefinitionQuery": "fclass IN ('national_capital', 'city', 'capital', 'town')",
+	"Display": true,
+	"AddToLegend": true,
+	"LabelClasses": [{
+			"className": "National Capital",
+			"expression": "[name]",
+			"SQLQuery": "(\"fclass\" = 'national_capital')",
+			"showClassLabels": true
+		},
+		{
+			"className": "Admin 1 Capital",
+			"expression": "[name]",
+			"SQLQuery": "(\"fclass\" = 'town')",
+			"showClassLabels": true
+		}
+	]
+}

@@ -2,7 +2,7 @@
 	"layerProperties": [
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap_stle_stl_pt_s0_allmaps",
+			"LayerName": "mainmap-admn-ad1-py-s0-reference",
 			"RegExp": "^[a-z]{3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "fclass IN ('national_capital', 'city', 'capital', 'town')",

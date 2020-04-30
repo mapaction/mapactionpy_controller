@@ -1,0 +1,27 @@
+{
+	"atlas": {
+		"$schema": "http://json-schema.org/draft-07/schema",
+		"$id": "http://example.com/example.json",
+		"title": "Atlas Controller Schema",
+		"description": "Describes the fields required to enable atlas (aka Data Driven Pages) functionality with mapactionpy* map recipes.",
+		"default": {},
+		"additionalProperties": true,
+		"type": "object",
+		"properties": {
+			"map_frame": {
+				"type": "string"
+			},
+			"layer_name": {
+				"type": "string"
+			},
+			"column_name": {
+				"type": "string"
+			}
+		},
+		"required": [
+			"map_frame",
+			"layer_name",
+			"column_name"
+		]
+	}
+}

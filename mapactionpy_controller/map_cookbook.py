@@ -23,8 +23,8 @@ class MapCookbook:
         """
         self._check_cmf_param(cmf, layer_props, verify_on_creation)
         self.products = {}
-        self._parse_json_file()
         self.layer_props = layer_props
+        self._parse_json_file()
 
         if verify_on_creation:
             msg = self.layer_props.get_difference_with_other_layer_set(
@@ -61,15 +61,14 @@ class MapCookbook:
         with open(self.cookbook_json_file) as json_file:
             jsonContents = json.load(json_file)
             for recipe in jsonContents['recipes']:
-                rec = MapRecipe(recipe)
+                rec = MapRecipe(recipe, self.layer_props)
                 self.products[recipe['product']] = rec
 
     def get_all_included_lyrs_as_set(self):
         cb_unique_lyrs = set()
 
         for recipe in self.products.values():
-            for l in recipe.layers:
-                cb_unique_lyrs.add(l['name'])
+            cb_unique_lyrs.update(recipe.get_lyrs_as_set())
 
         return cb_unique_lyrs
 

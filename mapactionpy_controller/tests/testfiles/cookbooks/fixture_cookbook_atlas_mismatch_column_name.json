@@ -12,6 +12,11 @@
 					"example_key": "example_value"
 				}
 			],
+			"atlas": {
+				"map_frame": "Main map",
+				"layer_name": "mainmap-admn-ad1-py-s0-reference",
+				"column_name": "fake_column"
+			},
 			"map_frames": [
 				{
 					"name": "Main map",
@@ -22,13 +27,18 @@
 							"name": "mainmap_tran_por_pt_s0_allmaps"
 						},
 						{
-							"name": "mainmap_stle_stl_pt_s0_allmaps"
+							"name": "mainmap-admn-ad1-py-s0-reference"
 						},
 						{
 							"name": "mainmap-s0-py-surroundingcountries"
-						},
+						}
+					]
+				},
+				{
+					"name": "Location map",
+					"layers": [
 						{
-							"name": "mainmap-tran-rds-ln-s0-allmaps"
+							"name": "locationmap_stle_stl_pt_s0_locationmaps"
 						}
 					]
 				}

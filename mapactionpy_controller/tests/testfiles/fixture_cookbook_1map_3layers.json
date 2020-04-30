@@ -1,19 +1,28 @@
 {
-	"recipes": [
-		{
+	"recipes": [{
 			"mapnumber": "MA001",
 			"category": "Reference",
 			"product": "Country Overview with Admin 1 Boundaries and Topography",
+			"template": "reference",
 			"export": true,
-			"layers": [
+			"runners": [
 				{
-					"name": "mainmap_tran_por_pt_s0_allmaps"
-				},
-				{
-					"name": "mainmap_stle_stl_pt_s0_allmaps"
-				},
-				{
-					"name": "mainmap-s0-py-surroundingcountries"
+					"name": "arcmap",
+					"example_key": "example_value"
+				}
+			],
+			"map_frames": [{
+					"name": "Main map",
+					"scale_text_element": "scale",
+					"spatial_ref_text_element": "spatial_reference",
+					"layers": [{
+							"name": "mainmap_tran_por_pt_s0_allmaps"
+						}, {
+							"name": "mainmap_stle_stl_pt_s0_allmaps"
+						}, {
+							"name": "mainmap-s0-py-surroundingcountries"
+						}
+					]
 				}
 			],
 			"summary": "Country overview with topography displayed"

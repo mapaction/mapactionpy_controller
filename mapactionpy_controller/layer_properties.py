@@ -1,6 +1,6 @@
 import json
 import os
-from mapactionpy_controller.map_layer import MapLayer
+from mapactionpy_controller.map_recipe import RecipeLayer
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 
 
@@ -59,7 +59,7 @@ class LayerProperties:
         with open(self.cmf.layer_properties) as json_file:
             jsonContents = json.load(json_file)
             for layer in jsonContents['layerProperties']:
-                mapLayer = MapLayer(layer)
+                mapLayer = RecipeLayer(layer)
                 self.properties[mapLayer.layerName] = mapLayer
 
     def _get_lyr_rendering_names_as_set(self):
