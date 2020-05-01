@@ -5,17 +5,17 @@ class LabelClass:
     """
 
     def __init__(self, row):
-        self.className = row["className"]
+        self.class_name = row["class_name"]
         self.expression = row["expression"]
-        self.SQLQuery = row["SQLQuery"]
-        self.showClassLabels = row["showClassLabels"]
+        self.sql_query = row["sql_query"]
+        self.show_class_labels = row["show_class_labels"]
 
     def __eq__(self, other):
         comp = [
-            self.className == other.className,
+            self.class_name == other.class_name,
             self.expression == other.expression,
-            self.SQLQuery == other.SQLQuery,
-            self.showClassLabels == other.showClassLabels
+            self.sql_query == other.sql_query,
+            self.show_class_labels == other.show_class_labels
         ]
 
         return all(comp)

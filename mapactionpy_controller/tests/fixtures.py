@@ -13,23 +13,23 @@ recipe_without_positive_iso3_code = (
                 "layers": [
                     {
                         "name": "mainmap_stle_stl_pt_s0_allmaps",
-                        "RegExp": "^{e.affected_country_iso3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+                        "reg_exp": "^{e.affected_country_iso3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
                         "schema_definition": "stle_ste_pt.schema",
-                        "DefinitionQuery": "fclass IN ('national_capital', 'city', 'capital', 'town')",
-                        "Display": true,
-                        "AddToLegend": true,
-                        "LabelClasses": [
+                        "definition_query": "fclass IN ('national_capital', 'city', 'capital', 'town')",
+                        "display": true,
+                        "add_to_legend": true,
+                        "label_classes": [
                             {
-                                "className": "National Capital",
+                                "class_name": "National Capital",
                                 "expression": "[name]",
-                                "SQLQuery": "(\"fclass\" = 'national_capital')",
-                                "showClassLabels": true
+                                "sql_query": "('fclass' = 'national_capital')",
+                                "show_class_labels": true
                             },
                             {
-                                "className": "Admin 1 Capital",
+                                "class_name": "Admin 1 Capital",
                                 "expression": "[name]",
-                                "SQLQuery": "(\"fclass\" = 'town')",
-                                "showClassLabels": true
+                                "sql_query": "('fclass' = 'town')",
+                                "show_class_labels": true
                             }
                         ]
                     }
@@ -71,12 +71,12 @@ recipe_with_positive_iso3_code = (
                 "layers": [
                     {
                         "name": "mainmap-admn-ad1-py-s0-reference",
-                        "RegExp": "^moz_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
+                        "reg_exp": "^moz_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
                         "schema_definition": "admin1_reference.yml",
-                        "DefinitionQuery": "None",
-                        "Display": true,
-                        "AddToLegend": true,
-                        "LabelClasses": []
+                        "definition_query": "None",
+                        "display": true,
+                        "add_to_legend": true,
+                        "label_classes": []
                     }
                 ]
             }
@@ -85,23 +85,33 @@ recipe_with_positive_iso3_code = (
 )
 
 
-recipe_with_negative_iso3_code = \
-    r'''{
-    "title": "{e.affectedcountry}: Overview Map",
-    "layers": [
-       {
-       "map_frame": "Main Map",
-       "layer_group": "Admin - Polygons",
-       "layer_display_name": "Admin - SurroundingCountry - py",
-       "search_definition": "^(?!(moz))_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
-       "data_source_path": "",
-       "data_name": "",
-       "rendering": "Admin - SurroundingCountry - py",
-       "definition_query": "ADM0_NAME <> '[reference country]'",
-       "visible": "Yes"
-   }
-    ]
-}'''
+recipe_with_negative_iso3_code = (
+    '''{
+      	"mapnumber": "MA001",
+    	"category": "Reference",
+        "product": "{e.affectedcountry}: Overview Map",
+       	"summary": "Overview of {e.affectedcountry} with topography displayed",
+    	"export": true,
+        "template": "reference",
+        "map_frames": [
+            {
+                "name": "Main map",
+                "layers": [
+                    {
+                        "name": "mainmap-admn-ad1-py-s0-reference",
+                        "reg_exp": "^(?!(moz))_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
+                        "schema_definition": "admin1_reference.yml",
+                        "definition_query": "ADM0_NAME <> '{e.affectedcountry}'",
+                        "display": true,
+                        "add_to_legend": true,
+                        "label_classes": []
+                    }
+                ]
+            }
+        ]
+    }'''
+)
+
 
 recipe_result_one_dataset_per_layer = (
     '''{
@@ -117,14 +127,14 @@ recipe_result_one_dataset_per_layer = (
                 "layers": [
                     {
                         "name": "mainmap-admn-ad1-py-s0-reference",
-                        "RegExp": "^moz_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
+                        "reg_exp": "^moz_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
                         "schema_definition": "admin1_reference.yml",
                         "data_source_path": "D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp",
                         "data_name": "moz_admn_ad0_py_s0_unknown_pp",
-                        "DefinitionQuery": "None",
-                        "Display": true,
-                        "AddToLegend": true,
-                        "LabelClasses": []
+                        "definition_query": "None",
+                        "display": true,
+                        "add_to_legend": true,
+                        "label_classes": []
                     }
                 ]
             }

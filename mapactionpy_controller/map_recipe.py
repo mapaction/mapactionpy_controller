@@ -19,24 +19,24 @@ class RecipeLayer:
         validate_against_layer_schema(layer_def)
 
         self.name = layer_def["name"]
-        self.regExp = layer_def["RegExp"]
-        self.definitionQuery = layer_def["DefinitionQuery"]
+        self.reg_exp = layer_def["reg_exp"]
+        self.definition_query = layer_def["definition_query"]
         self.schema_definition = layer_def["schema_definition"]
-        self.display = layer_def["Display"]
-        self.addToLegend = layer_def["AddToLegend"]
-        self.labelClasses = list()
-        for labelClass in layer_def["LabelClasses"]:
-            self.labelClasses.append(LabelClass(labelClass))
+        self.display = layer_def["display"]
+        self.add_to_legend = layer_def["add_to_legend"]
+        self.label_classes = list()
+        for lbl_class_def in layer_def["label_classes"]:
+            self.label_classes.append(LabelClass(lbl_class_def))
 
     def __eq__(self, other):
         comp = [
             self.name == other.name,
-            self.regExp == other.regExp,
-            self.definitionQuery == other.definitionQuery,
+            self.reg_exp == other.reg_exp,
+            self.definition_query == other.definition_query,
             self.schema_definition == other.schema_definition,
             self.display == other.display,
-            self.addToLegend == other.addToLegend,
-            self.labelClasses == other.labelClasses
+            self.add_to_legend == other.add_to_legend,
+            self.label_classes == other.label_classes
         ]
 
         return all(comp)
@@ -47,6 +47,9 @@ class RecipeLayer:
 
 
 class RecipeFrame:
+    """
+    RecipeFrame - Includes an ordered list of layers for each Map Frame
+    """
     OPTIONAL_FIELDS = ('scale_text_element', 'spatial_ref_text_element')
 
     def __init__(self, frame_def, lyr_props):
@@ -117,21 +120,24 @@ class RecipeAtlas:
         self.column_name = atlas_def["column_name"]
 
         # Compare the atlas definition with the other parts of the recipe definition
-        try:
-            m_frame = recipe.map_frames[self.map_frame]
-        except KeyError as ke:
+        m_frame_lst = [mf for mf in recipe.map_frames if mf.name == self.map_frame]
+        if len(m_frame_lst) == 1:
+            m_frame = m_frame_lst[0]
+        else:
             raise ValueError(
                 'The Map Recipe definition is invalid. The "atlas" section refers to a map_frame '
-                ' ({}) that does not exist in the "map_frames" section of the recipe.'.format(ke)
+                ' ({}) that does not exist in the "map_frames" section of the recipe.'.format(
+                    self.map_frame)
             )
 
-        try:
-            lyr = m_frame.layers[self.layer_name]
-        except KeyError as ke:
+        lyr_lst = [l for l in m_frame.layers if l.name == self.layer_name]
+        if len(lyr_lst) == 1:
+            lyr = lyr_lst[0]
+        else:
             raise ValueError(
                 'The Map Recipe definition is invalid. The "atlas" section refers to a layer_name '
                 ' ({}) that does not exist in the relevant "map_frame" ({}) section of the recipe.'
-                ''.format(ke, self.map_frame)
+                ''.format(self.layer_name, self.map_frame)
             )
 
         schema_file = path.join(lyr_props.cmf.data_schemas, lyr.schema_definition)
@@ -140,7 +146,7 @@ class RecipeAtlas:
             raise ValueError(
                 'The Map Recipe definition is invalid. The "atlas" section refers to a column_name '
                 ' ({}) that does not exist in the schema of the relevant layer ({}).'
-                ''.format(self.column_name, lyr.layerName)
+                ''.format(self.column_name, lyr.name)
             )
 
     def __eq__(self, other):
@@ -159,7 +165,7 @@ class RecipeAtlas:
 
 class MapRecipe:
     """
-    MapRecipe - Ordered list of layers for each Map Product
+    MapRecipe
     """
     OPTIONAL_FIELDS = ('runners', 'atlas')
 
@@ -191,21 +197,11 @@ class MapRecipe:
         # Self consistancy checks
         self._check_for_dup_text_elements()
 
-
-#    def _set_optional_elements(self, dict):
-#        self.runners = dict.get('runners', None)
-#        atlas_def = dict.get('atlas', None)
-#        if atlas_def:
-#            self.atlas = RecipeAtlas(atlas_def, self, lyr_props)
-#        else:
-#            self.atlas = None
-
-
     def get_lyrs_as_set(self):
         def get_lyr_name(lyr):
             try:
-                return lyr['name']
-            except TypeError:
+                return lyr.name
+            except AttributeError:
                 return lyr
 
         unique_lyrs = set()

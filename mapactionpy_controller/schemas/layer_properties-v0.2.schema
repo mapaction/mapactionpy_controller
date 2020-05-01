@@ -8,12 +8,12 @@
     "additionalProperties": true,
     "required": [
         "name",
-        "RegExp",
+        "reg_exp",
         "schema_definition",
-        "DefinitionQuery",
-        "Display",
-        "AddToLegend",
-        "LabelClasses"
+        "definition_query",
+        "display",
+        "add_to_legend",
+        "label_classes"
     ],
     "properties": {
         "name": {
@@ -26,7 +26,7 @@
                 "mainmap_stle_stl_pt_s0_allmaps"
             ]
         },
-        "RegExp": {
+        "reg_exp": {
             "$id": "#/properties/RegExp",
             "type": "string",
             "title": "The Regexp Schema",
@@ -46,7 +46,7 @@
                 "stle_ste_pt.schema"
             ]
         },
-        "DefinitionQuery": {
+        "definition_query": {
             "$id": "#/properties/DefinitionQuery",
             "type": "string",
             "title": "The Definitionquery Schema",
@@ -56,7 +56,7 @@
                 "fclass IN ('national_capital', 'city', 'capital', 'town')"
             ]
         },
-        "Display": {
+        "display": {
             "$id": "#/properties/Display",
             "type": "boolean",
             "title": "The Display Schema",
@@ -66,7 +66,7 @@
                 true
             ]
         },
-        "AddToLegend": {
+        "add_to_legend": {
             "$id": "#/properties/AddToLegend",
             "type": "boolean",
             "title": "The Addtolegend Schema",
@@ -76,7 +76,7 @@
                 true
             ]
         },
-        "LabelClasses": {
+        "label_classes": {
             "$id": "#/properties/LabelClasses",
             "type": "array",
             "title": "The Labelclasses Schema",
@@ -121,10 +121,10 @@
                 ],
                 "additionalProperties": true,
                 "required": [
-                    "className",
+                    "class_name",
                     "expression",
-                    "SQLQuery",
-                    "showClassLabels"
+                    "sql_query",
+                    "show_class_labels"
                 ],
                 "properties": {
                     "className": {

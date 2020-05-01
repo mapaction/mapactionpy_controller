@@ -48,7 +48,7 @@ class TestMAController(TestCase):
         self.assertEqual(test_recipe2, test_recipe3)
         # Remove an arbitary layer from each Map Frame
         for m_frames in test_recipe3.map_frames:
-            m_frames.layers.popitem()
+            m_frames.layers.pop()
         self.assertNotEqual(test_recipe2, test_recipe3)
 
     def test_serialise_and_deserialise_map_recipe(self):
@@ -60,16 +60,12 @@ class TestMAController(TestCase):
 
         for fixture_str in recipes_fixtures:
             test_recipe = MapRecipe(fixture_str, self.lyr_props)
-            print(test_recipe.__dict__)
 
             self.assertEqual(test_recipe,
                              jsonpickle.decode(jsonpickle.encode(test_recipe))
                              )
             self.assertEqual(test_recipe,
                              MapRecipe(jsonpickle.encode(test_recipe, unpicklable=False), self.lyr_props)
-                             )
-            self.assertEqual(test_recipe,
-                             MapRecipe(jsonpickle.encode(test_recipe), self.lyr_props)
                              )
             self.assertNotEqual(test_recipe,
                                 MapRecipe(fixtures.recipe_with_negative_iso3_code, self.lyr_props)
