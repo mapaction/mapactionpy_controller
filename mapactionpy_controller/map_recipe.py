@@ -1,3 +1,4 @@
+import json
 from mapactionpy_controller.label_class import LabelClass
 from mapactionpy_controller import _get_validator_for_config_schema
 import mapactionpy_controller.data_schemas as data_schemas
@@ -17,7 +18,7 @@ class RecipeLayer:
         """
         validate_against_layer_schema(layer_def)
 
-        self.layerName = layer_def["LayerName"]
+        self.name = layer_def["name"]
         self.regExp = layer_def["RegExp"]
         self.definitionQuery = layer_def["DefinitionQuery"]
         self.schema_definition = layer_def["schema_definition"]
@@ -27,8 +28,27 @@ class RecipeLayer:
         for labelClass in layer_def["LabelClasses"]:
             self.labelClasses.append(LabelClass(labelClass))
 
+    def __eq__(self, other):
+        comp = [
+            self.name == other.name,
+            self.regExp == other.regExp,
+            self.definitionQuery == other.definitionQuery,
+            self.schema_definition == other.schema_definition,
+            self.display == other.display,
+            self.addToLegend == other.addToLegend,
+            self.labelClasses == other.labelClasses
+        ]
+
+        return all(comp)
+
+    def __ne__(self, other):
+        """Overrides the default implementation (unnecessary in Python 3)"""
+        return not self.__eq__(other)
+
 
 class RecipeFrame:
+    OPTIONAL_FIELDS = ('scale_text_element', 'spatial_ref_text_element')
+
     def __init__(self, frame_def, lyr_props):
         # Required fields
         self.name = frame_def["name"]
@@ -38,19 +58,53 @@ class RecipeFrame:
         self.scale_text_element = frame_def.get('scale_text_element', None)
         self.spatial_ref_text_element = frame_def.get('spatial_ref_text_element', None)
 
-    def _parse_layers(self, lyrs_def, lyr_props):
-        lyrs = {}
-        for lyr_def in lyrs_def:
+    def _parse_layers(self, lyr_defs, lyr_props):
+        lyrs = []
+        for lyr_def in lyr_defs:
             # if lyr_def only includes the name of the layer and no other properties
             # then import them from a LayerProperties object
             # Else, load them from the lyr_def
             l_name = lyr_def['name']
             if len(lyr_def) == 1:
-                lyrs[l_name] = lyr_props.properties.get(l_name, l_name)
+                lyrs.append(lyr_props.properties.get(l_name, l_name))
             else:
-                lyrs[l_name] = RecipeLayer(lyrs_def)
+                lyrs.append(RecipeLayer(lyr_def))
 
         return lyrs
+
+    def __eq__(self, other):
+        comp = [
+            self.name == other.name,
+            self.layers == other.layers,
+            self.scale_text_element == other.scale_text_element,
+            self.spatial_ref_text_element == other.spatial_ref_text_element
+        ]
+
+        return all(comp)
+
+    def __ne__(self, other):
+        """Overrides the default implementation (unnecessary in Python 3)"""
+        return not self.__eq__(other)
+
+    def __getstate__(self):
+        # See https://docs.python.org/3/library/pickle.html#pickle-state
+        # Copy the object's state from self.__dict__ which contains
+        # all our instance attributes. Always use the dict.copy()
+        # method to avoid modifying the original state.
+        state = self.__dict__.copy()
+        # Remove the unpicklable entries.
+        for option in RecipeFrame.OPTIONAL_FIELDS:
+            if not state[option]:
+                del state[option]
+        return state
+
+    def __setstate__(self, state):
+        # Restore instance attributes (i.e., filename and lineno).
+        for option in RecipeFrame.OPTIONAL_FIELDS:
+            if not option in state:
+                state[option] = None
+
+        self.__dict__.update(state)
 
 
 class RecipeAtlas:
@@ -89,13 +143,32 @@ class RecipeAtlas:
                 ''.format(self.column_name, lyr.layerName)
             )
 
+    def __eq__(self, other):
+        comp = [
+            self.map_frame == other.map_frame,
+            self.layer_name == other.layer_name,
+            self.column_name == other.column_name
+        ]
+
+        return all(comp)
+
+    def __ne__(self, other):
+        """Overrides the default implementation (unnecessary in Python 3)"""
+        return not self.__eq__(other)
+
 
 class MapRecipe:
     """
     MapRecipe - Ordered list of layers for each Map Product
     """
+    OPTIONAL_FIELDS = ('runners', 'atlas')
 
-    def __init__(self, recipe_def, lyr_props):
+    def __init__(self, recipe_definition, lyr_props):
+        if isinstance(recipe_definition, dict):
+            recipe_def = recipe_definition
+        else:
+            recipe_def = json.loads(recipe_definition)
+
         validate_against_recipe_schema(recipe_def)
 
         # Required fields
@@ -105,6 +178,7 @@ class MapRecipe:
         self.product = recipe_def["product"]
         self.map_frames = self._parse_map_frames(recipe_def["map_frames"], lyr_props)
         self.summary = recipe_def["summary"]
+        self.template = recipe_def["template"]
 
         # Optional fields
         self.runners = recipe_def.get('runners', None)
@@ -114,7 +188,18 @@ class MapRecipe:
         else:
             self.atlas = None
 
+        # Self consistancy checks
         self._check_for_dup_text_elements()
+
+
+#    def _set_optional_elements(self, dict):
+#        self.runners = dict.get('runners', None)
+#        atlas_def = dict.get('atlas', None)
+#        if atlas_def:
+#            self.atlas = RecipeAtlas(atlas_def, self, lyr_props)
+#        else:
+#            self.atlas = None
+
 
     def get_lyrs_as_set(self):
         def get_lyr_name(lyr):
@@ -124,7 +209,7 @@ class MapRecipe:
                 return lyr
 
         unique_lyrs = set()
-        for mf in self.map_frames.values():
+        for mf in self.map_frames:
 
             lyrs = [get_lyr_name(l) for l in mf.layers]
             unique_lyrs.update(lyrs)
@@ -132,10 +217,10 @@ class MapRecipe:
         return unique_lyrs
 
     def _parse_map_frames(self, map_frames_def, lyr_props):
-        map_frames = {}
+        map_frames = []
         for frame_def in map_frames_def:
             mf = RecipeFrame(frame_def, lyr_props)
-            map_frames[mf.name] = mf
+            map_frames.append(mf)
 
         return map_frames
 
@@ -145,7 +230,7 @@ class MapRecipe:
         scale_text_elements_set = set()
         spatial_ref_text_elements_set = set()
 
-        for mf in self.map_frames.values():
+        for mf in self.map_frames:
             self._find_dups(mf.scale_text_element, scale_text_elements_set,
                             'The Map Recipe definition is invalid. More than one "map_frame" is linked to the'
                             ' Scale text element "{}"'
@@ -161,3 +246,42 @@ class MapRecipe:
                 raise ValueError(msg.format(elem))
             else:
                 aggregate_set.add(elem)
+
+    def __eq__(self, other):
+        comp = [
+            self.atlas == other.atlas,
+            self.category == other.category,
+            self.export == other.export,
+            self.map_frames == other.map_frames,
+            self.mapnumber == other.mapnumber,
+            self.product == other.product,
+            self.runners == other.runners,
+            self.summary == other.summary,
+            self.template == other.template
+        ]
+
+        return all(comp)
+
+    def __ne__(self, other):
+        """Overrides the default implementation (unnecessary in Python 3)"""
+        return not self.__eq__(other)
+
+    def __getstate__(self):
+        # See https://docs.python.org/3/library/pickle.html#pickle-state
+        # Copy the object's state from self.__dict__ which contains
+        # all our instance attributes. Always use the dict.copy()
+        # method to avoid modifying the original state.
+        state = self.__dict__.copy()
+        # Remove the unpicklable entries.
+        for option in MapRecipe.OPTIONAL_FIELDS:
+            if not state[option]:
+                del state[option]
+        return state
+
+    def __setstate__(self, state):
+        # Restore instance attributes (i.e., filename and lineno).
+        for option in MapRecipe.OPTIONAL_FIELDS:
+            if not option in state:
+                state[option] = None
+
+        self.__dict__.update(state)

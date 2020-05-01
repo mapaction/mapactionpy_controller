@@ -2,7 +2,7 @@
 	"layerProperties": [
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-stle-stl-pt-s0-allmaps",
+			"name": "mainmap-stle-stl-pt-s0-allmaps",
 			"RegExp": "^[a-z]{3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "fclass IN ('national_capital', 'city', 'capital', 'town')",
@@ -25,7 +25,7 @@
 		},
 		{
 			"MapFrame": "Location map",
-			"LayerName": "locationmap-stle-stl-pt-s0-locationmaps",
+			"name": "locationmap-stle-stl-pt-s0-locationmaps",
 			"RegExp": "^[a-z]{3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "fclass IN ('national_capital', 'capital')",
@@ -42,7 +42,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s0-pt-pois",
+			"name": "mainmap-s0-pt-pois",
 			"RegExp": "^[a-z]{3}_pois_poi_pt_(.*?)_(.*?)_([phm][phm])_(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -52,7 +52,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-tran-por-pt-s0-allmaps",
+			"name": "mainmap-tran-por-pt-s0-allmaps",
 			"RegExp": "^[a-z]{3}_tran_sea_pt_(.*?)_(.*?)_([phm][phm])_(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -62,7 +62,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-tran-air-pt-s0-allmaps",
+			"name": "mainmap-tran-air-pt-s0-allmaps",
 			"RegExp": "^[a-z]{3}_tran_air_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "type IN ('medium_airport', 'large_airport')",
@@ -72,7 +72,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s1-ln-surroundingcountries",
+			"name": "mainmap-s1-ln-surroundingcountries",
 			"RegExp": "^[a-z]{3}_admn_ad0_ln_(.*?)_(.*?)_*([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -82,7 +82,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s0-ln-admin0",
+			"name": "mainmap-s0-ln-admin0",
 			"RegExp": "^[a-z]{3}_admn_ad0_ln_(.*?)_(.*?)_*([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -92,7 +92,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-admin-ad1-ln-s0-reference",
+			"name": "mainmap-admin-ad1-ln-s0-reference",
 			"RegExp": "^[a-z]{3}_admn_ad1_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -102,7 +102,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap_admn_ad1_ln_s0_thematic",
+			"name": "mainmap_admn_ad1_ln_s0_thematic",
 			"RegExp": "^[a-z]{3}_admn_ad1_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -112,7 +112,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap_admn_ad0_ln_s0_allmaps",
+			"name": "mainmap_admn_ad0_ln_s0_allmaps",
 			"RegExp": "^[a-z]{3}_admn_ad0_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -122,7 +122,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s0-ln-admin1-black",
+			"name": "mainmap-s0-ln-admin1-black",
 			"RegExp": "^[a-z]{3}_admn_ad1_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -132,7 +132,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s0-ln-admin2-black",
+			"name": "mainmap-s0-ln-admin2-black",
 			"RegExp": "^[a-z]{3}_admn_ad2_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -142,7 +142,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s1-ln-admin1",
+			"name": "mainmap-s1-ln-admin1",
 			"RegExp": "^[a-z]{3}_admn_ad1_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -152,7 +152,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s0-ln-admin2",
+			"name": "mainmap-s0-ln-admin2",
 			"RegExp": "^[a-z]{3}_admn_ad2_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -162,7 +162,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s1-ln-admin2",
+			"name": "mainmap-s1-ln-admin2",
 			"RegExp": "^[a-z]{3}_admn_ad2_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -172,7 +172,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s1-ln-admin3",
+			"name": "mainmap-s1-ln-admin3",
 			"RegExp": "^[a-z]{3}_admn_ad3_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -182,7 +182,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap_tran_rds_ln_s0_allmaps",
+			"name": "mainmap_tran_rds_ln_s0_allmaps",
 			"RegExp": "^[a-z]{3}_tran_rds_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "fclass = 'primary'",
@@ -192,7 +192,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap_tran_rrd_ln_s0_allmaps",
+			"name": "mainmap_tran_rrd_ln_s0_allmaps",
 			"RegExp": "^[a-z]{3}_tran_rrd_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -202,7 +202,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap_phys_riv_ln_s0_reference",
+			"name": "mainmap_phys_riv_ln_s0_reference",
 			"RegExp": "^[a-z]{3}_phys_riv_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "fclass IN ('river')",
@@ -213,7 +213,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-elev-cst-ln-s0-allmaps",
+			"name": "mainmap-elev-cst-ln-s0-allmaps",
 			"RegExp": "^[a-z]{3}_elev_cst_ln_(.*?)_(.*?)_([phm][phm])_(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -223,7 +223,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "legend-elev-dem-ras-s0-reference",
+			"name": "legend-elev-dem-ras-s0-reference",
 			"RegExp": "^[a-z]{3}_elev_dem_ras_(.*?)_(.*?)_([phm][phm])(.*?).tif$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -233,7 +233,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "legend-tran-rds-ln-s0-allmaps",
+			"name": "legend-tran-rds-ln-s0-allmaps",
 			"RegExp": "^[a-z]{3}_tran_rds_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -243,7 +243,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "legend_phys_wat_py_s0_reference",
+			"name": "legend_phys_wat_py_s0_reference",
 			"RegExp": "^[a-z]{3}_phys_wat_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -253,7 +253,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s0-py-admin1",
+			"name": "mainmap-s0-py-admin1",
 			"RegExp": "^[a-z]{3}_admn_ad1_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -270,7 +270,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s0-py-admin1-purple-text-only",
+			"name": "mainmap-s0-py-admin1-purple-text-only",
 			"RegExp": "^[a-z]{3}_admn_ad1_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -287,7 +287,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-admn-ad1-py-s0-reference",
+			"name": "mainmap-admn-ad1-py-s0-reference",
 			"RegExp": "^[a-z]{3}_admn_ad1_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -304,7 +304,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s1-py-ddpadmin1",
+			"name": "mainmap-s1-py-ddpadmin1",
 			"RegExp": "^[a-z]{3}_admn_ad1_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -314,7 +314,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s0-py-admin2-purple-text-only",
+			"name": "mainmap-s0-py-admin2-purple-text-only",
 			"RegExp": "^[a-z]{3}_admn_ad2_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -331,7 +331,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s0-py-admin2-grey-text",
+			"name": "mainmap-s0-py-admin2-grey-text",
 			"RegExp": "^[a-z]{3}_admn_ad2_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -348,7 +348,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s0-py-admin2",
+			"name": "mainmap-s0-py-admin2",
 			"RegExp": "^[a-z]{3}_admn_ad2_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -365,7 +365,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s1-py-admin2",
+			"name": "mainmap-s1-py-admin2",
 			"RegExp": "^[a-z]{3}_admn_ad2_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -375,7 +375,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s2-py-admin3",
+			"name": "mainmap-s2-py-admin3",
 			"RegExp": "^[a-z]{3}_admn_ad3_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -385,7 +385,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s3-py-admin4",
+			"name": "mainmap-s3-py-admin4",
 			"RegExp": "^[a-z]{3}_admn_ad4_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -395,7 +395,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap_phys_sea_py_s0_allmaps",
+			"name": "mainmap_phys_sea_py_s0_allmaps",
 			"RegExp": "^[a-z]{3}_phys_sea_py_(.*?)_(.*?)_pp(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -405,7 +405,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-carto-fea-py-s0-allmaps",
+			"name": "mainmap-carto-fea-py-s0-allmaps",
 			"RegExp": "^[a-z]{3}_carto_fea_py_(.*?)_(.*?)_pp(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -415,7 +415,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap_phys_wat_py_s0_allmaps",
+			"name": "mainmap_phys_wat_py_s0_allmaps",
 			"RegExp": "^[a-z]{3}_phys_wat_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -425,7 +425,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-admn-ad0-py-s0-reference",
+			"name": "mainmap-admn-ad0-py-s0-reference",
 			"RegExp": "^[a-z]{3}_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "\"NAME_0\" = '{COUNTRY_NAME}'",
@@ -435,7 +435,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-admn-ad0-py-s0-thematic",
+			"name": "mainmap-admn-ad0-py-s0-thematic",
 			"RegExp": "^[a-z]{3}_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "\"NAME_0\" = '{COUNTRY_NAME}'",
@@ -445,7 +445,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s0-py-affectedcountry",
+			"name": "mainmap-s0-py-affectedcountry",
 			"RegExp": "^[a-z]{3}_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "\"NAME_0\" = '{COUNTRY_NAME}'",
@@ -455,7 +455,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-admn-ad0-py-s0-surroundingcountries",
+			"name": "mainmap-admn-ad0-py-s0-surroundingcountries",
 			"RegExp": "aoi_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -478,7 +478,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap_phys_sea_py_s0_allmaps",
+			"name": "mainmap_phys_sea_py_s0_allmaps",
 			"RegExp": "^[a-z]{3}_phys_ocn_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -488,7 +488,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "Imagery - Imagery",
+			"name": "Imagery - Imagery",
 			"RegExp": "^[a-z]{3}_img_aer_ras_su_unknown_mp_tile_\\d*.TIF$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -498,7 +498,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s0-ras-population",
+			"name": "mainmap-s0-ras-population",
 			"RegExp": "^[a-z]{3}_popu_pop_ras_(.*?)_(.*?)_([phm][phm])(.*?).tif$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -508,7 +508,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-elev-dem-ras-s0-reference",
+			"name": "mainmap-elev-dem-ras-s0-reference",
 			"RegExp": "^[a-z]{3}_elev_dem_ras_(.*?)_(.*?)_([phm][phm])(.*?).tif$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -518,7 +518,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-elev-hsh-ras-s0-reference",
+			"name": "mainmap-elev-hsh-ras-s0-reference",
 			"RegExp": "^[a-z]{3}_elev_hsh_ras_(.*?)_(.*?)_([phm][phm])(.*?).tif$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -528,7 +528,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s0-ras-curvature",
+			"name": "mainmap-s0-ras-curvature",
 			"RegExp": "^[a-z]{3}_elev_cur_ras_(.*?)_(.*?)_([phm][phm])(.*?).tif$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -538,7 +538,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s0-ras-population",
+			"name": "mainmap-s0-ras-population",
 			"RegExp": "^[a-z]{3}_popu_pop_ras_(.*?)_(.*?)_([phm][phm])(.*?).tif$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -548,7 +548,7 @@
 		},
 		{
 			"MapFrame": "Location map",
-			"LayerName": "locationmap-elev-cst-ln-s0-locationmaps",
+			"name": "locationmap-elev-cst-ln-s0-locationmaps",
 			"RegExp": "^[a-z]{3}_elev_cst_ln_(.*?)_(.*?)_([phm][phm])_(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -558,7 +558,7 @@
 		},
 		{
 			"MapFrame": "Location map",
-			"LayerName": "locationmap-s0-ln-admin0",
+			"name": "locationmap-s0-ln-admin0",
 			"RegExp": "^[a-z]{3}_admn_ad0_ln_s0_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -568,7 +568,7 @@
 		},
 		{
 			"MapFrame": "Location map",
-			"LayerName": "locationmap-s0-ln-admin1",
+			"name": "locationmap-s0-ln-admin1",
 			"RegExp": "^[a-z]{3}_admn_ad0_ln_s0_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -578,7 +578,7 @@
 		},
 		{
 			"MapFrame": "Location map",
-			"LayerName": "locationmap-s1-ln-admin2",
+			"name": "locationmap-s1-ln-admin2",
 			"RegExp": "^[a-z]{3}_admn_ad2_ln_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -588,7 +588,7 @@
 		},
 		{
 			"MapFrame": "Location map",
-			"LayerName": "locationmap-admn-ad0-ln-s0-locationmaps",
+			"name": "locationmap-admn-ad0-ln-s0-locationmaps",
 			"RegExp": "^[a-z]{3}_admn_ad0_ln_s0_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -598,7 +598,7 @@
 		},
 		{
 			"MapFrame": "Location map",
-			"LayerName": "locationmap-admn-ad0-py-s0-surroundingcountries",
+			"name": "locationmap-admn-ad0-py-s0-surroundingcountries",
 			"RegExp": "^[a-z]{3}_admn_ad0_py_s0_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "\"NAME_0\" <> '{COUNTRY_NAME}'",
@@ -608,7 +608,7 @@
 		},
 		{
 			"MapFrame": "Location map",
-			"LayerName": "locationmap-admn-ad0-py-s0-locationmaps",
+			"name": "locationmap-admn-ad0-py-s0-locationmaps",
 			"RegExp": "^[a-z]{3}_admn_ad0_py_s0_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "\"NAME_0\" = '{COUNTRY_NAME}'",
@@ -618,7 +618,7 @@
 		},
 		{
 			"MapFrame": "Location map",
-			"LayerName": "mainmap-admn-ad1-py-s0-thematic",
+			"name": "mainmap-admn-ad1-py-s0-thematic",
 			"RegExp": "^[a-z]{3}_admn_ad1_py_s0_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -628,7 +628,7 @@
 		},
 		{
 			"MapFrame": "Location map",
-			"LayerName": "locationmap_phys_sea_py_s0_locationmaps",
+			"name": "locationmap_phys_sea_py_s0_locationmaps",
 			"RegExp": "^[a-z]{3}_phys_ocn_py_s0_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -638,7 +638,7 @@
 		},
 		{
 			"MapFrame": "Location map",
-			"LayerName": "locationmap-s0-py-extent",
+			"name": "locationmap-s0-py-extent",
 			"RegExp": "",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",

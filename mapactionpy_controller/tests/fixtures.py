@@ -1,21 +1,43 @@
 # flake8: noqa
-recipe_without_positive_iso3_code = \
-    r'''{
-    "title": "{e.affectedcountry}: Overview Map",
-    "layers": [
-   {
-       "map_frame": "Main Map",
-       "layer_group": "Admin - Polygons",
-       "layer_display_name": "Admin - AffectedCountry - py",
-       "search_definition": "^{e.affected_country_iso3}_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
-       "data_source_path": "",
-       "data_name": "",
-       "rendering": "Admin - AffectedCountry - py",
-       "definition_query": "None",
-       "visible": "Yes"
-   }
-    ]
-}'''
+recipe_without_positive_iso3_code = (
+    '''{
+      	"mapnumber": "MA001",
+       	"category": "Reference",
+        "product": "{e.affectedcountry}: Overview Map",
+       	"summary": "Overview of {e.affectedcountry} with topography displayed",
+    	"export": true,
+        "template": "reference",
+        "map_frames": [
+            {
+                "name": "Main map",
+                "layers": [
+                    {
+                        "name": "mainmap_stle_stl_pt_s0_allmaps",
+                        "RegExp": "^{e.affected_country_iso3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+                        "schema_definition": "stle_ste_pt.schema",
+                        "DefinitionQuery": "fclass IN ('national_capital', 'city', 'capital', 'town')",
+                        "Display": true,
+                        "AddToLegend": true,
+                        "LabelClasses": [
+                            {
+                                "className": "National Capital",
+                                "expression": "[name]",
+                                "SQLQuery": "(\"fclass\" = 'national_capital')",
+                                "showClassLabels": true
+                            },
+                            {
+                                "className": "Admin 1 Capital",
+                                "expression": "[name]",
+                                "SQLQuery": "(\"fclass\" = 'town')",
+                                "showClassLabels": true
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }'''
+)
 
 recipe_without_negative_iso3_code = \
     r'''{
@@ -35,23 +57,33 @@ recipe_without_negative_iso3_code = \
     ]
 }'''
 
-recipe_with_positive_iso3_code = \
-    r'''{
-    "title": "{e.affectedcountry}: Overview Map",
-    "layers": [
-   {
-       "map_frame": "Main Map",
-       "layer_group": "Admin - Polygons",
-       "layer_display_name": "Admin - AffectedCountry - py",
-       "search_definition": "^moz_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
-       "data_source_path": "",
-       "data_name": "",
-       "rendering": "Admin - AffectedCountry - py",
-       "definition_query": "None",
-       "visible": "Yes"
-   }
-    ]
-}'''
+recipe_with_positive_iso3_code = (
+    '''{
+      	"mapnumber": "MA001",
+    	"category": "Reference",
+        "product": "{e.affectedcountry}: Overview Map",
+       	"summary": "Overview of {e.affectedcountry} with topography displayed",
+    	"export": true,
+        "template": "reference",
+        "map_frames": [
+            {
+                "name": "Main map",
+                "layers": [
+                    {
+                        "name": "mainmap-admn-ad1-py-s0-reference",
+                        "RegExp": "^moz_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
+                        "schema_definition": "admin1_reference.yml",
+                        "DefinitionQuery": "None",
+                        "Display": true,
+                        "AddToLegend": true,
+                        "LabelClasses": []
+                    }
+                ]
+            }
+        ]
+    }'''
+)
+
 
 recipe_with_negative_iso3_code = \
     r'''{
@@ -71,23 +103,52 @@ recipe_with_negative_iso3_code = \
     ]
 }'''
 
-recipe_result_one_dataset_per_layer = \
-    r'''{
-    "title": "{e.affectedcountry}: Overview Map",
-    "layers": [
-   {
-       "map_frame": "Main Map",
-       "layer_group": "Admin - Polygons",
-       "layer_display_name": "Admin - AffectedCountry - py",
-       "search_definition": "^moz_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
-       "data_source_path": "D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp",
-       "data_name": "moz_admn_ad0_py_s0_unknown_pp",
-       "rendering": "Admin - AffectedCountry - py",
-       "definition_query": "None",
-       "visible": "Yes"
-   }
-    ]
-}'''
+recipe_result_one_dataset_per_layer = (
+    '''{
+      	"mapnumber": "MA001",
+    	"category": "Reference",
+        "product": "{e.affectedcountry}: Overview Map",
+       	"summary": "Overview of {e.affectedcountry} with topography displayed",
+    	"export": true,
+        "template": "reference",
+        "map_frames": [
+            {
+                "name": "Main map",
+                "layers": [
+                    {
+                        "name": "mainmap-admn-ad1-py-s0-reference",
+                        "RegExp": "^moz_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
+                        "schema_definition": "admin1_reference.yml",
+                        "data_source_path": "D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp",
+                        "data_name": "moz_admn_ad0_py_s0_unknown_pp",
+                        "DefinitionQuery": "None",
+                        "Display": true,
+                        "AddToLegend": true,
+                        "LabelClasses": []
+                    }
+                ]
+            }
+        ]
+    }'''
+)
+
+#     '''{
+#         "title": "{e.affectedcountry}: Overview Map",
+#     "layers": [
+#    {
+#        "map_frame": "Main Map",
+#        "layer_group": "Admin - Polygons",
+#        "layer_display_name": "Admin - AffectedCountry - py",
+#        "search_definition": "^moz_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
+#        "data_source_path": "D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp",
+#        "data_name": "moz_admn_ad0_py_s0_unknown_pp",
+#        "rendering": "Admin - AffectedCountry - py",
+#        "definition_query": "None",
+#        "visible": "Yes"
+#    }
+#     ]
+# }'''
+# )
 
 fixture_datasource_query = r"""
 {

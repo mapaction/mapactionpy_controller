@@ -7,7 +7,7 @@
     "default": {},
     "additionalProperties": true,
     "required": [
-        "LayerName",
+        "name",
         "RegExp",
         "schema_definition",
         "DefinitionQuery",
@@ -16,8 +16,8 @@
         "LabelClasses"
     ],
     "properties": {
-        "LayerName": {
-            "$id": "#/properties/LayerName",
+        "name": {
+            "$id": "#/properties/name",
             "type": "string",
             "title": "The Layername Schema",
             "description": "An explanation about the purpose of this instance.",

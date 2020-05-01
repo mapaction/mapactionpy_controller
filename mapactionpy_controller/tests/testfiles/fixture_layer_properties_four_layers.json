@@ -2,7 +2,7 @@
 	"layerProperties": [
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap_stle_stl_pt_s0_allmaps",
+			"name": "mainmap_stle_stl_pt_s0_allmaps",
 			"RegExp": "^[a-z]{3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "fclass IN ('national_capital', 'city', 'capital', 'town')",
@@ -25,7 +25,7 @@
 		},
 		{
 			"MapFrame": "Location map",
-			"LayerName": "locationmap_stle_stl_pt_s0_locationmaps",
+			"name": "locationmap_stle_stl_pt_s0_locationmaps",
 			"RegExp": "^[a-z]{3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "fclass IN ('national_capital', 'capital')",
@@ -42,7 +42,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap_tran_por_pt_s0_allmaps",
+			"name": "mainmap_tran_por_pt_s0_allmaps",
 			"RegExp": "^[a-z]{3}_tran_sea_pt_(.*?)_(.*?)_([phm][phm])_(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
@@ -52,7 +52,7 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s0-py-surroundingcountries",
+			"name": "mainmap-s0-py-surroundingcountries",
 			"RegExp": "aoi_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null.schema",
 			"DefinitionQuery": "",
