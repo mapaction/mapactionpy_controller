@@ -60,7 +60,7 @@ class LayerProperties:
             jsonContents = json.load(json_file)
             for layer in jsonContents['layerProperties']:
                 mapLayer = RecipeLayer(layer)
-                self.properties[mapLayer.layerName] = mapLayer
+                self.properties[mapLayer.name] = mapLayer
 
     def _get_lyr_rendering_names_as_set(self):
         files_unique = set()

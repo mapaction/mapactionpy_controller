@@ -1,10 +1,12 @@
 import argparse
+import json
 import jsonpickle
 import os
 import re
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.event import Event
-from mapactionpy_controller.product_bundle_definition import MapRecipe
+from mapactionpy_controller.map_recipe import MapRecipe
+from mapactionpy_controller.layer_properties import LayerProperties
 
 
 class DataSearch():
@@ -13,15 +15,23 @@ class DataSearch():
         self.cmf = CrashMoveFolder(self.event.cmf_descriptor_path)
 
     def update_search_with_event_details(self, recipe):
-        for lyr in recipe.layers:
-            output_str = lyr.search_definition.format(e=self.event)
-            lyr.search_definition = output_str
+        def update_regex(lyr):
+            try:
+                lyr.reg_exp = lyr.reg_exp.format(e=self.event)
+            except IndexError:
+                pass
+
+            return lyr
+
+        for mf in recipe.map_frames:
+            mf.layers = [update_regex(lyr) for lyr in mf.layers]
 
         return recipe
 
     def update_recipe_with_datasources(self, recipe):
-        for lyr in recipe.layers:
-            lyr.data_source_path, lyr.data_name = self._find_data(lyr)
+        for mf in recipe.map_frames:
+            for lyr in mf.layers:
+                lyr.data_source_path, lyr.data_name = self._find_data(lyr)
 
         return recipe
 
@@ -30,7 +40,7 @@ class DataSearch():
         found_datanames = []
         for root, dirs, files in os.walk(self.cmf.active_data):  # pylint: disable=unused-variable
             for f in files:
-                if re.match(lyr.search_definition, f):
+                if re.match(lyr.reg_exp, f):
                     found_datasources.append(
                         os.path.normpath(os.path.join(root, f)))
                     found_datanames.append(
@@ -63,7 +73,14 @@ def get_args():
 def main():
     args = get_args()
 
-    org_recipe = MapRecipe(args.recipe_file)
+    ev = Event(args.event_path)
+    cmf = CrashMoveFolder(ev.cmf_descriptor_path, verify_on_creation=False)
+    lyr_props = LayerProperties(cmf, '.lyr', verify_on_creation=False)
+
+    with open(args.recipe_file) as rf:
+        recipe_def = json.load(rf)['recipes'].pop()
+
+    org_recipe = MapRecipe(recipe_def, lyr_props)
 
     ds = DataSearch(Event(args.event_path))
     updated_recipe = ds.update_search_with_event_details(org_recipe)
