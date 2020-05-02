@@ -9,6 +9,28 @@ validate_against_layer_schema = _get_validator_for_config_schema('layer_properti
 validate_against_recipe_schema = _get_validator_for_config_schema('map-recipe-v0.2.schema')
 
 
+def get_state_optional_fields(obj, optional_fields):
+    # See https://docs.python.org/3/library/pickle.html#pickle-state
+    # Copy the object's state from self.__dict__ which contains
+    # all our instance attributes. Always use the dict.copy()
+    # method to avoid modifying the original state.
+    state = obj.__dict__.copy()
+    # Remove the unpicklable entries.
+    for option in optional_fields:
+        if not state[option]:
+            del state[option]
+    return state
+
+
+def set_state_optional_fields(obj, state, optional_fields):
+    # Restore instance attributes (i.e., filename and lineno).
+    for option in optional_fields:
+        if option not in state:
+            state[option] = None
+
+    obj.__dict__.update(state)
+
+
 class RecipeLayer:
 
     OPTIONAL_FIELDS = ('data_source_path', 'data_name')
@@ -56,24 +78,10 @@ class RecipeLayer:
         return not self.__eq__(other)
 
     def __getstate__(self):
-        # See https://docs.python.org/3/library/pickle.html#pickle-state
-        # Copy the object's state from self.__dict__ which contains
-        # all our instance attributes. Always use the dict.copy()
-        # method to avoid modifying the original state.
-        state = self.__dict__.copy()
-        # Remove the unpicklable entries.
-        for option in RecipeLayer.OPTIONAL_FIELDS:
-            if not state[option]:
-                del state[option]
-        return state
+        return get_state_optional_fields(self, RecipeLayer.OPTIONAL_FIELDS)
 
     def __setstate__(self, state):
-        # Restore instance attributes (i.e., filename and lineno).
-        for option in RecipeLayer.OPTIONAL_FIELDS:
-            if option not in state:
-                state[option] = None
-
-        self.__dict__.update(state)
+        set_state_optional_fields(self, state, RecipeLayer.OPTIONAL_FIELDS)
 
 
 class RecipeFrame:
@@ -120,24 +128,10 @@ class RecipeFrame:
         return not self.__eq__(other)
 
     def __getstate__(self):
-        # See https://docs.python.org/3/library/pickle.html#pickle-state
-        # Copy the object's state from self.__dict__ which contains
-        # all our instance attributes. Always use the dict.copy()
-        # method to avoid modifying the original state.
-        state = self.__dict__.copy()
-        # Remove the unpicklable entries.
-        for option in RecipeFrame.OPTIONAL_FIELDS:
-            if not state[option]:
-                del state[option]
-        return state
+        return get_state_optional_fields(self, RecipeFrame.OPTIONAL_FIELDS)
 
     def __setstate__(self, state):
-        # Restore instance attributes (i.e., filename and lineno).
-        for option in RecipeFrame.OPTIONAL_FIELDS:
-            if option not in state:
-                state[option] = None
-
-        self.__dict__.update(state)
+        set_state_optional_fields(self, state, RecipeFrame.OPTIONAL_FIELDS)
 
 
 class RecipeAtlas:
@@ -293,21 +287,7 @@ class MapRecipe:
         return not self.__eq__(other)
 
     def __getstate__(self):
-        # See https://docs.python.org/3/library/pickle.html#pickle-state
-        # Copy the object's state from self.__dict__ which contains
-        # all our instance attributes. Always use the dict.copy()
-        # method to avoid modifying the original state.
-        state = self.__dict__.copy()
-        # Remove the unpicklable entries.
-        for option in MapRecipe.OPTIONAL_FIELDS:
-            if not state[option]:
-                del state[option]
-        return state
+        return get_state_optional_fields(self, MapRecipe.OPTIONAL_FIELDS)
 
     def __setstate__(self, state):
-        # Restore instance attributes (i.e., filename and lineno).
-        for option in MapRecipe.OPTIONAL_FIELDS:
-            if option not in state:
-                state[option] = None
-
-        self.__dict__.update(state)
+        set_state_optional_fields(self, state, MapRecipe.OPTIONAL_FIELDS)
