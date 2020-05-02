@@ -15,12 +15,16 @@ class DataSearch():
         self.cmf = CrashMoveFolder(self.event.cmf_descriptor_path)
 
     def update_search_with_event_details(self, recipe):
+        def update_regex(lyr):
+            try:
+                lyr.reg_exp = lyr.reg_exp.format(e=self.event)
+            except IndexError:
+                pass
+
+            return lyr
+
         for mf in recipe.map_frames:
-            for lyr in mf.layers:
-                try:
-                    lyr.reg_exp = lyr.reg_exp.format(e=self.event)
-                except IndexError:
-                    pass
+            mf.layers = [update_regex(lyr) for lyr in mf.layers]
 
         return recipe
 
