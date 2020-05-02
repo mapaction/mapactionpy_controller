@@ -59,17 +59,7 @@ class RecipeLayer:
         self.data_name = layer_def.get('data_name', None)
 
     def __eq__(self, other):
-        return all([
-            self.name == other.name,
-            self.reg_exp == other.reg_exp,
-            self.definition_query == other.definition_query,
-            self.schema_definition == other.schema_definition,
-            self.display == other.display,
-            self.add_to_legend == other.add_to_legend,
-            self.label_classes == other.label_classes,
-            self.data_source_path == other.data_source_path,
-            self.data_name == other.data_name
-        ])
+        return self.__dict__ == other.__dict__
 
     def __ne__(self, other):
         """Overrides the default implementation (unnecessary in Python 3)"""
@@ -112,12 +102,7 @@ class RecipeFrame:
         return lyrs
 
     def __eq__(self, other):
-        return all([
-            self.name == other.name,
-            self.layers == other.layers,
-            self.scale_text_element == other.scale_text_element,
-            self.spatial_ref_text_element == other.spatial_ref_text_element
-        ])
+        return self.__dict__ == other.__dict__
 
     def __ne__(self, other):
         """Overrides the default implementation (unnecessary in Python 3)"""
@@ -170,11 +155,7 @@ class RecipeAtlas:
             )
 
     def __eq__(self, other):
-        return all(
-            self.map_frame == other.map_frame,
-            self.layer_name == other.layer_name,
-            self.column_name == other.column_name
-        )
+        return self.__dict__ == other.__dict__
 
     def __ne__(self, other):
         """Overrides the default implementation (unnecessary in Python 3)"""
@@ -262,17 +243,7 @@ class MapRecipe:
                 aggregate_set.add(elem)
 
     def __eq__(self, other):
-        return all([
-            self.atlas == other.atlas,
-            self.category == other.category,
-            self.export == other.export,
-            self.map_frames == other.map_frames,
-            self.mapnumber == other.mapnumber,
-            self.product == other.product,
-            self.runners == other.runners,
-            self.summary == other.summary,
-            self.template == other.template
-        ])
+        return self.__dict__ == other.__dict__
 
     def __ne__(self, other):
         """Overrides the default implementation (unnecessary in Python 3)"""
