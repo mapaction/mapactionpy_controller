@@ -10,6 +10,9 @@ validate_against_recipe_schema = _get_validator_for_config_schema('map-recipe-v0
 
 
 class RecipeLayer:
+
+    OPTIONAL_FIELDS = ('data_source_path', 'data_name')
+
     def __init__(self, layer_def):
         """Constructor.  Creates an instance of layer properties
 
@@ -18,6 +21,7 @@ class RecipeLayer:
         """
         validate_against_layer_schema(layer_def)
 
+        # Required fields
         self.name = layer_def["name"]
         self.reg_exp = layer_def["reg_exp"]
         self.definition_query = layer_def["definition_query"]
@@ -28,6 +32,10 @@ class RecipeLayer:
         for lbl_class_def in layer_def["label_classes"]:
             self.label_classes.append(LabelClass(lbl_class_def))
 
+        # Optional fields
+        self.data_source_path = layer_def.get('data_source_path', None)
+        self.data_name = layer_def.get('data_name', None)
+
     def __eq__(self, other):
         comp = [
             self.name == other.name,
@@ -36,7 +44,9 @@ class RecipeLayer:
             self.schema_definition == other.schema_definition,
             self.display == other.display,
             self.add_to_legend == other.add_to_legend,
-            self.label_classes == other.label_classes
+            self.label_classes == other.label_classes,
+            self.data_source_path == other.data_source_path,
+            self.data_name == other.data_name
         ]
 
         return all(comp)
@@ -44,6 +54,26 @@ class RecipeLayer:
     def __ne__(self, other):
         """Overrides the default implementation (unnecessary in Python 3)"""
         return not self.__eq__(other)
+
+    def __getstate__(self):
+        # See https://docs.python.org/3/library/pickle.html#pickle-state
+        # Copy the object's state from self.__dict__ which contains
+        # all our instance attributes. Always use the dict.copy()
+        # method to avoid modifying the original state.
+        state = self.__dict__.copy()
+        # Remove the unpicklable entries.
+        for option in RecipeLayer.OPTIONAL_FIELDS:
+            if not state[option]:
+                del state[option]
+        return state
+
+    def __setstate__(self, state):
+        # Restore instance attributes (i.e., filename and lineno).
+        for option in RecipeLayer.OPTIONAL_FIELDS:
+            if option not in state:
+                state[option] = None
+
+        self.__dict__.update(state)
 
 
 class RecipeFrame:
@@ -104,7 +134,7 @@ class RecipeFrame:
     def __setstate__(self, state):
         # Restore instance attributes (i.e., filename and lineno).
         for option in RecipeFrame.OPTIONAL_FIELDS:
-            if not option in state:
+            if option not in state:
                 state[option] = None
 
         self.__dict__.update(state)
@@ -277,7 +307,7 @@ class MapRecipe:
     def __setstate__(self, state):
         # Restore instance attributes (i.e., filename and lineno).
         for option in MapRecipe.OPTIONAL_FIELDS:
-            if not option in state:
+            if option not in state:
                 state[option] = None
 
         self.__dict__.update(state)

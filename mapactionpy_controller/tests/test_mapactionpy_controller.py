@@ -1,7 +1,6 @@
 import json
 import os
 from unittest import TestCase
-import unittest
 import fixtures
 # from mapactionpy_controller.product_bundle_definition import MapRecipe
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
@@ -71,7 +70,6 @@ class TestMAController(TestCase):
                                 MapRecipe(fixtures.recipe_with_negative_iso3_code, self.lyr_props)
                                 )
 
-    @unittest.skip
     def test_substitute_iso3_in_regex(self):
         ds = DataSearch(self.event)
 
@@ -89,37 +87,41 @@ class TestMAController(TestCase):
         updated_neg_recipe = ds.update_search_with_event_details(neg_recipe)
         self.assertEqual(updated_neg_recipe, reference_recipe)
 
-    @unittest.skip
-    @mock.patch('mapactionpy_controller.data_search.os.path')
-    @mock.patch('mapactionpy_controller.data_search.os')
-    def test_search_for_shapefiles(self, mock_os, mock_path):
+    def test_search_for_shapefiles(self):
         ds = DataSearch(self.event)
 
         # case where there is exactly one dataset per query
-        mock_os.walk.return_value = fixtures.walk_single_admn_file_search_search
-        mock_path.join.return_value = r'D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp'
-        mock_path.normpath.return_value = r'D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp'
-        mock_path.splitext.return_value = (r'moz_admn_ad0_py_s0_unknown_pp', r'.shp')
-        reference_recipe = MapRecipe(
-            None, str_def=fixtures.recipe_result_one_dataset_per_layer)
-        test_recipe = MapRecipe(None, str_def=fixtures.recipe_with_positive_iso3_code)
-        self.assertNotEqual(test_recipe, reference_recipe)
-        updated_test_recipe = ds.update_recipe_with_datasources(test_recipe)
+        with mock.patch('mapactionpy_controller.data_search.os.walk') as mock_walk:
+            with mock.patch('mapactionpy_controller.data_search.os.path') as mock_path:
+                mock_walk.return_value = fixtures.walk_single_admn_file_search_search
+                mock_path.join.return_value = (
+                    'D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp'
+                )
+                mock_path.normpath.return_value = (
+                    'D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp'
+                )
+                mock_path.splitext.return_value = (r'moz_admn_ad0_py_s0_unknown_pp', r'.shp')
+                reference_recipe = MapRecipe(
+                    fixtures.recipe_result_one_dataset_per_layer, self.lyr_props)
+                test_recipe = MapRecipe(fixtures.recipe_with_positive_iso3_code, self.lyr_props)
+                self.assertNotEqual(test_recipe, reference_recipe)
+                updated_test_recipe = ds.update_recipe_with_datasources(test_recipe)
 
-        self.assertEqual(updated_test_recipe, reference_recipe)
+                self.assertEqual(updated_test_recipe, test_recipe)
+                self.assertTrue(updated_test_recipe == test_recipe)
+                self.assertEqual(updated_test_recipe, reference_recipe)
 
-    @unittest.skip
     def test_cmf_path_validation(self):
 
         cmf_partial_fail = os.path.join(
             self.parent_dir, 'tests', 'testfiles', 'fixture_cmf_description_one_file_and_one_dir_not_valid.json')
 
         # test validation on creation (for failing case) using default parameters
-        self.assertRaises(ValueError, CrashMoveFolder, self.cmf_descriptor_path)
+        self.assertRaises(ValueError, CrashMoveFolder, cmf_partial_fail)
         # force validation on creation, for a json file we know would otherwise fail:
-        self.assertRaises(ValueError, CrashMoveFolder, self.cmf_descriptor_path, verify_on_creation=True)
+        self.assertRaises(ValueError, CrashMoveFolder, cmf_partial_fail, verify_on_creation=True)
         # test validation is correctly disabled on creation, for a json file we know would otherwise fail:
-        test_cmf = CrashMoveFolder(self.cmf_descriptor_path, verify_on_creation=False)
+        test_cmf = CrashMoveFolder(cmf_partial_fail, verify_on_creation=False)
         self.assertIsInstance(test_cmf, CrashMoveFolder)
 
         # check message included in the ValueError:
