@@ -59,7 +59,7 @@ class RecipeLayer:
         self.data_name = layer_def.get('data_name', None)
 
     def __eq__(self, other):
-        comp = [
+        return all([
             self.name == other.name,
             self.reg_exp == other.reg_exp,
             self.definition_query == other.definition_query,
@@ -69,9 +69,7 @@ class RecipeLayer:
             self.label_classes == other.label_classes,
             self.data_source_path == other.data_source_path,
             self.data_name == other.data_name
-        ]
-
-        return all(comp)
+        ])
 
     def __ne__(self, other):
         """Overrides the default implementation (unnecessary in Python 3)"""
@@ -114,14 +112,12 @@ class RecipeFrame:
         return lyrs
 
     def __eq__(self, other):
-        comp = [
+        return all([
             self.name == other.name,
             self.layers == other.layers,
             self.scale_text_element == other.scale_text_element,
             self.spatial_ref_text_element == other.spatial_ref_text_element
-        ]
-
-        return all(comp)
+        ])
 
     def __ne__(self, other):
         """Overrides the default implementation (unnecessary in Python 3)"""
@@ -174,13 +170,11 @@ class RecipeAtlas:
             )
 
     def __eq__(self, other):
-        comp = [
+        return all(
             self.map_frame == other.map_frame,
             self.layer_name == other.layer_name,
             self.column_name == other.column_name
-        ]
-
-        return all(comp)
+        )
 
     def __ne__(self, other):
         """Overrides the default implementation (unnecessary in Python 3)"""
@@ -268,7 +262,7 @@ class MapRecipe:
                 aggregate_set.add(elem)
 
     def __eq__(self, other):
-        comp = [
+        return all([
             self.atlas == other.atlas,
             self.category == other.category,
             self.export == other.export,
@@ -278,9 +272,7 @@ class MapRecipe:
             self.runners == other.runners,
             self.summary == other.summary,
             self.template == other.template
-        ]
-
-        return all(comp)
+        ])
 
     def __ne__(self, other):
         """Overrides the default implementation (unnecessary in Python 3)"""

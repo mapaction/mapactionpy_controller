@@ -11,14 +11,12 @@ class LabelClass:
         self.show_class_labels = row["show_class_labels"]
 
     def __eq__(self, other):
-        comp = [
+        return all([
             self.class_name == other.class_name,
             self.expression == other.expression,
             self.sql_query == other.sql_query,
             self.show_class_labels == other.show_class_labels
-        ]
-
-        return all(comp)
+        ])
 
     def __ne__(self, other):
         """Overrides the default implementation (unnecessary in Python 3)"""
