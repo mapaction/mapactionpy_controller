@@ -60,7 +60,10 @@ class RecipeLayer:
             if verify_on_creation:
                 self.verify_path()
         else:
-            path.join(lyr_props.cmf.layer_rendering, (self.name + lyr_props.extension))
+            self.layer_file_path = path.join(
+                lyr_props.cmf.layer_rendering, 
+                (self.name + lyr_props.extension)
+            )
 
         self.data_source_path = layer_def.get('data_source_path', None)
         self.data_name = layer_def.get('data_name', None)
