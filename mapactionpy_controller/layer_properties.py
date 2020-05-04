@@ -59,7 +59,7 @@ class LayerProperties:
         with open(self.cmf.layer_properties) as json_file:
             jsonContents = json.load(json_file)
             for layer in jsonContents['layerProperties']:
-                mapLayer = RecipeLayer(layer)
+                mapLayer = RecipeLayer(layer, self)
                 self.properties[mapLayer.name] = mapLayer
 
     def _get_lyr_rendering_names_as_set(self):

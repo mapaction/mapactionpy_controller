@@ -35,7 +35,7 @@ class RecipeLayer:
 
     OPTIONAL_FIELDS = ('data_source_path', 'data_name')
 
-    def __init__(self, layer_def):
+    def __init__(self, layer_def, lyr_props, verify_on_creation=True):
         """Constructor.  Creates an instance of layer properties
 
         Arguments:
@@ -55,8 +55,20 @@ class RecipeLayer:
             self.label_classes.append(LabelClass(lbl_class_def))
 
         # Optional fields
+        if 'layer_file_path' in layer_def:
+            self.layer_file_path = layer_def['layer_file_path']
+            if verify_on_creation:
+                self.verify_path()
+        else:
+            path.join(lyr_props.cmf.layer_rendering, (self.name + lyr_props.extension))
+
         self.data_source_path = layer_def.get('data_source_path', None)
         self.data_name = layer_def.get('data_name', None)
+
+    def verify_path(self):
+        if not path.exists(self.layer_file_path):
+            raise ValueError("The expected layer file {} could not be found."
+                             "".format(self.layer_file_path))
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -97,7 +109,7 @@ class RecipeFrame:
             if len(lyr_def) == 1:
                 lyrs.append(lyr_props.properties.get(l_name, l_name))
             else:
-                lyrs.append(RecipeLayer(lyr_def))
+                lyrs.append(RecipeLayer(lyr_def, lyr_props))
 
         return lyrs
 
