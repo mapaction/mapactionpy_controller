@@ -15,7 +15,7 @@ def get_state_optional_fields(obj, optional_fields):
     # all our instance attributes. Always use the dict.copy()
     # method to avoid modifying the original state.
     state = obj.__dict__.copy()
-    # Remove the unpicklable entries.
+    # Remove any optional members which have a value of None.
     for option in optional_fields:
         if not state[option]:
             del state[option]
@@ -23,7 +23,7 @@ def get_state_optional_fields(obj, optional_fields):
 
 
 def set_state_optional_fields(obj, state, optional_fields):
-    # Restore instance attributes (i.e., filename and lineno).
+    # Restore optional elements to None.
     for option in optional_fields:
         if option not in state:
             state[option] = None
