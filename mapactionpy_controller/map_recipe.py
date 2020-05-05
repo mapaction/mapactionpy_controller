@@ -61,7 +61,7 @@ class RecipeLayer:
                 self.verify_path()
         else:
             self.layer_file_path = path.join(
-                lyr_props.cmf.layer_rendering, 
+                lyr_props.cmf.layer_rendering,
                 (self.name + lyr_props.extension)
             )
 

@@ -57,18 +57,24 @@ class TestMAController(TestCase):
             fixtures.recipe_without_positive_iso3_code
         ]
 
-        for fixture_str in recipes_fixtures:
-            test_recipe = MapRecipe(fixture_str, self.lyr_props)
+        with mock.patch('mapactionpy_controller.map_recipe.path.exists') as mock_path:
+            mock_path.return_value = True
 
-            self.assertEqual(test_recipe,
-                             jsonpickle.decode(jsonpickle.encode(test_recipe))
-                             )
-            self.assertEqual(test_recipe,
-                             MapRecipe(jsonpickle.encode(test_recipe, unpicklable=False), self.lyr_props)
-                             )
-            self.assertNotEqual(test_recipe,
-                                MapRecipe(fixtures.recipe_with_negative_iso3_code, self.lyr_props)
-                                )
+            for fixture_str in recipes_fixtures:
+                test_recipe = MapRecipe(fixture_str, self.lyr_props)
+
+                self.assertEqual(
+                    test_recipe,
+                    jsonpickle.decode(jsonpickle.encode(test_recipe))
+                )
+                self.assertEqual(
+                    test_recipe,
+                    MapRecipe(jsonpickle.encode(test_recipe, unpicklable=False), self.lyr_props)
+                )
+                self.assertNotEqual(
+                    test_recipe,
+                    MapRecipe(fixtures.recipe_with_negative_iso3_code, self.lyr_props)
+                )
 
     def test_substitute_iso3_in_regex(self):
         ds = DataSearch(self.event)
