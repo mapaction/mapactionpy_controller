@@ -1,13 +1,6 @@
 language: python
 os: linux
 dist: xenial
-# python:
-# # Required for ArcMap v10.6
-# - '2.7'
-# # Required for ArcGIS Pro v2.4
-# - '3.6'
-# # Required for QGIS v3.12
-# - '3.7'
 jobs:
   include:
     # Python 3.7 is used by QGIS v3.12
