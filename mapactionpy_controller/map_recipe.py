@@ -104,28 +104,30 @@ class RecipeFrame:
         self.spatial_ref_text_element = frame_def.get('spatial_ref_text_element', None)
 
     def _parse_layers(self, lyr_defs, lyr_props):
-        # We use a `dict` here so that we can enforce unique layernames. However for client 
-        # code is more readable and elegant if self.layers is a list. This enforces that layernames 
-        # must be unique in the json representation, however theoretically allows client code to create
-        # multiple layers with identical names. The behaviour in this circumstance is not known or tested
-        # and is entirely the client's responsiblity.
-        lyrs = {}
+        # We create a seperate list nad set here so that we can enforce unique layernames. However only
+        # the list is returned. Client code is generally more readable and elegant if `self.layers` is a
+        # list. This enforces that layer names must be unique in the json representation, however
+        # theoretically allows client code to create multiple layers with identical names. The behaviour
+        # in this circumstance is not known or tested and is entirely the client's responsiblity.
+        recipe_lyrs_list = []
+        lyrs_names_set = set()
         for lyr_def in lyr_defs:
             l_name = lyr_def['name']
-            if l_name in lyrs:
+            if l_name in lyrs_names_set:
                 raise ValueError(
                     'Duplicate layer name {} in mapframe {}. Each layername within a'
                     ' mapframe must unique'.format(l_name, self.name))
 
+            lyrs_names_set.add(l_name)
             # if lyr_def only includes the name of the layer and no other properties
             # then import them from a LayerProperties object
             # Else, load them from the lyr_def
             if len(lyr_def) == 1:
-                lyrs[l_name] = lyr_props.properties.get(l_name, l_name)
+                recipe_lyrs_list.append(lyr_props.properties.get(l_name, l_name))
             else:
-                lyrs[l_name] = RecipeLayer(lyr_def, lyr_props)
+                recipe_lyrs_list.append(RecipeLayer(lyr_def, lyr_props))
 
-        return lyrs.values()
+        return recipe_lyrs_list
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -239,22 +241,24 @@ class MapRecipe:
         return unique_lyrs
 
     def _parse_map_frames(self, map_frames_def, lyr_props):
-        # We use a `dict` here so that we can enforce unique map_frames names. However for client
-        # code is more readable and elegant if `self.map_frames` is a list. This enforces that map_frames names
-        # must be unique in the json representation, however theoretically allows client code to create
-        # multiple map frames with identical names. The behaviour in this circumstance is not known or tested
-        # and is entirely the client's responsiblity.
-        map_frames = {}
+        # We create a seperate list nad set here so that we can enforce unique map_frames names. However only 
+        # the list is returned. Client code is generally more readable and elegant if `self.map_frames` is a 
+        # list. This enforces that map_frames names must be unique in the json representation, however
+        # theoretically allows client code to create multiple map frames with identical names. The behaviour 
+        # in this circumstance is not known or tested and is entirely the client's responsiblity.
+        recipe_map_frames_list = []
+        map_frames_set = set()
         for frame_def in map_frames_def:
             mf = RecipeFrame(frame_def, lyr_props)
-            if mf.name in map_frames:
+            if mf.name in map_frames_set:
                 raise ValueError(
                     'Duplicate mapframe name {} in recipe {}. Each mapframe name within a'
                     ' recipe must unique'.format(mf.name, self.product))
-            
-            map_frames[mf.name] = mf
 
-        return map_frames.values()
+            map_frames_set.add(mf.name)
+            recipe_map_frames_list.append(mf)
+
+        return recipe_map_frames_list
 
     def _check_for_dup_text_elements(self):
         # check that any named `scale_text_element`s and `spatial_ref_text_element`s
