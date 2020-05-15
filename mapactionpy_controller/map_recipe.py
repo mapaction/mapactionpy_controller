@@ -96,6 +96,7 @@ class RecipeFrame:
     def __init__(self, frame_def, lyr_props):
         # Required fields
         self.name = frame_def["name"]
+        # This is a list, but see note in `_parse_layers` method
         self.layers = self._parse_layers(frame_def["layers"], lyr_props)
 
         # Optional fields
@@ -103,18 +104,28 @@ class RecipeFrame:
         self.spatial_ref_text_element = frame_def.get('spatial_ref_text_element', None)
 
     def _parse_layers(self, lyr_defs, lyr_props):
-        lyrs = []
+        # We use a `dict` here so that we can enforce unique layernames. However for client 
+        # code is more readable and elegant if self.layers is a list. This enforces that layernames 
+        # must be unique in the json representation, however theoretically allows client code to create
+        # multiple layers with identical names. The behaviour in this circumstance is not known or tested
+        # and is entirely the client's responsiblity.
+        lyrs = {}
         for lyr_def in lyr_defs:
+            l_name = lyr_def['name']
+            if l_name in lyrs:
+                raise ValueError(
+                    'Duplicate layer name {} in mapframe {}. Each layername within a'
+                    ' mapframe must unique'.format(l_name, self.name))
+
             # if lyr_def only includes the name of the layer and no other properties
             # then import them from a LayerProperties object
             # Else, load them from the lyr_def
-            l_name = lyr_def['name']
             if len(lyr_def) == 1:
-                lyrs.append(lyr_props.properties.get(l_name, l_name))
+                lyrs[l_name] = lyr_props.properties.get(l_name, l_name)
             else:
-                lyrs.append(RecipeLayer(lyr_def, lyr_props))
+                lyrs[l_name] = RecipeLayer(lyr_def, lyr_props)
 
-        return lyrs
+        return lyrs.values()
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -196,6 +207,7 @@ class MapRecipe:
         self.category = recipe_def["category"]
         self.export = recipe_def["export"]
         self.product = recipe_def["product"]
+        # This is a list, but see note in `_parse_map_frames` method
         self.map_frames = self._parse_map_frames(recipe_def["map_frames"], lyr_props)
         self.summary = recipe_def["summary"]
         self.template = recipe_def["template"]
@@ -227,12 +239,22 @@ class MapRecipe:
         return unique_lyrs
 
     def _parse_map_frames(self, map_frames_def, lyr_props):
-        map_frames = []
+        # We use a `dict` here so that we can enforce unique map_frames names. However for client
+        # code is more readable and elegant if `self.map_frames` is a list. This enforces that map_frames names
+        # must be unique in the json representation, however theoretically allows client code to create
+        # multiple map frames with identical names. The behaviour in this circumstance is not known or tested
+        # and is entirely the client's responsiblity.
+        map_frames = {}
         for frame_def in map_frames_def:
             mf = RecipeFrame(frame_def, lyr_props)
-            map_frames.append(mf)
+            if mf.name in map_frames:
+                raise ValueError(
+                    'Duplicate mapframe name {} in recipe {}. Each mapframe name within a'
+                    ' recipe must unique'.format(mf.name, self.product))
+            
+            map_frames[mf.name] = mf
 
-        return map_frames
+        return map_frames.values()
 
     def _check_for_dup_text_elements(self):
         # check that any named `scale_text_element`s and `spatial_ref_text_element`s
