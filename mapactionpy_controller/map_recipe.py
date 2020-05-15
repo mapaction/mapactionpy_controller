@@ -241,10 +241,10 @@ class MapRecipe:
         return unique_lyrs
 
     def _parse_map_frames(self, map_frames_def, lyr_props):
-        # We create a seperate list nad set here so that we can enforce unique map_frames names. However only 
-        # the list is returned. Client code is generally more readable and elegant if `self.map_frames` is a 
+        # We create a seperate list nad set here so that we can enforce unique map_frames names. However only
+        # the list is returned. Client code is generally more readable and elegant if `self.map_frames` is a
         # list. This enforces that map_frames names must be unique in the json representation, however
-        # theoretically allows client code to create multiple map frames with identical names. The behaviour 
+        # theoretically allows client code to create multiple map frames with identical names. The behaviour
         # in this circumstance is not known or tested and is entirely the client's responsiblity.
         recipe_map_frames_list = []
         map_frames_set = set()
