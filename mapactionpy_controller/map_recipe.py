@@ -137,7 +137,7 @@ class RecipeFrame:
         Gets a layer by name.
         Returns a boolean
         """
-        return requested_layer_name in [l.name for l in self.layers]
+        return requested_layer_name in [lyr.name for lyr in self.layers]
 
     def get_layer(self, requested_layer_name):
         """
@@ -253,6 +253,8 @@ class MapRecipe:
         self._check_for_dup_text_elements()
 
     def get_lyrs_as_set(self):
+        # this is required for the case that the lyr is a str of the layername
+        # This can only happen is the layername was not found in the Layerproperties file
         def get_lyr_name(lyr):
             try:
                 return lyr.name
@@ -262,7 +264,7 @@ class MapRecipe:
         unique_lyrs = set()
         for mf in self.map_frames:
 
-            lyrs = [get_lyr_name(l) for l in mf.layers]
+            lyrs = [get_lyr_name(lyr) for lyr in mf.layers]
             unique_lyrs.update(lyrs)
 
         return unique_lyrs
@@ -324,13 +326,12 @@ class MapRecipe:
         Raises ValueError if the requested_atlas_name does not exist
         """
         # We trust that the map frame names are unique
-        for mf in self.map_frames:
-            if mf.name == requested_frame_name:
-                return mf
-
-        raise ValueError(
-            'The requested map frame {} does not exist in the recipe {}'.format(
-                requested_frame_name, self.product))
+        try:
+            return [mf for mf in self.map_frames if mf.name == requested_frame_name][0]
+        except IndexError:
+            raise ValueError(
+                'The requested map frame {} does not exist in the recipe {}'.format(
+                    requested_frame_name, self.product))
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
