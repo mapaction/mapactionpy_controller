@@ -185,7 +185,7 @@ class TestNamingConvention(TestCase):
         # message when dnr.is_parsable is False
         dnr = dnc.validate(r'lka_admnad3_py_s0_wfpocha.pp.shp')
         self.assertFalse(dnr.is_parsable)
-        print(dnr.get_message)
+        # print(dnr.get_message)
         self.assertRegexpMatches(dnr.get_message, r'not parsable')
 
         # message when dnr.is_parsable is True but dnr.is_valid is False
@@ -194,10 +194,10 @@ class TestNamingConvention(TestCase):
         self.assertFalse(dnr.is_valid)
         self.assertRegexpMatches(dnr.get_message, r'is parsable')
         self.assertRegexpMatches(dnr.get_message, r'not valid')
-        print(dnr.get_message)
+        # print(dnr.get_message)
 
         # message when dnr.is_valid is True
         dnr = dnc.validate(r'lka_admn_ad3_py_s0_wfp_pp')
         self.assertTrue(dnr.is_valid)
         self.assertRegexpMatches(dnr.get_message, r'is valid')
-        print(dnr.get_message)
+        # print(dnr.get_message)

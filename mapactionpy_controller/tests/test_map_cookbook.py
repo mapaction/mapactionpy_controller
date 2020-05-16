@@ -1,3 +1,5 @@
+import fixtures
+import jsonpickle
 import os
 import six
 from unittest import TestCase
@@ -5,6 +7,7 @@ from unittest import TestCase
 from mapactionpy_controller.layer_properties import LayerProperties
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.map_cookbook import MapCookbook
+from mapactionpy_controller.map_recipe import MapRecipe
 
 
 class TestMapCookBook(TestCase):
@@ -127,11 +130,27 @@ class TestMapCookBook(TestCase):
                 MapCookbook(cmf, test_lp, verify_on_creation=True)
 
     def test_load_recipe_with_layer_props_inc(self):
-        # 1) with matching layer props schema
+        # Test that a MapRecipe read form json with only a layername, combined with the
+        # relevant LayerProperties is equal to a MapRecipe with all of the layerdetails embeded.
+
+        # layerpros with
+        cmf = CrashMoveFolder(
+            os.path.join(self.parent_dir, 'example', 'cmf_description_relative_paths_test.json'))
+        cmf.layer_properties = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'cookbooks', 'fixture_layer_properties_for_atlas.json'
+        )
+        test_lp = LayerProperties(cmf, ".lyr", verify_on_creation=False)
+
+        # recipe with layer name only
+        recipe1 = MapRecipe(fixtures.recipe_with_layer_name_only, test_lp)
+        # combined recipe with layer props
+        recipe2 = MapRecipe(fixtures.recipe_with_layer_details_embedded, test_lp)
+
+        self.assertEqual(recipe1, recipe2)
 
         # 2) with non-matching layer props schema
-        # self.fail()
-        pass
+        recipe3 = MapRecipe(fixtures.recipe_with_positive_iso3_code, test_lp)
+        self.assertNotEqual(recipe1, recipe3)
 
     def test_check_for_dup_text_elements(self):
         cmf = CrashMoveFolder(

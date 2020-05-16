@@ -74,7 +74,10 @@ class RecipeLayer:
                              "".format(self.layer_file_path))
 
     def __eq__(self, other):
-        return self.__dict__ == other.__dict__
+        try:
+            return self.__dict__ == other.__dict__
+        except AttributeError:
+            return False
 
     def __ne__(self, other):
         """Overrides the default implementation (unnecessary in Python 3)"""

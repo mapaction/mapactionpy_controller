@@ -66,6 +66,68 @@ recipe_without_negative_iso3_code = (
     }'''
 )
 
+recipe_with_layer_name_only = (
+    '''{
+      	"mapnumber": "MA001",
+    	"category": "Reference",
+        "product": "{e.affectedcountry}: Overview Map",
+       	"summary": "Overview of {e.affectedcountry} with topography displayed",
+    	"export": true,
+        "template": "reference",
+        "map_frames": [
+            {
+                "name": "Main map",
+                "layers": [
+                    {
+                        "name": "mainmap-admn-ad1-py-s0-reference"
+                    }
+                ]
+            }
+        ]
+    }'''
+)
+
+recipe_with_layer_details_embedded = (
+    '''{
+      	"mapnumber": "MA001",
+    	"category": "Reference",
+        "product": "{e.affectedcountry}: Overview Map",
+       	"summary": "Overview of {e.affectedcountry} with topography displayed",
+    	"export": true,
+        "template": "reference",
+        "map_frames": [
+            {
+                "name": "Main map",
+                "layers": [
+                    {
+                        "name": "mainmap-admn-ad1-py-s0-reference",
+                        "reg_exp": "^[a-z]{3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+                        "schema_definition": "admin1_reference.yml",
+                        "definition_query": "fclass IN ('national_capital', 'city', 'capital', 'town')",
+                        "display": true,
+                        "add_to_legend": true,
+                        "label_classes": [
+                            {
+                                "class_name": "National Capital",
+                                "expression": "[name]",
+                                "sql_query": "(\\"fclass\\" = 'national_capital')",
+                                "show_class_labels": true
+                            },
+                            {
+                                "class_name": "Admin 1 Capital",
+                                "expression": "[name]",
+                                "sql_query": "(\\"fclass\\" = 'town')",
+                                "show_class_labels": true
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }'''
+)
+
+
 recipe_with_positive_iso3_code = (
     '''{
       	"mapnumber": "MA001",
