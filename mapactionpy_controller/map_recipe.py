@@ -104,6 +104,15 @@ class RecipeFrame:
         self.spatial_ref_text_element = frame_def.get('spatial_ref_text_element', None)
 
     def _parse_layers(self, lyr_defs, lyr_props):
+        def parse_single_layer(l_name, lyr_def):
+            # if lyr_def only includes the name of the layer and no other properties
+            # then import them from a LayerProperties object
+            # Else, load them from the lyr_def
+            if len(lyr_def) == 1:
+                return lyr_props.properties.get(l_name, l_name)
+            else:
+                return RecipeLayer(lyr_def, lyr_props)
+
         # We create a seperate list nad set here so that we can enforce unique layernames. However only
         # the list is returned. Client code is generally more readable and elegant if `self.layers` is a
         # list. This enforces that layer names must be unique in the json representation, however
@@ -119,13 +128,7 @@ class RecipeFrame:
                     ' mapframe must unique'.format(l_name, self.name))
 
             lyrs_names_set.add(l_name)
-            # if lyr_def only includes the name of the layer and no other properties
-            # then import them from a LayerProperties object
-            # Else, load them from the lyr_def
-            if len(lyr_def) == 1:
-                recipe_lyrs_list.append(lyr_props.properties.get(l_name, l_name))
-            else:
-                recipe_lyrs_list.append(RecipeLayer(lyr_def, lyr_props))
+            recipe_lyrs_list.append(parse_single_layer(l_name, lyr_def))
 
         return recipe_lyrs_list
 
