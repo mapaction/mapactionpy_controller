@@ -132,6 +132,28 @@ class RecipeFrame:
         else:
             return RecipeLayer(lyr_def, lyr_props)
 
+    def contains_layer(self, requested_layer_name):
+        """
+        Gets a layer by name.
+        Returns a boolean
+        """
+        return requested_layer_name in [l.name for l in self.layers]
+
+    def get_layer(self, requested_layer_name):
+        """
+        Gets a layer by name.
+        Returns the RecipeLayer object
+        Raises ValueError if the requested_layer_name does not exist
+        """
+        # We trust that the layer names are unique
+        for lyr in self.layers:
+            if lyr.name == requested_layer_name:
+                return lyr
+
+        raise ValueError(
+            'The requested layer {} does not exist in the map frame {}'.format(
+                requested_layer_name, self.name))
+
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
@@ -156,9 +178,8 @@ class RecipeAtlas:
         self.column_name = atlas_def["column_name"]
 
         # Compare the atlas definition with the other parts of the recipe definition
-        m_frame_lst = [mf for mf in recipe.map_frames if mf.name == self.map_frame]
-        if len(m_frame_lst) == 1:
-            m_frame = m_frame_lst[0]
+        if recipe.contains_frame(self.map_frame):
+            m_frame = recipe.get_frame(self.map_frame)
         else:
             raise ValueError(
                 'The Map Recipe definition is invalid. The "atlas" section refers to a map_frame '
@@ -166,9 +187,12 @@ class RecipeAtlas:
                     self.map_frame)
             )
 
-        lyr_lst = [l for l in m_frame.layers if l.name == self.layer_name]
-        if len(lyr_lst) == 1:
-            lyr = lyr_lst[0]
+        # recipe_lyr = [recipe_lyr for recipe_lyr in recipe_frame.layers if recipe_lyr.name ==
+        #               recipe_with_atlas.atlas.layer_name][0]
+        # lyr_lst = [l for l in m_frame.layers if l.name == self.layer_name]
+        # if self.layer_name in [l.name for l in m_frame.layers]
+        if m_frame.contains_layer(self.layer_name):
+            lyr = m_frame.get_layer(self.layer_name)
         else:
             raise ValueError(
                 'The Map Recipe definition is invalid. The "atlas" section refers to a layer_name '
@@ -285,6 +309,28 @@ class MapRecipe:
                 raise ValueError(msg.format(elem))
             else:
                 aggregate_set.add(elem)
+
+    def contains_frame(self, requested_frame_name):
+        """
+        Check whether or not an atlas with the given name exists in the MapRecipe.
+        Returns a boolean
+        """
+        return requested_frame_name in [mf.name for mf in self.map_frames]
+
+    def get_frame(self, requested_frame_name):
+        """
+        Gets an atlas by name.
+        Returns the RecipeAtlas object
+        Raises ValueError if the requested_atlas_name does not exist
+        """
+        # We trust that the map frame names are unique
+        for mf in self.map_frames:
+            if mf.name == requested_frame_name:
+                return mf
+
+        raise ValueError(
+            'The requested map frame {} does not exist in the recipe {}'.format(
+                requested_frame_name, self.product))
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
