@@ -1,5 +1,4 @@
 import fixtures
-import jsonpickle
 import os
 import six
 from unittest import TestCase
