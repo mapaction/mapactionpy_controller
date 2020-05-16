@@ -161,3 +161,29 @@ class TestMapCookBook(TestCase):
             self.assertRegexpMatches(str(ve.exception), fail_msg)
         else:
             self.assertRegex(str(ve.exception), fail_msg)
+
+    def test_check_for_dup_layers_and_mapframs(self):
+        cmf = CrashMoveFolder(
+            os.path.join(self.parent_dir, 'example', 'cmf_description_relative_paths_test.json'))
+        cmf.layer_properties = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'cookbooks', 'fixture_layer_properties_for_atlas.json'
+        )
+
+        # Fail with multiple layer with the same name in the same mapframe.
+        test_cookbooks = (
+            ('fixture_cookbook_with_dup_layers.json', 'mainmap_tran_por_pt_s0_allmaps'),
+            ('fixture_cookbook_with_dup_mapframes.json', 'Main map')
+        )
+
+        for cb_filename, fail_msg in test_cookbooks:
+            cmf.map_definitions = os.path.join(
+                self.parent_dir, 'tests', 'testfiles', 'cookbooks', cb_filename
+            )
+            test_lp = LayerProperties(cmf, ".lyr", verify_on_creation=False)
+            with self.assertRaises(ValueError) as ve:
+                MapCookbook(cmf, test_lp, verify_on_creation=True)
+
+            if six.PY2:
+                self.assertRegexpMatches(str(ve.exception), fail_msg)
+            else:
+                self.assertRegex(str(ve.exception), fail_msg)

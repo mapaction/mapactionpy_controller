@@ -7,7 +7,7 @@ from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.data_search import DataSearch
 from mapactionpy_controller.event import Event
 from mapactionpy_controller.layer_properties import LayerProperties
-from mapactionpy_controller.map_recipe import MapRecipe
+from mapactionpy_controller.map_recipe import MapRecipe, RecipeLayer, RecipeFrame
 import jsonpickle
 import six
 # works differently for python 2.7 and python 3.x
@@ -150,3 +150,28 @@ class TestMAController(TestCase):
         self.assertTrue(test_cmf.verify_paths())
         test_cmf.active_data = os.path.join(self.parent_dir, 'DOES-NOT-EXIST')
         self.assertFalse(test_cmf.verify_paths())
+
+    def test_get_layer(self):
+        recipe_def = json.loads(fixtures.recipe_with_positive_iso3_code)
+        test_recipe = MapRecipe(recipe_def, self.lyr_props)
+        atlas = test_recipe.get_frame('Main map')
+
+        self.assertTrue(atlas.contains_layer('mainmap_stle_stl_pt_s0_allmaps'))
+        self.assertFalse(atlas.contains_layer('not-existant'))
+
+        lyr = atlas.get_layer('mainmap_stle_stl_pt_s0_allmaps')
+        self.assertIsInstance(lyr, RecipeLayer)
+
+        self.assertRaises(ValueError, atlas.get_layer, 'not-existant')
+
+    def test_get_atlas(self):
+        recipe_def = json.loads(fixtures.recipe_with_positive_iso3_code)
+        test_recipe = MapRecipe(recipe_def, self.lyr_props)
+
+        self.assertTrue(test_recipe.contains_frame('Main map'))
+        self.assertFalse(test_recipe.contains_frame('not-existant'))
+
+        lyr = test_recipe.get_frame('Main map')
+        self.assertIsInstance(lyr, RecipeFrame)
+
+        self.assertRaises(ValueError, test_recipe.get_frame, 'not-existant')

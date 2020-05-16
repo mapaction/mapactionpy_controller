@@ -96,6 +96,7 @@ class RecipeFrame:
     def __init__(self, frame_def, lyr_props):
         # Required fields
         self.name = frame_def["name"]
+        # This is a list, but see note in `_parse_layers` method
         self.layers = self._parse_layers(frame_def["layers"], lyr_props)
 
         # Optional fields
@@ -103,18 +104,55 @@ class RecipeFrame:
         self.spatial_ref_text_element = frame_def.get('spatial_ref_text_element', None)
 
     def _parse_layers(self, lyr_defs, lyr_props):
-        lyrs = []
+        # We create a seperate list nad set here so that we can enforce unique layernames. However only
+        # the list is returned. Client code is generally more readable and elegant if `self.layers` is a
+        # list. This enforces that layer names must be unique in the json representation, however
+        # theoretically allows client code to create multiple layers with identical names. The behaviour
+        # in this circumstance is not known or tested and is entirely the client's responsiblity.
+        recipe_lyrs_list = []
+        lyrs_names_set = set()
         for lyr_def in lyr_defs:
-            # if lyr_def only includes the name of the layer and no other properties
-            # then import them from a LayerProperties object
-            # Else, load them from the lyr_def
             l_name = lyr_def['name']
-            if len(lyr_def) == 1:
-                lyrs.append(lyr_props.properties.get(l_name, l_name))
-            else:
-                lyrs.append(RecipeLayer(lyr_def, lyr_props))
+            if l_name in lyrs_names_set:
+                raise ValueError(
+                    'Duplicate layer name {} in mapframe {}. Each layername within a'
+                    ' mapframe must unique'.format(l_name, self.name))
 
-        return lyrs
+            lyrs_names_set.add(l_name)
+            recipe_lyrs_list.append(self._parse_single_layer(l_name, lyr_def, lyr_props))
+
+        return recipe_lyrs_list
+
+    def _parse_single_layer(self, l_name, lyr_def, lyr_props):
+        # if lyr_def only includes the name of the layer and no other properties
+        # then import them from a LayerProperties object
+        # Else, load them from the lyr_def
+        if len(lyr_def) == 1:
+            return lyr_props.properties.get(l_name, l_name)
+        else:
+            return RecipeLayer(lyr_def, lyr_props)
+
+    def contains_layer(self, requested_layer_name):
+        """
+        Gets a layer by name.
+        Returns a boolean
+        """
+        return requested_layer_name in [lyr.name for lyr in self.layers]
+
+    def get_layer(self, requested_layer_name):
+        """
+        Gets a layer by name.
+        Returns the RecipeLayer object
+        Raises ValueError if the requested_layer_name does not exist
+        """
+        # We trust that the layer names are unique
+        for lyr in self.layers:
+            if lyr.name == requested_layer_name:
+                return lyr
+
+        raise ValueError(
+            'The requested layer {} does not exist in the map frame {}'.format(
+                requested_layer_name, self.name))
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -140,9 +178,8 @@ class RecipeAtlas:
         self.column_name = atlas_def["column_name"]
 
         # Compare the atlas definition with the other parts of the recipe definition
-        m_frame_lst = [mf for mf in recipe.map_frames if mf.name == self.map_frame]
-        if len(m_frame_lst) == 1:
-            m_frame = m_frame_lst[0]
+        if recipe.contains_frame(self.map_frame):
+            m_frame = recipe.get_frame(self.map_frame)
         else:
             raise ValueError(
                 'The Map Recipe definition is invalid. The "atlas" section refers to a map_frame '
@@ -150,9 +187,12 @@ class RecipeAtlas:
                     self.map_frame)
             )
 
-        lyr_lst = [l for l in m_frame.layers if l.name == self.layer_name]
-        if len(lyr_lst) == 1:
-            lyr = lyr_lst[0]
+        # recipe_lyr = [recipe_lyr for recipe_lyr in recipe_frame.layers if recipe_lyr.name ==
+        #               recipe_with_atlas.atlas.layer_name][0]
+        # lyr_lst = [l for l in m_frame.layers if l.name == self.layer_name]
+        # if self.layer_name in [l.name for l in m_frame.layers]
+        if m_frame.contains_layer(self.layer_name):
+            lyr = m_frame.get_layer(self.layer_name)
         else:
             raise ValueError(
                 'The Map Recipe definition is invalid. The "atlas" section refers to a layer_name '
@@ -196,6 +236,7 @@ class MapRecipe:
         self.category = recipe_def["category"]
         self.export = recipe_def["export"]
         self.product = recipe_def["product"]
+        # This is a list, but see note in `_parse_map_frames` method
         self.map_frames = self._parse_map_frames(recipe_def["map_frames"], lyr_props)
         self.summary = recipe_def["summary"]
         self.template = recipe_def["template"]
@@ -212,6 +253,8 @@ class MapRecipe:
         self._check_for_dup_text_elements()
 
     def get_lyrs_as_set(self):
+        # this is required for the case that the lyr is a str of the layername
+        # This can only happen is the layername was not found in the Layerproperties file
         def get_lyr_name(lyr):
             try:
                 return lyr.name
@@ -221,18 +264,30 @@ class MapRecipe:
         unique_lyrs = set()
         for mf in self.map_frames:
 
-            lyrs = [get_lyr_name(l) for l in mf.layers]
+            lyrs = [get_lyr_name(lyr) for lyr in mf.layers]
             unique_lyrs.update(lyrs)
 
         return unique_lyrs
 
     def _parse_map_frames(self, map_frames_def, lyr_props):
-        map_frames = []
+        # We create a seperate list nad set here so that we can enforce unique map_frames names. However only
+        # the list is returned. Client code is generally more readable and elegant if `self.map_frames` is a
+        # list. This enforces that map_frames names must be unique in the json representation, however
+        # theoretically allows client code to create multiple map frames with identical names. The behaviour
+        # in this circumstance is not known or tested and is entirely the client's responsiblity.
+        recipe_map_frames_list = []
+        map_frames_set = set()
         for frame_def in map_frames_def:
             mf = RecipeFrame(frame_def, lyr_props)
-            map_frames.append(mf)
+            if mf.name in map_frames_set:
+                raise ValueError(
+                    'Duplicate mapframe name {} in recipe {}. Each mapframe name within a'
+                    ' recipe must unique'.format(mf.name, self.product))
 
-        return map_frames
+            map_frames_set.add(mf.name)
+            recipe_map_frames_list.append(mf)
+
+        return recipe_map_frames_list
 
     def _check_for_dup_text_elements(self):
         # check that any named `scale_text_element`s and `spatial_ref_text_element`s
@@ -256,6 +311,27 @@ class MapRecipe:
                 raise ValueError(msg.format(elem))
             else:
                 aggregate_set.add(elem)
+
+    def contains_frame(self, requested_frame_name):
+        """
+        Check whether or not an atlas with the given name exists in the MapRecipe.
+        Returns a boolean
+        """
+        return requested_frame_name in [mf.name for mf in self.map_frames]
+
+    def get_frame(self, requested_frame_name):
+        """
+        Gets an atlas by name.
+        Returns the RecipeAtlas object
+        Raises ValueError if the requested_atlas_name does not exist
+        """
+        # We trust that the map frame names are unique
+        try:
+            return [mf for mf in self.map_frames if mf.name == requested_frame_name][0]
+        except IndexError:
+            raise ValueError(
+                'The requested map frame {} does not exist in the recipe {}'.format(
+                    requested_frame_name, self.product))
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
