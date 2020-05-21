@@ -8,7 +8,7 @@
     "event_description_file",
     "original_data",
     "active_data",
-    "layer_redering",
+    "layer_rendering",
     "mxd_templates",
     "qgis_templates",
     "export_dir",
@@ -48,10 +48,10 @@
       ],
       "pattern": "^(.*)$"
     },
-    "layer_redering": {
-      "$id": "#/properties/layer_redering",
+    "layer_rendering": {
+      "$id": "#/properties/layer_rendering",
       "type": "string",
-      "title": "The Layer_redering Schema",
+      "title": "The Layer_rendering Schema",
       "default": "",
       "examples": [
         "GIS/3_Mapping/38_Initial_Maps_Layer_Files"

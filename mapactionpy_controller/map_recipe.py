@@ -47,7 +47,7 @@ class RecipeLayer:
         self.name = layer_def["name"]
         self.reg_exp = layer_def["reg_exp"]
         self.definition_query = layer_def["definition_query"]
-        self.schema_definition = layer_def["schema_definition"]
+        #self.schema_definition = layer_def["schema_definition"]
         self.display = layer_def["display"]
         self.add_to_legend = layer_def["add_to_legend"]
         self.label_classes = list()
@@ -208,7 +208,7 @@ class MapRecipe:
         else:
             self.atlas = None
 
-        # Self consistancy checks
+        # Self consistency checks
         self._check_for_dup_text_elements()
 
     def get_lyrs_as_set(self):

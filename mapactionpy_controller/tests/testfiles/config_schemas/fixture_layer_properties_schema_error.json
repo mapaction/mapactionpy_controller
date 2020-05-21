@@ -2,12 +2,12 @@
 	"layerProperties": [
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap_stle_stl_pt_s0_allmaps",
-			"RegExp": "^[a-z]{3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
-			"DefinitionQuery": "fclass IN ('national_capital', 'city', 'capital', 'town')",
+			"name": "mainmap_stle_stl_pt_s0_allmaps",
+			"reg_exp": "^[a-z]{3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"definition_query": "fclass IN ('national_capital', 'city', 'capital', 'town')",
 			"Display": true,
-			"AddToLegend": true,
-			"LabelClasses": [{
+			"add_to_legend": true,
+			"label_classes": [{
 					"className": "National Capital",
 					"expression": "[name]",
 					"SQLQuery": "(\"fclass\" = 'national_capital')",
@@ -23,11 +23,11 @@
 		},
 		{
 			"MapFrame": "Location map",
-			"LayerName": "locationmap_stle_stl_pt_s0_locationmaps",
-			"DefinitionQuery": "fclass IN ('national_capital', 'capital')",
+			"name": "locationmap_stle_stl_pt_s0_locationmaps",
+			"definition_query": "fclass IN ('national_capital', 'capital')",
 			"Display": true,
-			"AddToLegend": true,
-			"LabelClasses": [{
+			"add_to_legend": true,
+			"label_classes": [{
 					"className": "National Capital",
 					"expression": "[name]",
 					"SQLQuery": "(\"fclass\" = 'national_capital')",
@@ -37,23 +37,23 @@
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap_tran_por_pt_s0_allmaps",
-			"RegExp": "^[a-z]{3}_tran_sea_pt_(.*?)_(.*?)_([phm][phm])_(.*?).shp$",
-			"DefinitionQuery": "",
+			"name": "mainmap_tran_por_pt_s0_allmaps",
+			"reg_exp": "^[a-z]{3}_tran_sea_pt_(.*?)_(.*?)_([phm][phm])_(.*?).shp$",
+			"definition_query": "",
 			"Display": true,
-			"AddToLegend": true,
-			"LabelClasses": [
+			"add_to_legend": true,
+			"label_classes": [
 
 			]
 		},
 		{
 			"MapFrame": "Main map",
-			"LayerName": "mainmap-s0-py-surroundingcountries",
-			"RegExp": "aoi_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
-			"DefinitionQuery": "",
+			"name": "mainmap-s0-py-surroundingcountries",
+			"reg_exp": "aoi_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+			"definition_query": "",
 			"Display": true,
-			"AddToLegend": false,
-			"LabelClasses": [{
+			"add_to_legend": false,
+			"label_classes": [{
 					"className": "This",
 					"expression": "[NAME_0]",
 					"SQLQuery": "(\"NAME_0\" = '{COUNTRY_NAME}')",

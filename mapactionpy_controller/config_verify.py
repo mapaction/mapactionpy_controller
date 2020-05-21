@@ -53,7 +53,7 @@ class ConfigVerifier():
         try:
             cmf = CrashMoveFolder(args.cmf_desc)
             LayerProperties(cmf, args.layer_file_extension, verify_on_creation=True)
-            print('No inconsistancy detected between:\n'
+            print('No inconsistency detected between:\n'
                   ' * the contents of the layer properties json file:\n\t{props}\n'
                   ' * and layer rendering dir:\n\t{render}\n'.format(
                       props=cmf.layer_properties,
@@ -68,7 +68,7 @@ class ConfigVerifier():
             cmf = CrashMoveFolder(args.cmf_desc)
             lyrs = LayerProperties(cmf, '', verify_on_creation=False)
             MapCookbook(cmf, lyrs, verify_on_creation=True)
-            print('No inconsistancy detected between:\n'
+            print('No inconsistency detected between:\n'
                   ' * the contents of the layer properties json file:\n\t{props}\n'
                   ' * and the contents of the MapCookbook json:\n\t{cbook}\n'.format(
                       props=cmf.layer_properties,

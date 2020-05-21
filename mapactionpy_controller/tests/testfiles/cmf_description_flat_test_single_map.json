@@ -13,5 +13,6 @@
 	"map_projects_nc_definition": "map_project_naming_convention.json",
 	"map_template_nc_definition": "map_template_naming_convention.json",
 	"map_templates": ".",
-	"original_data": "."
+	"original_data": ".",
+	"event_description_file": "fixture_event_description_matching_all.json"
 }

@@ -1,4 +1,5 @@
 {
+	"event_description_file": "../example/event_description.json",
 	"active_data": "../example",
 	"arcgis_version": "arcgis_10_6",
 	"data_nc_definition": "../example/data_naming_convention.json",
@@ -13,5 +14,8 @@
 	"map_projects_nc_definition": "../example/map_project_naming_convention.json",
 	"map_template_nc_definition": "../example/map_template_naming_convention.json",
 	"map_templates": "../example",
-	"original_data": "../example"
+	"original_data": "../example",
+	"mxd_templates": "../examples",
+	"qgis_templates": "../examples",
+	"dnc_lookup_dir": "../examples"
 }

@@ -1,6 +1,8 @@
 import json
 import os
-# from jsonschema import validate
+from mapactionpy_controller import _get_validator_for_config_schema
+
+validate_against_cmf_schema = _get_validator_for_config_schema('cmf-v0.2.schema')
 
 
 class CrashMoveFolder:
@@ -10,6 +12,7 @@ class CrashMoveFolder:
 
         with open(cmf_path, 'r') as f:
             obj = json.loads(f.read())
+            validate_against_cmf_schema(obj)
 
             # Doubtless there is a more elegant way to do this.
             # 8 directories (alphabetical order just for readability)
@@ -21,8 +24,9 @@ class CrashMoveFolder:
             self.map_projects = os.path.join(self.path, obj['map_projects'])
             self.map_templates = os.path.join(self.path, obj['map_templates'])
             self.original_data = os.path.join(self.path, obj['original_data'])
-            # 5 files (alphabetical order just for readablity)
+            # 7 files (alphabetical order just for readablity)
             self.data_nc_definition = os.path.join(self.path, obj['data_nc_definition'])
+            self.event_description_file = os.path.join(self.path, obj['event_description_file'])
             self.layer_nc_definition = os.path.join(self.path, obj['layer_nc_definition'])
             self.layer_properties = os.path.join(self.path, obj['layer_properties'])
             self.map_definitions = os.path.join(self.path, obj['map_definitions'])
@@ -51,8 +55,9 @@ class CrashMoveFolder:
         results['map_projects'] = os.path.isdir(self.map_projects)
         results['map_templates'] = os.path.isdir(self.map_templates)
         results['original_data'] = os.path.isdir(self.original_data)
-        # 6 files (alphabetical order just for readability)
+        # 7 files (alphabetical order just for readability)
         results['data_nc_definition'] = os.path.exists(self.data_nc_definition)
+        results['event_description_file'] = os.path.exists(self.event_description_file)
         results['layer_nc_definition'] = os.path.exists(self.layer_nc_definition)
         results['layer_properties'] = os.path.exists(self.layer_properties)
         results['map_definitions'] = os.path.exists(self.map_definitions)
