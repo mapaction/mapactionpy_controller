@@ -65,8 +65,6 @@ def is_valid_file(parser, arg):
         return arg
 
 
-
-
 def _add_verbs_to_parser(verb_desc, parser):
     verb_grp = parser.add_mutually_exclusive_group(required=False)
 
@@ -108,44 +106,62 @@ def get_args():
     prs_defaultcmf = _create_noun_parser('defaultcmf', prs_nouns)
     prs_defaultcmf.add_argument(
         'cmf_desc_path',
-        metavar='crash-move-folder-description-file'
+        metavar='crash-move-folder-description-file',
+        help='The path to Humanitarian Event description file.',
+        type=lambda x: is_valid_file(prs_defaultcmf, x)
     )
 
     # Noun: humevent
     prs_humevent = _create_noun_parser('humevent', prs_nouns)
     prs_humevent.add_argument(
         'humevent_desc_path',
-        metavar='humanitarian-event-description-file'
+        metavar='humanitarian-event-description-file',
+        help='The path to Humanitarian Event description file.',
+        type=lambda x: is_valid_file(prs_humevent, x)
     )
 
     # Noun: gisdata
     prs_gisdata = _create_noun_parser('gisdata', prs_nouns)
     prs_gisdata.add_argument(
         'humevent_desc_path',
-        metavar='humanitarian-event-description-file'
+        metavar='humanitarian-event-description-file',
+        help='The path to Humanitarian Event description file.',
+        type=lambda x: is_valid_file(prs_humevent, x)
     )
 
     # Noun: maps
     prs_maps = _create_noun_parser('maps', prs_nouns)
     prs_maps.add_argument(
         'humevent_desc_path',
-        metavar='humanitarian-event-description-file'
+        metavar='humanitarian-event-description-file',
+        help='The path to Humanitarian Event description file.',
+        type=lambda x: is_valid_file(prs_humevent, x)
     )
 
     prs_maps.add_argument(
-        '--map-name'
+        '--map-name',
+        metavar='"Map Name"',
+        help=('The name of an individual map to produce. This must match a product name that'
+              ' exists in the MapCookbook. If this option is not specified then'
+              ' all maps in the MapCookbook will be created.')
     )
 
     maps_options_grp = prs_maps.add_mutually_exclusive_group(required=False)
 
     maps_options_grp.add_argument(
         '--force',
-        action='store_true'
+        action='store_true',
+        help=('Generate a new verion of the specificed products, even if no change is detected'
+              ' in any of the input files. (`--dry-run` and `--force` cannot'
+              ' be specificed together.)')
     )
 
     maps_options_grp.add_argument(
         '--dry-run',
-        action='store_true'
+        action='store_true',
+        help=('Do not generate a new verion of the specificed products. Run through each step'
+              ' and attempt to identify any potential errors. (`--dry-run` and `--force` cannot'
+              ' be specificed together.)')
     )
 
     return mainparser.parse_args()
