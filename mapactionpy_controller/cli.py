@@ -34,15 +34,15 @@ all_nouns = {
 
 all_verbs = {
     'defaultcmf': [
-        (VERB_VERIFY, 'Verify the internal self consistancy of the Default Crash Move Folder, without reference'
+        (VERB_VERIFY, 'Verify the internal self consistency of the Default Crash Move Folder, without reference'
                       ' to any country or situational GIS data')
     ],
     'humevent': [
-        (VERB_CREATE, 'Create a new Humanitarian Event description file. Values are read from relevent'
+        (VERB_CREATE, 'Create a new Humanitarian Event description file. Values are read from relevant'
                       ' environment variables'),
-        (VERB_UPDATE, 'Update an existing Humanitarian Event description file. Values are read from relevent'
+        (VERB_UPDATE, 'Update an existing Humanitarian Event description file. Values are read from relevant'
                       ' environment variables'),
-        (VERB_VERIFY, 'Verify the internal self consistancy of the Humanitarian Event description, without'
+        (VERB_VERIFY, 'Verify the internal self consistency of the Humanitarian Event description, without'
                       ' reference to any country or situational GIS data')
     ],
     'gisdata': [
@@ -59,7 +59,7 @@ all_verbs = {
 
 def is_valid_file(parser, arg):
     if not os.path.exists(arg):
-        parser.error("The file %s does not exist!" % arg)
+        parser.error('The file "%s" does not exist!' % arg)
         return False
     else:
         return arg
@@ -95,12 +95,15 @@ def get_args():
         prog='mapchef',
         description=(
             "This tool does everything you'd ever what to make maps automatically."
-            "Please look at the sub commands for more details"
+            " Please look at the sub commands for more details"
         )
     )
-    prs_nouns = mainparser.add_subparsers(title='extra-subcommands',
-                                          description='stuff you can do with valid subcommands',
-                                          help='helo world additional help')
+    prs_nouns = mainparser.add_subparsers(title='available subcommands',
+                                          description=(
+                                            'To perform any useful tasks you will need to use one of'
+                                            ' the subcommands listed below. For more detailed information'
+                                            ' try `{} < subcommand > help`'.format(mainparser.prog)),
+                                          help=None)
 
     # Noun: defaultcmf
     prs_defaultcmf = _create_noun_parser('defaultcmf', prs_nouns)
@@ -113,11 +116,11 @@ def get_args():
 
     # Noun: humevent
     prs_humevent = _create_noun_parser('humevent', prs_nouns)
+    # It is acceptable that the `humevent_desc_path` does not exist for `humevent create`
     prs_humevent.add_argument(
         'humevent_desc_path',
         metavar='humanitarian-event-description-file',
-        help='The path to Humanitarian Event description file.',
-        type=lambda x: is_valid_file(prs_humevent, x)
+        help='The path to Humanitarian Event description file.'
     )
 
     # Noun: gisdata
@@ -151,17 +154,17 @@ def get_args():
     maps_options_grp.add_argument(
         '--force',
         action='store_true',
-        help=('Generate a new verion of the specificed products, even if no change is detected'
+        help=('Generate a new version of the specified products, even if no change is detected'
               ' in any of the input files. (`--dry-run` and `--force` cannot'
-              ' be specificed together.)')
+              ' be specified together.)')
     )
 
     maps_options_grp.add_argument(
         '--dry-run',
         action='store_true',
-        help=('Do not generate a new verion of the specificed products. Run through each step'
+        help=('Do not generate a new version of the specified products. Run through each step'
               ' and attempt to identify any potential errors. (`--dry-run` and `--force` cannot'
-              ' be specificed together.)')
+              ' be specified together.)')
     )
 
     return mainparser.parse_args()
