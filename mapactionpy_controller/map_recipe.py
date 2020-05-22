@@ -257,7 +257,7 @@ class MapRecipe:
 
     def get_lyrs_as_set(self):
         # this is required for the case that the lyr is a str of the layername
-        # This can only happen is the layername was not found in the Layerproperties file
+        # This can only happen if the layername was not found in the Layerproperties file
         def get_lyr_name(lyr):
             try:
                 return lyr.name
