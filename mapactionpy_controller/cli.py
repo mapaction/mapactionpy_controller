@@ -9,14 +9,6 @@ VERB_UPLOAD = 'upload'
 VERB_VERIFY = 'verify'
 
 
-def is_valid_file(parser, arg):
-    if not os.path.exists(arg):
-        parser.error("The file %s does not exist!" % arg)
-        return False
-    else:
-        return arg
-
-
 def noun_defaultcmf_print_output(args):
     print(args)
 
@@ -31,6 +23,48 @@ def noun_gisdata_print_output(args):
 
 def noun_maps_print_output(args):
     print(args)
+
+
+all_nouns = {
+    'defaultcmf': ('Print info about the Default Crash Move Folder', noun_defaultcmf_print_output),
+    'humevent': ('Access and update info about a Humanitarian Event', noun_humevent_print_output),
+    'gisdata': ('Access and update info about the GIS data collected for a Humanitarian Event', noun_gisdata_print_output),
+    'maps': ('Access, build, update and upload maps for a Humanitarian Event', noun_maps_print_output)
+}
+
+all_verbs = {
+    'defaultcmf': [
+        (VERB_VERIFY, 'Verify the internal self consistancy of the Default Crash Move Folder, without reference'
+                      ' to any country or situational GIS data')
+    ],
+    'humevent': [
+        (VERB_CREATE, 'Create a new Humanitarian Event description file. Values are read from relevent'
+                      ' environment variables'),
+        (VERB_UPDATE, 'Update an existing Humanitarian Event description file. Values are read from relevent'
+                      ' environment variables'),
+        (VERB_VERIFY, 'Verify the internal self consistancy of the Humanitarian Event description, without'
+                      ' reference to any country or situational GIS data')
+    ],
+    'gisdata': [
+        (VERB_VERIFY, 'Verify that the "active" GIS data adheres to relevant GIS standards (eg Data Naming'
+                      ' Convention and Schemas)')
+    ],
+    'maps': [
+        (VERB_BUILD, 'Create the maps described in the MapCookbook. Existing maps are recreated if any'
+                     ' of the inputs have changed.'),
+        (VERB_UPLOAD, 'Upload maps to the publishing site')
+    ]
+}
+
+
+def is_valid_file(parser, arg):
+    if not os.path.exists(arg):
+        parser.error("The file %s does not exist!" % arg)
+        return False
+    else:
+        return arg
+
+
 
 
 def _add_verbs_to_parser(verb_desc, parser):
@@ -48,6 +82,16 @@ def _add_verbs_to_parser(verb_desc, parser):
         )
 
 
+def _create_noun_parser(noun_str, subparser):
+    noun_desc, noun_func = all_nouns[noun_str]
+
+    parser = subparser.add_parser(noun_str)
+    parser.description = (noun_desc)
+    parser.set_defaults(func=noun_func)
+    _add_verbs_to_parser(all_verbs[noun_str], parser)
+    return parser
+
+
 def get_args():
     mainparser = argparse.ArgumentParser(
         prog='mapchef',
@@ -61,73 +105,28 @@ def get_args():
                                           help='helo world additional help')
 
     # Noun: defaultcmf
-    prs_defaultcmf = prs_nouns.add_parser('defaultcmf')
-    prs_defaultcmf.description = ('Print info about the Default Crash Move Folder')
-    prs_defaultcmf.set_defaults(func=noun_defaultcmf_print_output)
-
-    relevant_verbs = [
-        (VERB_VERIFY, 'Verify the internal self consistancy of the Default Crash Move Folder, without reference'
-                      ' to any country or situational GIS data')
-    ]
-    _add_verbs_to_parser(relevant_verbs, prs_defaultcmf)
-
+    prs_defaultcmf = _create_noun_parser('defaultcmf', prs_nouns)
     prs_defaultcmf.add_argument(
         'cmf_desc_path',
         metavar='crash-move-folder-description-file'
     )
 
     # Noun: humevent
-    prs_humevent = prs_nouns.add_parser('humevent')
-    prs_humevent.description = ('Access and update info about a Humanitarian Event')
-    prs_humevent.set_defaults(func=noun_humevent_print_output)
-
-    relevant_verbs = [
-        (VERB_CREATE, 'Create a new Humanitarian Event description file. Values are read from relevent'
-                      ' environment variables'),
-        (VERB_UPDATE, 'Update an existing Humanitarian Event description file. Values are read from relevent'
-                      ' environment variables'),
-        (VERB_VERIFY, 'Verify the internal self consistancy of the Humanitarian Event description, without'
-                      ' reference to any country or situational GIS data')
-    ]
-
-    _add_verbs_to_parser(relevant_verbs, prs_humevent)
-
+    prs_humevent = _create_noun_parser('humevent', prs_nouns)
     prs_humevent.add_argument(
         'humevent_desc_path',
         metavar='humanitarian-event-description-file'
     )
 
     # Noun: gisdata
-    prs_gisdata = prs_nouns.add_parser('gisdata')
-    prs_gisdata.description = ('Access and update info about the GIS data collected for a Humanitarian Event')
-    prs_gisdata.set_defaults(func=noun_gisdata_print_output)
-
-    relevant_verbs = [
-        (VERB_VERIFY, 'Verify that the "active" GIS data adheres to relevant GIS standards (eg Data Naming'
-                      ' Convention and Schemas')
-    ]
-
-    _add_verbs_to_parser(relevant_verbs, prs_gisdata)
-
-    prs_humevent.add_argument(
+    prs_gisdata = _create_noun_parser('gisdata', prs_nouns)
+    prs_gisdata.add_argument(
         'humevent_desc_path',
         metavar='humanitarian-event-description-file'
     )
 
     # Noun: maps
-    prs_maps = prs_nouns.add_parser('maps')
-    prs_maps.description = ('Access, build, update and upload maps for a Humanitarian Event')
-    prs_maps.set_defaults(func=noun_maps_print_output)
-
-    relevant_verbs = [
-        (VERB_BUILD, 'Create the maps described in the MapCookbook. Existing maps are recreated if any'
-                     ' of the inputs have changed.'),
-        (VERB_UPLOAD, 'Verify that the "active" GIS data adheres to relevant GIS standards (eg Data Naming'
-                      ' Convention and Schemas')
-    ]
-
-    _add_verbs_to_parser(relevant_verbs, prs_maps)
-
+    prs_maps = _create_noun_parser('maps', prs_nouns)
     prs_maps.add_argument(
         'humevent_desc_path',
         metavar='humanitarian-event-description-file'
