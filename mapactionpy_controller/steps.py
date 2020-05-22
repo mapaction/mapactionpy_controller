@@ -4,6 +4,7 @@ import humanfriendly.terminal as hft
 from humanfriendly.terminal.spinners import AutomaticSpinner
 import random
 
+
 class Step():
     def __init__(self, func, running_msg, complete_msg, fail_msg):
         self.func = func
@@ -18,7 +19,7 @@ class Step():
             sleep(5)
             if random.random() > 0.5:
                 raise ValueError('Something went wrong')
-            
+
             set_status('pass', self.complete_msg)
             # return result
             return True
@@ -31,7 +32,7 @@ cv = config_verify.ConfigVerifier()
 
 config_verify_steps = [
     Step(
-        cv.check_cmf_description, 
+        cv.check_cmf_description,
         'Checking that the Crash Move Folder description file opens correctly',
         'The Crash Move Folder description file opened correctly',
         'Failed to open the Crash Move Folder description file correctly',
@@ -67,11 +68,12 @@ def line_printer(status, msg):
         'pass':    '{}[{}pass{}]{}'.format(normal_white, bright_green, normal_white, bright_white),
         'fail':    '{}[{}fail{}]{}'.format(normal_white, bright_red, normal_white, bright_white)
     }
-    
+
     str = ' {} {}'.format(checkboxs[status], msg)
 
     # humanfriendly.terminal.output(humanfriendly.terminal.ANSI_ERASE_LINE)
     hft.output('{}{}'.format(hft.ANSI_ERASE_LINE, str))
+
 
 def steps_to_run():
     hft.enable_ansi_support()

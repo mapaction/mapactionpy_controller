@@ -100,9 +100,9 @@ def get_args():
     )
     prs_nouns = mainparser.add_subparsers(title='available subcommands',
                                           description=(
-                                            'To perform any useful tasks you will need to use one of'
-                                            ' the subcommands listed below. For more detailed information'
-                                            ' try `{} < subcommand > help`'.format(mainparser.prog)),
+                                              'To perform any useful tasks you will need to use one of'
+                                              ' the subcommands listed below. For more detailed information'
+                                              ' try `{} < subcommand > help`'.format(mainparser.prog)),
                                           help=None)
 
     # Noun: defaultcmf
