@@ -51,18 +51,16 @@ def line_printer(status, msg):
     bright_yellow = hft.ansi_style(color='yellow', bright=True)
     normal_white = hft.ansi_style(color='white', bright=False)
 
+    checkboxs = {
+        logging.INFO:  '{}[{}pass{}]{}'.format(normal_white, bright_green, normal_white, bright_white),
+        logging.ERROR: '{}[{}fail{}]{}'.format(normal_white, bright_red, normal_white, bright_white),
+        logging.WARNING: '{}[{}warn{}]{}'.format(normal_white, bright_yellow, normal_white, bright_white)
+    }
+
     if hft.connected_to_terminal():
-        checkboxs = {
-            logging.INFO:  '{}[{}pass{}]{}'.format(normal_white, bright_green, normal_white, bright_white),
-            logging.ERROR: '{}[{}fail{}]{}'.format(normal_white, bright_red, normal_white, bright_white),
-            logging.WARNING: '{}[{}warn{}]{}'.format(normal_white, bright_yellow, normal_white, bright_white)
-        }
-        str = ' {} {}'.format(checkboxs[status], msg)
-        hft.output('{}{}'.format(hft.ANSI_ERASE_LINE, str))
+        out_str = ' {} {}'.format(checkboxs[status], msg)
+        hft.output('{}{}'.format(hft.ANSI_ERASE_LINE, out_str))
     else:
-        str = ' {} {}'.format('now: ', msg)
-        # hft.output('{}{}'.format(hft.ANSI_ERASE_LINE, str))
-        # logger.info(msg)
         logger.log(status, msg)
 
 
@@ -78,9 +76,9 @@ def process_steps(step_list):
             step.run(line_printer)
 
 
-def get_demo_steps():
+def get_demo_steps(secs=3):
     def random_pass():
-        sleep(3)
+        sleep(secs)
         if random.random() > 0.5:
             raise ValueError('Something went wrong')
 
