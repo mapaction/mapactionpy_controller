@@ -25,23 +25,20 @@ class Step():
         self.complete_msg = complete_msg
         self.fail_msg = fail_msg
 
-    def run(self, set_status, **kwargs):
+    def run(self, set_status, verbose, **kwargs):
         try:
-            # set_status('running', self.running_msg)
             result = self.func(*kwargs)
-            # sleep(5)
-            # if random.random() > 0.5:
-            #    raise ValueError('Something went wrong')
+            if verbose:
+                msg = '{}\n{}'.format(self.complete_msg, result)
+            else:
+                msg = self.complete_msg
 
-            set_status(logging.INFO, self.complete_msg)
+            set_status(logging.INFO, msg)
             return result
             # return True
         except Exception as exp:
             fail_msg = '{}\n{}'.format(self.fail_msg, exp)
             set_status(logging.ERROR, fail_msg)
-
-
-# cv = config_verify.ConfigVerifier()
 
 
 def line_printer(status, msg):
@@ -58,8 +55,7 @@ def line_printer(status, msg):
     }
 
     if hft.connected_to_terminal():
-        out_str = ' {} {}'.format(checkboxs[status], msg)
-        hft.output('{}{}'.format(hft.ANSI_ERASE_LINE, out_str))
+        hft.output('{} {} {}'.format(hft.ANSI_ERASE_LINE, checkboxs[status], msg))
     else:
         logger.log(status, msg)
 
@@ -70,7 +66,7 @@ def process_steps(step_list):
     for step in step_list:
         if hft.connected_to_terminal():
             with AutomaticSpinner(step.running_msg, show_time=True):
-                step.run(line_printer)
+                step.run(line_printer, False)
         else:
             logger.info('Starting: {}'.format(step.running_msg))
             step.run(line_printer)
@@ -81,6 +77,8 @@ def get_demo_steps(secs=3):
         sleep(secs)
         if random.random() > 0.5:
             raise ValueError('Something went wrong')
+
+        return 'stopped for {} secs'.format(secs)
 
     demo_steps = [
         Step(

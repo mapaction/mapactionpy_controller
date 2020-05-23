@@ -30,36 +30,36 @@ class ConfigVerifier():
 
     def check_cmf_description(self):
         try:
-            CrashMoveFolder(self.cmf_desc_path)
-            # print('The Crash Move Folder description file open correctly:\n"{}"\n'.format(
-            #     self.cmf_desc_path
-            # ))
+            self.cmf = CrashMoveFolder(self.cmf_desc_path)
+            return ('The Crash Move Folder description file open correctly:\n"{}"\n'.format(
+                self.cmf_desc_path
+            ))
         except ValueError:
             raise
 
     def check_json_file_schemas(self):
         try:
             # JSON schema validation is implicit in the creation of these objects
-            cmf = CrashMoveFolder(self.cmf_desc_path)
-            lp = LayerProperties(cmf, '', verify_on_creation=False)
-            MapCookbook(cmf, lp, verify_on_creation=False)
-            # print('No json validation problems were detected in the parsing of these two'
-            #       ' files:\n"{}"\n"{}"'.format(lp.cmf.layer_properties, cmf.map_definitions)
-            #       )
+            self.check_cmf_description()
+            lp = LayerProperties(self.cmf, '', verify_on_creation=False)
+            MapCookbook(self.cmf, lp, verify_on_creation=False)
+            return('No json validation problems were detected in the parsing of these two'
+                   ' files:\n"{}"\n"{}"'.format(lp.cmf.layer_properties, self.cmf.map_definitions)
+                   )
         except ValueError:
             raise
 
     def check_lyr_props_vs_rendering_dir(self):
+        cmf = CrashMoveFolder(self.cmf_desc_path)
         for lyr_exn in self.lyr_file_exn_list:
             try:
-                cmf = CrashMoveFolder(self.cmf_desc_path)
                 LayerProperties(cmf, lyr_exn, verify_on_creation=True)
-                # print('No inconsistancy detected between:\n'
-                #     ' * the contents of the layer properties json file:\n\t{props}\n'
-                #     ' * and layer rendering dir:\n\t{render}\n'.format(
-                #         props=cmf.layer_properties,
-                #         render=cmf.layer_rendering
-                #     ))
+                return('No inconsistancy detected between:\n'
+                       ' * the contents of the layer properties json file:\n\t{props}\n'
+                       ' * and layer rendering dir:\n\t{render}\n'.format(
+                           props=cmf.layer_properties,
+                           render=cmf.layer_rendering
+                       ))
             except ValueError:
                 raise
 
@@ -68,12 +68,12 @@ class ConfigVerifier():
             cmf = CrashMoveFolder(self.cmf_desc_path)
             lyrs = LayerProperties(cmf, '', verify_on_creation=False)
             MapCookbook(cmf, lyrs, verify_on_creation=True)
-            # print('No inconsistancy detected between:\n'
-            #       ' * the contents of the layer properties json file:\n\t{props}\n'
-            #       ' * and the contents of the MapCookbook json:\n\t{cbook}\n'.format(
-            #           props=cmf.layer_properties,
-            #           cbook=cmf.map_definitions
-            #       ))
+            return('No inconsistancy detected between:\n'
+                   ' * the contents of the layer properties json file:\n\t{props}\n'
+                   ' * and the contents of the MapCookbook json:\n\t{cbook}\n'.format(
+                       props=cmf.layer_properties,
+                       cbook=cmf.map_definitions
+                   ))
         except ValueError:
             raise
 
