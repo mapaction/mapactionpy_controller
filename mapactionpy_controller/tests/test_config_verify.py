@@ -3,6 +3,7 @@ import sys
 from unittest import TestCase
 
 import mapactionpy_controller.config_verify as config_verify
+import mapactionpy_controller.steps as steps
 
 
 class TestConfigVerify(TestCase):
@@ -63,15 +64,20 @@ class TestConfigVerify(TestCase):
             self.fail(se)
 
     def test_check_config_file_schemas(self):
+
         schema_errors_cmf_path = os.path.join(
             self.parent_dir, 'tests', 'testfiles', 'config_schemas',
             'fixture_cmf_pointing_schema_errors.json'
         )
-        sys.argv[1:] = ['-c', schema_errors_cmf_path, 'check-schemas']
+        # sys.argv[1:] = ['-c', schema_errors_cmf_path, 'check-schemas']
+        cv_steps = config_verify.get_config_verify_steps(schema_errors_cmf_path, ['.lyr'])
 
         with self.assertRaises(SystemExit):
-            config_verify.run_checks(None)
+            # config_verify.run_checks(None)
+            steps.process_steps(cv_steps)
 
-        sys.argv[1:] = ['--cmf', self.all_matching_cmf_path, 'check-schemas']
-        config_verify.run_checks(None)
+        # sys.argv[1:] = ['--cmf', self.all_matching_cmf_path, 'check-schemas']
+        cv_steps = config_verify.get_config_verify_steps(self.all_matching_cmf_path, ['.lyr'])
+        # config_verify.run_checks(None)
+        steps.process_steps(cv_steps)
         self.assertTrue(True)

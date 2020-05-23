@@ -36,7 +36,8 @@ def noun_maps_print_output(args):
 all_nouns = {
     'defaultcmf': ('Print info about the Default Crash Move Folder', noun_defaultcmf_print_output),
     'humevent': ('Access and update info about a Humanitarian Event', noun_humevent_print_output),
-    'gisdata': ('Access and update info about the GIS data collected for a Humanitarian Event', noun_gisdata_print_output),
+    'gisdata': ('Access and update info about the GIS data collected for a Humanitarian Event',
+                noun_gisdata_print_output),
     'maps': ('Access, build, update and upload maps for a Humanitarian Event', noun_maps_print_output)
 }
 
@@ -106,6 +107,7 @@ def get_args():
             " Please look at the sub commands for more details"
         )
     )
+
     prs_nouns = mainparser.add_subparsers(title='available subcommands',
                                           description=(
                                               'To perform any useful tasks you will need to use one of'

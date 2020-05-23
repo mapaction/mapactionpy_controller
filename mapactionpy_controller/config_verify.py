@@ -1,7 +1,7 @@
 from mapactionpy_controller.map_cookbook import MapCookbook
 from mapactionpy_controller.layer_properties import LayerProperties
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
-from jsonschema import ValidationError
+# from jsonschema import ValidationError
 import os
 import argparse
 from mapactionpy_controller.steps import Step
@@ -164,7 +164,8 @@ def get_config_verify_steps(cmf_desc_path, lyr_file_exn_list):
             cv.check_lyr_props_vs_rendering_dir,
             'Comparing the contents of the layer properties json file and the layer rendering directory',
             'Compared the contents of the layer properties json file and the layer rendering directory',
-            'Inconsistancy found in between the contents of the layer properties json file and the layer rendering directory'
+            'Inconsistancy found in between the contents of the layer properties json file and the layer'
+            ' rendering directory'
         ),
         Step(
             cv.check_lyr_props_vs_map_cookbook,

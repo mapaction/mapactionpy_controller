@@ -2,7 +2,20 @@
 from time import sleep
 import humanfriendly.terminal as hft
 from humanfriendly.terminal.spinners import AutomaticSpinner
+import logging
 import random
+
+logger = logging.getLogger('MapChef')
+logger.setLevel(logging.DEBUG)
+# create file handler which logs even debug messages
+# create console handler with a higher log level
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+# create formatter and add it to the handlers
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+# add the handlers to the logger
+logger.addHandler(ch)
 
 
 class Step():
@@ -20,12 +33,12 @@ class Step():
             # if random.random() > 0.5:
             #    raise ValueError('Something went wrong')
 
-            set_status('pass', self.complete_msg)
+            set_status(logging.INFO, self.complete_msg)
             return result
             # return True
         except Exception as exp:
             fail_msg = '{}\n{}'.format(self.fail_msg, exp)
-            set_status('fail', fail_msg)
+            set_status(logging.ERROR, fail_msg)
 
 
 # cv = config_verify.ConfigVerifier()
@@ -35,25 +48,72 @@ def line_printer(status, msg):
     bright_white = hft.ansi_style(color='white', bright=True)
     bright_green = hft.ansi_style(color='green', bright=True)
     bright_red = hft.ansi_style(color='red', bright=True)
+    bright_yellow = hft.ansi_style(color='yellow', bright=True)
     normal_white = hft.ansi_style(color='white', bright=False)
 
-    checkboxs = {
-        'pass':    '{}[{}pass{}]{}'.format(normal_white, bright_green, normal_white, bright_white),
-        'fail':    '{}[{}fail{}]{}'.format(normal_white, bright_red, normal_white, bright_white)
-    }
-
-    str = ' {} {}'.format(checkboxs[status], msg)
-
-    hft.output('{}{}'.format(hft.ANSI_ERASE_LINE, str))
+    if hft.connected_to_terminal():
+        checkboxs = {
+            logging.INFO:  '{}[{}pass{}]{}'.format(normal_white, bright_green, normal_white, bright_white),
+            logging.ERROR: '{}[{}fail{}]{}'.format(normal_white, bright_red, normal_white, bright_white),
+            logging.WARNING: '{}[{}warn{}]{}'.format(normal_white, bright_yellow, normal_white, bright_white)
+        }
+        str = ' {} {}'.format(checkboxs[status], msg)
+        hft.output('{}{}'.format(hft.ANSI_ERASE_LINE, str))
+    else:
+        str = ' {} {}'.format('now: ', msg)
+        # hft.output('{}{}'.format(hft.ANSI_ERASE_LINE, str))
+        # logger.info(msg)
+        logger.log(status, msg)
 
 
 def process_steps(step_list):
     hft.enable_ansi_support()
 
     for step in step_list:
-        with AutomaticSpinner(step.running_msg, show_time=True):
+        if hft.connected_to_terminal():
+            with AutomaticSpinner(step.running_msg, show_time=True):
+                step.run(line_printer)
+        else:
+            logger.info('Starting: {}'.format(step.running_msg))
             step.run(line_printer)
 
 
+def get_demo_steps():
+    def random_pass():
+        sleep(3)
+        if random.random() > 0.5:
+            raise ValueError('Something went wrong')
+
+    demo_steps = [
+        Step(
+            random_pass,
+            'DEMO: Checking that the Crash Move Folder description file opens correctly',
+            'DEMO: The Crash Move Folder description file opened correctly',
+            'DEMO: Failed to open the Crash Move Folder description file correctly',
+        ),
+        Step(
+            random_pass,
+            'DEMO: Checking that each of the configuration files matches their relevant schemas',
+            'DEMO: Each of the configuration files adheres to their relevant schemas',
+            'DEMO: Failed to verify one or more of the configuration files against the relevant schema',
+        ),
+        Step(
+            random_pass,
+            'DEMO: Comparing the contents of the layer properties json file and the layer rendering directory',
+            'DEMO: Compared the contents of the layer properties json file and the layer rendering directory',
+            'DEMO: Inconsistancy found in between the contents of the layer properties json file and the layer'
+            ' rendering directory'
+        ),
+        Step(
+            random_pass,
+            'DEMO: Comparing the contents of the layer properties json file and the MapCookbook',
+            'DEMO: Compared the contents of the layer properties json file and the MapCookbook',
+            'DEMO: Inconsistancy found in between the contents of the layer properties json file and the MapCookbook'
+        )
+    ]
+
+    return demo_steps
+
+
 if __name__ == "__main__":
-    process_steps(config_verify_steps)
+    process_steps(get_demo_steps())
