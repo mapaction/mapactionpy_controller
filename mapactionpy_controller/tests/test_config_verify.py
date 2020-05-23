@@ -1,9 +1,7 @@
+from jsonschema import ValidationError
 import os
-import sys
 from unittest import TestCase
-
 import mapactionpy_controller.config_verify as config_verify
-import mapactionpy_controller.steps as steps
 
 
 class TestConfigVerify(TestCase):
@@ -19,65 +17,55 @@ class TestConfigVerify(TestCase):
             self.parent_dir, 'tests', 'testfiles', 'fixture_cmf_description_one_file_and_one_dir_not_valid.json')
 
     def test_check_cmf_description(self):
-        # No parameter given at commandline
-        sys.argv[1:] = []
-        with self.assertRaises(SystemExit):
-            config_verify.run_checks(None)
-
         # A valid cmf description
-        sys.argv[1:] = ['--cmf', self.path_to_valid_cmf_des, 'cmf-only']
+        cv = config_verify.ConfigVerifier(self.path_to_valid_cmf_des, ['.lyr'])
         try:
-            config_verify.run_checks(None)
+            cv.check_cmf_description()
             self.assertTrue(True)
-        except SystemExit as se:
-            self.fail(se)
+        except ValueError as ve:
+            self.fail(ve)
 
         # An Invalid cmf description
-        sys.argv[1:] = ['--cmf', self.path_to_invalid_cmf_des, 'cmf-only']
-        with self.assertRaises(SystemExit):
-            config_verify.run_checks(None)
+        cv = config_verify.ConfigVerifier(self.path_to_invalid_cmf_des, ['.lyr'])
+        with self.assertRaises(ValueError):
+            cv.check_cmf_description()
 
     def test_check_lyr_props_vs_rendering_dir(self):
-        sys.argv[1:] = ['-c', self.mismatching_cmf_path, 'lp-vs-rendering', '-e', 'lyr']
+        cv = config_verify.ConfigVerifier(self.mismatching_cmf_path, ['.lyr'])
 
-        with self.assertRaises(SystemExit):
-            config_verify.run_checks(None)
+        with self.assertRaises(ValueError):
+            cv.check_lyr_props_vs_rendering_dir()
 
-        sys.argv[1:] = ['--cmf', self.all_matching_cmf_path, 'lp-vs-rendering', '-e', 'lyr']
+        cv = config_verify.ConfigVerifier(self.all_matching_cmf_path, ['.lyr'])
         try:
-            config_verify.run_checks(None)
+            cv.check_lyr_props_vs_rendering_dir()
             self.assertTrue(True)
-        except SystemExit as se:
-            self.fail(se)
+        except ValueError as ve:
+            self.fail(ve)
 
     def test_check_lyr_props_vs_map_cookbook(self):
-        sys.argv[1:] = ['-c', self.mismatching_cmf_path, 'lp-vs-cb']
+        cv = config_verify.ConfigVerifier(self.mismatching_cmf_path, ['.lyr'])
 
-        with self.assertRaises(SystemExit):
-            config_verify.run_checks(None)
+        with self.assertRaises(ValueError):
+            cv.check_lyr_props_vs_map_cookbook()
 
-        sys.argv[1:] = ['--cmf', self.all_matching_cmf_path, 'lp-vs-cb']
+        cv = config_verify.ConfigVerifier(self.all_matching_cmf_path, ['.lyr'])
         try:
-            config_verify.run_checks(None)
+            cv.check_lyr_props_vs_map_cookbook()
             self.assertTrue(True)
-        except SystemExit as se:
-            self.fail(se)
+        except ValueError as ve:
+            self.fail(ve)
 
     def test_check_config_file_schemas(self):
-
         schema_errors_cmf_path = os.path.join(
             self.parent_dir, 'tests', 'testfiles', 'config_schemas',
             'fixture_cmf_pointing_schema_errors.json'
         )
-        # sys.argv[1:] = ['-c', schema_errors_cmf_path, 'check-schemas']
-        cv_steps = config_verify.get_config_verify_steps(schema_errors_cmf_path, ['.lyr'])
 
-        with self.assertRaises(SystemExit):
-            # config_verify.run_checks(None)
-            steps.process_steps(cv_steps)
+        cv = config_verify.ConfigVerifier(schema_errors_cmf_path, ['.lyr'])
+        with self.assertRaises(ValidationError):
+            cv.check_json_file_schemas()
 
-        # sys.argv[1:] = ['--cmf', self.all_matching_cmf_path, 'check-schemas']
-        cv_steps = config_verify.get_config_verify_steps(self.all_matching_cmf_path, ['.lyr'])
-        # config_verify.run_checks(None)
-        steps.process_steps(cv_steps)
+        cv = config_verify.ConfigVerifier(self.all_matching_cmf_path, ['.lyr'])
+        cv.check_json_file_schemas()
         self.assertTrue(True)
