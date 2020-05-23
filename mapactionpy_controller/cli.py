@@ -16,21 +16,27 @@ def noun_defaultcmf_print_output(args):
     if args.verb == VERB_VERIFY:
         cv_steps = config_verify.get_config_verify_steps(args.cmf_desc_path, ['.lyr'])
         steps.process_steps(cv_steps)
-        cnc.get_step_list(args.cmf_desc_path, False)
-        nc_steps = cnc.get_step_list(args.cmf_desc_path, False)
+        nc_steps = cnc.get_defaultcmf_step_list(args.cmf_desc_path, False)
         steps.process_steps(nc_steps)
+    else:
+        raise NotImplementedError(args)
 
 
 def noun_humevent_print_output(args):
-    print(args)
+    raise NotImplementedError(args)
 
 
 def noun_gisdata_print_output(args):
-    print(args)
+    if args.verb == VERB_VERIFY:
+        nc_steps = cnc.get_active_data_step_list(args.humevent_desc_path, True)
+        steps.process_steps(nc_steps)
+        # print(nc_steps)
+    else:
+        raise NotImplementedError(args)
 
 
 def noun_maps_print_output(args):
-    print(args)
+    raise NotImplementedError(args)
 
 
 all_nouns = {

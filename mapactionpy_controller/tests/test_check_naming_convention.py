@@ -1,6 +1,5 @@
 from unittest import TestCase
 import mapactionpy_controller.check_naming_convention as check_naming_convention
-import sys
 import os
 import six
 
@@ -20,16 +19,6 @@ class TestCheckNamingConventionTool(TestCase):
             os.path.dirname(os.path.realpath(__file__)))
         self.cmf_descriptor_path = os.path.join(
             self.parent_dir, 'example', 'cmf_description_flat_test.json')
-
-    # def test_get_args(self):
-    #     sys.argv[1:] = [self.cmf_descriptor_path]
-
-    #     args = check_naming_convention.get_args()
-    #     self.assertEqual(self.cmf_descriptor_path, args.cmf_config_path)
-
-    #     sys.argv[1:] = []
-    #     with self.assertRaises(SystemExit):
-    #         check_naming_convention.get_args()
 
     def test_check_naming_convention_check_dir(self):
         nc_desc_path = os.path.join(self.parent_dir, 'example', 'data_naming_convention.json')
