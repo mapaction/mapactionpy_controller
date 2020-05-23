@@ -2,6 +2,7 @@ import argparse
 import os
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 import mapactionpy_controller.name_convention as name_convention
+from mapactionpy_controller.steps import Step
 
 
 def is_valid_file(parser, arg):
@@ -43,15 +44,53 @@ def extract_naming_results_messages(name_results, extract_failures_only=True):
     return messages
 
 
-def check_dir(dir_to_check, nc_desc_file, extn_to_check, inc_valid):
-    nc = name_convention.NamingConvention(nc_desc_file)
-    nrs = get_naming_results_for_dir(dir_to_check, nc, extn_to_check)
-    msgs = extract_naming_results_messages(nrs, extract_failures_only=(not inc_valid))
-    if len(msgs):
-        print('\n'.join(msgs))
+def get_dir_checker(dir_to_check, nc_desc_file, extn_to_check, inc_valid):
+    def check_dir():
+        nc = name_convention.NamingConvention(nc_desc_file)
+        nrs = get_naming_results_for_dir(dir_to_check, nc, extn_to_check)
+        msgs = extract_naming_results_messages(nrs, extract_failures_only=(not inc_valid))
+        if len(msgs):
+            raise ValueError('\n'.join(msgs))
 
-    # count of all the invalid names
-    return sum(int(not r.is_valid) for r in nrs)
+        # count of all the invalid names
+        return sum(int(not r.is_valid) for r in nrs)
+
+    return check_dir
+
+
+def get_step_list(cmf_config_path, inc_valid):
+    cmf = CrashMoveFolder(cmf_config_path)
+
+    # TODO: handle case where there is a need to drill down into subdirectories
+    # eg `cmf.active_data`
+    ncs_to_check = (
+        (cmf.active_data, cmf.data_nc_definition, '.shp'),
+        (cmf.layer_rendering, cmf.layer_nc_definition, '.lyr'),
+        (cmf.layer_rendering, cmf.layer_nc_definition, '.qml'),
+        (cmf.layer_rendering, cmf.layer_nc_definition, '.qlr'),
+        (cmf.map_projects, cmf.map_projects_nc_definition, '.qgs'),
+        (cmf.map_projects, cmf.map_projects_nc_definition, '.mxd'),
+        (cmf.map_templates, cmf.map_template_nc_definition, '.qgs'),
+        (cmf.map_templates, cmf.map_template_nc_definition, '.pagx'),
+        (cmf.map_templates, cmf.map_template_nc_definition, '.mxd')
+    )
+
+    name_convention_steps = []
+
+    for dir_to_check, nc_desc_file, extn_to_check in ncs_to_check:
+        # return_code += check_dir(dir_to_check, nc_desc_file, extn_to_check, args.inc_valid)
+        base_name = os.path.basename(dir_to_check)
+        name_convention_steps.append(
+            Step(
+                get_dir_checker(dir_to_check, nc_desc_file, extn_to_check, inc_valid),
+                "'Checking '{}' files in '{}' match relevant naming convention".format(extn_to_check, base_name),
+                "All '{}' files in '{}' match the relevant naming convention".format(extn_to_check, base_name),
+                "One of more '{}' files in '{}' did not match the relevant naming convention".format(
+                    extn_to_check, base_name)
+            )
+        )
+
+    return name_convention_steps
 
 
 def main():
@@ -71,8 +110,19 @@ def main():
         (cmf.map_templates, cmf.map_template_nc_definition, '.mxd')
     )
 
+    name_convention_steps = []
+
     for dir_to_check, nc_desc_file, extn_to_check in ncs_to_check:
-        return_code += check_dir(dir_to_check, nc_desc_file, extn_to_check, args.inc_valid)
+        # return_code += check_dir(dir_to_check, nc_desc_file, extn_to_check, args.inc_valid)
+        base_name = os.path.basename(dir_to_check)
+        name_convention_steps.append(
+            Step(
+                get_dir_checker(dir_to_check, nc_desc_file, extn_to_check, args.inc_valid),
+                'Checking shapefiles in {} match data naming convention'.format(base_name),
+                'All shapefiles in {} match the data naming convention'.format(base_name),
+                'One of more shapefiles in CMF did not match the data naming convention'.format(base_name)
+            )
+        )
 
     # Quit with the exit code
     return return_code

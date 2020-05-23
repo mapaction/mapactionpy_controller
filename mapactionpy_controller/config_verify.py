@@ -4,6 +4,7 @@ from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from jsonschema import ValidationError
 import os
 import argparse
+from mapactionpy_controller.steps import Step
 
 
 def is_valid_file(parser, arg):
@@ -23,60 +24,58 @@ def is_valid_directory(parser, arg):
 
 
 class ConfigVerifier():
-    def __init__(self):
-        pass
+    def __init__(self, cmf_desc, lyr_file_exn_list):
+        self.cmf_desc_path = cmf_desc
+        self.lyr_file_exn_list = lyr_file_exn_list
 
-    def check_cmf_description(self, args):
+    def check_cmf_description(self):
         try:
-            CrashMoveFolder(args.cmf_desc)
-            print('The Crash Move Folder description file open correctly:\n"{}"\n'.format(
-                args.cmf_desc
-            ))
-        except ValueError as ve:
-            print(str(ve))
-            exit(1)
+            CrashMoveFolder(self.cmf_desc_path)
+            # print('The Crash Move Folder description file open correctly:\n"{}"\n'.format(
+            #     self.cmf_desc_path
+            # ))
+        except ValueError:
+            raise
 
-    def check_json_file_schemas(self, args):
+    def check_json_file_schemas(self):
         try:
             # JSON schema validation is implicit in the creation of these objects
-            cmf = CrashMoveFolder(args.cmf_desc)
+            cmf = CrashMoveFolder(self.cmf_desc_path)
             lp = LayerProperties(cmf, '', verify_on_creation=False)
             MapCookbook(cmf, lp, verify_on_creation=False)
-            print('No json validation problems were detected in the parsing of these two'
-                  ' files:\n"{}"\n"{}"'.format(lp.cmf.layer_properties, cmf.map_definitions)
-                  )
-        except ValidationError as ve:
-            print(str(ve))
-            exit(1)
+            # print('No json validation problems were detected in the parsing of these two'
+            #       ' files:\n"{}"\n"{}"'.format(lp.cmf.layer_properties, cmf.map_definitions)
+            #       )
+        except ValueError:
+            raise
 
-    def check_lyr_props_vs_rendering_dir(self, args):
-        try:
-            cmf = CrashMoveFolder(args.cmf_desc)
-            LayerProperties(cmf, args.layer_file_extension, verify_on_creation=True)
-            print('No inconsistancy detected between:\n'
-                  ' * the contents of the layer properties json file:\n\t{props}\n'
-                  ' * and layer rendering dir:\n\t{render}\n'.format(
-                      props=cmf.layer_properties,
-                      render=cmf.layer_rendering
-                  ))
-        except ValueError as ve:
-            print(str(ve))
-            exit(1)
+    def check_lyr_props_vs_rendering_dir(self):
+        for lyr_exn in self.lyr_file_exn_list:
+            try:
+                cmf = CrashMoveFolder(self.cmf_desc_path)
+                LayerProperties(cmf, lyr_exn, verify_on_creation=True)
+                # print('No inconsistancy detected between:\n'
+                #     ' * the contents of the layer properties json file:\n\t{props}\n'
+                #     ' * and layer rendering dir:\n\t{render}\n'.format(
+                #         props=cmf.layer_properties,
+                #         render=cmf.layer_rendering
+                #     ))
+            except ValueError:
+                raise
 
-    def check_lyr_props_vs_map_cookbook(self, args):
+    def check_lyr_props_vs_map_cookbook(self):
         try:
-            cmf = CrashMoveFolder(args.cmf_desc)
+            cmf = CrashMoveFolder(self.cmf_desc_path)
             lyrs = LayerProperties(cmf, '', verify_on_creation=False)
             MapCookbook(cmf, lyrs, verify_on_creation=True)
-            print('No inconsistancy detected between:\n'
-                  ' * the contents of the layer properties json file:\n\t{props}\n'
-                  ' * and the contents of the MapCookbook json:\n\t{cbook}\n'.format(
-                      props=cmf.layer_properties,
-                      cbook=cmf.map_definitions
-                  ))
-        except ValueError as ve:
-            print(str(ve))
-            exit(2)
+            # print('No inconsistancy detected between:\n'
+            #       ' * the contents of the layer properties json file:\n\t{props}\n'
+            #       ' * and the contents of the MapCookbook json:\n\t{cbook}\n'.format(
+            #           props=cmf.layer_properties,
+            #           cbook=cmf.map_definitions
+            #       ))
+        except ValueError:
+            raise
 
     def get_args(self):
         parser = argparse.ArgumentParser(
@@ -138,21 +137,55 @@ class ConfigVerifier():
         #    if not cmd_name == 'all':
         #        func = argparser.get_default('func')
         #        func(args)
-        self.check_cmf_description(args)
-        self.check_json_file_schemas(args)
-        self.check_lyr_props_vs_rendering_dir(args)
-        self.check_lyr_props_vs_map_cookbook(args)
+        # self.check_cmf_description(args)
+        # self.check_json_file_schemas(args)
+        # self.check_lyr_props_vs_rendering_dir(args)
+        # self.check_lyr_props_vs_map_cookbook(args)
+        pass
 
 
-def run_checks(args=None):
-    cv = ConfigVerifier()
-    if not args:
-        args = cv.get_args()
-    args.func(args)
+def get_config_verify_steps(cmf_desc_path, lyr_file_exn_list):
+    cv = ConfigVerifier(cmf_desc_path, lyr_file_exn_list)
+
+    config_verify_steps = [
+        Step(
+            cv.check_cmf_description,
+            'Checking that the Crash Move Folder description file opens correctly',
+            'The Crash Move Folder description file opened correctly',
+            'Failed to open the Crash Move Folder description file correctly',
+        ),
+        Step(
+            cv.check_json_file_schemas,
+            'Checking that each of the configuration files matches their relevant schemas',
+            'Each of the configuration files adheres to their relevant schemas',
+            'Failed to verify one or more of the configuration files against the relevant schema',
+        ),
+        Step(
+            cv.check_lyr_props_vs_rendering_dir,
+            'Comparing the contents of the layer properties json file and the layer rendering directory',
+            'Compared the contents of the layer properties json file and the layer rendering directory',
+            'Inconsistancy found in between the contents of the layer properties json file and the layer rendering directory'
+        ),
+        Step(
+            cv.check_lyr_props_vs_map_cookbook,
+            'Comparing the contents of the layer properties json file and the MapCookbook',
+            'Compared the contents of the layer properties json file and the MapCookbook',
+            'Inconsistancy found in between the contents of the layer properties json file and the MapCookbook'
+        )
+    ]
+
+    return config_verify_steps
+
+# def run_checks(args=None):
+#     cv = ConfigVerifier()
+#     if not args:
+#         args = cv.get_args()
+#     args.func(args)
 
 
 # TODO: asmith 2020/03/04
 # This commandline interface and arg parser should be merged with other commandline interfaces
 # such as the one in mapactionpy_controller.check_naming_convention.py
 if __name__ == "__main__":
-    run_checks()
+    # run_checks()
+    pass

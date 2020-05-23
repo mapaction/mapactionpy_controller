@@ -38,7 +38,7 @@ class NamingFreeTextClause(NamingClause):
 
             @property
             def get_message(self):
-                return 'Value "{}" is valid (as are all Free Text Clauses).'.format(clause_value)
+                return '\tValue "{}" is valid (as are all Free Text Clauses).'.format(clause_value)
 
         return DataClauseValues(**details)
 

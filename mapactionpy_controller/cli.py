@@ -1,5 +1,8 @@
 import os
 import argparse
+import mapactionpy_controller.check_naming_convention as cnc
+import mapactionpy_controller.config_verify as config_verify
+import mapactionpy_controller.steps as steps
 
 VERB_BUILD = 'build'
 VERB_CREATE = 'create'
@@ -10,7 +13,12 @@ VERB_VERIFY = 'verify'
 
 
 def noun_defaultcmf_print_output(args):
-    print(args)
+    if args.verb == VERB_VERIFY:
+        cv_steps = config_verify.get_config_verify_steps(args.cmf_desc_path, ['.lyr'])
+        steps.process_steps(cv_steps)
+        cnc.get_step_list(args.cmf_desc_path, False)
+        nc_steps = cnc.get_step_list(args.cmf_desc_path, False)
+        steps.process_steps(nc_steps)
 
 
 def noun_humevent_print_output(args):
@@ -74,7 +82,7 @@ def _add_verbs_to_parser(verb_desc, parser):
         verb_grp.add_argument(
             flag,
             action='store_const',
-            dest='my_action',
+            dest='verb',
             help=help_desc,
             const=verb
         )
@@ -110,7 +118,7 @@ def get_args():
     prs_defaultcmf.add_argument(
         'cmf_desc_path',
         metavar='crash-move-folder-description-file',
-        help='The path to Humanitarian Event description file.',
+        help='The path to Crash Move Foler (CMF) description file.',
         type=lambda x: is_valid_file(prs_defaultcmf, x)
     )
 
