@@ -69,7 +69,7 @@ def process_steps(step_list):
                 step.run(line_printer, False)
         else:
             logger.info('Starting: {}'.format(step.running_msg))
-            step.run(line_printer)
+            step.run(line_printer, False)
 
 
 def get_demo_steps(secs=3):
