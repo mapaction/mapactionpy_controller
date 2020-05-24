@@ -81,20 +81,22 @@ def get_defaultcmf_step_list(cmf_config_path, verbose):
 
     return name_convention_steps
 
-
-def get_active_data_step_list(humev_config_path, verbose):
-    humev = Event(humev_config_path)
-    cmf = CrashMoveFolder(humev.cmf_descriptor_path)
-    extn_to_check = '.shp'
-
+def _get_active_data_sub_dirs(cmf):
     list_subfolders_with_paths = []
     for root, dirs, files in os.walk(cmf.active_data):
         if os.path.normpath(root) == os.path.normpath(cmf.active_data):
             for dir in dirs:
                 list_subfolders_with_paths.append((os.path.join(root, dir), dir))
 
+    return list_subfolders_with_paths
+
+def get_active_data_step_list(humev_config_path, verbose):
+    humev = Event(humev_config_path)
+    cmf = CrashMoveFolder(humev.cmf_descriptor_path)
+    extn_to_check = '.shp'
+
     dnc_per_dir_steps = []
-    for dir_to_check, base_name in list_subfolders_with_paths:
+    for dir_to_check, base_name in _get_active_data_sub_dirs(cmf):
         # return_code += check_dir(dir_to_check, nc_desc_file, extn_to_check, args.inc_valid)
         # base_name = os.path.basename(dir_to_check)
         dnc_per_dir_steps.append(
