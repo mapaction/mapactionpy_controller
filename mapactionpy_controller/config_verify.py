@@ -10,13 +10,10 @@ class ConfigVerifier():
         self.lyr_file_exn_list = lyr_file_exn_list
 
     def check_cmf_description(self):
-        try:
-            self.cmf = CrashMoveFolder(self.cmf_desc_path)
-            return ('The Crash Move Folder description file open correctly:\n"{}"\n'.format(
-                self.cmf_desc_path
-            ))
-        except ValueError:
-            raise
+        self.cmf = CrashMoveFolder(self.cmf_desc_path)
+        return ('The Crash Move Folder description file open correctly:\n"{}"\n'.format(
+            self.cmf_desc_path
+        ))
 
     def check_json_file_schemas(self):
         try:

@@ -81,14 +81,15 @@ def get_defaultcmf_step_list(cmf_config_path, verbose):
 
     return name_convention_steps
 
+
 def _get_active_data_sub_dirs(cmf):
     list_subfolders_with_paths = []
     for root, dirs, files in os.walk(cmf.active_data):
         if os.path.normpath(root) == os.path.normpath(cmf.active_data):
-            for dir in dirs:
-                list_subfolders_with_paths.append((os.path.join(root, dir), dir))
+            list_subfolders_with_paths = [(os.path.join(root, dir), dir) for dir in dirs]
 
     return list_subfolders_with_paths
+
 
 def get_active_data_step_list(humev_config_path, verbose):
     humev = Event(humev_config_path)
