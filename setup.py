@@ -63,31 +63,38 @@ def get_gis_environment():
     return gis_dependancies
 
 
-setup(name='mapactionpy_controller',
-      version=_get_version_number(),
-      description='Controls the workflow of map and infographic production',
-      long_description=readme(),
-      long_description_content_type="text/markdown",
-      url='http://github.com/mapaction/mapactionpy_controller',
-      author='MapAction',
-      author_email='github@mapaction.com',
-      license='GPL3',
-      packages=find_packages(),
-      install_requires=[
-          'jsonpickle',
-          'jsonschema',
-          'pycountry',
-          'requests',
-          'pyyaml',
-          'six'
-      ],
-      test_suite='unittest',
-      tests_require=['unittest'],
-      zip_safe=False,
-      classifiers=[
-          "Development Status :: 2 - Pre-Alpha",
-          "Programming Language :: Python :: 2.7",
-          "Programming Language :: Python :: 3",
-          "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-          "Operating System :: OS Independent",
-      ])
+setup(
+    name='mapactionpy_controller',
+    version=_get_version_number(),
+    description='Controls the workflow of map and infographic production',
+    long_description=readme(),
+    long_description_content_type="text/markdown",
+    url='http://github.com/mapaction/mapactionpy_controller',
+    author='MapAction',
+    author_email='github@mapaction.com',
+    license='GPL3',
+    entry_points={
+        'console_scripts': [
+            'mapchef=mapactionpy_controller.cli:entry_point'
+        ]
+    },
+    packages=find_packages(),
+    install_requires=[
+        'humanfriendly',
+        'jsonpickle',
+        'jsonschema',
+        'pycountry',
+        'requests',
+        'pyyaml',
+        'six'
+    ],
+    test_suite='unittest',
+    tests_require=['unittest'],
+    zip_safe=False,
+    classifiers=[
+        "Development Status :: 2 - Pre-Alpha",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "Operating System :: OS Independent",
+    ])
