@@ -1,7 +1,6 @@
 {
 	"layerProperties": [
 		{
-			"MapFrame": "Main map",
 			"name": "mainmap_stle_stl_pt_s0_allmaps",
 			"reg_exp": "^[a-z]{3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"definition_query": "fclass IN ('national_capital', 'city', 'capital', 'town')",
@@ -22,7 +21,6 @@
 			]
 		},
 		{
-			"MapFrame": "Location map",
 			"name": "locationmap_stle_stl_pt_s0_locationmaps",
 			"definition_query": "fclass IN ('national_capital', 'capital')",
 			"Display": true,
@@ -36,7 +34,6 @@
 			]
 		},
 		{
-			"MapFrame": "Main map",
 			"name": "mainmap_tran_por_pt_s0_allmaps",
 			"reg_exp": "^[a-z]{3}_tran_sea_pt_(.*?)_(.*?)_([phm][phm])_(.*?).shp$",
 			"definition_query": "",
@@ -47,7 +44,6 @@
 			]
 		},
 		{
-			"MapFrame": "Main map",
 			"name": "mainmap-s0-py-surroundingcountries",
 			"reg_exp": "aoi_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"definition_query": "",

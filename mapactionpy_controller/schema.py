@@ -12,16 +12,16 @@ import json
 
 # https://python-jsonschema.readthedocs.io/en/stable/
 
-schema_path="C:/Users/steve/Source/Repos/mapactionpy_controller/mapactionpy_controller/schemas"
+schema_path = "C:/Users/steve/Source/Repos/mapactionpy_controller/mapactionpy_controller/schemas"
 
-cmf_config_file="C:/Users/steve/Source/Repos/mapactionpy_controller/mapactionpy_controller/example/cmf_description.json"
+cmf_config_file = "C:/Users/steve/Source/Repos/mapactionpy_controller/mapactionpy_controller/example/cmf_description.json"
 
 schema_files = []
 for file in glob.glob(schema_path+"/cmf-v*2.schema"):
     schema_files.append(file)
     print(file)
 
-cmf_config_contents=None
+cmf_config_contents = None
 with open(cmf_config_file, 'r') as f:
     cmf_config_contents = f.read()
 

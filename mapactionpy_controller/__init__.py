@@ -1,5 +1,5 @@
 import json
-from jsonschema import validate, exceptions
+from jsonschema import validate
 from os import path
 
 CONFIG_SCHEMAS_DIR = path.join(path.abspath(path.dirname(__file__)), 'schemas')
@@ -12,10 +12,6 @@ def _get_validator_for_config_schema(schema_file):
         schema = json.load(sf)
 
     def validate_against_schema(data):
-        try:
-            validate(data, schema)
-        except exceptions.ValidationError as ve:
-            raise Exception(str(ve))
+        validate(data, schema)
 
     return validate_against_schema
-    

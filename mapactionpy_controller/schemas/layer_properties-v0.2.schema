@@ -9,6 +9,7 @@
     "required": [
         "name",
         "reg_exp",
+        "schema_definition",
         "definition_query",
         "display",
         "add_to_legend",
@@ -33,6 +34,16 @@
             "default": "",
             "examples": [
                 "^[a-z]{3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$"
+            ]
+        },
+        "schema_definition": {
+            "$id": "#/properties/schema_definition",
+            "type": "string",
+            "title": "The Schema_definition Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "stle_ste_pt.schema"
             ]
         },
         "definition_query": {

@@ -47,7 +47,7 @@ class RecipeLayer:
         self.name = layer_def["name"]
         self.reg_exp = layer_def["reg_exp"]
         self.definition_query = layer_def["definition_query"]
-        #self.schema_definition = layer_def["schema_definition"]
+        self.schema_definition = layer_def["schema_definition"]
         self.display = layer_def["display"]
         self.add_to_legend = layer_def["add_to_legend"]
         self.label_classes = list()
@@ -190,10 +190,6 @@ class RecipeAtlas:
                     self.map_frame)
             )
 
-        # recipe_lyr = [recipe_lyr for recipe_lyr in recipe_frame.layers if recipe_lyr.name ==
-        #               recipe_with_atlas.atlas.layer_name][0]
-        # lyr_lst = [l for l in m_frame.layers if l.name == self.layer_name]
-        # if self.layer_name in [l.name for l in m_frame.layers]
         if m_frame.contains_layer(self.layer_name):
             lyr = m_frame.get_layer(self.layer_name)
         else:

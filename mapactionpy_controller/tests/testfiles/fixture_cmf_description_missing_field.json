@@ -7,7 +7,6 @@
   "layer_nc_definition": "layer_file_naming_convention.json",
   "layer_properties": "GIS/3_Mapping/31_Resources/316_Automation/layerProperties.json",
   "layer_rendering": ".",
-  "legend_images": ".",
   "map_definitions": "GIS/3_Mapping/31_Resources/316_Automation/mapCookbook.json",
   "map_projects": ".",
   "map_projects_nc_definition": "mxd_naming_convention.json",

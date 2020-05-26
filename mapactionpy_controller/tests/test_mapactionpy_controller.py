@@ -2,6 +2,7 @@ import json
 import os
 from unittest import TestCase
 import fixtures
+from jsonschema import ValidationError
 # from mapactionpy_controller.product_bundle_definition import MapRecipe
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.data_search import DataSearch
@@ -116,6 +117,15 @@ class TestMAController(TestCase):
                 self.assertEqual(updated_test_recipe, test_recipe)
                 self.assertTrue(updated_test_recipe == test_recipe)
                 self.assertEqual(updated_test_recipe, reference_recipe)
+
+    def test_cmf_schema_validation(self):
+
+        test_files = ('fixture_cmf_description_extra_field.json',
+                      'fixture_cmf_description_missing_field.json')
+
+        for test_f in test_files:
+            cmf_partial_fail = os.path.join(self.parent_dir, 'tests', 'testfiles', test_f)
+            self.assertRaises(ValidationError, CrashMoveFolder, cmf_partial_fail)
 
     def test_cmf_path_validation(self):
 

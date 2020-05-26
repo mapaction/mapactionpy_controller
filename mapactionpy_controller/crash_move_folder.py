@@ -24,9 +24,8 @@ class CrashMoveFolder:
             self.map_projects = os.path.join(self.path, obj['map_projects'])
             self.map_templates = os.path.join(self.path, obj['map_templates'])
             self.original_data = os.path.join(self.path, obj['original_data'])
-            # 7 files (alphabetical order just for readablity)
+            # 6 files (alphabetical order just for readablity)
             self.data_nc_definition = os.path.join(self.path, obj['data_nc_definition'])
-            self.event_description_file = os.path.join(self.path, obj['event_description_file'])
             self.layer_nc_definition = os.path.join(self.path, obj['layer_nc_definition'])
             self.layer_properties = os.path.join(self.path, obj['layer_properties'])
             self.map_definitions = os.path.join(self.path, obj['map_definitions'])
@@ -34,7 +33,6 @@ class CrashMoveFolder:
             self.map_template_nc_definition = os.path.join(self.path, obj['map_template_nc_definition'])
             # others
             self.arcgis_version = obj['arcgis_version']
-            # self.categories = obj['categories']
 
         if verify_on_creation and (not self.verify_paths()):
             failing_paths = [path for path, valid in self._get_path_verification_as_dict().items() if not valid]
@@ -55,9 +53,8 @@ class CrashMoveFolder:
         results['map_projects'] = os.path.isdir(self.map_projects)
         results['map_templates'] = os.path.isdir(self.map_templates)
         results['original_data'] = os.path.isdir(self.original_data)
-        # 7 files (alphabetical order just for readability)
+        # 6 files (alphabetical order just for readability)
         results['data_nc_definition'] = os.path.exists(self.data_nc_definition)
-        results['event_description_file'] = os.path.exists(self.event_description_file)
         results['layer_nc_definition'] = os.path.exists(self.layer_nc_definition)
         results['layer_properties'] = os.path.exists(self.layer_properties)
         results['map_definitions'] = os.path.exists(self.map_definitions)
