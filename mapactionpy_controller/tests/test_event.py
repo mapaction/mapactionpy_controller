@@ -1,6 +1,7 @@
 from unittest import TestCase
 import mapactionpy_controller.event as event
 import os
+from jsonschema import ValidationError
 
 
 class TestEvent(TestCase):
@@ -21,4 +22,4 @@ class TestEvent(TestCase):
         # test exception is raised when passed a non-existant file
         self.assertRaises(IOError, event.Event, '/path/to/nonexistant/file.json')
         # test exception is raised for an invalid json file:
-        self.assertRaises(KeyError, event.Event, self.failing_event_descriptor_path)
+        self.assertRaises(ValidationError, event.Event, self.failing_event_descriptor_path)

@@ -3,6 +3,9 @@ import os
 import pycountry
 import requests
 import decimal
+from mapactionpy_controller import _get_validator_for_config_schema
+
+validate_against_event_schema = _get_validator_for_config_schema('event-v0.2.schema')
 
 
 class Event:
@@ -11,6 +14,7 @@ class Event:
         self.path = os.path.dirname(event_file)
         with open(event_file, 'r') as f:
             obj = json.loads(f.read())
+            validate_against_event_schema(obj)
 
             # Doubtless there is a more elegant way to do this.
             # 1x file path

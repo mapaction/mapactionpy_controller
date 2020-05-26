@@ -16,7 +16,7 @@
     "default_publishing_base_url",
     "deployment_primary_email",
     "default_disclaimer_text",
-    "default_donors_text"
+    "default_donor_credits"
   ],
   "properties": {
     "operation_name": {
@@ -129,10 +129,10 @@
       ],
       "pattern": "^(.*)$"
     },
-    "default_donors_text": {
-      "$id": "#/properties/default_donors_text",
+    "default_donor_credits": {
+      "$id": "#/properties/default_donor_credits",
       "type": "string",
-      "title": "The Default_donors_text Schema",
+      "title": "The default_donor_credits Schema",
       "default": "",
       "examples": [
         "Kind donors paid for this"
