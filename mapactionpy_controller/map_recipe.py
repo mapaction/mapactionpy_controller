@@ -190,10 +190,6 @@ class RecipeAtlas:
                     self.map_frame)
             )
 
-        # recipe_lyr = [recipe_lyr for recipe_lyr in recipe_frame.layers if recipe_lyr.name ==
-        #               recipe_with_atlas.atlas.layer_name][0]
-        # lyr_lst = [l for l in m_frame.layers if l.name == self.layer_name]
-        # if self.layer_name in [l.name for l in m_frame.layers]
         if m_frame.contains_layer(self.layer_name):
             lyr = m_frame.get_layer(self.layer_name)
         else:
@@ -252,7 +248,7 @@ class MapRecipe:
         else:
             self.atlas = None
 
-        # Self consistancy checks
+        # Self consistency checks
         self._check_for_dup_text_elements()
 
     def get_lyrs_as_set(self):

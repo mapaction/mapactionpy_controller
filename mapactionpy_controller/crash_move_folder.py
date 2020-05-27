@@ -1,6 +1,8 @@
 import json
 import os
-# from jsonschema import validate
+from mapactionpy_controller import _get_validator_for_config_schema
+
+validate_against_cmf_schema = _get_validator_for_config_schema('cmf-v0.2.schema')
 
 
 class CrashMoveFolder:
@@ -10,6 +12,7 @@ class CrashMoveFolder:
 
         with open(cmf_path, 'r') as f:
             obj = json.loads(f.read())
+            validate_against_cmf_schema(obj)
 
             # Doubtless there is a more elegant way to do this.
             # 8 directories (alphabetical order just for readability)
@@ -21,7 +24,7 @@ class CrashMoveFolder:
             self.map_projects = os.path.join(self.path, obj['map_projects'])
             self.map_templates = os.path.join(self.path, obj['map_templates'])
             self.original_data = os.path.join(self.path, obj['original_data'])
-            # 5 files (alphabetical order just for readablity)
+            # 6 files (alphabetical order just for readablity)
             self.data_nc_definition = os.path.join(self.path, obj['data_nc_definition'])
             self.layer_nc_definition = os.path.join(self.path, obj['layer_nc_definition'])
             self.layer_properties = os.path.join(self.path, obj['layer_properties'])
@@ -30,7 +33,6 @@ class CrashMoveFolder:
             self.map_template_nc_definition = os.path.join(self.path, obj['map_template_nc_definition'])
             # others
             self.arcgis_version = obj['arcgis_version']
-            # self.categories = obj['categories']
 
         if verify_on_creation and (not self.verify_paths()):
             failing_paths = [path for path, valid in self._get_path_verification_as_dict().items() if not valid]

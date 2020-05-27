@@ -11,7 +11,7 @@
 	"map_definitions": "dummy_mapCookbook.json",
 	"map_projects": ".",
 	"map_projects_nc_definition": "map_project_naming_convention.json",
-	"map_template_nc_definition": "map_template_naming_convention.json",
 	"map_templates": ".",
+	"map_template_nc_definition": "map_template_naming_convention.json",
 	"original_data": "."
 }

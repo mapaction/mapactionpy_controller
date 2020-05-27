@@ -86,7 +86,7 @@ class LayerProperties:
         * The layers described by this LayerProperties Object
         * Another set() listing layers from any source.
 
-        For example this method is used to verify the consistancy between
+        For example this method is used to verify the consistency between
         * The layer_properties.json file and the files listed in the `cmf.layer_rendering` directory
         * The layer_properties.json file and the map_cookbook.json file.
 
