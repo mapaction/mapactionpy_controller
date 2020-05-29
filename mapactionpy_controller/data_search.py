@@ -49,20 +49,19 @@ class DataSearch():
         return ';'.join(found_datasources), ';'.join(found_datanames),
 
 
-def _is_valid_file(parser, arg):
-    if not os.path.exists(arg):
-        parser.error("The file %s does not exist!" % arg)
-    else:
-        return arg
+# def _is_valid_file(parser, arg):
+#     if not os.path.exists(arg):
+#         parser.error("The file %s does not exist!" % arg)
+#     else:
+#         return arg
 
 
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-r", "--recipe-file", dest="recipe_file", required=True,
-                        help="path to recipe json file.", metavar="FILE", type=lambda x: _is_valid_file(parser, x))
+                        help="path to recipe json file.", metavar="FILE")
     parser.add_argument("-e", "--event", dest="event_path", required=True,
-                        help="path the Event descriptor file.", metavar="FILE",
-                        type=lambda x: _is_valid_file(parser, x))
+                        help="path the Event descriptor file.", metavar="FILE")
     parser.add_argument("-o", "--output-file", dest="output_file", required=False,
                         help="(optional) path to the ouptut file. If omited the output is printed to stdout.",
                         metavar="FILE")
