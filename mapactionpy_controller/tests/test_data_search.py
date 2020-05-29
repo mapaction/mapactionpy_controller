@@ -33,13 +33,6 @@ class TestDataSearch(TestCase):
         self.assertEqual(self.recipe_file, args.recipe_file)
         self.assertEqual('somefile', args.output_file)
 
-    def test_non_existant_files_args(self):
-        sys.argv[1:] = ['--event', self.event_descriptor_path,
-                        '--recipe-file', self.non_existant_file]
-
-        with self.assertRaises(SystemExit):
-            data_search.get_args()
-
     # @mock.patch('json.dump')
     # @mock.patch('builtins.open', new_callable=mock_open())
     def test_data_search_main(self):
