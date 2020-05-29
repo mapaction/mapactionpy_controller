@@ -103,9 +103,9 @@ def get_active_data_step_list(humev_config_path, verbose):
         dnc_per_dir_steps.append(
             Step(
                 get_dir_checker(dir_to_check, cmf.data_nc_definition, extn_to_check, verbose),
-                "'Checking '{}' files in '{}' match relevant naming convention".format(extn_to_check, base_name),
-                "All '{}' files in '{}' match the relevant naming convention".format(extn_to_check, base_name),
-                "One of more '{}' files in '{}' did not match the relevant naming convention".format(
+                "'Checking '{}' files in '{}' match data naming convention".format(extn_to_check, base_name),
+                "All '{}' files in '{}' match the data naming convention".format(extn_to_check, base_name),
+                "One of more '{}' files in '{}' did not match the data naming convention".format(
                     extn_to_check, base_name)
             )
         )

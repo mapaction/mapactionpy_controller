@@ -1,7 +1,7 @@
 # import mapactionpy_controller.config_verify as config_verify
 from time import sleep
-import humanfriendly.terminal as hft
 from humanfriendly.terminal.spinners import AutomaticSpinner
+import humanfriendly.terminal
 import logging
 import random
 
@@ -42,11 +42,11 @@ class Step():
 
 
 def line_printer(status, msg):
-    bright_white = hft.ansi_style(color='white', bright=True)
-    bright_green = hft.ansi_style(color='green', bright=True)
-    bright_red = hft.ansi_style(color='red', bright=True)
-    bright_yellow = hft.ansi_style(color='yellow', bright=True)
-    normal_white = hft.ansi_style(color='white', bright=False)
+    bright_white = humanfriendly.terminal.ansi_style(color='white', bright=True)
+    bright_green = humanfriendly.terminal.ansi_style(color='green', bright=True)
+    bright_red = humanfriendly.terminal.ansi_style(color='red', bright=True)
+    bright_yellow = humanfriendly.terminal.ansi_style(color='yellow', bright=True)
+    normal_white = humanfriendly.terminal.ansi_style(color='white', bright=False)
 
     checkboxs = {
         logging.INFO:  '{}[{}pass{}]{}'.format(normal_white, bright_green, normal_white, bright_white),
@@ -54,17 +54,17 @@ def line_printer(status, msg):
         logging.WARNING: '{}[{}warn{}]{}'.format(normal_white, bright_yellow, normal_white, bright_white)
     }
 
-    if hft.connected_to_terminal():
-        hft.output('{} {} {}'.format(hft.ANSI_ERASE_LINE, checkboxs[status], msg))
+    if humanfriendly.terminal.connected_to_terminal():
+        humanfriendly.terminal.output('{} {} {}'.format(humanfriendly.terminal.ANSI_ERASE_LINE, checkboxs[status], msg))
     else:
         logger.log(status, msg)
 
 
 def process_steps(step_list):
-    hft.enable_ansi_support()
+    humanfriendly.terminal.enable_ansi_support()
 
     for step in step_list:
-        if hft.connected_to_terminal():
+        if humanfriendly.terminal.connected_to_terminal():
             with AutomaticSpinner(step.running_msg, show_time=True):
                 step.run(line_printer, False)
         else:
