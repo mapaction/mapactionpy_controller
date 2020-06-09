@@ -56,6 +56,10 @@ class RecipeLayer:
             self.label_classes.append(LabelClass(lbl_class_def))
 
         # Optional fields
+        self._get_layer_file_path(layer_def, lyr_props, verify_on_creation)
+        self._get_data_schema()
+
+    def _get_layer_file_path(self, layer_def, lyr_props, verify_on_creation):
         if 'layer_file_path' in layer_def:
             self.layer_file_path = layer_def['layer_file_path']
             if verify_on_creation:
@@ -69,6 +73,7 @@ class RecipeLayer:
         self.data_source_path = layer_def.get('data_source_path', None)
         self.data_name = layer_def.get('data_name', None)
 
+    def _get_data_schema(self, layer_def, lyr_props):
         if 'data_schema' in layer_def:
             self.data_schema = layer_def['data_schema']
         else:
