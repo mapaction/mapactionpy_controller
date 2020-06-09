@@ -1,7 +1,7 @@
 {
 	"name": "mainmap_stle_stl_pt_s0_allmaps",
 	"RegExp": "^[a-z]{3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
-	"schema_definition": "stle_ste_pt.schema",
+	"schema_definition": "stle_ste_pt.yml",
 	"DefinitionQuery": "fclass IN ('national_capital', 'city', 'capital', 'town')",
 	"Display": true,
 	"AddToLegend": true,

@@ -33,7 +33,7 @@ def set_state_optional_fields(obj, state, optional_fields):
 
 class RecipeLayer:
 
-    OPTIONAL_FIELDS = ('data_source_path', 'data_name')
+    OPTIONAL_FIELDS = ('data_source_path', 'data_name', 'data_schema')
 
     def __init__(self, layer_def, lyr_props, verify_on_creation=True):
         """Constructor.  Creates an instance of layer properties
@@ -48,6 +48,7 @@ class RecipeLayer:
         self.reg_exp = layer_def["reg_exp"]
         self.definition_query = layer_def["definition_query"]
         self.schema_definition = layer_def["schema_definition"]
+
         self.display = layer_def["display"]
         self.add_to_legend = layer_def["add_to_legend"]
         self.label_classes = list()
@@ -67,6 +68,12 @@ class RecipeLayer:
 
         self.data_source_path = layer_def.get('data_source_path', None)
         self.data_name = layer_def.get('data_name', None)
+
+        if 'data_schema' in layer_def:
+            self.data_schema = layer_def['data_schema']
+        else:
+            schema_file = path.abspath(path.join(lyr_props.cmf.data_schemas, self.schema_definition))
+            self.data_schema = data_schemas.parse_yaml(schema_file)
 
     def verify_path(self):
         if not path.exists(self.layer_file_path):
