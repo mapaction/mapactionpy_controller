@@ -211,9 +211,7 @@ class RecipeAtlas:
                 ''.format(self.layer_name, self.map_frame)
             )
 
-        schema_file = path.join(lyr_props.cmf.data_schemas, lyr.schema_definition)
-        schema = data_schemas.parse_yaml(schema_file)
-        if self.column_name not in schema['required']:
+        if self.column_name not in lyr.data_schema['required']:
             raise ValueError(
                 'The Map Recipe definition is invalid. The "atlas" section refers to a column_name '
                 ' ({}) that does not exist in the schema of the relevant layer ({}).'
