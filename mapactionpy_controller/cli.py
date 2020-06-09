@@ -36,6 +36,12 @@ def noun_gisdata_print_output(args):
 
 
 def noun_maps_print_output(args):
+    if args.verb == VERB_BUILD:
+        build_steps = config_verify.get_config_verify_steps(args.cmf_desc_path, ['.lyr'])
+        build_steps.append(cnc.get_defaultcmf_step_list(args.cmf_desc_path, False))
+        build_steps.append(cnc.get_active_data_step_list(args.humevent_desc_path, True))
+        steps.process_steps(build_steps)
+
     raise NotImplementedError(args)
 
 
