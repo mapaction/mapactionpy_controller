@@ -57,7 +57,7 @@ class RecipeLayer:
 
         # Optional fields
         self._get_layer_file_path(layer_def, lyr_props, verify_on_creation)
-        self._get_data_schema()
+        self._get_data_schema(layer_def, lyr_props)
 
     def _get_layer_file_path(self, layer_def, lyr_props, verify_on_creation):
         if 'layer_file_path' in layer_def:
