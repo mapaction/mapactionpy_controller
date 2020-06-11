@@ -17,6 +17,18 @@ ch.setFormatter(formatter)
 # add the handlers to the logger
 logger.addHandler(ch)
 
+bright_white = humanfriendly.terminal.ansi_style(color='white', bright=True)
+bright_green = humanfriendly.terminal.ansi_style(color='green', bright=True)
+bright_red = humanfriendly.terminal.ansi_style(color='red', bright=True)
+bright_yellow = humanfriendly.terminal.ansi_style(color='yellow', bright=True)
+normal_white = humanfriendly.terminal.ansi_style(color='white', bright=False)
+
+terminal_checkboxs = {
+    logging.INFO:  '{}[{}pass{}]{}'.format(normal_white, bright_green, normal_white, bright_white),
+    logging.ERROR: '{}[{}fail{}]{}'.format(normal_white, bright_red, normal_white, bright_white),
+    logging.WARNING: '{}[{}warn{}]{}'.format(normal_white, bright_yellow, normal_white, bright_white)
+}
+
 
 class Step():
     def __init__(self, func, running_msg, complete_msg, fail_msg):
@@ -25,9 +37,13 @@ class Step():
         self.complete_msg = complete_msg
         self.fail_msg = fail_msg
 
-    def run(self, set_status, verbose, **kwargs):
+    def run(self, set_status, verbose, previous_state=None, **kwargs):
         try:
-            result = self.func(*kwargs)
+            args = kwargs.copy()
+            if previous_state:
+                args['recipe'] = previous_state
+
+            result = self.func(**args)
             if verbose:
                 msg = '{}\n{}'.format(self.complete_msg, result)
             else:
@@ -42,34 +58,29 @@ class Step():
 
 
 def line_printer(status, msg):
-    bright_white = humanfriendly.terminal.ansi_style(color='white', bright=True)
-    bright_green = humanfriendly.terminal.ansi_style(color='green', bright=True)
-    bright_red = humanfriendly.terminal.ansi_style(color='red', bright=True)
-    bright_yellow = humanfriendly.terminal.ansi_style(color='yellow', bright=True)
-    normal_white = humanfriendly.terminal.ansi_style(color='white', bright=False)
-
-    checkboxs = {
-        logging.INFO:  '{}[{}pass{}]{}'.format(normal_white, bright_green, normal_white, bright_white),
-        logging.ERROR: '{}[{}fail{}]{}'.format(normal_white, bright_red, normal_white, bright_white),
-        logging.WARNING: '{}[{}warn{}]{}'.format(normal_white, bright_yellow, normal_white, bright_white)
-    }
-
     if humanfriendly.terminal.connected_to_terminal():
-        humanfriendly.terminal.output('{} {} {}'.format(humanfriendly.terminal.ANSI_ERASE_LINE, checkboxs[status], msg))
+        humanfriendly.terminal.output('{} {} {}'.format(
+            humanfriendly.terminal.ANSI_ERASE_LINE,
+            terminal_checkboxs[status],
+            msg)
+        )
     else:
         logger.log(status, msg)
 
 
-def process_steps(step_list):
+def process_steps(step_list, initial_state=None):
     humanfriendly.terminal.enable_ansi_support()
+    state = initial_state
 
     for step in step_list:
         if humanfriendly.terminal.connected_to_terminal():
             with AutomaticSpinner(step.running_msg, show_time=True):
-                step.run(line_printer, False)
+                state = step.run(line_printer, False, previous_state=state)
         else:
             logger.info('Starting: {}'.format(step.running_msg))
             step.run(line_printer, False)
+
+    return state
 
 
 def get_demo_steps(secs=3):

@@ -5,6 +5,7 @@ import mapactionpy_controller.data_source
 import mapactionpy_controller.map_doc
 import mapactionpy_controller.map_report
 import mapactionpy_controller.map_result
+import mapactionpy_controller.runner
 
 
 class TestAllStuffTransfered(TestCase):
