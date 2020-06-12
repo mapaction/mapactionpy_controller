@@ -1,18 +1,32 @@
 # import mapactionpy_controller.config_verify as config_verify
-from time import sleep
-from humanfriendly.terminal.spinners import AutomaticSpinner
 import humanfriendly.terminal
 import logging
 import random
+from humanfriendly.terminal.spinners import AutomaticSpinner
+from mapactionpy_controller.map_recipe import MapRecipe
+from time import sleep
+
+
+# logging.basicConfig(
+#     level=logging.DEBUG,
+#     format=(
+#         '%(asctime)s %(module)s %(name)s.%(funcName)s +%(lineno)s: %(levelname)-8s'
+#         ' [%(process)d] %(message)s',
+#     )
+# )
 
 logger = logging.getLogger('MapChef')
-logger.setLevel(logging.DEBUG)
+# logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 # create file handler which logs even debug messages
 # create console handler with a higher log level
 ch = logging.StreamHandler()
-ch.setLevel(logging.INFO)
+ch.setLevel(logging.DEBUG)
 # create formatter and add it to the handlers
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s (%(module)s +ln%(lineno)s) ;- %(message)s')
+# formatter = logging.Formatter('%(asctime)s %(module)s %(name)s.%(funcName)s
+# +%(lineno)s: %(levelname)-8s [%(process)d] %(message)s')
+
 ch.setFormatter(formatter)
 # add the handlers to the logger
 logger.addHandler(ch)
@@ -37,13 +51,17 @@ class Step():
         self.complete_msg = complete_msg
         self.fail_msg = fail_msg
 
-    def run(self, set_status, verbose, previous_state=None, **kwargs):
+    def run(self, set_status, verbose, **kwargs):
         try:
-            args = kwargs.copy()
-            if previous_state:
-                args['recipe'] = previous_state
+            print('in step.run()  kwargs={}'.format(kwargs))
+            for name, value in kwargs.items():
+                print('kwargs listing {0} = {1}'.format(name, value))
 
-            result = self.func(**args)
+            if all(kwargs.values()):
+                result = self.func(**kwargs)
+            else:
+                result = self.func()
+
             if verbose:
                 msg = '{}\n{}'.format(self.complete_msg, result)
             else:
@@ -55,6 +73,7 @@ class Step():
         except Exception as exp:
             fail_msg = '{}\n{}'.format(self.fail_msg, exp)
             set_status(logging.ERROR, fail_msg)
+            # set_status(logging.DEBUG, traceback.format_exc())
 
 
 def line_printer(status, msg):
@@ -68,17 +87,22 @@ def line_printer(status, msg):
         logger.log(status, msg)
 
 
-def process_steps(step_list, initial_state=None):
+def process_steps(step_list, initial_state):
     humanfriendly.terminal.enable_ansi_support()
     state = initial_state
 
     for step in step_list:
+        if isinstance(state, MapRecipe):
+            kwargs = {'recipe': state}
+        else:
+            kwargs = {}
+
         if humanfriendly.terminal.connected_to_terminal():
             with AutomaticSpinner(step.running_msg, show_time=True):
-                state = step.run(line_printer, False, previous_state=state)
+                state = step.run(line_printer, True, **kwargs)
         else:
             logger.info('Starting: {}'.format(step.running_msg))
-            step.run(line_printer, False)
+            state = step.run(line_printer, True, **kwargs)
 
     return state
 
@@ -123,4 +147,4 @@ def get_demo_steps(secs=3):
 
 
 if __name__ == "__main__":
-    process_steps(get_demo_steps())
+    process_steps(get_demo_steps(), None)
