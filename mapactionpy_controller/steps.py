@@ -4,6 +4,8 @@ import logging
 import random
 from humanfriendly.terminal.spinners import AutomaticSpinner
 from mapactionpy_controller.map_recipe import MapRecipe
+from mapactionpy_controller.map_cookbook import MapCookbook
+from mapactionpy_controller.event import Event
 from time import sleep
 
 
@@ -21,7 +23,7 @@ logger.setLevel(logging.INFO)
 # create file handler which logs even debug messages
 # create console handler with a higher log level
 ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
+ch.setLevel(logging.INFO)
 # create formatter and add it to the handlers
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s (%(module)s +ln%(lineno)s) ;- %(message)s')
 # formatter = logging.Formatter('%(asctime)s %(module)s %(name)s.%(funcName)s
@@ -53,10 +55,6 @@ class Step():
 
     def run(self, set_status, verbose, **kwargs):
         try:
-            print('in step.run()  kwargs={}'.format(kwargs))
-            for name, value in kwargs.items():
-                print('kwargs listing {0} = {1}'.format(name, value))
-
             if all(kwargs.values()):
                 result = self.func(**kwargs)
             else:
@@ -94,12 +92,18 @@ def process_steps(step_list, initial_state):
     for step in step_list:
         if isinstance(state, MapRecipe):
             kwargs = {'recipe': state}
+        elif isinstance(state, str):
+            kwargs = {'string': state}
+        elif isinstance(state, MapCookbook):
+            kwargs = {'cookbook': state}
+        elif isinstance(state, Event):
+            kwargs = {'hum_event': state}
         else:
             kwargs = {}
 
         if humanfriendly.terminal.connected_to_terminal():
             with AutomaticSpinner(step.running_msg, show_time=True):
-                state = step.run(line_printer, True, **kwargs)
+                state = step.run(line_printer, False, **kwargs)
         else:
             logger.info('Starting: {}'.format(step.running_msg))
             state = step.run(line_printer, True, **kwargs)

@@ -3,6 +3,7 @@ import argparse
 import mapactionpy_controller.check_naming_convention as cnc
 import mapactionpy_controller.config_verify as config_verify
 import mapactionpy_controller.steps as steps
+import mapactionpy_controller.runner as runner
 
 VERB_BUILD = 'build'
 VERB_CREATE = 'create'
@@ -36,7 +37,10 @@ def noun_gisdata_print_output(args):
 
 
 def noun_maps_print_output(args):
-    raise NotImplementedError(args)
+    if args.verb == VERB_VERIFY:
+        build_steps = runner.get_steps_delegated_to_plugin(my_runner)
+    else:
+        raise NotImplementedError(args)
 
 
 all_nouns = {
