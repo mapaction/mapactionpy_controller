@@ -86,7 +86,8 @@ setup(
         'pycountry',
         'requests',
         'pyyaml',
-        'six'
+        'six',
+        'slugify'
     ],
     test_suite='unittest',
     tests_require=['unittest'],

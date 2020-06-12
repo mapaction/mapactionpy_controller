@@ -1,21 +1,46 @@
 # import mapactionpy_controller.config_verify as config_verify
-from time import sleep
-from humanfriendly.terminal.spinners import AutomaticSpinner
 import humanfriendly.terminal
 import logging
 import random
+from humanfriendly.terminal.spinners import AutomaticSpinner
+from time import sleep
+
+
+# logging.basicConfig(
+#     level=logging.DEBUG,
+#     format=(
+#         '%(asctime)s %(module)s %(name)s.%(funcName)s +%(lineno)s: %(levelname)-8s'
+#         ' [%(process)d] %(message)s',
+#     )
+# )
 
 logger = logging.getLogger('MapChef')
-logger.setLevel(logging.DEBUG)
+# logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 # create file handler which logs even debug messages
 # create console handler with a higher log level
 ch = logging.StreamHandler()
 ch.setLevel(logging.INFO)
 # create formatter and add it to the handlers
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s (%(module)s +ln%(lineno)s) ;- %(message)s')
+# formatter = logging.Formatter('%(asctime)s %(module)s %(name)s.%(funcName)s
+# +%(lineno)s: %(levelname)-8s [%(process)d] %(message)s')
+
 ch.setFormatter(formatter)
 # add the handlers to the logger
 logger.addHandler(ch)
+
+bright_white = humanfriendly.terminal.ansi_style(color='white', bright=True)
+bright_green = humanfriendly.terminal.ansi_style(color='green', bright=True)
+bright_red = humanfriendly.terminal.ansi_style(color='red', bright=True)
+bright_yellow = humanfriendly.terminal.ansi_style(color='yellow', bright=True)
+normal_white = humanfriendly.terminal.ansi_style(color='white', bright=False)
+
+terminal_checkboxs = {
+    logging.INFO:  '{}[{}pass{}]{}'.format(normal_white, bright_green, normal_white, bright_white),
+    logging.ERROR: '{}[{}fail{}]{}'.format(normal_white, bright_red, normal_white, bright_white),
+    logging.WARNING: '{}[{}warn{}]{}'.format(normal_white, bright_yellow, normal_white, bright_white)
+}
 
 
 class Step():
@@ -27,7 +52,11 @@ class Step():
 
     def run(self, set_status, verbose, **kwargs):
         try:
-            result = self.func(*kwargs)
+            if all(kwargs.values()):
+                result = self.func(**kwargs)
+            else:
+                result = self.func()
+
             if verbose:
                 msg = '{}\n{}'.format(self.complete_msg, result)
             else:
@@ -39,37 +68,35 @@ class Step():
         except Exception as exp:
             fail_msg = '{}\n{}'.format(self.fail_msg, exp)
             set_status(logging.ERROR, fail_msg)
+            # set_status(logging.DEBUG, traceback.format_exc())
 
 
 def line_printer(status, msg):
-    bright_white = humanfriendly.terminal.ansi_style(color='white', bright=True)
-    bright_green = humanfriendly.terminal.ansi_style(color='green', bright=True)
-    bright_red = humanfriendly.terminal.ansi_style(color='red', bright=True)
-    bright_yellow = humanfriendly.terminal.ansi_style(color='yellow', bright=True)
-    normal_white = humanfriendly.terminal.ansi_style(color='white', bright=False)
-
-    checkboxs = {
-        logging.INFO:  '{}[{}pass{}]{}'.format(normal_white, bright_green, normal_white, bright_white),
-        logging.ERROR: '{}[{}fail{}]{}'.format(normal_white, bright_red, normal_white, bright_white),
-        logging.WARNING: '{}[{}warn{}]{}'.format(normal_white, bright_yellow, normal_white, bright_white)
-    }
-
     if humanfriendly.terminal.connected_to_terminal():
-        humanfriendly.terminal.output('{} {} {}'.format(humanfriendly.terminal.ANSI_ERASE_LINE, checkboxs[status], msg))
+        humanfriendly.terminal.output('{} {} {}'.format(
+            humanfriendly.terminal.ANSI_ERASE_LINE,
+            terminal_checkboxs[status],
+            msg)
+        )
     else:
         logger.log(status, msg)
 
 
-def process_steps(step_list):
+def process_steps(step_list, initial_state):
     humanfriendly.terminal.enable_ansi_support()
+    state = initial_state
 
     for step in step_list:
+        kwargs = {'state': state}
+
         if humanfriendly.terminal.connected_to_terminal():
             with AutomaticSpinner(step.running_msg, show_time=True):
-                step.run(line_printer, False)
+                state = step.run(line_printer, False, **kwargs)
         else:
             logger.info('Starting: {}'.format(step.running_msg))
-            step.run(line_printer, False)
+            state = step.run(line_printer, True, **kwargs)
+
+    return state
 
 
 def get_demo_steps(secs=3):
@@ -112,4 +139,4 @@ def get_demo_steps(secs=3):
 
 
 if __name__ == "__main__":
-    process_steps(get_demo_steps())
+    process_steps(get_demo_steps(), None)

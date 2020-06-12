@@ -187,7 +187,7 @@ class MapRecipe:
     """
     MapRecipe
     """
-    OPTIONAL_FIELDS = ('runners', 'atlas')
+    OPTIONAL_FIELDS = ('runners', 'atlas', 'map_project_path', 'template_path', 'version_num')
 
     def __init__(self, recipe_definition, lyr_props):
         if isinstance(recipe_definition, dict):
@@ -208,6 +208,9 @@ class MapRecipe:
         self.template = recipe_def["template"]
 
         # Optional fields
+        self.map_project_path = recipe_def.get('map_project_path', None)
+        self.template_path = recipe_def.get('template_path', None)
+        self.version_num = recipe_def.get('version_num', None)
         self.runners = recipe_def.get('runners', None)
         atlas_def = recipe_def.get('atlas', None)
         if atlas_def:
