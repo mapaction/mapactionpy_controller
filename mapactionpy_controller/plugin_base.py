@@ -119,10 +119,7 @@ class BaseRunnerPlugin(object):
             os.mkdir(output_dir)
 
         # Construct output MXD/QPRJ name
-        if six.PY2:
-            output_map_base = slugify(unicode(recipe.product))
-        else:
-            output_map_base = slugify(recipe.product)
+        output_map_base = slugify(six.u(recipe.product))
         recipe.version_num = self.get_next_map_version_number(output_dir, recipe.mapnumber, output_map_base)
         output_map_name = '{}-v{}-{}{}'.format(
             recipe.mapnumber, str(recipe.version_num).zfill(2), output_map_base, self.get_projectfile_extension())
