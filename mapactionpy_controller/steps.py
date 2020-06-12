@@ -3,9 +3,6 @@ import humanfriendly.terminal
 import logging
 import random
 from humanfriendly.terminal.spinners import AutomaticSpinner
-from mapactionpy_controller.map_recipe import MapRecipe
-from mapactionpy_controller.map_cookbook import MapCookbook
-from mapactionpy_controller.event import Event
 from time import sleep
 
 
