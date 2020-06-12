@@ -3,7 +3,7 @@ import argparse
 import mapactionpy_controller.check_naming_convention as cnc
 import mapactionpy_controller.config_verify as config_verify
 import mapactionpy_controller.steps as steps
-import mapactionpy_controller.runner as runner
+import mapactionpy_controller.plugin_controller as plugin_controller
 
 VERB_BUILD = 'build'
 VERB_CREATE = 'create'
@@ -44,15 +44,15 @@ def noun_maps_print_output(args):
 
 
 def build_maps(humevent_desc_path, map_number):
-    my_runner = steps.process_steps(runner.get_plugin_step(), humevent_desc_path)
-    my_cookbook = steps.process_steps(runner.get_cookbook_steps(my_runner), None)
+    my_runner = steps.process_steps(plugin_controller.get_plugin_step(), humevent_desc_path)
+    my_cookbook = steps.process_steps(plugin_controller.get_cookbook_steps(my_runner), None)
 
     map_nums = None
     if map_number:
         map_nums = [map_number]
 
-    for recipe in runner.select_recipes(my_cookbook, map_nums):
-        product_steps = runner.get_per_product_steps(my_runner, recipe.mapnumber, recipe.product)
+    for recipe in plugin_controller.select_recipes(my_cookbook, map_nums):
+        product_steps = plugin_controller.get_per_product_steps(my_runner, recipe.mapnumber, recipe.product)
         steps.process_steps(product_steps, recipe)
 
 

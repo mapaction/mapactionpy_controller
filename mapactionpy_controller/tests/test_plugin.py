@@ -1,4 +1,4 @@
-from mapactionpy_controller.runner import BaseRunnerPlugin
+from mapactionpy_controller.plugin_base import BaseRunnerPlugin
 
 
 class DummyRunner(BaseRunnerPlugin):
