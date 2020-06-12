@@ -38,18 +38,22 @@ def noun_gisdata_print_output(args):
 
 def noun_maps_print_output(args):
     if args.verb == VERB_BUILD:
-        my_runner = steps.process_steps(runner.get_plugin_step(), args.humevent_desc_path)
-        my_cookbook = steps.process_steps(runner.get_cookbook_steps(my_runner), None)
-
-        map_nums = None
-        if args.map_number:
-            map_nums = [args.map_number]
-
-        for recipe in runner.select_recipes(my_cookbook, map_nums):
-            product_steps = runner.get_per_product_steps(my_runner, recipe.mapnumber, recipe.product)
-            steps.process_steps(product_steps, recipe)
+        build_maps(args.humevent_desc_path, args.map_number)
     else:
         raise NotImplementedError(args)
+
+
+def build_maps(humevent_desc_path, map_number):
+    my_runner = steps.process_steps(runner.get_plugin_step(), humevent_desc_path)
+    my_cookbook = steps.process_steps(runner.get_cookbook_steps(my_runner), None)
+
+    map_nums = None
+    if map_number:
+        map_nums = [map_number]
+
+    for recipe in runner.select_recipes(my_cookbook, map_nums):
+        product_steps = runner.get_per_product_steps(my_runner, recipe.mapnumber, recipe.product)
+        steps.process_steps(product_steps, recipe)
 
 
 all_nouns = {

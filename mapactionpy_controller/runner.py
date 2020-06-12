@@ -66,7 +66,7 @@ class BaseRunnerPlugin(object):
             ' method cannot be called directly')
 
     def get_templates(self, **kwargs):
-        recipe = kwargs['recipe']
+        recipe = kwargs['state']
         # If there already already is a valid `recipe.map_project_path` just skip with method
         if recipe.map_project_path:
             if os.path.exists(recipe.map_project_path):

@@ -90,16 +90,7 @@ def process_steps(step_list, initial_state):
     state = initial_state
 
     for step in step_list:
-        if isinstance(state, MapRecipe):
-            kwargs = {'recipe': state}
-        elif isinstance(state, str):
-            kwargs = {'string': state}
-        elif isinstance(state, MapCookbook):
-            kwargs = {'cookbook': state}
-        elif isinstance(state, Event):
-            kwargs = {'hum_event': state}
-        else:
-            kwargs = {}
+        kwargs = {'state': state}
 
         if humanfriendly.terminal.connected_to_terminal():
             with AutomaticSpinner(step.running_msg, show_time=True):
