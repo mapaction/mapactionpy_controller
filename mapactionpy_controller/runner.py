@@ -103,7 +103,7 @@ class BaseRunnerPlugin(object):
 
 def get_plugin_step():
     def get_plugin(**kwargs):
-        hum_event = kwargs['hum_event']
+        hum_event = kwargs['state']
         try:
             from mapactionpy_arcmap.arcmap_runner import ArcMapRunner
             runner = ArcMapRunner(hum_event)
@@ -114,7 +114,7 @@ def get_plugin_step():
         return runner
 
     def new_event(**kwargs):
-        return Event(kwargs['string'])
+        return Event(kwargs['state'])
 
     plugin_step = [
         steps.Step(
@@ -138,7 +138,7 @@ def get_per_product_steps(_runner, map_num, map_name):
     # In due course there should be greater granularity for some of these steps
 
     def just_return_recipe(**kwargs):
-        return kwargs['recipe']
+        return kwargs['state']
 
     def pass_through_step(**kwargs):
         pass
