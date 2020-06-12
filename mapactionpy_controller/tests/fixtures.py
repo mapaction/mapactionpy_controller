@@ -14,7 +14,7 @@ recipe_without_positive_iso3_code = (
                     {
                         "name": "mainmap_stle_stl_pt_s0_allmaps",
                         "reg_exp": "^{e.affected_country_iso3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
-                        "schema_definition": "stle_ste_pt.schema",
+                        "schema_definition": "stle_ste_pt.yml",
                         "definition_query": "fclass IN ('national_capital', 'city', 'capital', 'town')",
                         "display": true,
                         "add_to_legend": true,
@@ -143,7 +143,7 @@ recipe_with_positive_iso3_code = (
                     {
                         "name": "mainmap_stle_stl_pt_s0_allmaps",
                         "reg_exp": "^moz_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
-                        "schema_definition": "stle_ste_pt.schema",
+                        "schema_definition": "stle_ste_pt.yml",
                         "definition_query": "fclass IN ('national_capital', 'city', 'capital', 'town')",
                         "display": true,
                         "add_to_legend": true,
@@ -212,7 +212,7 @@ recipe_result_one_dataset_per_layer = (
                     {
                         "name": "mainmap_stle_stl_pt_s0_allmaps",
                         "reg_exp": "^moz_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
-                        "schema_definition": "stle_ste_pt.schema",
+                        "schema_definition": "stle_ste_pt.yml",
                         "data_source_path": "D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp",
                         "data_name": "moz_admn_ad0_py_s0_unknown_pp",
                         "definition_query": "fclass IN ('national_capital', 'city', 'capital', 'town')",

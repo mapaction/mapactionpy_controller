@@ -4,7 +4,7 @@ import sys
 from setuptools import setup, find_packages
 from os import path, environ
 
-_base_version = '0.13.0'
+_base_version = '0.13.1'
 
 root_dir = path.abspath(path.dirname(__file__))
 
@@ -86,7 +86,8 @@ setup(
         'pycountry',
         'requests',
         'pyyaml',
-        'six'
+        'six',
+        'slugify'
     ],
     test_suite='unittest',
     tests_require=['unittest'],

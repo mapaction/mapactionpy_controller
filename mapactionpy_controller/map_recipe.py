@@ -1,10 +1,10 @@
 import json
 from mapactionpy_controller.label_class import LabelClass
+from mapactionpy_controller.recipe_atlas import RecipeAtlas
 from mapactionpy_controller import _get_validator_for_config_schema
 import mapactionpy_controller.data_schemas as data_schemas
 from os import path
 
-validate_against_atlas_schema = _get_validator_for_config_schema('atlas-v0.2.schema')
 validate_against_layer_schema = _get_validator_for_config_schema('layer_properties-v0.2.schema')
 validate_against_recipe_schema = _get_validator_for_config_schema('map-recipe-v0.2.schema')
 
@@ -33,7 +33,7 @@ def set_state_optional_fields(obj, state, optional_fields):
 
 class RecipeLayer:
 
-    OPTIONAL_FIELDS = ('data_source_path', 'data_name')
+    OPTIONAL_FIELDS = ('data_source_path', 'data_name', 'data_schema')
 
     def __init__(self, layer_def, lyr_props, verify_on_creation=True):
         """Constructor.  Creates an instance of layer properties
@@ -48,6 +48,7 @@ class RecipeLayer:
         self.reg_exp = layer_def["reg_exp"]
         self.definition_query = layer_def["definition_query"]
         self.schema_definition = layer_def["schema_definition"]
+
         self.display = layer_def["display"]
         self.add_to_legend = layer_def["add_to_legend"]
         self.label_classes = list()
@@ -55,6 +56,10 @@ class RecipeLayer:
             self.label_classes.append(LabelClass(lbl_class_def))
 
         # Optional fields
+        self._get_layer_file_path(layer_def, lyr_props, verify_on_creation)
+        self._get_data_schema(layer_def, lyr_props)
+
+    def _get_layer_file_path(self, layer_def, lyr_props, verify_on_creation):
         if 'layer_file_path' in layer_def:
             self.layer_file_path = layer_def['layer_file_path']
             if verify_on_creation:
@@ -67,6 +72,13 @@ class RecipeLayer:
 
         self.data_source_path = layer_def.get('data_source_path', None)
         self.data_name = layer_def.get('data_name', None)
+
+    def _get_data_schema(self, layer_def, lyr_props):
+        if 'data_schema' in layer_def:
+            self.data_schema = layer_def['data_schema']
+        else:
+            schema_file = path.abspath(path.join(lyr_props.cmf.data_schemas, self.schema_definition))
+            self.data_schema = data_schemas.parse_yaml(schema_file)
 
     def verify_path(self):
         if not path.exists(self.layer_file_path):
@@ -171,56 +183,11 @@ class RecipeFrame:
         set_state_optional_fields(self, state, RecipeFrame.OPTIONAL_FIELDS)
 
 
-class RecipeAtlas:
-    def __init__(self, atlas_def, recipe, lyr_props):
-        validate_against_atlas_schema(atlas_def)
-
-        # Required fields
-        self.map_frame = atlas_def["map_frame"]
-        self.layer_name = atlas_def["layer_name"]
-        self.column_name = atlas_def["column_name"]
-
-        # Compare the atlas definition with the other parts of the recipe definition
-        if recipe.contains_frame(self.map_frame):
-            m_frame = recipe.get_frame(self.map_frame)
-        else:
-            raise ValueError(
-                'The Map Recipe definition is invalid. The "atlas" section refers to a map_frame '
-                ' ({}) that does not exist in the "map_frames" section of the recipe.'.format(
-                    self.map_frame)
-            )
-
-        if m_frame.contains_layer(self.layer_name):
-            lyr = m_frame.get_layer(self.layer_name)
-        else:
-            raise ValueError(
-                'The Map Recipe definition is invalid. The "atlas" section refers to a layer_name '
-                ' ({}) that does not exist in the relevant "map_frame" ({}) section of the recipe.'
-                ''.format(self.layer_name, self.map_frame)
-            )
-
-        schema_file = path.join(lyr_props.cmf.data_schemas, lyr.schema_definition)
-        schema = data_schemas.parse_yaml(schema_file)
-        if self.column_name not in schema['required']:
-            raise ValueError(
-                'The Map Recipe definition is invalid. The "atlas" section refers to a column_name '
-                ' ({}) that does not exist in the schema of the relevant layer ({}).'
-                ''.format(self.column_name, lyr.name)
-            )
-
-    def __eq__(self, other):
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other):
-        """Overrides the default implementation (unnecessary in Python 3)"""
-        return not self.__eq__(other)
-
-
 class MapRecipe:
     """
     MapRecipe
     """
-    OPTIONAL_FIELDS = ('runners', 'atlas')
+    OPTIONAL_FIELDS = ('runners', 'atlas', 'map_project_path', 'template_path', 'version_num')
 
     def __init__(self, recipe_definition, lyr_props):
         if isinstance(recipe_definition, dict):
@@ -241,6 +208,9 @@ class MapRecipe:
         self.template = recipe_def["template"]
 
         # Optional fields
+        self.map_project_path = recipe_def.get('map_project_path', None)
+        self.template_path = recipe_def.get('template_path', None)
+        self.version_num = recipe_def.get('version_num', None)
         self.runners = recipe_def.get('runners', None)
         atlas_def = recipe_def.get('atlas', None)
         if atlas_def:
