@@ -16,9 +16,9 @@ VERB_VERIFY = 'verify'
 def noun_defaultcmf_print_output(args):
     if args.verb == VERB_VERIFY:
         cv_steps = config_verify.get_config_verify_steps(args.cmf_desc_path, ['.lyr'])
-        steps.process_steps(cv_steps)
+        steps.process_steps(cv_steps, None)
         nc_steps = cnc.get_defaultcmf_step_list(args.cmf_desc_path, False)
-        steps.process_steps(nc_steps)
+        steps.process_steps(nc_steps, None)
     else:
         raise NotImplementedError(args)
 
@@ -30,15 +30,24 @@ def noun_humevent_print_output(args):
 def noun_gisdata_print_output(args):
     if args.verb == VERB_VERIFY:
         nc_steps = cnc.get_active_data_step_list(args.humevent_desc_path, True)
-        steps.process_steps(nc_steps)
+        steps.process_steps(nc_steps, None)
         # print(nc_steps)
     else:
         raise NotImplementedError(args)
 
 
 def noun_maps_print_output(args):
-    if args.verb == VERB_VERIFY:
-        build_steps = runner.get_steps_delegated_to_plugin(my_runner)
+    if args.verb == VERB_BUILD:
+        my_runner = steps.process_steps(runner.get_plugin_step(), args.humevent_desc_path)
+        my_cookbook = steps.process_steps(runner.get_cookbook_steps(my_runner), None)
+
+        map_nums = None
+        if args.map_number:
+            map_nums = [args.map_number]
+
+        for recipe in runner.select_recipes(my_cookbook, map_nums):
+            product_steps = runner.get_per_product_steps(my_runner, recipe.mapnumber, recipe.product)
+            steps.process_steps(product_steps, recipe)
     else:
         raise NotImplementedError(args)
 
@@ -161,10 +170,10 @@ def get_args():
     )
 
     prs_maps.add_argument(
-        '--map-name',
-        metavar='"Map Name"',
-        help=('The name of an individual map to produce. This must match a product name that'
-              ' exists in the MapCookbook. If this option is not specified then'
+        '--map-number',
+        metavar='"Map Number"',
+        help=('The number of an individual map to produce (eg "MA0123"). This must match a map'
+              ' number name that exists in the MapCookbook. If this option is not specified then'
               ' all maps in the MapCookbook will be created.')
     )
 

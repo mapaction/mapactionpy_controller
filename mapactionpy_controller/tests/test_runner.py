@@ -1,5 +1,6 @@
 from mapactionpy_controller.runner import BaseRunnerPlugin
 
+
 class DummyRunner(BaseRunnerPlugin):
     def __init__(self, **kwargs):
         pass

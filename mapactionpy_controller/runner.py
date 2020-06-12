@@ -10,6 +10,8 @@ from mapactionpy_controller.event import Event
 # abstract class
 # Done using the "old-school" method described here, without using the abs module
 # https://stackoverflow.com/a/25300153
+
+
 class BaseRunnerPlugin(object):
     def __init__(self, cmf_descriptor_path, ** kwargs):
         self.cmf = CrashMoveFolder(cmf_descriptor_path)
@@ -99,7 +101,6 @@ class BaseRunnerPlugin(object):
             ' method cannot be called directly')
 
 
-
 def get_plugin_step():
     def get_plugin(**kwargs):
         hum_event = kwargs['hum_event']
@@ -157,9 +158,9 @@ def get_per_product_steps(_runner, map_num, map_name):
         ),
         steps.Step(
             _runner.create_ouput_map_project,
-            "Creating new '{}' file.".format(my_runner.get_projectfile_extension()),
-            "Successfully created new '{}' file.".format(my_runner.get_projectfile_extension()),
-            "Failed to create new '{}' file.".format(my_runner.get_projectfile_extension())
+            "Creating new '{}' file.".format(_runner.get_projectfile_extension()),
+            "Successfully created new '{}' file.".format(_runner.get_projectfile_extension()),
+            "Failed to create new '{}' file.".format(_runner.get_projectfile_extension())
         ),
         steps.Step(
             _runner.build_project_files,
@@ -201,6 +202,7 @@ def get_cookbook_steps(my_runner):
 
     return cookbook_steps
 
+
 def select_recipes(cookbook, map_nums=None):
     all_recipes = cookbook.products.values()
     if map_nums:
@@ -208,16 +210,17 @@ def select_recipes(cookbook, map_nums=None):
     else:
         return all_recipes
 
-if __name__ == "__main__":
-    my_event_path = r"D:\MapAction\hotel\20200601-kenya-oxfam\event_description.json"
-    my_runner = steps.process_steps(get_plugin_step(), my_event_path)
-    my_cookbook = steps.process_steps(get_cookbook_steps(my_runner), None)
 
-    # print_kwargs(product_name="Country Overview with Admin 1 Boundaries and Topography", recipe='hello')
+# if __name__ == "__main__":
+#     my_event_path = r"D:\MapAction\hotel\20200601-kenya-oxfam\event_description.json"
+#     my_runner = steps.process_steps(get_plugin_step(), my_event_path)
+#     my_cookbook = steps.process_steps(get_cookbook_steps(my_runner), None)
 
-    # product_name = "Country Overview with Admin 1 Boundaries and Topography"
-    map_nums = ['MA001']
+#     # print_kwargs(product_name="Country Overview with Admin 1 Boundaries and Topography", recipe='hello')
 
-    for recipe in select_recipes(my_cookbook, map_nums):
-        product_steps = get_per_product_steps(my_runner, recipe.mapnumber, recipe.product)
-        end_result = steps.process_steps(product_steps, recipe)
+#     # product_name = "Country Overview with Admin 1 Boundaries and Topography"
+#     map_nums = ['MA001']
+
+#     for recipe in select_recipes(my_cookbook, map_nums):
+#         product_steps = get_per_product_steps(my_runner, recipe.mapnumber, recipe.product)
+#         end_result = steps.process_steps(product_steps, recipe)
