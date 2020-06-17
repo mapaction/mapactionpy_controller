@@ -70,6 +70,7 @@ class Step():
             set_status(logging.ERROR, fail_msg, self, **kwargs)
             # set_status(logging.DEBUG, traceback.format_exc())
 
+
 def get_jira_client():
     try:
         from mapactionpy_controller.jira_tasks import JiraClient
@@ -77,7 +78,9 @@ def get_jira_client():
     except ImportError:
         return None
 
+
 jira_client = get_jira_client()
+
 
 def line_printer(status, msg, step, **kwargs):
     if jira_client:
