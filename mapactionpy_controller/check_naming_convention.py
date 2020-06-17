@@ -3,6 +3,7 @@ from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.event import Event
 import mapactionpy_controller.name_convention as name_convention
 from mapactionpy_controller.steps import Step
+import glob
 
 
 def get_naming_results_for_dir(dir, nc, file_ext=''):
@@ -22,11 +23,12 @@ def get_naming_results_for_dir(dir, nc, file_ext=''):
     return [nc.validate(fi) for fi in filenames]
 
 
-def extract_naming_results_messages(name_results, extract_failures_only=True):
+def extract_naming_results_messages(name_results, extract_failures_only):
     messages = set()
 
     if extract_failures_only:
-        filtered_list = filter(lambda r: (not r.is_valid), name_results)
+        # filtered_list = filter(lambda r: (not r.is_valid), name_results)
+        filtered_list = [r for r in name_results if not r.is_valid]
     else:
         filtered_list = name_results
 
@@ -37,15 +39,16 @@ def extract_naming_results_messages(name_results, extract_failures_only=True):
 
 
 def get_dir_checker(dir_to_check, nc_desc_file, extn_to_check, inc_valid):
-    def check_dir():
+    def check_dir(**kwargs):
         nc = name_convention.NamingConvention(nc_desc_file)
         nrs = get_naming_results_for_dir(dir_to_check, nc, extn_to_check)
-        msgs = extract_naming_results_messages(nrs, extract_failures_only=(not inc_valid))
-        if len(msgs):
+        msgs = extract_naming_results_messages(nrs, (not inc_valid))
+        num_of_failure = sum([int(not r.is_valid) for r in nrs])
+        if num_of_failure:
             raise ValueError('\n'.join(msgs))
 
         # count of all the invalid names
-        return sum(int(not r.is_valid) for r in nrs)
+        return msgs
 
     return check_dir
 
@@ -91,22 +94,44 @@ def _get_active_data_sub_dirs(cmf):
     return list_subfolders_with_paths
 
 
+def _get_all_gisfiles(cmf):
+    shapefiles_with_paths = []
+
+    for extn in ['.shp', '.img', '.tif']:
+        for f_path in glob.glob('{}/*/*{}'.format(cmf.active_data, extn)):
+            shapefiles_with_paths.append(os.path.basename(f_path))
+
+    return shapefiles_with_paths
+
+
+def get_single_file_checker(d_name, nc, verbose):
+    def check_gis_data_name(**kwargs):
+        ncr = nc.validate(d_name)
+        if not ncr.is_valid:
+            raise ValueError(ncr.get_message)
+
+        if verbose:
+            return ncr.get_message
+
+    return check_gis_data_name
+
+
 def get_active_data_step_list(humev_config_path, verbose):
     humev = Event(humev_config_path)
     cmf = CrashMoveFolder(humev.cmf_descriptor_path)
-    extn_to_check = '.shp'
+
+    nc = name_convention.NamingConvention(cmf.data_nc_definition)
 
     dnc_per_dir_steps = []
-    for dir_to_check, base_name in _get_active_data_sub_dirs(cmf):
+    for base_name in _get_all_gisfiles(cmf):
         # return_code += check_dir(dir_to_check, nc_desc_file, extn_to_check, args.inc_valid)
         # base_name = os.path.basename(dir_to_check)
         dnc_per_dir_steps.append(
             Step(
-                get_dir_checker(dir_to_check, cmf.data_nc_definition, extn_to_check, verbose),
-                "'Checking '{}' files in '{}' match data naming convention".format(extn_to_check, base_name),
-                "All '{}' files in '{}' match the data naming convention".format(extn_to_check, base_name),
-                "One of more '{}' files in '{}' did not match the data naming convention".format(
-                    extn_to_check, base_name)
+                get_single_file_checker(base_name, nc, verbose),
+                "Checking the file '{}' against the data naming convention".format(base_name),
+                "The file '{}' matches the data naming convention".format(base_name),
+                "The file '{}' does not match the data naming convention".format(base_name)
             )
         )
 

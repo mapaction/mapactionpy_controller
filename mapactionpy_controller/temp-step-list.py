@@ -68,6 +68,3 @@ Step(
 #  - export_atlas (if required)
 #  - create zip file
 # Upload to MDR
-
-
-

@@ -62,16 +62,31 @@ class Step():
             else:
                 msg = self.complete_msg
 
-            set_status(logging.INFO, msg)
+            set_status(logging.INFO, msg, self, **kwargs)
             return result
             # return True
         except Exception as exp:
             fail_msg = '{}\n{}'.format(self.fail_msg, exp)
-            set_status(logging.ERROR, fail_msg)
+            set_status(logging.ERROR, fail_msg, self, **kwargs)
             # set_status(logging.DEBUG, traceback.format_exc())
 
+def get_jira_client():
+    try:
+        from mapactionpy_controller.jira_tasks import JiraClient
+        return JiraClient()
+    except ImportError:
+        return None
 
-def line_printer(status, msg):
+jira_client = get_jira_client()
+
+def line_printer(status, msg, step, **kwargs):
+    if jira_client:
+        jira_client.task_handler(status, msg, step, **kwargs)
+    else:
+        print('Cant load JIRA but would call it with status="{}", step.func=`{}` and msg="{}"'.format(
+            status, step.func.__name__, msg
+        ))
+
     if humanfriendly.terminal.connected_to_terminal():
         humanfriendly.terminal.output('{} {} {}'.format(
             humanfriendly.terminal.ANSI_ERASE_LINE,
@@ -86,6 +101,10 @@ def process_steps(step_list, initial_state):
     humanfriendly.terminal.enable_ansi_support()
     state = initial_state
 
+    # TODO this should be a stack not a list
+    # https://realpython.com/how-to-implement-python-stack/
+    # and
+    # https://docs.python.org/2/tutorial/datastructures.html#using-lists-as-stacks
     for step in step_list:
         kwargs = {'state': state}
 
@@ -94,7 +113,7 @@ def process_steps(step_list, initial_state):
                 state = step.run(line_printer, False, **kwargs)
         else:
             logger.info('Starting: {}'.format(step.running_msg))
-            state = step.run(line_printer, True, **kwargs)
+            state = step.run(line_printer, False, **kwargs)
 
     return state
 
