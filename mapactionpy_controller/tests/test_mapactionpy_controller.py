@@ -3,7 +3,6 @@ import os
 from unittest import TestCase
 import fixtures
 from jsonschema import ValidationError
-# from mapactionpy_controller.product_bundle_definition import MapRecipe
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.data_search import DataSearch
 from mapactionpy_controller.event import Event
