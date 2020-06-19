@@ -2,11 +2,18 @@ import fixtures
 import os
 import six
 from unittest import TestCase
+import jsonschema
+import yaml
 
 from mapactionpy_controller.layer_properties import LayerProperties
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.map_cookbook import MapCookbook
 from mapactionpy_controller.map_recipe import MapRecipe
+
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 
 
 class TestMapCookBook(TestCase):
@@ -205,3 +212,66 @@ class TestMapCookBook(TestCase):
                 self.assertRegexpMatches(str(ve.exception), fail_msg)
             else:
                 self.assertRegex(str(ve.exception), fail_msg)
+
+    def test_layer_data_schema(self):
+
+        null_schema = True
+
+        passing_schema = yaml.safe_load(r"""
+required:
+    - name_en
+properties:
+    geometry_type:
+        items:
+            enum:
+                - MultiPolygon
+                - Polygon
+        additionalItems: false
+    crs:
+        items:
+            enum:
+                - EPSG:2090
+        additionalItems: false
+""")
+
+        # Note the missing `enum` blocks
+        failing_schema = yaml.safe_load(r"""
+required:
+    - name_en
+properties:
+    geometry_type:
+        items:
+            - MultiPolygon
+            - Polygon
+        additionalItems: false
+    crs:
+        items:
+            - EPSG:2090
+        additionalItems: false
+""")
+
+        cmf = CrashMoveFolder(
+            os.path.join(self.parent_dir, 'example', 'cmf_description_relative_paths_test.json'))
+        cmf.layer_properties = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'cookbooks', 'fixture_layer_properties_for_atlas.json'
+        )
+
+        # Two cases where data schema is valid yaml
+        for test_schema in [null_schema, passing_schema]:
+            with mock.patch('mapactionpy_controller.data_schemas.yaml.safe_load') as mock_safe_load:
+                mock_safe_load.return_value = test_schema
+                test_lp = LayerProperties(cmf, ".lyr", verify_on_creation=False)
+
+                MapRecipe(fixtures.recipe_with_positive_iso3_code, test_lp)
+                self.assertTrue(True, 'validated jsonschema')
+
+        # case where data schema file itself malformed somehow
+        with mock.patch('mapactionpy_controller.data_schemas.yaml.safe_load') as mock_safe_load:
+            mock_safe_load.return_value = failing_schema
+
+            self.assertRaises(
+                jsonschema.exceptions.SchemaError,
+                MapRecipe,
+                fixtures.recipe_with_positive_iso3_code,
+                test_lp
+            )
