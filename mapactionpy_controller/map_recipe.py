@@ -4,6 +4,7 @@ from mapactionpy_controller.recipe_atlas import RecipeAtlas
 from mapactionpy_controller import _get_validator_for_config_schema
 import mapactionpy_controller.data_schemas as data_schemas
 from os import path
+import jsonschema
 
 validate_against_layer_schema = _get_validator_for_config_schema('layer_properties-v0.2.schema')
 validate_against_recipe_schema = _get_validator_for_config_schema('map-recipe-v0.2.schema')
@@ -63,7 +64,7 @@ class RecipeLayer:
         if 'layer_file_path' in layer_def:
             self.layer_file_path = layer_def['layer_file_path']
             if verify_on_creation:
-                self.verify_path()
+                self.verify_layer_file_path()
         else:
             self.layer_file_path = path.join(
                 lyr_props.cmf.layer_rendering,
@@ -80,7 +81,10 @@ class RecipeLayer:
             schema_file = path.abspath(path.join(lyr_props.cmf.data_schemas, self.schema_definition))
             self.data_schema = data_schemas.parse_yaml(schema_file)
 
-    def verify_path(self):
+        # check that the schema itself is valid.
+        jsonschema.Draft7Validator.check_schema(self.data_schema)
+
+    def verify_layer_file_path(self):
         if not path.exists(self.layer_file_path):
             raise ValueError("The expected layer file {} could not be found."
                              "".format(self.layer_file_path))
