@@ -18,49 +18,57 @@ class TestCLI(TestCase):
         self.path_to_event_file = os.path.join(self.parent_dir, 'example', 'event_description.json')
         self.nonexistant_path = '/file/that/does/not/exist'
 
-    @mock.patch('mapactionpy_controller.cli.steps.process_steps')
-    def test_cli_with_steps(self, mock_steps):
+    @mock.patch('mapactionpy_controller.check_naming_convention.glob.glob')
+    @mock.patch('mapactionpy_controller.cli.process_stack')
+    def test_cli_with_steps(self, mock_stack, mock_glob):
 
         # valid CLI options that will call a list of steps
-        step_list = [
-            (
-                ['defaultcmf', '--verify', self.path_to_cmf_file],
-                ['layer properties json file and the MapCookbook', 'relevant naming convention']
-            ),
-            (
-                ['gisdata', '--verify', self.path_to_event_file],
-                ('data naming convention')
-            )
+        input_args_list = [
+            ['defaultcmf', '--verify', self.path_to_cmf_file],
+            ['defaultcmf', '--verify', self.path_to_cmf_file],
+            ['gisdata', '--verify', self.path_to_event_file]
         ]
 
-        # with mock.patch('mapactionpy_controller.cli.steps') as mock_steps:
-        for testargs, all_step_msg_to_check in step_list:
-            # set the commandline and run the production code
-            sys.argv[1:] = testargs
-            cli.entry_point()
-            # Now get the information out of the mock
-            all_calls = mock_steps.call_args_list
-            for call, step_msg_to_check in zip(all_calls, all_step_msg_to_check):
-                # `call` is a tuple.
-                # `call[0]` is the list the list of _positional_ args to mock_steps
-                # `call[1]` is the list of the _keyword_ args to mock_steps
-                # therefore `call[0][0]` is the first _positional_ arg, which is itself a
-                # list of Step objects
-                # Just aggreegate all of the running msg from all of the steps together
-                all_msg = "".join(stp.running_msg for stp in call[0][0])
-                # check that our test string occurs somewhere within this string
-                self.assertIn(step_msg_to_check, all_msg)
+        # TODO
+        # 'gisdata', '--verify', self.path_to_event_file is failing
+        # becuase it is pointing to an empty directory and hence not generating any steps
 
-        # steps_not_yet_implenmented = [
-        #     (
-        #         ['defaultcmf', self.path_to_cmf_file],
-        #         ()
-        #     ),
-        #     (
-        #         ['gisdata', self.path_to_event_file],
-        #         ()
-        #     )
-        # ]
+        input_msg_list = [
+            'relevant naming convention',
+            'layer properties json file and the MapCookbook',
+            'data naming convention'
+        ]
+
+        glob_list = [
+            '/path/to/some/gisdata/202_admn/ken_admn_ad0_ln_s0_IEBC_pp_HDX.shp',
+            '/path/to/some/gisdata/202_admn/ken_admn_ad0_py_s1_IEBC_pp_HDX.shp',
+            '/path/to/some/gisdata/202_admn/ken_admn_ad4_py_s1_HDX_pp_CBS.shp',
+            '/path/to/some/gisdata/206_bldg/ken_bldg_bdg_py_s4_osm_pp.shp',
+            '/path/to/some/gisdata/209_cccm/eafr_cccm_ref_pt_s1_unhcr_pp_CampLocations.shp',
+            '/path/to/some/gisdata/211_elev/ken_elev_cst_ln_s0_iebc_pp_HDX.shp'
+        ]
+
+        mock_glob.return_value = glob_list
+
+        # with mock.patch('mapactionpy_controller.cli.process_stack') as mock_steps:
+        for test_args in input_args_list:
+            # set the commandline and run the production code
+            sys.argv[1:] = test_args
+            cli.entry_point()
+
+        # Now get the information out of the mock
+        all_calls = mock_stack.call_args_list
+
+        for call, input_msg in zip(all_calls, input_msg_list):
+            # `call` is a tuple.
+            # `call[0]` is the list the list of _positional_ args to mock_steps
+            # `call[1]` is the list of the _keyword_ args to mock_steps
+            # therefore `call[0][0]` is the first _positional_ arg, which is itself a
+            # list of Step objects
+            # Just aggreegate all of the running msg from all of the steps together
+            out_msg = "".join(stp.running_msg for stp in call[0][0])
+            # check that our test string occurs somewhere within this string
+            self.assertIn(input_msg, out_msg)
 
     def test_cli_without_steps(self):
 
@@ -90,7 +98,7 @@ class TestCLI(TestCase):
         for testargs in invalid_combos:
             # set the commandline and run the production code
             sys.argv[1:] = testargs
-            print(testargs)
+            print('invalid args comb = {}'.format(testargs))
             self.assertRaises(SystemExit, cli.entry_point)
 
     def test_cli_with_cmf_deduced_from_pwd(self):

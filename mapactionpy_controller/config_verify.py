@@ -15,7 +15,7 @@ class ConfigVerifier():
             self.cmf_desc_path
         ))
 
-    def check_json_file_schemas(self):
+    def check_json_file_schemas(self, **kwargs):
         try:
             # JSON schema validation is implicit in the creation of these objects
             self.check_cmf_description()
@@ -27,7 +27,7 @@ class ConfigVerifier():
         except ValueError:
             raise
 
-    def check_lyr_props_vs_rendering_dir(self):
+    def check_lyr_props_vs_rendering_dir(self, **kwargs):
         cmf = CrashMoveFolder(self.cmf_desc_path)
         for lyr_exn in self.lyr_file_exn_list:
             try:
@@ -41,7 +41,7 @@ class ConfigVerifier():
             except ValueError:
                 raise
 
-    def check_lyr_props_vs_map_cookbook(self):
+    def check_lyr_props_vs_map_cookbook(self, **kwargs):
         try:
             cmf = CrashMoveFolder(self.cmf_desc_path)
             lyrs = LayerProperties(cmf, '', verify_on_creation=False)

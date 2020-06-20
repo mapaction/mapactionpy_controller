@@ -33,7 +33,7 @@ class JiraClient():
         self.jira_con = JIRA(options={'server': account}, basic_auth=(username, apikey))
 
         # Check that the user is actually authenticated
-        if not ja.jira_con.myself()['emailAddress'] == username:
+        if not self.jira_con.myself()['emailAddress'] == username:
             raise ValueError('Unable to authenticate with JIRA. Please check details in `.netrc` file.')
 
     def __del__(self):

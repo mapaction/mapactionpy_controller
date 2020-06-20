@@ -2,8 +2,8 @@ import os
 import argparse
 import mapactionpy_controller.check_naming_convention as cnc
 import mapactionpy_controller.config_verify as config_verify
-import mapactionpy_controller.steps as steps
 import mapactionpy_controller.plugin_controller as plugin_controller
+from mapactionpy_controller.main_stack import process_stack
 
 VERB_BUILD = 'build'
 VERB_CREATE = 'create'
@@ -16,9 +16,9 @@ VERB_VERIFY = 'verify'
 def noun_defaultcmf_print_output(args):
     if args.verb == VERB_VERIFY:
         cv_steps = config_verify.get_config_verify_steps(args.cmf_desc_path, ['.lyr'])
-        steps.process_steps(cv_steps, None)
-        nc_steps = cnc.get_defaultcmf_step_list(args.cmf_desc_path, False)
-        steps.process_steps(nc_steps, None)
+        # process_stack(cv_steps, None)
+        cv_steps.extend(cnc.get_defaultcmf_step_list(args.cmf_desc_path, False))
+        process_stack(cv_steps, None)
     else:
         raise NotImplementedError(args)
 
@@ -30,7 +30,7 @@ def noun_humevent_print_output(args):
 def noun_gisdata_print_output(args):
     if args.verb == VERB_VERIFY:
         nc_steps = cnc.get_active_data_step_list(args.humevent_desc_path, True)
-        steps.process_steps(nc_steps, None)
+        process_stack(nc_steps, None)
         # print(nc_steps)
     else:
         raise NotImplementedError(args)
@@ -48,9 +48,9 @@ def build_maps(humevent_desc_path, map_number):
     # build_steps = config_verify.get_config_verify_steps(args.cmf_desc_path, ['.lyr'])
     # build_steps.append(cnc.get_defaultcmf_step_list(args.cmf_desc_path, False))
     # build_steps.append(cnc.get_active_data_step_list(args.humevent_desc_path, True))
-    # steps.process_steps(build_steps)
-    my_runner = steps.process_steps(plugin_controller.get_plugin_step(), humevent_desc_path)
-    my_cookbook = steps.process_steps(plugin_controller.get_cookbook_steps(my_runner), None)
+    # main_stack.process_stack(build_steps)
+    my_runner = process_stack(plugin_controller.get_plugin_step(), humevent_desc_path)
+    my_cookbook = process_stack(plugin_controller.get_cookbook_steps(my_runner), None)
 
     map_nums = None
     if map_number:
@@ -58,7 +58,7 @@ def build_maps(humevent_desc_path, map_number):
 
     for recipe in plugin_controller.select_recipes(my_cookbook, map_nums):
         product_steps = plugin_controller.get_per_product_steps(my_runner, recipe.mapnumber, recipe.product)
-        steps.process_steps(product_steps, recipe)
+        process_stack(product_steps, recipe)
 
 
 all_nouns = {
