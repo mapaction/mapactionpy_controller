@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
 import netrc
 import os
 from jira import JIRA
 import logging
 from mapactionpy_controller.map_recipe import MapRecipe
+import mapactionpy_controller.task_renderer as task_renderer
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -32,6 +34,8 @@ class JiraClient():
         username, account, apikey = secrets.authenticators(jira_hostname)
         self.jira_con = JIRA(options={'server': account}, basic_auth=(username, apikey))
 
+        logging.debug('JIRA Connection. Details = {}'.format(self.jira_con.myself()))
+
         # Check that the user is actually authenticated
         if not self.jira_con.myself()['emailAddress'] == username:
             raise ValueError('Unable to authenticate with JIRA. Please check details in `.netrc` file.')
@@ -58,15 +62,17 @@ class JiraClient():
     #     some_issues = self.jira_con.search_issues('project=TMIT2 AND map_number ~ "MA0123"')
     #     print(some_issues)
 
-    # def create_data_task(self, lyr_name, map_num):
-    #     flds = common_task_fields.copy()
+    def create_task_from_template(self):
+        flds = common_task_fields.copy()
 
-    #     # flds['layername'] = lyr_name
-    #     # flds['map_number'] = map_num
-    #     flds['summary'] = 'A summary'
-    #     flds['description'] = 'Where do we go from here?'
-    #     new_task = self.jira_con.create_issue(fields=flds)
-    #     print(new_task)
+        # flds['layername'] = lyr_name
+        # flds['map_number'] = map_num
+        flds['summary'] = 'Task created from template'
+        # flds['description'] = 'Where do we go from here?'
+        # flds['description'] =
+
+        new_task = self.jira_con.create_issue(fields=flds)
+        print(new_task)
     #     print('new_task.fields = {}'.format(new_task.fields))
     #     cusflds = {}
     #     cusflds['customfield_10076'] = map_num
@@ -74,7 +80,7 @@ class JiraClient():
 
     #     print(new_task)
 
-    # def update_data_task(self):
+    # def update_task(self):
     #     my_issue = self.jira_con.issue('TMIT2-3')
     #     print(my_issue)
     #     print('my_issue.fields = {}'.format(my_issue.fields))
@@ -83,7 +89,22 @@ class JiraClient():
 
 
 # testing
-# if __name__ == "__main__":
+if __name__ == "__main__":
+    my = JiraClient()
+    # my.create_task_from_template()
+    my_issue = my.jira_con.issue('TMIT2-11')
+    my_issue.update(description=task_renderer.get_task_description())
+
+    print(my_issue)
+    my_desc = my_issue.fields.description
+
+    my_desc = my_desc.encode('ascii', 'backslashreplace')
+    # replace(u'\u201c', '"')
+    # my_desc.replace(u'\u201d', '"')
+    print(u'my_issue.field.description = {}'.format(my_desc))
+    print(u'my_issue.field.summary = {}'.format(my_issue.fields.summary))
+    # emd = my.jira_con.editmeta('TMIT2-8')
+    # print(emd)
     # print(ja.jira_con.myself()['emailAddress'])
     # print(ja.jira_con.projects())
     # update_data_task()

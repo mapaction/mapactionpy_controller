@@ -34,7 +34,7 @@ class TestCLI(TestCase):
         # becuase it is pointing to an empty directory and hence not generating any steps
 
         input_msg_list = [
-            'relevant naming convention',
+            'map template naming convention',
             'layer properties json file and the MapCookbook',
             'data naming convention'
         ]
@@ -98,7 +98,6 @@ class TestCLI(TestCase):
         for testargs in invalid_combos:
             # set the commandline and run the production code
             sys.argv[1:] = testargs
-            print('invalid args comb = {}'.format(testargs))
             self.assertRaises(SystemExit, cli.entry_point)
 
     def test_cli_with_cmf_deduced_from_pwd(self):
