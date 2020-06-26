@@ -6,7 +6,10 @@ import logging
 from mapactionpy_controller.map_recipe import MapRecipe
 import mapactionpy_controller.task_renderer as task_renderer
 
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
+
+logger = logging.getLogger(__name__)
+
 
 # TODO read these in from a config file
 jira_hostname = 'mapaction.atlassian.net'
@@ -34,7 +37,7 @@ class JiraClient():
         username, account, apikey = secrets.authenticators(jira_hostname)
         self.jira_con = JIRA(options={'server': account}, basic_auth=(username, apikey))
 
-        logging.debug('JIRA Connection. Details = {}'.format(self.jira_con.myself()))
+        logger.debug('JIRA Connection. Details = {}'.format(self.jira_con.myself()))
 
         # Check that the user is actually authenticated
         if not self.jira_con.myself()['emailAddress'] == username:
@@ -44,7 +47,7 @@ class JiraClient():
         self.jira_con.close()
 
     def task_handler(self, status, msg, step, **kwargs):
-        logging.debug('JiraClient.task_handler called with status="{}", step.func=`{}` and msg="{}"'.format(
+        logger.debug('JiraClient.task_handler called with status="{}", step.func=`{}` and msg="{}"'.format(
             status, step.func.__name__, msg
         ))
         if kwargs:

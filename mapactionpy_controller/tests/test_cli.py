@@ -18,9 +18,12 @@ class TestCLI(TestCase):
         self.path_to_event_file = os.path.join(self.parent_dir, 'example', 'event_description.json')
         self.nonexistant_path = '/file/that/does/not/exist'
 
+    @mock.patch('mapactionpy_controller.main_stack.hft.connected_to_terminal')
     @mock.patch('mapactionpy_controller.check_naming_convention.glob.glob')
     @mock.patch('mapactionpy_controller.cli.process_stack')
-    def test_cli_with_steps(self, mock_stack, mock_glob):
+    def test_cli_with_steps(self, mock_stack, mock_glob, mock_hft):
+        # mock_hft is purely to prevent the console from becoming too clutered when running unittests
+        mock_hft.return_value = False
 
         # valid CLI options that will call a list of steps
         input_args_list = [

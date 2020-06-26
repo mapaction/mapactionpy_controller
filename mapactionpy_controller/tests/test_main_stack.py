@@ -50,7 +50,7 @@ class TestMainStack(TestCase):
     def setUp(self):
         pass
 
-    @mock.patch('humanfriendly.terminal.connected_to_terminal')
+    @mock.patch('mapactionpy_controller.main_stack.hft.connected_to_terminal')
     def test_simple_step_list(self, mock_hft):
         # mock_hft is purely to prevent the console from becoming too clutered when running unittests
         mock_hft.return_value = False
@@ -69,7 +69,7 @@ class TestMainStack(TestCase):
             self.assertEqual(expected_state, final_state)
             # print('\nfinal state = {}'.format(final_state))
 
-    @mock.patch('humanfriendly.terminal.connected_to_terminal')
+    @mock.patch('mapactionpy_controller.main_stack.hft.connected_to_terminal')
     def test_add_single_step_into_stack(self, mock_hft):
         # mock_hft is purely to prevent the console from becoming too clutered when running unittests
         mock_hft.return_value = False
@@ -93,7 +93,7 @@ class TestMainStack(TestCase):
             self.assertEqual(expected_state, final_state)
             # print('\nfinal list = {}'.format(final_state))
 
-    @mock.patch('humanfriendly.terminal.connected_to_terminal')
+    @mock.patch('mapactionpy_controller.main_stack.hft.connected_to_terminal')
     def test_add_multiple_steps_into_stack(self, mock_hft):
         # mock_hft is purely to prevent the console from becoming too clutered when running unittests
         mock_hft.return_value = False

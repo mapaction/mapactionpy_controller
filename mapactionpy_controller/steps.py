@@ -19,7 +19,5 @@ class Step():
             set_status(logging.INFO, self.complete_msg, self, **pass_back)
             return result
         except Exception as exp:
-            # long_msg = '{}\n{}'.format(self.fail_msg, exp)
-            # pass_back['result'] = str(exp)
             pass_back['exp'] = exp
             set_status(logging.ERROR, self.fail_msg, self, **pass_back)

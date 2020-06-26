@@ -4,23 +4,24 @@ from mapactionpy_controller.map_cookbook import MapCookbook
 from mapactionpy_controller.event import Event
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 
 def get_plugin_step():
     def get_plugin(**kwargs):
         hum_event = kwargs['state']
         try:
-            logging.debug('Attempting to load the ArcMapRunner')
+            logger.debug('Attempting to load the ArcMapRunner')
             from mapactionpy_arcmap.arcmap_runner import ArcMapRunner
             runner = ArcMapRunner(hum_event)
-            logging.info('Successfully loaded the ArcMapRunner')
+            logger.info('Successfully loaded the ArcMapRunner')
         except ImportError:
-            logging.debug('Failed to load the ArcMapRunner')
-            logging.debug('Attempting to load the QGisRunner')
+            logger.debug('Failed to load the ArcMapRunner')
+            logger.debug('Attempting to load the QGisRunner')
             from mapactionpy_qgis.qgis_runner import QGisRunner
             runner = QGisRunner()
-            logging.info('Failed to load the ArcMapRunner')
+            logger.info('Failed to load the ArcMapRunner')
 
         return runner
 
@@ -47,7 +48,7 @@ def get_plugin_step():
 
 def _get_per_product_steps(_runner, recipe):
     # In due course there should be greater granularity for some of these steps
-    logging.debug('Building steps for recipe {}'.format(recipe.mapnumber))
+    logger.debug('Building steps for recipe {}'.format(recipe.mapnumber))
 
     def just_return_recipe(**kwargs):
         return recipe
@@ -95,7 +96,7 @@ def _get_per_product_steps(_runner, recipe):
     ]
 
     temp_msg = product_steps[0].running_msg
-    logging.debug('Built steps for recipe {} with running_msg = {}'.format(recipe.mapnumber, temp_msg))
+    logger.debug('Built steps for recipe {} with running_msg = {}'.format(recipe.mapnumber, temp_msg))
 
     return product_steps
 
@@ -107,7 +108,7 @@ def get_cookbook_steps(my_runner, map_number):
 
         selected_product_steps = []
         for recipe in select_recipes(my_cookbook, map_number):
-            logging.debug('About to create steps for recipe {}'.format(recipe.mapnumber))
+            logger.debug('About to create steps for recipe {}'.format(recipe.mapnumber))
             selected_product_steps.extend(_get_per_product_steps(my_runner, recipe))
 
         return selected_product_steps
@@ -138,7 +139,7 @@ def select_recipes(cookbook, map_nums=None):
             if r.mapnumber.upper() in cleaned_nums:
                 selected_recipes.append(r)
 
-        logging.debug('MapIDs "{}" have been selected'.format([r.mapnumber for r in selected_recipes]))
+        logger.debug('MapIDs "{}" have been selected'.format([r.mapnumber for r in selected_recipes]))
         return selected_recipes
     else:
         return all_recipes

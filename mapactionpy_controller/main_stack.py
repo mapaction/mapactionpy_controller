@@ -1,39 +1,19 @@
 # import mapactionpy_controller.config_verify as config_verify
 from collections import deque
-import humanfriendly.terminal
+import humanfriendly.terminal as hft
 import logging
-from humanfriendly.terminal.spinners import AutomaticSpinner
+# from humanfriendly.terminal.spinners import AutomaticSpinner
+import humanfriendly.terminal.spinners as spinners
 from mapactionpy_controller.steps import Step
+import traceback
 
-# logging.basicConfig(
-#     level=logging.DEBUG,
-#     format=(
-#         '%(asctime)s %(module)s %(name)s.%(funcName)s +%(lineno)s: %(levelname)-8s'
-#         ' [%(process)d] %(message)s',
-#     )
-# )
+logger = logging.getLogger(__name__)
 
-logger = logging.getLogger('MapChef')
-# logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-# create file handler which logs even debug messages
-# create console handler with a higher log level
-ch = logging.StreamHandler()
-ch.setLevel(logging.INFO)
-# create formatter and add it to the handlers
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s (%(module)s +ln%(lineno)s) ;- %(message)s')
-# formatter = logging.Formatter('%(asctime)s %(module)s %(name)s.%(funcName)s
-# +%(lineno)s: %(levelname)-8s [%(process)d] %(message)s')
-
-ch.setFormatter(formatter)
-# add the handlers to the logger
-logger.addHandler(ch)
-
-bright_white = humanfriendly.terminal.ansi_style(color='white', bright=True)
-bright_green = humanfriendly.terminal.ansi_style(color='green', bright=True)
-bright_red = humanfriendly.terminal.ansi_style(color='red', bright=True)
-bright_yellow = humanfriendly.terminal.ansi_style(color='yellow', bright=True)
-normal_white = humanfriendly.terminal.ansi_style(color='white', bright=False)
+bright_white = hft.ansi_style(color='white', bright=True)
+bright_green = hft.ansi_style(color='green', bright=True)
+bright_red = hft.ansi_style(color='red', bright=True)
+bright_yellow = hft.ansi_style(color='yellow', bright=True)
+normal_white = hft.ansi_style(color='white', bright=False)
 
 terminal_checkboxs = {
     logging.INFO:  '{}[{}pass{}]{}'.format(normal_white, bright_green, normal_white, bright_white),
@@ -59,24 +39,21 @@ def line_printer(status, msg, step, **kwargs):
     It provides a hook into print messages to the terminal, log files and the JIRA Client.
     """
     # nice_output = '{}\n{}'.format(self.complete_msg, result)
-    # pass_back['result'] = str(result)
-    # useful_output = '{}\n{}'.format(self.fail_msg, exp)
-    # pass_back['result'] = str(exp)
+    # pass_back['result'] = result
     # pass_back['exp'] = exp
 
-    # the_msg = '\n'.join([msg, kwargs.get('result', ''),  kwargs.get('exp', '')])
-    the_msg = '{}\nresult={}\nexp={}'.format(msg, kwargs.get('result', ''),  kwargs.get('exp', ''))
+    the_msg = msg
+    if status > logging.INFO:
+        exp = kwargs['exp']
+        the_msg = '{}\nerror message={}\n{}\n{}\n{}'.format(
+            msg, str(type(exp)), str(exp.args), str(exp.message), traceback.format_exc())
 
     if jira_client:
         jira_client.task_handler(status, msg, step, **kwargs)
-    # else:
-    #     logging.debug('Cant load JIRA but would call it with status="{}", step.func=`{}` and msg="{}"'.format(
-    #         status, step.func.__name__, msg
-    #     ))
 
-    if humanfriendly.terminal.connected_to_terminal():
-        humanfriendly.terminal.output('{} {} {}'.format(
-            humanfriendly.terminal.ANSI_ERASE_LINE,
+    if hft.connected_to_terminal():
+        hft.output('{} {} {}'.format(
+            hft.ANSI_ERASE_LINE,
             terminal_checkboxs[status],
             the_msg)
         )
@@ -120,7 +97,7 @@ def process_stack(step_list, initial_state):
     :param initial_state: This value will be passed a the 'state' keyword arg to the first step's `func`.
     :returns: The return value of the final step's `func`.
     """
-    humanfriendly.terminal.enable_ansi_support()
+    hft.enable_ansi_support()
     n_state = initial_state
     step_list.reverse()
     stack = deque(step_list)
@@ -132,8 +109,8 @@ def process_stack(step_list, initial_state):
         step = stack.pop()
         kwargs = {'state': n_state}
 
-        if humanfriendly.terminal.connected_to_terminal():
-            with AutomaticSpinner(step.running_msg, show_time=True):
+        if hft.connected_to_terminal():
+            with spinners.AutomaticSpinner(step.running_msg, show_time=True):
                 nplus_state = step.run(line_printer, **kwargs)
         else:
             logger.info('Starting: {}'.format(step.running_msg))

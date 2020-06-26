@@ -9,6 +9,7 @@ from shutil import copyfile
 import errno
 from zipfile import ZipFile
 
+logger = logging.getLogger(__name__)
 
 # abstract class
 # Done using the "old-school" method described here, without using the abs module
@@ -45,22 +46,22 @@ class BaseRunnerPlugin(object):
         """
         def _is_relevant_file(f):
             extension = os.path.splitext(f)[1]
-            logging.debug('checking file "{}", with extension "{}", against pattern "{}" and "{}"'.format(
+            logger.debug('checking file "{}", with extension "{}", against pattern "{}" and "{}"'.format(
                 f, extension, recipe.template, self.get_projectfile_extension()
             ))
             if re.search(recipe.template, f):
-                logging.debug('file {} matched regex'.format(f))
+                logger.debug('file {} matched regex'.format(f))
                 f_path = os.path.join(self.cmf.map_templates, f)
                 return (os.path.isfile(f_path)) and (extension == self.get_projectfile_extension())
             else:
                 return False
 
         # TODO: This results in calling `os.path.join` twice for certain files
-        logging.debug('searching for map templates in; {}'.format(self.cmf.map_templates))
+        logger.debug('searching for map templates in; {}'.format(self.cmf.map_templates))
         filenames = os.listdir(self.cmf.map_templates)
-        logging.debug('all available template files:\n\t{}'.format('\n\t'.join(filenames)))
+        logger.debug('all available template files:\n\t{}'.format('\n\t'.join(filenames)))
         filenames = filter(_is_relevant_file, filenames)
-        logging.debug('possible template files:\n\t{}'.format('\n\t'.join(filenames)))
+        logger.debug('possible template files:\n\t{}'.format('\n\t'.join(filenames)))
         return [os.path.join(self.cmf.map_templates, fi) for fi in filenames]
 
     def get_aspect_ratios_of_templates(self, possible_templates):
@@ -124,8 +125,8 @@ class BaseRunnerPlugin(object):
         output_map_name = '{}-v{}-{}{}'.format(
             recipe.mapnumber, str(recipe.version_num).zfill(2), output_map_base, self.get_projectfile_extension())
         recipe.map_project_path = os.path.abspath(os.path.join(output_dir, output_map_name))
-        logging.debug('Path for new map project file; {}'.format(recipe.map_project_path))
-        logging.debug('Map Version number; {}'.format(recipe.version_num))
+        logger.debug('Path for new map project file; {}'.format(recipe.map_project_path))
+        logger.debug('Map Version number; {}'.format(recipe.version_num))
 
         # Copy `src_template` to `recipe.map_project_path`
         copyfile(recipe.template_path, recipe.map_project_path)
