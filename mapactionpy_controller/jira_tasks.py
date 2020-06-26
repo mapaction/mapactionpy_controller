@@ -87,6 +87,8 @@ class JiraClient():
     #     emd = self.jira_con.editmeta('TMIT2-3')
     #     print(emd)
 
+# jira_client = JiraClient()
+
 
 # testing
 if __name__ == "__main__":

@@ -11,10 +11,11 @@ class Step():
 
     def run(self, set_status, verbose, **kwargs):
         try:
-            if all(kwargs.values()):
-                result = self.func(**kwargs)
-            else:
-                result = self.func()
+            result = self.func(**kwargs)
+            # if all(kwargs.values()):
+            #     result = self.func(**kwargs)
+            # else:
+            #     result = self.func()
 
             if verbose:
                 msg = '{}\n{}'.format(self.complete_msg, result)

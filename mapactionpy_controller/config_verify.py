@@ -9,7 +9,7 @@ class ConfigVerifier():
         self.cmf_desc_path = cmf_desc
         self.lyr_file_exn_list = lyr_file_exn_list
 
-    def check_cmf_description(self):
+    def check_cmf_description(self, **kwargs):
         self.cmf = CrashMoveFolder(self.cmf_desc_path)
         return ('The Crash Move Folder description file open correctly:\n"{}"\n'.format(
             self.cmf_desc_path

@@ -1,7 +1,10 @@
 # import mapactionpy_controller.config_verify as config_verify
+from collections import deque
 import humanfriendly.terminal
 import logging
 from humanfriendly.terminal.spinners import AutomaticSpinner
+from mapactionpy_controller.steps import Step
+import itertools
 
 # logging.basicConfig(
 #     level=logging.DEBUG,
@@ -51,6 +54,16 @@ def get_jira_client():
 jira_client = get_jira_client()
 
 
+# def get_jira_client():
+#     try:
+#         import mapactionpy_controller.jira_tasks
+#         return mapactionpy_controller.jira_tasks.jira_client
+#     except ImportError:
+#         return None
+
+
+# jira_client = get_jira_client()
+
 def line_printer(status, msg, step, **kwargs):
     if jira_client:
         jira_client.task_handler(status, msg, step, **kwargs)
@@ -69,22 +82,41 @@ def line_printer(status, msg, step, **kwargs):
         logger.log(status, msg)
 
 
+def _add_steps_from_state_to_stack(new_state, stack, old_state):
+    if isinstance(new_state, Step):
+        stack.append(new_state)
+        return old_state
+
+    if isinstance(new_state, list) and all([isinstance(stp, Step) for stp in new_state]):
+        new_state.reverse()
+        stack.extend(new_state)
+        return old_state
+
+    return new_state
+
+
 def process_stack(step_list, initial_state):
     humanfriendly.terminal.enable_ansi_support()
-    state = initial_state
+    n_state = initial_state
+    step_list.reverse()
+    stack = deque(step_list)
 
-    # TODO this should be a stack not a list
-    # https://realpython.com/how-to-implement-python-stack/
-    # and
-    # https://docs.python.org/2/tutorial/datastructures.html#using-lists-as-stacks
-    for step in step_list:
-        kwargs = {'state': state}
+    while stack:
+        # Definitions
+        # n_state = the state for the current iteration
+        # nplus_state = the state for the next iteraction (eg N+1)
+        step = stack.pop()
+        kwargs = {'state': n_state}
+        # print('kwargs = {}'.format(kwargs))
+        # print('len(kwargs) = {}'.format(len(kwargs)))
 
         if humanfriendly.terminal.connected_to_terminal():
             with AutomaticSpinner(step.running_msg, show_time=True):
-                state = step.run(line_printer, False, **kwargs)
+                nplus_state = step.run(line_printer, False, **kwargs)
         else:
             logger.info('Starting: {}'.format(step.running_msg))
-            state = step.run(line_printer, False, **kwargs)
+            nplus_state = step.run(line_printer, False, **kwargs)
 
-    return state
+        n_state = _add_steps_from_state_to_stack(nplus_state, stack, n_state)
+
+    return n_state
