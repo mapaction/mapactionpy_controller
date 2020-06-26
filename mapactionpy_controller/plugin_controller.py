@@ -47,7 +47,7 @@ def get_plugin_step():
 
 def _get_per_product_steps(_runner, recipe):
     # In due course there should be greater granularity for some of these steps
-    print('Building steps for recipe {}'.format(recipe.mapnumber))
+    logging.debug('Building steps for recipe {}'.format(recipe.mapnumber))
 
     def just_return_recipe(**kwargs):
         return recipe
@@ -95,8 +95,7 @@ def _get_per_product_steps(_runner, recipe):
     ]
 
     temp_msg = product_steps[0].running_msg
-
-    print('Built steps for recipe {} with running_msg = {}'.format(recipe.mapnumber, temp_msg))
+    logging.debug('Built steps for recipe {} with running_msg = {}'.format(recipe.mapnumber, temp_msg))
 
     return product_steps
 
@@ -108,11 +107,10 @@ def get_cookbook_steps(my_runner, map_number):
 
         selected_product_steps = []
         for recipe in select_recipes(my_cookbook, map_number):
-            print('About to create steps for recipe {}'.format(recipe.mapnumber))
+            logging.debug('About to create steps for recipe {}'.format(recipe.mapnumber))
             selected_product_steps.extend(_get_per_product_steps(my_runner, recipe))
 
         return selected_product_steps
-        # process_stack(product_steps, recipe)
 
     cookbook_steps = [
         steps.Step(
@@ -137,14 +135,11 @@ def select_recipes(cookbook, map_nums=None):
 
         selected_recipes = []
         for r in all_recipes:
-            print('do we want mapID = "{}"?'.format(r.mapnumber))
             if r.mapnumber.upper() in cleaned_nums:
-                print('It seems that mapID = "{}" is in selected list "{}"'.format(r.mapnumber, cleaned_nums))
                 selected_recipes.append(r)
 
-        print('We have selected "{}"'.format([r.mapnumber for r in selected_recipes]))
+        logging.debug('MapIDs "{}" have been selected'.format([r.mapnumber for r in selected_recipes]))
         return selected_recipes
-        # return [r for r in all_recipes if r.mapnumber.upper() in cleaned_nums]
     else:
         return all_recipes
 

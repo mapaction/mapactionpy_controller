@@ -38,7 +38,7 @@ class TestPluginController(TestCase):
                 if all([isinstance(stp, Step) for stp in retrieved_result]):
                     # print('found_list_of_steps=True')
                     found_list_of_steps = True
-            except KeyError:
+            except TypeError:
                 pass
 
         self.assertTrue(found_list_of_steps)
@@ -81,17 +81,14 @@ class TestPluginController(TestCase):
             main_stack.process_stack(initial_step, None)
 
             # Now get the information out of the mock
-            # all_calls =
-
             while mock_lp.call_args_list:
                 call = mock_lp.call_args_list.pop()
                 # print('call={}'.format('\n'.join([str(c) for c in call])))
                 # print('\n')
                 running_msg = call[0][1]
-                print('running_msg = {}'.format(running_msg))
+                # print('running_msg = {}'.format(running_msg))
 
                 # Does running_msg inc a MapID that is a failure:
-                # if any([fail_id.lower() in running_msg for fail_id in fail_list]):
                 for f_id in fail_list:
                     fail_id = f_id.lower()
                     if fail_id in running_msg.lower():
@@ -100,79 +97,7 @@ class TestPluginController(TestCase):
                                       fail_id, running_msg, should_create, mapid_arg))
 
                 for pass_id in should_create:
-                    # pass_id = p_id.lower()
                     if pass_id in running_msg:
                         found_map_ids.add(pass_id)
 
             self.assertEqual(should_create_set, found_map_ids)
-
-            # try:
-            #     retrieved_result = call[1]['result']
-            #     # print('retrieved_result = {}'.format(retrieved_result))
-
-            #     # test_list = [isinstance(stp, Step) for stp in retrieved_result]
-            #     # print('test_list = {}'.format(test_list))
-            #     if all([isinstance(stp, Step) for stp in retrieved_result]):
-            #         print('found_list_of_steps=True')
-            #         found_list_of_steps = True
-
-            #     # test_list = []
-
-            #     # for stp in retrieved_result:
-            #     #     print('stp = {}'.format(stp))
-            #     #     test_list.append(isinstance(stp, Step))
-
-            #     # print('test_list = {}'.format(test_list))
-
-            #     # if all(test_list):
-            #     #     print('found_list_of_steps=True')
-            #     #     found_list_of_steps = True
-            # except:
-            #     pass
-
-            # self.assertTrue(found_list_of_steps)
-
-    # @mock.patch('mapactionpy_controller.cli.process_stack')
-    # def test_somethiung_using_mocks(self, mock_stack):
-    #     # valid CLI options that will call a list of steps
-    #     input_args_list = [
-    #         ['defaultcmf', '--verify', self.path_to_cmf_file],
-    #         ['defaultcmf', '--verify', self.path_to_cmf_file],
-    #         ['gisdata', '--verify', self.path_to_event_file],
-    #         ['maps', '--build', self.path_to_event_file]
-    #     ]
-
-    #     # Note that becuase `process_stack` can be called more than once per CLI invokation
-    #     # it is possible that `input_msg_list` may be a different length to `input_args_list`
-    #     input_msg_list = [
-    #         'map template naming convention',
-    #         'layer properties json file and the MapCookbook',
-    #         'data naming convention',
-    #         'Humanitarian Event description file',
-    #         'MapCookbook files'
-    #     ]
-
-    #     # with mock.patch('mapactionpy_controller.cli.process_stack') as mock_steps:
-    #     for test_args in input_args_list:
-    #         # set the commandline and run the production code
-    #         sys.argv[1:] = test_args
-    #         cli.entry_point()
-
-    #     # Now get the information out of the mock
-    #     all_calls = mock_stack.call_args_list
-
-    #     for call, input_msg in zip(all_calls, input_msg_list):
-    #         # `call` is a tuple.
-    #         # `call[0]` is the list the list of _positional_ args to mock_steps
-    #         # `call[1]` is the list of the _keyword_ args to mock_steps
-    #         # therefore `call[0][0]` is the first _positional_ arg, which is itself a
-    #         # list of Step objects
-    #         # Just aggreegate all of the running msg from all of the steps together
-    #         out_msg = "".join(stp.running_msg for stp in call[0][0])
-    #         # check that our test string occurs somewhere within this string
-    #         self.assertIn(input_msg, out_msg)
-
-    #     self.fail()
-
-    # def test_select_recipes(self):
-    #     self.fail()
