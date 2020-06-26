@@ -65,7 +65,7 @@ def line_printer(status, msg, step, **kwargs):
     # pass_back['exp'] = exp
 
     # the_msg = '\n'.join([msg, kwargs.get('result', ''),  kwargs.get('exp', '')])
-    the_msg='{}\nresult={}\nexp={}'.format(msg, kwargs.get('result', ''),  kwargs.get('exp', ''))
+    the_msg = '{}\nresult={}\nexp={}'.format(msg, kwargs.get('result', ''),  kwargs.get('exp', ''))
 
     if jira_client:
         jira_client.task_handler(status, msg, step, **kwargs)

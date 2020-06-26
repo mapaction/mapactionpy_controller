@@ -104,4 +104,3 @@ class TestCLI(TestCase):
     def test_cli_with_cmf_deduced_from_current_dir(self):
         # TODO
         pass
-       

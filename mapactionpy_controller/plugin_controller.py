@@ -110,7 +110,7 @@ def get_cookbook_steps(my_runner, map_number):
         for recipe in select_recipes(my_cookbook, map_number):
             print('About to create steps for recipe {}'.format(recipe.mapnumber))
             selected_product_steps.extend(_get_per_product_steps(my_runner, recipe))
-            
+
         return selected_product_steps
         # process_stack(product_steps, recipe)
 

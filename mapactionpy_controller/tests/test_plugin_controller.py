@@ -34,16 +34,14 @@ class TestPluginController(TestCase):
         found_list_of_steps = False
         for call in mock_lp.call_args_list:
             try:
-                retrieved_result  = call[1]['result']
+                retrieved_result = call[1]['result']
                 if all([isinstance(stp, Step) for stp in retrieved_result]):
                     # print('found_list_of_steps=True')
                     found_list_of_steps = True
-
-            except:
+            except KeyError:
                 pass
 
         self.assertTrue(found_list_of_steps)
-
 
     @mock.patch('mapactionpy_controller.main_stack.line_printer')
     def test_select_recipes(self, mock_lp):
@@ -67,7 +65,6 @@ class TestPluginController(TestCase):
             (None, ['MA001', 'MA002', 'MA003', 'MA004'], [])
         ]
 
-
         for mapid_arg, should_create, fail_list in test_cases:
             print('mapid_arg = {}'.format(mapid_arg))
             print('should_create = {}'.format(should_create))
@@ -81,11 +78,10 @@ class TestPluginController(TestCase):
             print('initial_step={}'.format(initial_step[0].func))
             print('initial_step={}'.format(initial_step[0].running_msg))
 
-
             main_stack.process_stack(initial_step, None)
 
             # Now get the information out of the mock
-            # all_calls = 
+            # all_calls =
 
             while mock_lp.call_args_list:
                 call = mock_lp.call_args_list.pop()
@@ -110,33 +106,32 @@ class TestPluginController(TestCase):
 
             self.assertEqual(should_create_set, found_map_ids)
 
-                # try:
-                #     retrieved_result = call[1]['result']
-                #     # print('retrieved_result = {}'.format(retrieved_result))
+            # try:
+            #     retrieved_result = call[1]['result']
+            #     # print('retrieved_result = {}'.format(retrieved_result))
 
-                #     # test_list = [isinstance(stp, Step) for stp in retrieved_result]
-                #     # print('test_list = {}'.format(test_list))
-                #     if all([isinstance(stp, Step) for stp in retrieved_result]):
-                #         print('found_list_of_steps=True')
-                #         found_list_of_steps = True
+            #     # test_list = [isinstance(stp, Step) for stp in retrieved_result]
+            #     # print('test_list = {}'.format(test_list))
+            #     if all([isinstance(stp, Step) for stp in retrieved_result]):
+            #         print('found_list_of_steps=True')
+            #         found_list_of_steps = True
 
-                #     # test_list = []
+            #     # test_list = []
 
-                #     # for stp in retrieved_result:
-                #     #     print('stp = {}'.format(stp))
-                #     #     test_list.append(isinstance(stp, Step))
+            #     # for stp in retrieved_result:
+            #     #     print('stp = {}'.format(stp))
+            #     #     test_list.append(isinstance(stp, Step))
 
-                #     # print('test_list = {}'.format(test_list))
+            #     # print('test_list = {}'.format(test_list))
 
-                #     # if all(test_list):
-                #     #     print('found_list_of_steps=True')
-                #     #     found_list_of_steps = True
-                # except:
-                #     pass
+            #     # if all(test_list):
+            #     #     print('found_list_of_steps=True')
+            #     #     found_list_of_steps = True
+            # except:
+            #     pass
 
             # self.assertTrue(found_list_of_steps)
-        
-        
+
     # @mock.patch('mapactionpy_controller.cli.process_stack')
     # def test_somethiung_using_mocks(self, mock_stack):
     #     # valid CLI options that will call a list of steps
@@ -181,5 +176,3 @@ class TestPluginController(TestCase):
 
     # def test_select_recipes(self):
     #     self.fail()
-
-
