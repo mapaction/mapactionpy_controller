@@ -1,6 +1,10 @@
 from unittest import TestCase
 from mapactionpy_controller.main_stack import process_stack
 from mapactionpy_controller.steps import Step
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 
 
 class TestMainStack(TestCase):
@@ -46,7 +50,10 @@ class TestMainStack(TestCase):
     def setUp(self):
         pass
 
-    def test_simple_step_list(self):
+    @mock.patch('humanfriendly.terminal.connected_to_terminal')
+    def test_simple_step_list(self, mock_hft):
+        # mock_hft is purely to prevent the console from becoming too clutered when running unittests
+        mock_hft.return_value = False
 
         starter_list = ['AAA', 'BBB', 'CCC', 'DDD']
 
@@ -62,7 +69,10 @@ class TestMainStack(TestCase):
             self.assertEqual(expected_state, final_state)
             # print('\nfinal state = {}'.format(final_state))
 
-    def test_add_single_step_into_stack(self):
+    @mock.patch('humanfriendly.terminal.connected_to_terminal')
+    def test_add_single_step_into_stack(self, mock_hft):
+        # mock_hft is purely to prevent the console from becoming too clutered when running unittests
+        mock_hft.return_value = False
 
         starter_list = ['AAA', 'BBB', 'CCC', 'DDD']
 
@@ -83,7 +93,10 @@ class TestMainStack(TestCase):
             self.assertEqual(expected_state, final_state)
             # print('\nfinal list = {}'.format(final_state))
 
-    def test_add_multiple_steps_into_stack(self):
+    @mock.patch('humanfriendly.terminal.connected_to_terminal')
+    def test_add_multiple_steps_into_stack(self, mock_hft):
+        # mock_hft is purely to prevent the console from becoming too clutered when running unittests
+        mock_hft.return_value = False
 
         starter_list = ['AAA', 'BBB', 'CCC', 'DDD']
 
