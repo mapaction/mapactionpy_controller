@@ -89,7 +89,7 @@ class TestMainStack(TestCase):
 
         test_cases = [
             ('list', [], ['AAA', 'BBB', '111', '222', '333', 'DDD']),
-            ('dict', {}, {'AAA': 'AAA', 'BBB': 'BBB', '111': '111', '222':'222', '333':'333','DDD': 'DDD'}),
+            ('dict', {}, {'AAA': 'AAA', 'BBB': 'BBB', '111': '111', '222': '222', '333': '333', 'DDD': 'DDD'}),
             ('string', '', 'AAABBB111222333DDD')
         ]
 
@@ -103,8 +103,6 @@ class TestMainStack(TestCase):
             final_state = process_stack(starter_steps, initial_state)
             self.assertEqual(expected_state, final_state)
             print('\nfinal list = {}'.format(final_state))
-
-
 
     # def test_distinguish_between_falsy_kwargs(self):
     #     inputs = [

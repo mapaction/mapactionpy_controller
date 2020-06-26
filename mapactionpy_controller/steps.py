@@ -9,23 +9,17 @@ class Step():
         self.complete_msg = complete_msg
         self.fail_msg = fail_msg
 
-    def run(self, set_status, verbose, **kwargs):
+    def run(self, set_status, **kwargs):
+        pass_back = kwargs.copy()
+
         try:
             result = self.func(**kwargs)
-            # if all(kwargs.values()):
-            #     result = self.func(**kwargs)
-            # else:
-            #     result = self.func()
-
-            if verbose:
-                msg = '{}\n{}'.format(self.complete_msg, result)
-            else:
-                msg = self.complete_msg
-
-            set_status(logging.INFO, msg, self, **kwargs)
+            # long_msg = '{}\n{}'.format(self.complete_msg, result)
+            pass_back['long_msg'] = str(result)
+            set_status(logging.INFO, self.complete_msg, self, **pass_back)
             return result
-            # return True
         except Exception as exp:
-            fail_msg = '{}\n{}'.format(self.fail_msg, exp)
-            set_status(logging.ERROR, fail_msg, self, **kwargs)
-            # set_status(logging.DEBUG, traceback.format_exc())
+            # long_msg = '{}\n{}'.format(self.fail_msg, exp)
+            pass_back['long_msg'] = str(exp)
+            pass_back['exp'] = exp
+            set_status(logging.ERROR, self.fail_msg, self, **pass_back)
