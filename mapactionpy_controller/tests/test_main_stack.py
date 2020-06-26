@@ -60,7 +60,7 @@ class TestMainStack(TestCase):
             starter_steps = self.build_example_steps(starter_list, state_type)
             final_state = process_stack(starter_steps, initial_state)
             self.assertEqual(expected_state, final_state)
-            print('\nfinal state = {}'.format(final_state))
+            # print('\nfinal state = {}'.format(final_state))
 
     def test_add_single_step_into_stack(self):
 
@@ -81,7 +81,7 @@ class TestMainStack(TestCase):
             starter_steps[2].func = get_inject_steps
             final_state = process_stack(starter_steps, initial_state)
             self.assertEqual(expected_state, final_state)
-            print('\nfinal list = {}'.format(final_state))
+            # print('\nfinal list = {}'.format(final_state))
 
     def test_add_multiple_steps_into_stack(self):
 
@@ -102,60 +102,4 @@ class TestMainStack(TestCase):
             starter_steps[2].func = get_inject_steps
             final_state = process_stack(starter_steps, initial_state)
             self.assertEqual(expected_state, final_state)
-            print('\nfinal list = {}'.format(final_state))
-
-    # def test_distinguish_between_falsy_kwargs(self):
-    #     inputs = [
-    #         None,
-    #         True,
-    #         False,
-    #         [],
-    #         ['AAA', 'BBB', 'CCC', 'DDD'],
-    #         self.build_example_steps(['111', '222', '333']),
-    #         {},
-    #         {'item1': 'value1', 'item2': 'value2'}
-    #     ]
-
-    #     output = {
-    #         0: 'None literal',
-    #         1: 'True literal',
-    #         2: 'False literal',
-    #         3: 'empty list',
-    #         4: 'non-empty list',
-    #         5: 'step list',
-    #         6: 'empty dict',
-    #         7: 'non-empty dict',
-    #         8: 'recipe',
-    #         9: 'other object'
-    #     }
-
-    #     for n in range(0, len(inputs)):
-    #         print()
-    #         print('option[n]={}'.format(inputs[n]))
-    #         print('bool(option[n]={})'.format(bool(inputs[n])))
-    #         print('is `dict` option[n]={} '.format(isinstance(inputs[n], dict)))
-    #         print('is `bool` option[n]={} '.format(isinstance(inputs[n], bool)))
-    #         print('is `None` option[n]={} '.format(inputs[n] is None))
-
-    #         self.assertEqual(self.get_my_type(inputs[n]), output[n])
-
-    # def get_my_type(self, obj):
-    #     if obj is None:
-    #         return 'None literal'
-    #         # (list, True): 'step list',
-    #         # MapRecipe: 'recipe',
-    #         # 9: 'other object'
-
-    #     a = {
-    #         (bool, True): 'True literal',
-    #         (bool, False): 'False literal',
-    #         (list, False): 'empty list',
-    #         (list, True): 'non-empty list',
-    #         (dict, False): 'empty dict',
-    #         (dict, True): 'non-empty dict',
-    #     }
-
-    #     try:
-    #         return a[type(obj), bool(obj)]
-    #     except KeyError:
-    #         return 'other object'
+            # print('\nfinal list = {}'.format(final_state))

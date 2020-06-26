@@ -6,7 +6,7 @@ import logging
 from mapactionpy_controller.map_recipe import MapRecipe
 import mapactionpy_controller.task_renderer as task_renderer
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 # TODO read these in from a config file
 jira_hostname = 'mapaction.atlassian.net'

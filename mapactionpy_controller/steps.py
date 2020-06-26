@@ -15,11 +15,11 @@ class Step():
         try:
             result = self.func(**kwargs)
             # long_msg = '{}\n{}'.format(self.complete_msg, result)
-            pass_back['long_msg'] = str(result)
+            pass_back['result'] = result
             set_status(logging.INFO, self.complete_msg, self, **pass_back)
             return result
         except Exception as exp:
             # long_msg = '{}\n{}'.format(self.fail_msg, exp)
-            pass_back['long_msg'] = str(exp)
+            # pass_back['result'] = str(exp)
             pass_back['exp'] = exp
             set_status(logging.ERROR, self.fail_msg, self, **pass_back)

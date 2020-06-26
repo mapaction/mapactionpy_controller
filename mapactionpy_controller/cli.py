@@ -50,15 +50,15 @@ def build_maps(humevent_desc_path, map_number):
     # build_steps.append(cnc.get_active_data_step_list(args.humevent_desc_path, True))
     # main_stack.process_stack(build_steps)
     my_runner = process_stack(plugin_controller.get_plugin_step(), humevent_desc_path)
-    my_cookbook = process_stack(plugin_controller.get_cookbook_steps(my_runner), None)
+    process_stack(plugin_controller.get_cookbook_steps(my_runner, map_number), None)
 
-    map_nums = None
-    if map_number:
-        map_nums = [map_number]
+    # map_nums = None
+    # if map_number:
+    #     map_nums = [map_number]
 
-    for recipe in plugin_controller.select_recipes(my_cookbook, map_nums):
-        product_steps = plugin_controller.get_per_product_steps(my_runner, recipe.mapnumber, recipe.product)
-        process_stack(product_steps, recipe)
+    # for recipe in plugin_controller.select_recipes(my_cookbook, map_nums):
+    #     product_steps = plugin_controller.get_per_product_steps(my_runner, recipe.mapnumber, recipe.product)
+    #     process_stack(product_steps, recipe)
 
 
 all_nouns = {

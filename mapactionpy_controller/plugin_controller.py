@@ -2,17 +2,25 @@ import mapactionpy_controller.steps as steps
 from mapactionpy_controller.layer_properties import LayerProperties
 from mapactionpy_controller.map_cookbook import MapCookbook
 from mapactionpy_controller.event import Event
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 def get_plugin_step():
     def get_plugin(**kwargs):
         hum_event = kwargs['state']
         try:
+            logging.debug('Attempting to load the ArcMapRunner')
             from mapactionpy_arcmap.arcmap_runner import ArcMapRunner
             runner = ArcMapRunner(hum_event)
+            logging.info('Successfully loaded the ArcMapRunner')
         except ImportError:
+            logging.debug('Failed to load the ArcMapRunner')
+            logging.debug('Attempting to load the QGisRunner')
             from mapactionpy_qgis.qgis_runner import QGisRunner
             runner = QGisRunner()
+            logging.info('Failed to load the ArcMapRunner')
 
         return runner
 
@@ -37,11 +45,12 @@ def get_plugin_step():
     return plugin_step
 
 
-def get_per_product_steps(_runner, map_num, map_name):
+def _get_per_product_steps(_runner, recipe):
     # In due course there should be greater granularity for some of these steps
+    print('Building steps for recipe {}'.format(recipe.mapnumber))
 
     def just_return_recipe(**kwargs):
-        return kwargs['state']
+        return recipe
 
     def pass_through_step(**kwargs):
         pass
@@ -49,9 +58,9 @@ def get_per_product_steps(_runner, map_num, map_name):
     product_steps = [
         steps.Step(
             just_return_recipe,
-            'Starting to create map "{}" - "{}"'.format(map_num, map_name),
-            'Starting to create map "{}" - "{}"'.format(map_num, map_name),
-            'Failed to create map "{}" - "{}"'.format(map_num, map_name),
+            'Starting to create map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
+            'Starting to create map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
+            'Failed to create map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
         ),
         steps.Step(
             _runner.get_templates,
@@ -79,20 +88,31 @@ def get_per_product_steps(_runner, map_num, map_name):
         ),
         steps.Step(
             pass_through_step,
-            'Completed the creation of map "{}" - "{}"'.format(map_num, map_name),
-            'Completed the creation of map "{}" - "{}"'.format(map_num, map_name),
-            'Failed to create map "{}" - "{}"'.format(map_num, map_name),
+            'Completed the creation of map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
+            'Completed the creation of map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
+            'Failed to create map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
         ),
-
     ]
+
+    temp_msg = product_steps[0].running_msg
+
+    print('Built steps for recipe {} with running_msg = {}'.format(recipe.mapnumber, temp_msg))
 
     return product_steps
 
 
-def get_cookbook_steps(my_runner):
-    def get_cookbook():
+def get_cookbook_steps(my_runner, map_number):
+    def get_cookbook(**kwargs):
         lyrs = LayerProperties(my_runner.cmf, my_runner.get_lyr_render_extension(), verify_on_creation=False)
-        return MapCookbook(my_runner.cmf, lyrs, verify_on_creation=False)
+        my_cookbook = MapCookbook(my_runner.cmf, lyrs, verify_on_creation=False)
+
+        selected_product_steps = []
+        for recipe in select_recipes(my_cookbook, map_number):
+            print('About to create steps for recipe {}'.format(recipe.mapnumber))
+            selected_product_steps.extend(_get_per_product_steps(my_runner, recipe))
+            
+        return selected_product_steps
+        # process_stack(product_steps, recipe)
 
     cookbook_steps = [
         steps.Step(
@@ -108,8 +128,23 @@ def get_cookbook_steps(my_runner):
 
 def select_recipes(cookbook, map_nums=None):
     all_recipes = cookbook.products.values()
+
     if map_nums:
-        return [r for r in all_recipes if r.mapnumber in map_nums]
+        try:
+            cleaned_nums = [map_nums.upper()]
+        except AttributeError:
+            cleaned_nums = [mn.upper() for mn in map_nums]
+
+        selected_recipes = []
+        for r in all_recipes:
+            print('do we want mapID = "{}"?'.format(r.mapnumber))
+            if r.mapnumber.upper() in cleaned_nums:
+                print('It seems that mapID = "{}" is in selected list "{}"'.format(r.mapnumber, cleaned_nums))
+                selected_recipes.append(r)
+
+        print('We have selected "{}"'.format([r.mapnumber for r in selected_recipes]))
+        return selected_recipes
+        # return [r for r in all_recipes if r.mapnumber.upper() in cleaned_nums]
     else:
         return all_recipes
 

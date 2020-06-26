@@ -26,17 +26,18 @@ class TestCLI(TestCase):
         input_args_list = [
             ['defaultcmf', '--verify', self.path_to_cmf_file],
             ['defaultcmf', '--verify', self.path_to_cmf_file],
-            ['gisdata', '--verify', self.path_to_event_file]
+            ['gisdata', '--verify', self.path_to_event_file],
+            ['maps', '--build', self.path_to_event_file]
         ]
 
-        # TODO
-        # 'gisdata', '--verify', self.path_to_event_file is failing
-        # becuase it is pointing to an empty directory and hence not generating any steps
-
+        # Note that becuase `process_stack` can be called more than once per CLI invokation
+        # it is possible that `input_msg_list` may be a different length to `input_args_list`
         input_msg_list = [
             'map template naming convention',
             'layer properties json file and the MapCookbook',
-            'data naming convention'
+            'data naming convention',
+            'Humanitarian Event description file',
+            'MapCookbook files'
         ]
 
         glob_list = [
@@ -100,5 +101,7 @@ class TestCLI(TestCase):
             sys.argv[1:] = testargs
             self.assertRaises(SystemExit, cli.entry_point)
 
-    def test_cli_with_cmf_deduced_from_pwd(self):
+    def test_cli_with_cmf_deduced_from_current_dir(self):
+        # TODO
         pass
+       

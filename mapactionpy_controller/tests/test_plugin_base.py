@@ -15,7 +15,10 @@ class DummyRunner(BaseRunnerPlugin):
         return kwargs['state']
 
     def get_projectfile_extension(self):
-        return '.dummy'
+        return '.dummy_project_file'
+
+    def get_lyr_render_extension(self):
+        return '.dummy_lyr_file'
 
     def create_ouput_map_project(self, **kwargs):
         return kwargs['state']
