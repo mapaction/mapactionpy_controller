@@ -4,6 +4,7 @@ from os import path
 import logging
 
 CONFIG_SCHEMAS_DIR = path.join(path.abspath(path.dirname(__file__)), 'schemas')
+TASK_TEMPLATES_DIR = path.join(path.abspath(path.dirname(__file__)), 'task-templates')
 
 
 def _get_validator_for_config_schema(schema_file):

@@ -1,28 +1,4 @@
-# flake8: noqa
-# TODO: Enable flake8 on this file
-import chevron
-
-# key = step.func
-# value = filename for mustache template
-mustache_template_lookup = {
-    'check_gis_data_name': 'misnamed-gis-file',
-    'check_file_in_wrong_directory': 'file-in-wrong-directory',
-    'update_recipe_with_datasources': 'gis-data-missing',
-    'schema_error': 'schema-error',
-    'file_in_wrong_directory': 'file-in-wrong-directory',
-    'multiple_matching_files': 'multiple-matching-files',
-    '_runner.build_project_files': 'project-build-error',
-    'check_dir': 'check-names-of-files-other-than-gis-files'
-}
-
-fallback_template = 'major-configuration-error'
-
-
-def check_templates_exist():
-    pass
-
-
-task_template = r"""
+{{=<% %>=}}
 h1. What is the problem?
 
 There are multiple dataset which fulfil the requirements for this map layer: *{{<% lyr_stuff.lyr_name %>}}*. The data files name all match this pattern:
@@ -60,28 +36,3 @@ h1. Other information
 |*Data search regex*|{{<%regex%>}}|
 |*Full path to layer file*|{{<%lyr_stuff.lyr_file_path%>}}|
 |*Full path to {{layerProperties.json}} file*|{{<%lyr_stuff.lyr_props_path%>}}|
-"""
-
-values = {
-    'regex': '^ken_carto_fea_py_(.?)_(.?)_([phm][phm])(.*?).shp$',
-    'shpfile_list': [
-        {'shpf': r'GIS\2_Active_Data\207_carto\ken_carto_fea_py_s0_mapaction_pp_100kfeather.shp'},
-        {'shpf': r'GIS\2_Active_Data\207_carto\ken_carto_fea_py_s0_mapaction_pp_50kfeather.shp'},
-        {'shpf': r'GIS\2_Active_Data\207_carto\ken_carto_fea_py_s0_mapaction_pp_75kfeather.shp'}
-    ],
-    'event_id': '2020ken01',
-    'lyr_stuff': {
-        'lyr_name': 'mainmap-carto-fea-py-s0-allmaps',
-        'lyr_file_path': r'GIS\3_Mapping\31_Resources\312_Layer_files\mainmap-carto-fea-py-s0-allmaps.lyr',
-        'lyr_props_path': r'GIS\3_Mapping\31_Resources\316_Automation\layerProperties.json'
-    }
-}
-
-
-def get_task_description():
-    return chevron.render(task_template, values, def_ldel='<%', def_rdel='%>')
-
-
-# testing
-if __name__ == "__main__":
-    print(get_task_description())

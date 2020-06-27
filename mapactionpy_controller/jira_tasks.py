@@ -97,8 +97,8 @@ class JiraClient():
 if __name__ == "__main__":
     my = JiraClient()
     # my.create_task_from_template()
-    my_issue = my.jira_con.issue('TMIT2-11')
-    my_issue.update(description=task_renderer.get_task_description())
+    my_issue = my.jira_con.issue('TMIT2-4')
+    # my_issue.update(description=task_renderer.get_task_description())
 
     print(my_issue)
     my_desc = my_issue.fields.description
