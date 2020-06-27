@@ -10,7 +10,6 @@ import errno
 from zipfile import ZipFile
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 # abstract class
 # Done using the "old-school" method described here, without using the abs module
