@@ -17,7 +17,7 @@ class TestPluginController(TestCase):
     def setUp(self):
         self.parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         self.path_to_cmf_file = os.path.join(self.parent_dir, 'example', 'cmf_description_flat_test.json')
-        print('self.path_to_cmf_file = {}'.format(self.path_to_cmf_file))
+        # print('self.path_to_cmf_file = {}'.format(self.path_to_cmf_file))
         # self.path_to_event_file = os.path.join(self.parent_dir, 'example', 'event_description.json')
         # self.nonexistant_path = '/file/that/does/not/exist'
 

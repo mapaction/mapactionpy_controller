@@ -3,7 +3,6 @@ import logging
 import os
 import re
 import glob
-import six
 from slugify import slugify
 from shutil import copyfile
 import errno
