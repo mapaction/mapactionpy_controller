@@ -1,9 +1,10 @@
+import glob
+import logging
 import os
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.event import Event
 import mapactionpy_controller.name_convention as name_convention
 from mapactionpy_controller.steps import Step
-import glob
 
 
 def get_defaultcmf_step_list(cmf_config_path, verbose):
@@ -79,6 +80,7 @@ def _step_builer(file_list, nc, verbose, convention_name):
         step_list.append(
             Step(
                 get_single_file_checker(f_path, nc, verbose),
+                logging.WARNING,
                 "Checking the file '{}' against the {} naming convention".format(base_name, convention_name),
                 "The file '{}' matches the {} naming convention".format(base_name, convention_name),
                 "The file '{}' does not match the {} naming convention".format(base_name, convention_name)

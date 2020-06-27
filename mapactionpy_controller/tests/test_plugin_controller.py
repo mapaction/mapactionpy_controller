@@ -66,17 +66,17 @@ class TestPluginController(TestCase):
         ]
 
         for mapid_arg, should_create, fail_list in test_cases:
-            print('mapid_arg = {}'.format(mapid_arg))
-            print('should_create = {}'.format(should_create))
-            print('fail_list = {}'.format(fail_list))
+            # print('mapid_arg = {}'.format(mapid_arg))
+            # print('should_create = {}'.format(should_create))
+            # print('fail_list = {}'.format(fail_list))
             should_create_set = set(should_create)
             found_map_ids = set()
 
             test_runner = DummyRunner()
             test_runner.cmf = CrashMoveFolder(self.path_to_cmf_file)
             initial_step = plugin_controller.get_cookbook_steps(test_runner, mapid_arg)
-            print('initial_step={}'.format(initial_step[0].func))
-            print('initial_step={}'.format(initial_step[0].running_msg))
+            # print('initial_step={}'.format(initial_step[0].func))
+            # print('initial_step={}'.format(initial_step[0].running_msg))
 
             main_stack.process_stack(initial_step, None)
 

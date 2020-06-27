@@ -1,6 +1,7 @@
 from unittest import TestCase
 from mapactionpy_controller.main_stack import process_stack
 from mapactionpy_controller.steps import Step
+import logging
 import random
 from time import sleep
 # works differently for python 2.7 and python 3.x
@@ -31,18 +32,21 @@ class TestSteps(TestCase):
         demo_steps = [
             Step(
                 random_pass,
+                logging.WARNING,
                 'DEMO: Checking that the Crash Move Folder description file opens correctly',
                 'DEMO: The Crash Move Folder description file opened correctly',
                 'DEMO: Failed to open the Crash Move Folder description file correctly',
             ),
             Step(
                 random_pass,
+                logging.WARNING,
                 'DEMO: Checking that each of the configuration files matches their relevant schemas',
                 'DEMO: Each of the configuration files adheres to their relevant schemas',
                 'DEMO: Failed to verify one or more of the configuration files against the relevant schema',
             ),
             Step(
                 random_pass,
+                logging.WARNING,
                 'DEMO: Comparing the contents of the layer properties json file and the layer rendering directory',
                 'DEMO: Compared the contents of the layer properties json file and the layer rendering directory',
                 'DEMO: Inconsistancy found in between the contents of the layer properties json file and the layer'
@@ -50,6 +54,7 @@ class TestSteps(TestCase):
             ),
             Step(
                 random_pass,
+                logging.WARNING,
                 'DEMO: Comparing the contents of the layer properties json file and the MapCookbook',
                 'DEMO: Compared the contents of the layer properties json file and the MapCookbook',
                 'DEMO: Inconsistancy found in between the contents of the layer properties json file'

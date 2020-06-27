@@ -10,6 +10,7 @@ import errno
 from zipfile import ZipFile
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 # abstract class
 # Done using the "old-school" method described here, without using the abs module
@@ -120,7 +121,9 @@ class BaseRunnerPlugin(object):
             os.mkdir(output_dir)
 
         # Construct output MXD/QPRJ name
-        output_map_base = slugify(six.u(recipe.product))
+        logger.debug('About to create new map project file for product "{}"'.format(recipe.product))
+        output_map_base = slugify(recipe.product)
+        logger.debug('Set output name for new map project file to "{}"'.format(output_map_base))
         recipe.version_num = self.get_next_map_version_number(output_dir, recipe.mapnumber, output_map_base)
         output_map_name = '{}-v{}-{}{}'.format(
             recipe.mapnumber, str(recipe.version_num).zfill(2), output_map_base, self.get_projectfile_extension())

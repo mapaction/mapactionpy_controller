@@ -31,12 +31,14 @@ def get_plugin_step():
     plugin_step = [
         steps.Step(
             new_event,
+            logging.ERROR,
             'Loading the Humanitarian Event description file',
             'Successfully loaded the Humanitarian Event description file',
             'Failed to load the Humanitarian Event description file',
         ),
         steps.Step(
             get_plugin,
+            logging.ERROR,
             'Identifying available plugins (ArcMapRunner/QGisRunner)',
             'Successfully loaded an available plugin',
             'Failed to load a suitable any plugin',
@@ -59,36 +61,42 @@ def _get_per_product_steps(_runner, recipe):
     product_steps = [
         steps.Step(
             just_return_recipe,
+            logging.ERROR,
             'Starting to create map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
             'Starting to create map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
             'Failed to create map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
         ),
         steps.Step(
             _runner.get_templates,
+            logging.ERROR,
             'Identifying suitable map template',
             'Successfully indentifed suitable map template',
             'Failed to identify suitable map template',
         ),
         steps.Step(
             _runner.create_ouput_map_project,
+            logging.ERROR,
             "Creating new '{}' file.".format(_runner.get_projectfile_extension()),
             "Successfully created new '{}' file.".format(_runner.get_projectfile_extension()),
             "Failed to create new '{}' file.".format(_runner.get_projectfile_extension())
         ),
         steps.Step(
             _runner.build_project_files,
+            logging.ERROR,
             'Adding layers to the map and applying styling',
             'Successfully added layers to the map and applying styling',
             'Failed to add the layers to the map and applied styling',
         ),
         steps.Step(
             _runner.export_maps,
+            logging.WARNING,
             'Exporting Maps and creating zipfile',
             'Successfully exported Maps and creating zipfile',
             'Failed to export the maps and create zipfile'
         ),
         steps.Step(
             pass_through_step,
+            logging.ERROR,
             'Completed the creation of map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
             'Completed the creation of map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
             'Failed to create map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
@@ -116,6 +124,7 @@ def get_cookbook_steps(my_runner, map_number):
     cookbook_steps = [
         steps.Step(
             get_cookbook,
+            logging.ERROR,
             'Openning the MapCookbook files',
             'Successfully opened the MapCookbook files',
             'Failed to open the MapCookbook files'

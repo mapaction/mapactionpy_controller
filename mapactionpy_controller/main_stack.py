@@ -45,8 +45,9 @@ def line_printer(status, msg, step, **kwargs):
     the_msg = msg
     if status > logging.INFO:
         exp = kwargs['exp']
-        the_msg = '{}\nerror message={}\n{}\n{}\n{}'.format(
-            msg, str(type(exp)), str(exp.args), str(exp.message), traceback.format_exc())
+        stack_trace = kwargs['stack_trace']
+        the_msg = '{}\nerror message={}\n{}\n{}'.format(
+            msg, str(type(exp)), str(exp.args), stack_trace)
 
     if jira_client:
         jira_client.task_handler(status, msg, step, **kwargs)
@@ -102,21 +103,29 @@ def process_stack(step_list, initial_state):
     step_list.reverse()
     stack = deque(step_list)
 
-    while stack:
-        # Definitions:
-        # `n_state` = the state for the current iteration
-        # `nplus_state` = the state for the next iteraction (eg N+1)
-        step = stack.pop()
-        kwargs = {'state': n_state}
+    try:
+        while stack:
+            # Definitions:
+            # `n_state` = the state for the current iteration
+            # `nplus_state` = the state for the next iteraction (eg N+1)
+            step = stack.pop()
+            kwargs = {'state': n_state}
 
-        if hft.connected_to_terminal():
-            with spinners.AutomaticSpinner(step.running_msg, show_time=True):
+            if hft.connected_to_terminal():
+                with spinners.AutomaticSpinner(step.running_msg, show_time=True):
+                    nplus_state = step.run(line_printer, **kwargs)
+            else:
+                logger.info('Starting: {}'.format(step.running_msg))
                 nplus_state = step.run(line_printer, **kwargs)
-        else:
-            logger.info('Starting: {}'.format(step.running_msg))
-            nplus_state = step.run(line_printer, **kwargs)
 
-        # Used to increment the state *only* if no new Steps where returned
-        n_state = _add_steps_from_state_to_stack(nplus_state, stack, n_state)
+            # Used to increment the state *only* if no new Steps where returned
+            n_state = _add_steps_from_state_to_stack(nplus_state, stack, n_state)
 
-    return n_state
+        return n_state
+    except Exception as exp:
+        pass_back = {
+            'exp': exp,
+            'stack_trace': traceback.format_exc()
+        }
+
+        line_printer(logging.ERROR, 'Unable to continue following the previous error', None, **pass_back)

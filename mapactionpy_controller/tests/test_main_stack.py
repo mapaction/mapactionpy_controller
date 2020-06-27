@@ -1,3 +1,4 @@
+import logging
 from unittest import TestCase
 from mapactionpy_controller.main_stack import process_stack
 from mapactionpy_controller.steps import Step
@@ -39,6 +40,7 @@ class TestMainStack(TestCase):
             step_list.append(
                 Step(
                     self.get_append_state(step_name, state_obj_type),
+                    logging.WARNING,
                     'DEMO: Doing  {}'.format(step_name),
                     'DEMO: Passed {}'.format(step_name),
                     'DEMO: Failed {}'.format(step_name)
