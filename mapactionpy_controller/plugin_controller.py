@@ -143,10 +143,12 @@ def select_recipes(cookbook, map_nums=None):
         except AttributeError:
             cleaned_nums = [mn.upper() for mn in map_nums]
 
-        selected_recipes = []
-        for r in all_recipes:
-            if r.mapnumber.upper() in cleaned_nums:
-                selected_recipes.append(r)
+        # selected_recipes = []
+        # for r in all_recipes:
+        #     if r.mapnumber.upper() in cleaned_nums:
+        #         selected_recipes.append(r)
+
+        selected_recipes = [r for r in all_recipes if r.mapnumber.upper() in cleaned_nums]
 
         logger.debug('MapIDs "{}" have been selected'.format([r.mapnumber for r in selected_recipes]))
         return selected_recipes
