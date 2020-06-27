@@ -1,5 +1,7 @@
 from unittest import TestCase
 import mapactionpy_controller.check_naming_convention as check_naming_convention
+import mapactionpy_controller.name_convention as name_convention
+
 import os
 import six
 
@@ -20,31 +22,14 @@ class TestCheckNamingConventionTool(TestCase):
         self.cmf_descriptor_path = os.path.join(
             self.parent_dir, 'example', 'cmf_description_flat_test.json')
 
-    def test_check_naming_convention_check_dir(self):
+    def test_get_single_file_checker(self):
         nc_desc_path = os.path.join(self.parent_dir, 'example', 'data_naming_convention.json')
+        nc = name_convention.NamingConvention(nc_desc_path)
 
-        dir_of_valid_names = os.path.join(self.parent_dir, 'tests',
-                                          'testfiles', 'test_naming_convention', 'valid'
-                                          )
+        passing_path = '/path/to/some/gisdata/206_bldg/ken_bldg_bdg_py_s4_osm_pp.shp'
+        func = check_naming_convention.get_single_file_checker(passing_path, nc, True)
+        self.assertIn('parsable and valid', func())
 
-        dir_of_invalid_names = os.path.join(self.parent_dir, 'tests',
-                                            'testfiles', 'test_naming_convention', 'invalid'
-                                            )
-
-        # point to empty directories
-        func = check_naming_convention.get_dir_checker(self.parent_dir, nc_desc_path, '.shp', False)
-        self.assertEqual(func(), 0)
-
-        # point to a compliant, populated directory
-        func = check_naming_convention.get_dir_checker(dir_of_valid_names, nc_desc_path, '.shp', False)
-        self.assertEqual(func(), 0)
-
-        # point to a non-compliant, populated directory
-        func = check_naming_convention.get_dir_checker(dir_of_invalid_names, nc_desc_path, '.shp', True)
-        with self.assertRaises(ValueError):
-            func()
-
-        # point to a non-compliant, populated directory
-        func = check_naming_convention.get_dir_checker(dir_of_invalid_names, nc_desc_path, '.shp', False)
-        with self.assertRaises(ValueError):
-            func()
+        failing_path = '/path/to/some/gisdata/202_admn/ken_admn_ad0_ln_s0_IEBC_pp_HDX.shp'
+        func = check_naming_convention.get_single_file_checker(failing_path, nc, True)
+        self.assertRaises(ValueError, func)
