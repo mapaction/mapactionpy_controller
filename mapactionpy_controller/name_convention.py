@@ -1,7 +1,8 @@
-from pydoc import locate
 import json
 import re
 from collections import namedtuple
+from pydoc import locate
+
 from mapactionpy_controller.name_clause_validators import NamingClause
 
 
@@ -83,8 +84,9 @@ class NamingConvention:
                 else:
                     message = 'The name "{}" is parsable but not valid:\n'.format(name_to_validate)
 
+                # map(lambda x: x.get_message, self._asdict().values())
                 message = message + ('\n'.join(
-                    map(lambda x: x.get_message, self._asdict().values())
+                    ['\t{}'.format(x.get_message) for x in self._asdict().values()]
                 ))
                 return message
 

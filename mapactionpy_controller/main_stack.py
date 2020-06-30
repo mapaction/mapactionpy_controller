@@ -43,7 +43,7 @@ def line_printer(status, msg, step, **kwargs):
     # pass_back['exp'] = exp
 
     the_msg = msg
-    if status > logging.INFO:
+    if status > logging.WARNING:
         exp = kwargs['exp']
         stack_trace = kwargs['stack_trace']
         the_msg = '{}\nerror message={}\n{}\n{}'.format(
@@ -60,6 +60,51 @@ def line_printer(status, msg, step, **kwargs):
         )
     else:
         logger.log(status, the_msg)
+
+
+def translate_into_task(status, step, **kwargs):
+    """
+    Returns the "dict of values" used by the mustache rendering
+    """
+    if status < logging.WARNING:
+        # We just have an "INFO"
+        # Therefore expect this kwarg:
+        state = kwargs['result']
+    else:
+        # Something more serious
+        # Therefore expect these kwargs:
+        exp = kwargs['exp']
+        stack_trace = kwargs['stack_trace']
+        # This _may_ be present but not guaranteed
+        state = kwargs.get('result', None)
+
+    # In each case there may be a single item OR a list of items. If it is a list of items
+    # then there will be one JIRA task per item in the list.
+    mustache_template_lookup = {
+        # A `NameResult` object
+        'check_gis_data_name': 'name_result',
+
+        # A tuple or class representing the misplaced file (to be implenmented)
+        'check_file_in_wrong_directory': 'misplace_file_list',
+
+        # A RecipeLayer object (with detailed adapted from MapResult)
+        'update_recipe_with_datasources': 'gis-data-missing',
+
+        # A tuple of RecipeLayer object (with detailed adapted from MapResult)
+        # and a ValidationError
+        'check_data_schema': 'schema_error',
+
+        # A RecipeLayer object (with detailed adapted from MapResult)
+        # Should have a list of matching shapefiles in place of the `lyr.data_source_path`
+        # and `lyr.data_name` properties. (Check implenmentation on this)
+        'multiple_matching_files': 'multiple-matching-files',
+
+        # Details to be confirmed
+        '_runner.build_project_files': 'project-build-error',
+
+        # A `NameResult` object
+        'check_dir': 'name_result'
+    }
 
 
 def _add_steps_from_state_to_stack(new_state, stack, old_state):

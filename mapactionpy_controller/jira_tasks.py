@@ -48,8 +48,15 @@ class JiraClient():
 
     def task_handler(self, status, msg, step, **kwargs):
         logger.debug('JiraClient.task_handler called with status="{}", step.func=`{}` and msg="{}"'.format(
-            status, step.func.__name__, msg
-        ))
+            status, step.func.__name__, msg))
+
+        if status > logging.INFO:
+            # Maybe need to create a new task
+            pass
+        else:
+            # Maybe need to comment on an existing task
+            pass
+
         if kwargs:
             state = kwargs['state']
             if isinstance(state, MapRecipe):

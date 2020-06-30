@@ -1,6 +1,8 @@
-# flake8: noqa
-# TODO: Enable flake8 on this file
+import os
+
 import chevron
+
+from mapactionpy_controller import TASK_TEMPLATES_DIR
 
 # key = step.func
 # value = filename for mustache template
@@ -18,70 +20,72 @@ mustache_template_lookup = {
 fallback_template = 'major-configuration-error'
 
 
-def check_templates_exist():
+def check_all_templates_exist():
     pass
 
 
-task_template = r"""
-h1. What is the problem?
+def _get_task_template_path(func_name):
+    m_name = mustache_template_lookup.get(func_name, fallback_template)
+    return os.path.join(TASK_TEMPLATES_DIR, '{}.mustache'.format(m_name))
 
-There are multiple dataset which fulfil the requirements for this map layer: *{{<% lyr_stuff.lyr_name %>}}*. The data files name all match this pattern:
 
-{{<%regex%>}}
+def get_task_template(func_name):
+    m_path = _get_task_template_path(func_name)
+    with open(m_path, 'r') as m_file:
+        template = m_file.read()
 
-Each of these files matched the search requirements:
+    # print('template = {}='.format(template))
+    return template
 
-<%#shpfile_list%>
-* {{<%shpf%>}}
-<%/shpfile_list%>
 
-h1. What is the likely consequence of this problem?
+def _name_result_adapter(name_result):
+    valid_clause_list = []
+    invalid_clause_list = []
+    if name_result.is_parsable:
+        valid_clause_list = [clause.get_message for clause in name_result._asdict().values() if clause.is_valid]
+        invalid_clause_list = [clause.get_message for clause in name_result._asdict().values() if not clause.is_valid]
 
-The layer *{{<%lyr_stuff.lyr_name%>}}* will not be added to any of the maps that require it. The maps will be produced with the layer missing. The usefulness of the maps may be greately reduced.
-
-h1. How can this problem be resolved?
-
-Identify the most appropriate dataset to use for this layer within this map.
-
-* (*_Recommended usage_*); Remove the other datasets from the folder {{GIS\2_Active_Data\207_carto}} by one of these methods:
-** Store them in the relevant location under {{GIS\1_Original_Data}}
-** Create a subdirectory below {{GIS\2_Active_Data\207_carto}} and store them there. (Subdirectories are not seached when looking for available data)
-** If you are confident that they are not required by any other map, delete the other layers.
-* (_Advanced option_) It is also possible to update the search regex for layer *mainmap-carto-fea-py-s0-allmaps* in the {{layerProperties.json}} file, so that it is more specific and only selects a single dataset (for example by explictly specifying the data source clause).
-
-For information related this sepcific layer see this page:
-
-[https://wiki.mapaction.org/x/QIDW|https://wiki.mapaction.org/x/QIDW]
-
-h1. Other information
-
-|*EventID*|{{<%event_id%>}}|
-|*Layer name*|{{<%lyr_stuff.lyr_name%>}}|
-|*Data search regex*|{{<%regex%>}}|
-|*Full path to layer file*|{{<%lyr_stuff.lyr_file_path%>}}|
-|*Full path to {{layerProperties.json}} file*|{{<%lyr_stuff.lyr_props_path%>}}|
-"""
-
-values = {
-    'regex': '^ken_carto_fea_py_(.?)_(.?)_([phm][phm])(.*?).shp$',
-    'shpfile_list': [
-        {'shpf': r'GIS\2_Active_Data\207_carto\ken_carto_fea_py_s0_mapaction_pp_100kfeather.shp'},
-        {'shpf': r'GIS\2_Active_Data\207_carto\ken_carto_fea_py_s0_mapaction_pp_50kfeather.shp'},
-        {'shpf': r'GIS\2_Active_Data\207_carto\ken_carto_fea_py_s0_mapaction_pp_75kfeather.shp'}
-    ],
-    'event_id': '2020ken01',
-    'lyr_stuff': {
-        'lyr_name': 'mainmap-carto-fea-py-s0-allmaps',
-        'lyr_file_path': r'GIS\3_Mapping\31_Resources\312_Layer_files\mainmap-carto-fea-py-s0-allmaps.lyr',
-        'lyr_props_path': r'GIS\3_Mapping\31_Resources\316_Automation\layerProperties.json'
+    nr_dict = {
+        'name_to_validate': name_result.name_to_validate,
+        'is_parsable': name_result.is_parsable,
+        'valid_clause_list': [
+            {'valid_clause': clause_msg} for clause_msg in sorted(valid_clause_list)],
+        'invalid_clause_list': [
+            {'invalid_clause': clause_msg} for clause_msg in sorted(invalid_clause_list)]
     }
-}
+
+    return nr_dict
 
 
-def get_task_description():
+def _recipe_adapter(recipe):
+    pass
+
+
+def _recipe_lyr_adapter(lyr):
+    pass
+
+# values = {
+#     'regex': '^ken_carto_fea_py_(.?)_(.?)_([phm][phm])(.*?).shp$',
+#     'shpfile_list': [
+#         {'shpf': r'GIS\2_Active_Data\207_carto\ken_carto_fea_py_s0_mapaction_pp_100kfeather.shp'},
+#         {'shpf': r'GIS\2_Active_Data\207_carto\ken_carto_fea_py_s0_mapaction_pp_50kfeather.shp'},
+#         {'shpf': r'GIS\2_Active_Data\207_carto\ken_carto_fea_py_s0_mapaction_pp_75kfeather.shp'}
+#     ],
+#     'event_id': '2020ken01',
+#     'lyr_stuff': {
+#         'lyr_name': 'mainmap-carto-fea-py-s0-allmaps',
+#         'lyr_file_path': r'GIS\3_Mapping\31_Resources\312_Layer_files\mainmap-carto-fea-py-s0-allmaps.lyr',
+#         'lyr_props_path': r'GIS\3_Mapping\31_Resources\316_Automation\layerProperties.json'
+#     }
+# }
+
+
+def render_task_description(task_template, values):
     return chevron.render(task_template, values, def_ldel='<%', def_rdel='%>')
 
 
 # testing
 if __name__ == "__main__":
-    print(get_task_description())
+    pass
+    # print(get_task_template('check_gis_data_name'))
+    # print(get_task_description())
