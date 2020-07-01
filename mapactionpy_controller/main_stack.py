@@ -1,12 +1,11 @@
-# import mapactionpy_controller.config_verify as config_verify
-from collections import deque
-import humanfriendly.terminal as hft
 import logging
-# from humanfriendly.terminal.spinners import AutomaticSpinner
-import humanfriendly.terminal.spinners as spinners
-from mapactionpy_controller.steps import Step
 import traceback
-import mapactionpy_controller.task_renderer as task_renderer
+from collections import deque
+
+import humanfriendly.terminal as hft
+import humanfriendly.terminal.spinners as spinners
+
+from mapactionpy_controller.steps import Step
 
 logger = logging.getLogger(__name__)
 

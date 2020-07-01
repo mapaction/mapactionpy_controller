@@ -28,7 +28,7 @@ class TestCheckNamingConventionTool(TestCase):
 
         passing_path = '/path/to/some/gisdata/206_bldg/ken_bldg_bdg_py_s4_osm_pp.shp'
         func = check_naming_convention.get_single_file_checker(passing_path, nc, True)
-        self.assertIn('parsable and valid', func())
+        self.assertIn('parsable and valid', func().get_message)
 
         failing_path = '/path/to/some/gisdata/202_admn/ken_admn_ad0_ln_s0_IEBC_pp_HDX.shp'
         func = check_naming_convention.get_single_file_checker(failing_path, nc, True)

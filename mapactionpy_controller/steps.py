@@ -12,8 +12,8 @@ class Step():
                   parameter of `main_stack.process_stack` function.
 
     Return values:
-        Any object. Does not need to be a dict. The return value will be wrapped in the dict prior to being 
-        passed the next step.  kwargs = {'state' : return_value}
+        Any object. Does not need to be a dict. The return value will be wrapped in the dict prior to being
+        passed to the next step.  kwargs = {'state' : return_value}
 
     Exceptions:
 
@@ -24,7 +24,7 @@ class Step():
 
     :param func:
         * Must accept a **kwargs param. If there is a state object this is passed as `kwargs['state']`.
-          The stack does not guarentee the type of object that will be passed 
+          The stack does not guarentee the type of object that will be passed as the state.
         * If the function completes successfully it should return the updated state object. This should be
           "bare" (ie not wrapped in a dict ala kwargs)
         * If the function does not complete successfully it should raise an exception.

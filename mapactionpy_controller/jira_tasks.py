@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
-import pytz
+import logging
 import netrc
 import os
+from datetime import datetime
+
+import pytz
 from jira import JIRA
-import logging
-from mapactionpy_controller.map_recipe import MapRecipe
+
 import mapactionpy_controller.task_renderer as task_renderer
 
 logger = logging.getLogger(__name__)
@@ -17,7 +18,7 @@ TODO_COLUMN_ID = '10110'
 
 common_task_fields = {
     'project': PROJECT_KEY,
-    'issuetype': { 'id':'10096'}
+    'issuetype': {'id': '10096'}
 }
 # 'issuetype': 'automation-human-intervention'
 
@@ -73,7 +74,6 @@ class JiraClient():
                 # Create a new task
                 self.create_new_jira_issue(unique_summary, task_desc)
 
-
     def search_issue_by_unique_summary(self, search_summary):
         found_issues = self.jira_con.search_issues(
             'project={} AND summary ~ "{}"'.format(PROJECT_KEY, search_summary), maxResults=2)
@@ -120,21 +120,23 @@ class JiraClient():
                 j_issue.update(description=task_desc)
 
             if j_issue.fields.status.id == TODO_COLUMN_ID:
-                self.jira_con.add_comment(j_issue.id,
-                                          'This Issue was still current when MapChef was run at {}'.format(time_stamp))
+                self.jira_con.add_comment(
+                    j_issue.id,
+                    'This Issue was still current when MapChef was run at {}'.format(time_stamp))
 
             else:
-                self.jira_con.add_comment(j_issue.id,
-                                          'This Issue was still current on MapChef run at {}.'
-                                          ' Moving the issue to the TODO column'.format(time_stamp))
+                self.jira_con.add_comment(
+                    j_issue.id,
+                    'This Issue was still current on MapChef run at {}.'
+                    ' Moving the issue to the TODO column'.format(time_stamp))
                 # do transition
         else:
             if j_issue.fields.status.id == TODO_COLUMN_ID:
-                self.jira_con.add_comment(j_issue.id,
-                                          'This Issue appeared to be resolved when MapChef was run at {}. Please manually'
-                                          ' check that the outputs are as expected and then close this Issue.'.format(
-                                              time_stamp)
-                                          )
+                self.jira_con.add_comment(
+                    j_issue.id,
+                    'This Issue appeared to be resolved when MapChef was run at {}. Please manually'
+                    ' check that the outputs are as expected and then close this Issue.'.format(
+                        time_stamp))
 
         # Column name in:
         # jssue.fields.status.id

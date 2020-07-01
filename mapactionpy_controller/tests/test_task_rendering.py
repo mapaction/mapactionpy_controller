@@ -72,7 +72,6 @@ class TestTaskRendering(TestCase):
             name_to_test, expected_result_list = test_cases.popitem()
             # print(name_to_test)
             nr = nc.validate(name_to_test)
-            print('NameResult type= {}'.format(type(nr)))
             context_data = task_renderer._name_result_adapter(nr)
 
             for test_template, expected_result in zip(mustache_tmpls, expected_result_list):

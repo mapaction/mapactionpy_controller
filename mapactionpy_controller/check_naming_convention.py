@@ -1,9 +1,10 @@
 import glob
 import logging
 import os
+
+import mapactionpy_controller.name_convention as name_convention
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.event import Event
-import mapactionpy_controller.name_convention as name_convention
 from mapactionpy_controller.steps import Step
 
 
