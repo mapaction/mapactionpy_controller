@@ -72,17 +72,16 @@ class TestTaskRendering(TestCase):
             name_to_test, expected_result_list = test_cases.popitem()
             # print(name_to_test)
             nr = nc.validate(name_to_test)
-            nr_dict = task_renderer._name_result_adapter(nr)
-            values = {'name_result': nr_dict}
+            print('NameResult type= {}'.format(type(nr)))
+            context_data = task_renderer._name_result_adapter(nr)
 
             for test_template, expected_result in zip(mustache_tmpls, expected_result_list):
                 # do render
-                actual_result = task_renderer.render_task_description(test_template, values)
+                actual_result = task_renderer.render_task_description(test_template, context_data)
                 # print('actual_result')
-                print(actual_result)
+                # print(actual_result)
                 # print('expected_result')
-                print(expected_result)
-
+                # print(expected_result)
                 self.assertEqual(actual_result, expected_result)
 
     def test_render_with_recipe_layer(self):
