@@ -1,0 +1,34 @@
+h1. What is the problem?
+
+The name {{<%name_result.name_to_validate%>}} is *_<%#name_result.is_parsable%>parsable but not valid<%/name_result.is_parsable%><%^name_result.is_parsable%>not parsable<%/name_result.is_parsable%>_*
+
+<%#name_result.is_parsable%>These bits look wrong:
+
+<%#name_result.invalid_clause_list %>
+* {{<%&invalid_clause%>}}
+<%/name_result.invalid_clause_list %>
+
+These bits look OK:
+
+<%#name_result.valid_clause_list%>
+* {{<%&valid_clause%>}}
+<%/name_result.valid_clause_list%><%/name_result.is_parsable%>
+
+h1. What is the likely consequence of this problem?
+
+This may result in the failure add a layer to any maps which rely on the correct naming of this dataset.
+
+h1. How can this problem be resolved?
+
+<%#name_result.is_parsable%>The name is "*_parsable but not valid_*"; This means the name is close enough to the relevant naming convention for MapChef can have a guess at the intended name and highlight the clauses that look wrong and look OK. Try one of the following:
+
+* Update the filename to correct any clauses that are not recognised.
+* OR If you need a country specific value for one or more clause then added the values into the relevant .csv file located in this directory; {{\GIS\2_Active_Data\200_data_name_lookup\}}<%/name_result.is_parsable%><%^name_result.is_parsable%>The name is "*_not parsable_*"; This means that MapChef could not guess what the intended name is. Possible reasons for this include:
+
+* The name does not closely resemble the name convention.
+* One or more clauses are missing means that there are not enough clauses in the name.
+* The wrong character is used to separate the clauses in the name (eg check for {{_}} vs {{-}})
+<%/name_result.is_parsable%>
+
+More information about the MapAction Data Naming Convention is available here; [https://wiki.mapaction.org/x/QwCX|https://wiki.mapaction.org/x/QwCX]
+

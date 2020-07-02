@@ -1,11 +1,11 @@
-# import mapactionpy_controller.config_verify as config_verify
-from collections import deque
-import humanfriendly.terminal as hft
 import logging
-# from humanfriendly.terminal.spinners import AutomaticSpinner
-import humanfriendly.terminal.spinners as spinners
-from mapactionpy_controller.steps import Step
 import traceback
+from collections import deque
+
+import humanfriendly.terminal as hft
+import humanfriendly.terminal.spinners as spinners
+
+from mapactionpy_controller.steps import Step
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +43,7 @@ def line_printer(status, msg, step, **kwargs):
     # pass_back['exp'] = exp
 
     the_msg = msg
-    if status > logging.INFO:
+    if status > logging.WARNING:
         exp = kwargs['exp']
         stack_trace = kwargs['stack_trace']
         the_msg = '{}\nerror message={}\n{}\n{}'.format(
@@ -127,5 +127,7 @@ def process_stack(step_list, initial_state):
             'exp': exp,
             'stack_trace': traceback.format_exc()
         }
+
+        print(pass_back)
 
         line_printer(logging.ERROR, 'Unable to continue following the previous error', None, **pass_back)

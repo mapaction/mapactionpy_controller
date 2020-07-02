@@ -1,9 +1,11 @@
 import json
-from jsonschema import validate
-from os import path
 import logging
+from os import path
+
+from jsonschema import validate
 
 CONFIG_SCHEMAS_DIR = path.join(path.abspath(path.dirname(__file__)), 'schemas')
+TASK_TEMPLATES_DIR = path.join(path.abspath(path.dirname(__file__)), 'task-templates')
 
 
 def _get_validator_for_config_schema(schema_file):

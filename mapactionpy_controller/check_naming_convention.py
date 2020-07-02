@@ -1,9 +1,10 @@
 import glob
 import logging
 import os
+
+import mapactionpy_controller.name_convention as name_convention
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.event import Event
-import mapactionpy_controller.name_convention as name_convention
 from mapactionpy_controller.steps import Step
 
 
@@ -64,10 +65,9 @@ def get_single_file_checker(f_path, nc, verbose):
         f_name = os.path.basename(f_path)
         ncr = nc.validate(f_name)
         if not ncr.is_valid:
-            raise ValueError(ncr.get_message)
+            raise ValueError(ncr)
 
-        if verbose:
-            return ncr.get_message
+        return ncr
 
     return check_data_name
 

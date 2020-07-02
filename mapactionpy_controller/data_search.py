@@ -46,7 +46,12 @@ class DataSearch():
                     found_datanames.append(
                         os.path.splitext(os.path.basename(f))[0])
 
-        return ';'.join(found_datasources), ';'.join(found_datanames),
+        return ';'.join(found_datasources), ';'.join(found_datanames)
+
+    def check_if_file_in_wrong_dir(self, cmf):
+        # TODO
+        # cmf.active_data
+        pass
 
 
 # def _is_valid_file(parser, arg):

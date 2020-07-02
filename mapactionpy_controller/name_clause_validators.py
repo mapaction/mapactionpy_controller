@@ -1,8 +1,10 @@
 import csv
-import mapactionpy_controller as mac
 import os
-import six
 from collections import namedtuple
+
+import six
+
+import mapactionpy_controller as mac
 
 # abstract class
 # Done using the "old-school" method described here, without using the abs module
@@ -38,7 +40,7 @@ class NamingFreeTextClause(NamingClause):
 
             @property
             def get_message(self):
-                return '\tValue "{}" is valid (as are all Free Text Clauses).'.format(clause_value)
+                return '"{}" is valid for freetext (as is almost anything)'.format(clause_value)
 
         return DataClauseValues(**details)
 
@@ -83,7 +85,7 @@ class NamingLookupClause(NamingClause):
             details = self.known_values[clause_value]
             details[self.lookup_field] = clause_value
             valid_value = True
-            message = '\t"{}" is a recognised value for the clause "{}"'.format(
+            message = '"{}" is a recognised value for the clause "{}"'.format(
                 clause_value,
                 self.clause_name
             )
@@ -91,7 +93,7 @@ class NamingLookupClause(NamingClause):
             # print("{}".format(clause_value))
             details = {self.lookup_field: clause_value}
             valid_value = False
-            message = '\t"{}" is not a recognised value for the clause "{}"'.format(
+            message = '"{}" is not a recognised value for the clause "{}"'.format(
                 clause_value,
                 self.clause_name
             )

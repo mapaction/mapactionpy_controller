@@ -1,12 +1,14 @@
-from mapactionpy_controller.crash_move_folder import CrashMoveFolder
+import errno
+import glob
 import logging
 import os
 import re
-import glob
-from slugify import slugify
 from shutil import copyfile
-import errno
 from zipfile import ZipFile
+
+from slugify import slugify
+
+from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 
 logger = logging.getLogger(__name__)
 

@@ -1,5 +1,6 @@
-import os
 import argparse
+import os
+
 import mapactionpy_controller.check_naming_convention as cnc
 import mapactionpy_controller.config_verify as config_verify
 import mapactionpy_controller.plugin_controller as plugin_controller

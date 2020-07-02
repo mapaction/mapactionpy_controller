@@ -1,8 +1,9 @@
-import mapactionpy_controller.steps as steps
+import logging
+
+from mapactionpy_controller.event import Event
 from mapactionpy_controller.layer_properties import LayerProperties
 from mapactionpy_controller.map_cookbook import MapCookbook
-from mapactionpy_controller.event import Event
-import logging
+from mapactionpy_controller.steps import Step
 
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -29,14 +30,14 @@ def get_plugin_step():
         return Event(kwargs['state'])
 
     plugin_step = [
-        steps.Step(
+        Step(
             new_event,
             logging.ERROR,
             'Loading the Humanitarian Event description file',
             'Successfully loaded the Humanitarian Event description file',
             'Failed to load the Humanitarian Event description file',
         ),
-        steps.Step(
+        Step(
             get_plugin,
             logging.ERROR,
             'Identifying available plugins (ArcMapRunner/QGisRunner)',
@@ -59,42 +60,42 @@ def _get_per_product_steps(_runner, recipe):
         pass
 
     product_steps = [
-        steps.Step(
+        Step(
             just_return_recipe,
             logging.ERROR,
             'Starting to create map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
             'Starting to create map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
             'Failed to create map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
         ),
-        steps.Step(
+        Step(
             _runner.get_templates,
             logging.ERROR,
             'Identifying suitable map template',
             'Successfully indentifed suitable map template',
             'Failed to identify suitable map template',
         ),
-        steps.Step(
+        Step(
             _runner.create_ouput_map_project,
             logging.ERROR,
             "Creating new '{}' file.".format(_runner.get_projectfile_extension()),
             "Successfully created new '{}' file.".format(_runner.get_projectfile_extension()),
             "Failed to create new '{}' file.".format(_runner.get_projectfile_extension())
         ),
-        steps.Step(
+        Step(
             _runner.build_project_files,
             logging.ERROR,
             'Adding layers to the map and applying styling',
             'Successfully added layers to the map and applying styling',
             'Failed to add the layers to the map and applied styling',
         ),
-        steps.Step(
+        Step(
             _runner.export_maps,
             logging.WARNING,
             'Exporting Maps and creating zipfile',
             'Successfully exported Maps and creating zipfile',
             'Failed to export the maps and create zipfile'
         ),
-        steps.Step(
+        Step(
             pass_through_step,
             logging.ERROR,
             'Completed the creation of map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
@@ -122,7 +123,7 @@ def get_cookbook_steps(my_runner, map_number):
         return selected_product_steps
 
     cookbook_steps = [
-        steps.Step(
+        Step(
             get_cookbook,
             logging.ERROR,
             'Openning the MapCookbook files',
@@ -143,29 +144,9 @@ def select_recipes(cookbook, map_nums=None):
         except AttributeError:
             cleaned_nums = [mn.upper() for mn in map_nums]
 
-        # selected_recipes = []
-        # for r in all_recipes:
-        #     if r.mapnumber.upper() in cleaned_nums:
-        #         selected_recipes.append(r)
-
         selected_recipes = [r for r in all_recipes if r.mapnumber.upper() in cleaned_nums]
 
         logger.debug('MapIDs "{}" have been selected'.format([r.mapnumber for r in selected_recipes]))
         return selected_recipes
     else:
         return all_recipes
-
-
-# if __name__ == "__main__":
-#     my_event_path = r"D:\MapAction\hotel\20200601-kenya-oxfam\event_description.json"
-#     my_runner = steps.process_steps(get_plugin_step(), my_event_path)
-#     my_cookbook = steps.process_steps(get_cookbook_steps(my_runner), None)
-
-#     # print_kwargs(product_name="Country Overview with Admin 1 Boundaries and Topography", recipe='hello')
-
-#     # product_name = "Country Overview with Admin 1 Boundaries and Topography"
-#     map_nums = ['MA001']
-
-#     for recipe in select_recipes(my_cookbook, map_nums):
-#         product_steps = get_per_product_steps(my_runner, recipe.mapnumber, recipe.product)
-#         end_result = steps.process_steps(product_steps, recipe)
