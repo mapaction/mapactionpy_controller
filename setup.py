@@ -4,7 +4,7 @@ import sys
 from setuptools import setup, find_packages
 from os import path, environ
 
-_base_version = '0.13.1'
+_base_version = '1.0.0'
 
 root_dir = path.abspath(path.dirname(__file__))
 
@@ -94,9 +94,10 @@ setup(
     tests_require=['unittest'],
     zip_safe=False,
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 5 - Production/Stable",
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",
+        "Topic:: Scientific/Engineering:: GIS"
     ])
