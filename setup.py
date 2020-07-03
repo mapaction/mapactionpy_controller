@@ -84,7 +84,7 @@ setup(
         'humanfriendly',
         'jsonpickle',
         'jsonschema',
-        'pycountry',
+        'pycountry<=19.8.18',
         'requests',
         'pyyaml',
         'six',
