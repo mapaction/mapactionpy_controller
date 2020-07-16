@@ -25,16 +25,21 @@ common_task_fields = {
 
 class JiraClient():
     def __init__(self):
-        # TODO review the various error types that are possible
-        # here and act appropriately:
-        # https: // docs.python.org/3.8/library/netrc.html
-        #
-        # eg FileNotFoundError, NetrcParseError
-        try:
-            secrets = netrc.netrc()
-        except IOError:
-            netrc_path = os.path.join(os.environ['USERPROFILE'], '.netrc')
-            secrets = netrc.netrc(netrc_path)
+        possible_netrx_locations = [
+            None,
+            os.path.join(os.environ['USERPROFILE'], '.netrc'),
+            os.environ.get('MAPCHEF_NETRC',None)
+        ]
+
+        secrets = None
+        for netrc_path in possible_netrx_locations:
+            try:
+                secrets = netrc.netrc(netrc_path)
+            except IOError:
+                pass
+
+        if not secrets:
+            raise ValueError('Unable to locate or load suitable `.netrc` file for JIRA integration')
 
         username, account, apikey = secrets.authenticators(jira_hostname)
         self.jira_con = JIRA(options={'server': account}, basic_auth=(username, apikey))

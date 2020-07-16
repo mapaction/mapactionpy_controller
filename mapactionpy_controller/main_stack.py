@@ -26,7 +26,7 @@ def get_jira_client():
     try:
         from mapactionpy_controller.jira_tasks import JiraClient
         return JiraClient()
-    except ImportError:
+    except (ImportError, ValueError):
         return None
 
 
