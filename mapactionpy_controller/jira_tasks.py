@@ -28,7 +28,7 @@ class JiraClient():
         possible_netrx_locations = [
             None,
             os.path.join(os.environ['USERPROFILE'], '.netrc'),
-            os.environ.get('MAPCHEF_NETRC',None)
+            os.environ.get('MAPCHEF_NETRC', None)
         ]
 
         secrets = None
