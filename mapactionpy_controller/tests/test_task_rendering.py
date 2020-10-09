@@ -1,8 +1,9 @@
 import os
 from unittest import TestCase
 
-import mapactionpy_controller.task_renderer as task_renderer
+# import mapactionpy_controller.task_renderer as task_renderer
 from mapactionpy_controller.name_convention import NamingConvention
+from mapactionpy_controller.task_renderer import FixDataNameTask, TaskReferralBase
 
 
 class TestTaskRendering(TestCase):
@@ -10,7 +11,7 @@ class TestTaskRendering(TestCase):
     def setUp(self):
         self.parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 
-    def test_render_with_name_result(self):
+    def test_get_task_unique_summary(self):
         dnc_json_path = os.path.join(self.parent_dir, 'example', 'data_naming_convention.json')
         nc = NamingConvention(dnc_json_path)
 
@@ -72,16 +73,19 @@ class TestTaskRendering(TestCase):
             name_to_test, expected_result_list = test_cases.popitem()
             # print(name_to_test)
             nr = nc.validate(name_to_test)
-            context_data = task_renderer._name_result_adapter(nr)
+            fdnt = FixDataNameTask(nr)
 
             for test_template, expected_result in zip(mustache_tmpls, expected_result_list):
-                # do render
-                actual_result = task_renderer.render_task_description(test_template, context_data)
-                # print('actual_result')
-                # print(actual_result)
-                # print('expected_result')
-                # print(expected_result)
+                # create the Task object
+                # override the unique identifier for test purposes
+                fdnt._primary_key_template = test_template
+
+                actual_result = fdnt.get_task_unique_summary()
                 self.assertEqual(actual_result, expected_result)
+
+    def test_get_task_description(self):
+        trb = TaskReferralBase()
+        self.assertIn('Major Configuration Error', trb.get_task_description())
 
     def test_render_with_recipe_layer(self):
         pass

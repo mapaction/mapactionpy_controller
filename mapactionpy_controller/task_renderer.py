@@ -6,9 +6,9 @@ import chevron
 from mapactionpy_controller import TASK_TEMPLATES_DIR
 
 
-class TaskReferralBase:
+class TaskReferralBase(object):
     """
-    Represents a senario where a task would need to be referred to a human. The class provides a unique 
+    Represents a senario where a task would need to be referred to a human. The class provides a unique
     identifer for the task, which must be useful by the external task-tracking system and the bolierplate
     description of the underlying problem that needs to be resolved.
 
@@ -23,12 +23,12 @@ class TaskReferralBase:
     Subclasses must:
     A) Either:
         * Override the `_task_template_filename`. This should be the name of a file (excluding the extension).
-          This file (which must have the extension `.mustache`) must exist in `TASK_TEMPLATES_DIR`. 
-        * Overide `_get_task_template` so that it returns the contents of a mustache template. This option 
+          This file (which must have the extension `.mustache`) must exist in `TASK_TEMPLATES_DIR`.
+        * Overide `_get_task_template` so that it returns the contents of a mustache template. This option
           allows for template files which exist in locations other than TASK_TEMPLATES_DIR, and hence can to
           more appropriate for plugins.
     B) Override `_primary_key_template` with a string mustache.io template as a string. When rendered template
-       should provide a unique identifier for an instance of the class. This unique identifier must be valid 
+       should provide a unique identifier for an instance of the class. This unique identifier must be valid
        (and meaningful) within the external task management system.
     C) Set `self.context_data` from within the constructor. `self.context_data` is a dict object that contains
        the relevant centextual information to be able to render the templates. The keys of `context_data` must
@@ -37,7 +37,7 @@ class TaskReferralBase:
 
     Note:
     The templates use the mustache.io format. However it is assumed the delimters left=`<%` and right=`%>` are
-    used, rather than the eponymous defaults `{{` and `}}`. This is aviod ambiguity with JIRA's markup which 
+    used, rather than the eponymous defaults `{{` and `}}`. This is aviod ambiguity with JIRA's markup which
     also assigns special meaning to double-curly brackets.
     """
     _primary_key_template = 'Major Configuration Error'
@@ -55,35 +55,39 @@ class TaskReferralBase:
         return template
 
     def get_task_unique_summary(self):
-        return render_task_description(self._primary_key_template, self.context_data)
+        return chevron.render(self._primary_key_template, self.context_data, def_ldel='<%', def_rdel='%>')
 
     def get_task_description(self):
         return chevron.render(self.template, self.context_data, def_ldel='<%', def_rdel='%>')
 
 
 class FixDataNameTask(TaskReferralBase):
-    task_template_filename = 'misnamed-gis-file'
-    primary_key_template = 'gisdata : <%name_result.name_to_validate%> : Incorrectly Named'
+    _task_template_filename = 'misnamed-gis-file'
+    _primary_key_template = 'gisdata : <%name_result.name_to_validate%> : Incorrectly Named'
+
+    def __init__(self, name_result):
+        super(FixDataNameTask, self).__init__()
+        self.context_data = _name_result_adapter(name_result)
 
 
 class FixFileInWrongDirTask(TaskReferralBase):
-    task_template_filename = 'file-in-wrong-directory'
-    primary_key_template = 'gisdata : ->TBC.folder_name<-'
+    _task_template_filename = 'file-in-wrong-directory'
+    _primary_key_template = 'gisdata : ->TBC.folder_name<-'
 
 
 class FixMissingGISDataTask(TaskReferralBase):
-    task_template_filename = 'gis-data-missing'
-    primary_key_template = 'TBC'
+    _task_template_filename = 'gis-data-missing'
+    _primary_key_template = 'TBC'
 
 
 class FixSchemaErrorTask(TaskReferralBase):
-    task_template_filename = 'schema-error'
-    primary_key_template = 'TBC'
+    _task_template_filename = 'schema-error'
+    _primary_key_template = 'TBC'
 
 
 class FixMultipleMatchingFilesTask(TaskReferralBase):
-    task_template_filename = 'multiple-matching-files'
-    primary_key_template = 'TBC'
+    _task_template_filename = 'multiple-matching-files'
+    _primary_key_template = 'TBC'
 
 
 # key = step.func
