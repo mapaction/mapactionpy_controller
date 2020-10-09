@@ -4,7 +4,7 @@ import sys
 from setuptools import setup, find_packages
 from os import path, environ
 
-_base_version = '1.0.2'
+_base_version = '1.0.3'
 
 root_dir = path.abspath(path.dirname(__file__))
 
@@ -85,6 +85,7 @@ setup(
         'humanfriendly',
         'jsonpickle',
         'jsonschema',
+        'pyrsistent<=0.16.1',
         'pycountry<=19.8.18',
         'requests',
         'pyyaml',
