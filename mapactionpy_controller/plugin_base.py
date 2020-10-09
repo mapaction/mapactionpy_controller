@@ -72,7 +72,7 @@ class BaseRunnerPlugin(object):
 
     def get_templates(self, **kwargs):
         recipe = kwargs['state']
-        # If there already already is a valid `recipe.map_project_path` just skip with method
+        # If there already is a valid `recipe.map_project_path` just skip with method
         if recipe.map_project_path:
             if os.path.exists(recipe.map_project_path):
                 return recipe
