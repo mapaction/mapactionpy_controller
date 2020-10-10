@@ -46,22 +46,22 @@ class Step():
         self.complete_msg = complete_msg
         self.fail_msg = fail_msg
 
-    def run(self, set_status, **kwargs):
+    def run(self, set_feedback, **kwargs):
         pass_back = kwargs.copy()
 
         try:
             result = self.func(**kwargs)
             # long_msg = '{}\n{}'.format(self.complete_msg, result)
             pass_back['result'] = result
-            set_status(logging.INFO, self.complete_msg, self, **pass_back)
+            set_feedback(logging.INFO, self.complete_msg, self, **pass_back)
             return result
         # Because this is defacto part of the main stack we do want to catch
         # a top level Exception here:
         except Exception as exp:
             pass_back['exp'] = exp
             pass_back['stack_trace'] = traceback.format_exc()
-            set_status(self.fail_threshold, self.fail_msg, self, **pass_back)
-            # set_status(logging.ERROR, self.fail_msg, self, **pass_back)
+            set_feedback(self.fail_threshold, self.fail_msg, self, **pass_back)
+            # set_feedback(logging.ERROR, self.fail_msg, self, **pass_back)
 
             # Do we want to raise an ERROR or a WARNING?
             if self.fail_threshold >= logging.ERROR:

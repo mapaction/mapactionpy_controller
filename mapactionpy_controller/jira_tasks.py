@@ -7,7 +7,7 @@ from datetime import datetime
 import pytz
 from jira import JIRA
 
-import mapactionpy_controller.task_renderer as task_renderer
+# import mapactionpy_controller.task_renderer as task_renderer
 
 logger = logging.getLogger(__name__)
 
@@ -54,20 +54,16 @@ class JiraClient():
         # self.jira_con.close()
         self.jira_con.kill_session()
 
-    def task_handler(self, fail_threshold, msg, step, **kwargs):
-        try:
-            step_func_name = step.func.__name__
-        except AttributeError:
-            step_func_name = ''
+    def task_handler(self, fail_threshold, msg, task_referal=None, **kwargs):
+        logger.debug('JiraClient.task_handler called with status="{}", and msg="{}"'.format(
+            fail_threshold, msg))
 
-        logger.debug('JiraClient.task_handler called with status="{}", step.func=`{}` and msg="{}"'.format(
-            fail_threshold, step_func_name, msg))
+        if not task_referal:
+            logger.debug('JiraClient.task_handler; `None` value passed for task_referal parameter. Nothing to handle.')
+            return
 
-        context_data = task_renderer.extract_context_data(fail_threshold, step_func_name, **kwargs)
-        unique_summary = task_renderer.get_task_unique_summary(step_func_name, context_data)
-
-        task_template = task_renderer.get_task_template(step_func_name)
-        task_desc = task_renderer.render_task_description(task_template, context_data)
+        unique_summary = task_referal.get_task_unique_summary()
+        task_desc = task_referal.get_task_description()
 
         j_issue = self.search_issue_by_unique_summary(unique_summary)
 

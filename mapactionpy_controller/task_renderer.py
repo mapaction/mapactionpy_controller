@@ -1,4 +1,3 @@
-import logging
 import os
 
 import chevron
@@ -156,44 +155,44 @@ class FixMultipleMatchingFilesTask(TaskReferralBase):
 #     return template
 
 
-def extract_context_data(status, step_func_name, **kwargs):
-    """
-    Returns the "dict of values" used by the mustache rendering
-    """
-    context_data = kwargs.copy()
+# def extract_context_data(status, step_func_name, **kwargs):
+#     """
+#     Returns the "dict of values" used by the mustache rendering
+#     """
+#     context_data = kwargs.copy()
 
-    if status < logging.WARNING:
-        # We just have an "INFO"
-        # Therefore expect this kwarg:
-        source_data = kwargs['result']
-    else:
-        # Something more serious
-        # Therefore expect these kwargs:
-        exp = kwargs['exp']
-        # stack_trace = kwargs['stack_trace']
-        # This _may_ be present but not guaranteed
-        # state = kwargs.get('result', None)
-        source_data = exp.args[0]
+#     if status < logging.WARNING:
+#         # We just have an "INFO"
+#         # Therefore expect this kwarg:
+#         source_data = kwargs['result']
+#     else:
+#         # Something more serious
+#         # Therefore expect these kwargs:
+#         exp = kwargs['exp']
+#         # stack_trace = kwargs['stack_trace']
+#         # This _may_ be present but not guaranteed
+#         # state = kwargs.get('result', None)
+#         source_data = exp.args[0]
 
-    # TODO:
-    # In each case there may be a single item OR a list of items. If it is a list of items
-    # then there will be one JIRA task per item in the list.
+#     # TODO:
+#     # In each case there may be a single item OR a list of items. If it is a list of items
+#     # then there will be one JIRA task per item in the list.
 
-    if step_func_name == 'check_data_name' or step_func_name == 'check_dir':
-        context_data.update(_name_result_adapter(source_data))
+#     if step_func_name == 'check_data_name' or step_func_name == 'check_dir':
+#         context_data.update(_name_result_adapter(source_data))
 
-    if step_func_name == 'check_file_in_wrong_directory':
-        context_data.update(_misplaced_file_list_adapter(source_data))
-    if step_func_name == 'update_recipe_with_datasources':
-        context_data.update(_gis_data_missing_adapter(source_data))
-    if step_func_name == 'schema_error':
-        context_data.update(_schema_error_adapter(source_data))
-    if step_func_name == 'multiple_matching_files':
-        context_data.update(_multiple_matching_files_adapter(source_data))
-    if step_func_name == '_runner.build_project_files':
-        context_data.update(_build_project_files(source_data))
+#     if step_func_name == 'check_file_in_wrong_directory':
+#         context_data.update(_misplaced_file_list_adapter(source_data))
+#     if step_func_name == 'update_recipe_with_datasources':
+#         context_data.update(_gis_data_missing_adapter(source_data))
+#     if step_func_name == 'schema_error':
+#         context_data.update(_schema_error_adapter(source_data))
+#     if step_func_name == 'multiple_matching_files':
+#         context_data.update(_multiple_matching_files_adapter(source_data))
+#     if step_func_name == '_runner.build_project_files':
+#         context_data.update(_build_project_files(source_data))
 
-    return context_data
+#     return context_data
 
 
 # func_kwarg_names_lookup = {

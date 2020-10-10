@@ -33,7 +33,7 @@ def get_jira_client():
 jira_client = get_jira_client()
 
 
-def line_printer(status, msg, step, **kwargs):
+def parse_feedback(status, msg, step, **kwargs):
     """
     This is called once per step execution.
     It provides a hook into print messages to the terminal, log files and the JIRA Client.
@@ -43,14 +43,18 @@ def line_printer(status, msg, step, **kwargs):
     # pass_back['exp'] = exp
 
     the_msg = msg
-    if status > logging.WARNING:
+    task_referal = None
+    if status > logging.INFO:
         exp = kwargs['exp']
-        stack_trace = kwargs['stack_trace']
-        the_msg = '{}\nerror message={}\n{}\n{}'.format(
-            msg, str(type(exp)), str(exp.args), stack_trace)
+        task_referal = exp.args[0]
+
+        if status > logging.WARNING:
+            stack_trace = kwargs['stack_trace']
+            the_msg = '{}\nerror message={}\n{}\n{}'.format(
+                msg, str(type(exp)), str(exp.args), stack_trace)
 
     if jira_client:
-        jira_client.task_handler(status, msg, step, **kwargs)
+        jira_client.task_handler(status, msg, task_referal, **kwargs)
 
     if hft.connected_to_terminal():
         hft.output('{} {} {}'.format(
@@ -113,10 +117,10 @@ def process_stack(step_list, initial_state):
 
             if hft.connected_to_terminal():
                 with spinners.AutomaticSpinner(step.running_msg, show_time=True):
-                    nplus_state = step.run(line_printer, **kwargs)
+                    nplus_state = step.run(parse_feedback, **kwargs)
             else:
                 logger.info('Starting: {}'.format(step.running_msg))
-                nplus_state = step.run(line_printer, **kwargs)
+                nplus_state = step.run(parse_feedback, **kwargs)
 
             # Used to increment the state *only* if no new Steps where returned
             n_state = _add_steps_from_state_to_stack(nplus_state, stack, n_state)
@@ -130,4 +134,4 @@ def process_stack(step_list, initial_state):
 
         print(pass_back)
 
-        line_printer(logging.ERROR, 'Unable to continue following the previous error', None, **pass_back)
+        parse_feedback(logging.ERROR, 'Unable to continue following the previous error', None, **pass_back)

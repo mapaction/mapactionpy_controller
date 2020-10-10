@@ -6,6 +6,7 @@ import mapactionpy_controller.name_convention as name_convention
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.event import Event
 from mapactionpy_controller.steps import Step
+from mapactionpy_controller.task_renderer import FixDataNameTask
 
 
 def get_defaultcmf_step_list(cmf_config_path, verbose):
@@ -65,7 +66,7 @@ def get_single_file_checker(f_path, nc, verbose):
         f_name = os.path.basename(f_path)
         ncr = nc.validate(f_name)
         if not ncr.is_valid:
-            raise ValueError(ncr)
+            raise ValueError(FixDataNameTask(ncr))
 
         return ncr
 
