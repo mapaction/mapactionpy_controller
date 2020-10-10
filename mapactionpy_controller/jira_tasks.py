@@ -24,6 +24,8 @@ common_task_fields = {
 
 
 class JiraClient():
+    jira_con = None
+
     def __init__(self):
         possible_netrx_locations = [
             None,
@@ -39,6 +41,7 @@ class JiraClient():
                 pass
 
         if not secrets:
+            logger.error('JIRA Connection. Unable to locate or load suitable `.netrc` file for JIRA integration')
             raise ValueError('Unable to locate or load suitable `.netrc` file for JIRA integration')
 
         username, account, apikey = secrets.authenticators(jira_hostname)
@@ -48,11 +51,13 @@ class JiraClient():
 
         # Check that the user is actually authenticated
         if not self.jira_con.myself()['emailAddress'] == username:
+            logger.error('JIRA Connection. Unable to authenticate with JIRA. Please check details in `.netrc` file.')
             raise ValueError('Unable to authenticate with JIRA. Please check details in `.netrc` file.')
 
     def __del__(self):
         # self.jira_con.close()
-        self.jira_con.kill_session()
+        if self.jira_con:
+            self.jira_con.kill_session()
 
     def task_handler(self, fail_threshold, msg, task_referal=None, **kwargs):
         logger.debug('JiraClient.task_handler called with status="{}", and msg="{}"'.format(

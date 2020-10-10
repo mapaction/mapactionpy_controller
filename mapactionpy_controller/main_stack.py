@@ -48,10 +48,10 @@ def parse_feedback(status, msg, step, **kwargs):
         exp = kwargs['exp']
         task_referal = exp.args[0]
 
-        if status > logging.WARNING:
-            stack_trace = kwargs['stack_trace']
-            the_msg = '{}\nerror message={}\n{}\n{}'.format(
-                msg, str(type(exp)), str(exp.args), stack_trace)
+    if status > logging.WARNING:
+        stack_trace = kwargs['stack_trace']
+        the_msg = '{}\nerror message={}\n{}\n{}'.format(
+            msg, str(type(exp)), str(exp.args), stack_trace)
 
     if jira_client:
         jira_client.task_handler(status, msg, task_referal, **kwargs)
