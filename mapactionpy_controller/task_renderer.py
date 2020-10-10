@@ -154,6 +154,3 @@ def _recipe_adapter(recipe):
     #     }
     # }
     pass
-
-
-
