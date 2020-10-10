@@ -53,7 +53,7 @@ class TaskReferralBase(object):
     C) Set `self.context_data` from within the constructor. `self.context_data` is a dict object that contains
        the relevant centextual information to be able to render the templates. The keys of `context_data` must
        match the tags within the mustache template for both the `_primary_key_template and the
-       `_task_template_filename`. There are some adapter functions to help with this. These adapters take 
+       `_task_template_filename`. There are some adapter functions to help with this. These adapters take
        common objects from within `mapactionpy_controller` and extract key information into a format suitable
        for `self.context_data`.
 
