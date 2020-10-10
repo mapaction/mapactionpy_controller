@@ -18,7 +18,7 @@ def noun_defaultcmf_print_output(args):
     if args.verb == VERB_VERIFY:
         cv_steps = config_verify.get_config_verify_steps(args.cmf_desc_path, ['.lyr'])
         # process_stack(cv_steps, None)
-        cv_steps.extend(cnc.get_defaultcmf_step_list(args.cmf_desc_path, False))
+        cv_steps.extend(cnc.get_defaultcmf_step_list(args.cmf_desc_path))
         process_stack(cv_steps, None)
     else:
         raise NotImplementedError(args)
@@ -30,7 +30,7 @@ def noun_humevent_print_output(args):
 
 def noun_gisdata_print_output(args):
     if args.verb == VERB_VERIFY:
-        nc_steps = cnc.get_active_data_step_list(args.humevent_desc_path, True)
+        nc_steps = cnc.get_active_data_step_list(args.humevent_desc_path)
         process_stack(nc_steps, None)
         # print(nc_steps)
     else:

@@ -5,6 +5,27 @@ import chevron
 from mapactionpy_controller import TASK_TEMPLATES_DIR
 
 
+"""
+Module `task_renderer`
+
+There are some "adapter" functions available, which can be used extract key information from common
+objects from within `mapactionpy_controller` into a format suitable for `self.context_data`. The
+constructors for sub-classes of TaskReferralBase may used these as appropriate.
+
+The adapter functions only cater for a single object of each type.
+```
+context_data = {}
+context_data.expend(adapter1.(foo))
+context_data.expend(adapter2.(bar))
+```
+
+Each adapter function maps an object to a key within `context_data`:
+* `_name_result_adapter`; NamingResult -> 'name_result'
+* `_cmf_description_adapter`; CrashMoveFolder -> `cmf`
+
+"""
+
+
 class TaskReferralBase(object):
     """
     Represents a senario where a task would need to be referred to a human. The class provides a unique
@@ -32,7 +53,9 @@ class TaskReferralBase(object):
     C) Set `self.context_data` from within the constructor. `self.context_data` is a dict object that contains
        the relevant centextual information to be able to render the templates. The keys of `context_data` must
        match the tags within the mustache template for both the `_primary_key_template and the
-       `_task_template_filename`.
+       `_task_template_filename`. There are some adapter functions to help with this. These adapters take 
+       common objects from within `mapactionpy_controller` and extract key information into a format suitable
+       for `self.context_data`.
 
     Note:
     The templates use the mustache.io format. However it is assumed the delimters left=`<%` and right=`%>` are
@@ -64,9 +87,10 @@ class FixDataNameTask(TaskReferralBase):
     _task_template_filename = 'misnamed-gis-file'
     _primary_key_template = 'gisdata : <%name_result.name_to_validate%> : Incorrectly Named'
 
-    def __init__(self, name_result):
+    def __init__(self, name_result, cmf):
         super(FixDataNameTask, self).__init__()
-        self.context_data = _name_result_adapter(name_result)
+        self.context_data.update(_name_result_adapter(name_result))
+        self.context_data.update(_cmf_description_adapter(cmf))
 
 
 class FixFileInWrongDirTask(TaskReferralBase):
@@ -87,72 +111,6 @@ class FixSchemaErrorTask(TaskReferralBase):
 class FixMultipleMatchingFilesTask(TaskReferralBase):
     _task_template_filename = 'multiple-matching-files'
     _primary_key_template = 'TBC'
-
-
-# key = step.func
-# value = for tuple:
-# [0] The filename (basename) for mustache template
-# [1] The mustache template of the task's "primary key" (used as the JIRA)
-# for
-# mustache_template_lookup = {
-#     'check_data_name':
-#         ('misnamed-gis-file', 'gisdata : <%name_result.name_to_validate%> : Incorrectly Named'),
-#     'check_file_in_wrong_directory':
-#         ('file-in-wrong-directory', 'gisdata : ->TBC.folder_name<-'),
-#     'update_recipe_with_datasources':
-#         ('gis-data-missing',  'TBC'),
-#     'schema_error':
-#         ('schema-error', 'TBC'),
-#     'file_in_wrong_directory':
-#         ('file-in-wrong-directory', 'TBC'),
-#     'multiple_matching_files':
-#         ('multiple-matching-files', 'TBC'),
-#     '_runner.build_project_files':
-#         ('project-build-error', 'TBC'),
-#     'check_dir':
-#         ('check-names-of-files-other-than-gis-files', 'TBC')
-# }
-
-# fallback_template = ('major-configuration-error', 'Major Configuration Error')
-
-
-# def check_all_templates_exist():
-#     pass
-
-
-# def render_task_description(task_template, context_data):
-#     return chevron.render(task_template, context_data, def_ldel='<%', def_rdel='%>')
-
-
-# def _get_task_primary_key_template(func_name):
-#     return mustache_template_lookup.get(func_name, fallback_template)[1]
-
-
-# def get_task_unique_summary(func_name, context_data):
-#     # print()
-#     # print('func_name = {}'.format(func_name))
-#     # for key, values in context_data.items():
-#     #     print('context_data key = {}, value={}'.format(key, values))
-
-#     pk_tmpl = _get_task_primary_key_template(func_name)
-
-#     unique_summary = render_task_description(pk_tmpl, context_data)
-#     # print('unique summary = {}'.format(unique_summary))
-#     return unique_summary
-
-
-# def _get_task_template_path(func_name):
-#     tmpl_file = mustache_template_lookup.get(func_name, fallback_template)[0]
-#     return os.path.join(TASK_TEMPLATES_DIR, '{}.mustache'.format(tmpl_file))
-
-
-# def get_task_template(func_name):
-#     m_path = _get_task_template_path(func_name)
-#     with open(m_path, 'r') as m_file:
-#         template = m_file.read()
-
-#     # print('template = {}='.format(template))
-#     return template
 
 
 # def extract_context_data(status, step_func_name, **kwargs):
@@ -195,33 +153,6 @@ class FixMultipleMatchingFilesTask(TaskReferralBase):
 #     return context_data
 
 
-# func_kwarg_names_lookup = {
-#     'check_gis_data_name': 'name_result',
-#     # A `NameResult` object
-
-#     # A tuple or class representing the misplaced file (to be implenmented)
-#     'check_file_in_wrong_directory': 'misplace_file_list',
-
-#     # A RecipeLayer object (with detailed adapted from MapResult)
-#     'update_recipe_with_datasources': 'gis-data-missing',
-
-#     # A tuple of RecipeLayer object (with detailed adapted from MapResult)
-#     # and a ValidationError
-#     'check_data_schema': 'schema_error',
-
-#     # A RecipeLayer object (with detailed adapted from MapResult)
-#     # Should have a list of matching shapefiles in place of the `lyr.data_source_path`
-#     # and `lyr.data_name` properties. (Check implenmentation on this)
-#     'multiple_matching_files': 'multiple-matching-files',
-
-#     # Details to be confirmed
-#     '_runner.build_project_files': 'project-build-error',
-
-#     # A `NameResult` object
-#     'check_dir': 'name_result'
-# }
-
-
 def _build_project_files(map_report):
     pass
 
@@ -240,6 +171,10 @@ def _misplaced_file_list_adapter(file_list):
 
 def _gis_data_missing_adapter(missing_lyr):
     pass
+
+
+def _cmf_description_adapter(cmf):
+    return {'cmf': cmf.__dict__.copy()}
 
 
 def _name_result_adapter(name_result):
