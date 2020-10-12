@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 def _get_secrets_from_netrc():
     possible_netrc_locations = [
-        None,
-        os.path.join(os.environ['USERPROFILE'], '.netrc'),
+        os.path.join(os.environ.get('HOME'], None), '.netrc'),
+        os.path.join(os.environ.get('USERPROFILE'], None), '.netrc'),
         os.environ.get('MAPCHEF_NETRC', None)
     ]
 
