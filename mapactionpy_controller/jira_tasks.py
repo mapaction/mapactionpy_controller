@@ -11,51 +11,67 @@ from jira import JIRA
 
 logger = logging.getLogger(__name__)
 
-# TODO read these in from a config file
-jira_hostname = 'mapaction.atlassian.net'
-PROJECT_KEY = 'PIPET'
-TODO_COLUMN_ID = '10110'
 
-common_task_fields = {
-    'project': PROJECT_KEY,
-    'issuetype': {'id': '10096'}
-}
-# 'issuetype': 'automation-human-intervention'
+def _get_secrets_from_netrc():
+    possible_netrc_locations = [
+        None,
+        os.path.join(os.environ['USERPROFILE'], '.netrc'),
+        os.environ.get('MAPCHEF_NETRC', None)
+    ]
+
+    secrets = None
+    for netrc_path in possible_netrc_locations:
+        try:
+            secrets = netrc.netrc(netrc_path)
+        except IOError:
+            pass
+
+    return secrets
 
 
 class JiraClient():
     jira_con = None
+    board_details = None
 
     def __init__(self):
-        possible_netrx_locations = [
-            None,
-            os.path.join(os.environ['USERPROFILE'], '.netrc'),
-            os.environ.get('MAPCHEF_NETRC', None)
-        ]
-
-        secrets = None
-        for netrc_path in possible_netrx_locations:
-            try:
-                secrets = netrc.netrc(netrc_path)
-            except IOError:
-                pass
+        self._get_jira_board_details()
+        secrets = _get_secrets_from_netrc()
 
         if not secrets:
-            logger.error('JIRA Connection. Unable to locate or load suitable `.netrc` file for JIRA integration')
-            raise ValueError('Unable to locate or load suitable `.netrc` file for JIRA integration')
+            err_msg = 'Unable to locate or load suitable `.netrc` file for JIRA integration'
+            logger.error(err_msg)
+            raise ValueError(err_msg)
 
-        username, account, apikey = secrets.authenticators(jira_hostname)
+        try:
+            username, account, apikey = secrets.authenticators(self.jira_hostname)
+        except TypeError:
+            err_msg = 'JIRA Connection. Unable to find details for machine "{}" `.netrc` file.'.format(
+                self.jira_hostname)
+            logger.error(err_msg)
+            raise ValueError(err_msg)
+
         self.jira_con = JIRA(options={'server': account}, basic_auth=(username, apikey))
-
-        logger.debug('JIRA Connection. Details = {}'.format(self.jira_con.myself()))
 
         # Check that the user is actually authenticated
         if not self.jira_con.myself()['emailAddress'] == username:
-            logger.error('JIRA Connection. Unable to authenticate with JIRA. Please check details in `.netrc` file.')
-            raise ValueError('Unable to authenticate with JIRA. Please check details in `.netrc` file.')
+            err_msg = 'JIRA Connection. Unable to authenticate with JIRA. Please check details in `.netrc` file.'
+            logger.error(err_msg)
+            raise ValueError(err_msg)
+
+        logger.debug('JIRA Connection. Details = {}'.format(self.jira_con.myself()))
+
+    def _get_jira_board_details(self):
+        # TODO read these in from a config file
+        self.jira_hostname = 'mapaction.atlassian.net'
+        self.project_key = 'PIPET'
+        # The target column should be were the column where new issues are created
+        self.target_column = '10110'
+        self.common_task_fields = {
+            'project': self.project_key,
+            'issuetype': {'id': '10096'}
+        }
 
     def __del__(self):
-        # self.jira_con.close()
         if self.jira_con:
             self.jira_con.kill_session()
 
@@ -82,7 +98,7 @@ class JiraClient():
 
     def search_issue_by_unique_summary(self, search_summary):
         found_issues = self.jira_con.search_issues(
-            'project={} AND summary ~ "{}"'.format(PROJECT_KEY, search_summary), maxResults=2)
+            'project={} AND summary ~ "{}"'.format(self.project_key, search_summary), maxResults=2)
 
         if found_issues:
             if len(found_issues) > 1:
@@ -92,7 +108,7 @@ class JiraClient():
                     ' one issues with this summary, by deleting those which have not been created by the'
                     ' user "{}"'.format(
                         search_summary,
-                        PROJECT_KEY,
+                        self.project_key,
                         self.jira_con.myself()['emailAddress']
                     )
                 )
@@ -101,11 +117,8 @@ class JiraClient():
         else:
             return None
 
-    #     some_issues = self.jira_con.search_issues('project=TMIT2 AND map_number ~ "MA0123"')
-    #     print(some_issues)
-
     def create_new_jira_issue(self, unique_summary, task_desc):
-        flds = common_task_fields.copy()
+        flds = self.common_task_fields.copy()
         flds['summary'] = unique_summary
         flds['description'] = task_desc
 
@@ -113,10 +126,6 @@ class JiraClient():
         print(new_task)
 
     def update_jira_issue(self, j_issue, task_desc, fail_threshold):
-
-        # now_utc = datetime.now()
-        # time_stamp = now_utc.isoformat('%Y-%m-%d %H:%M:%S %Z%z')
-
         now_utc = pytz.utc.localize(datetime.now())
         time_stamp = now_utc.strftime('%Y-%m-%d %H:%M:%S %Z%z')
 
@@ -125,7 +134,7 @@ class JiraClient():
             if task_desc != prev_desc:
                 j_issue.update(description=task_desc)
 
-            if j_issue.fields.status.id == TODO_COLUMN_ID:
+            if j_issue.fields.status.id == self.target_column:
                 self.jira_con.add_comment(
                     j_issue.id,
                     'This Issue was still current when MapChef was run at {}'.format(time_stamp))
@@ -136,49 +145,14 @@ class JiraClient():
                     'This Issue was still current on MapChef run at {}.'
                     ' Moving the issue to the TODO column'.format(time_stamp))
                 # do transition
-        else:
-            if j_issue.fields.status.id == TODO_COLUMN_ID:
+                # self.jira_con
+
+            if j_issue.fields.status.id == self.target_column:
                 self.jira_con.add_comment(
                     j_issue.id,
                     'This Issue appeared to be resolved when MapChef was run at {}. Please manually'
                     ' check that the outputs are as expected and then close this Issue.'.format(
                         time_stamp))
-
-        # Column name in:
-        # jssue.fields.status.id
-        # if not in "doing"
-        #     move...
-
-    # def search_for_data_task(self):
-    #     some_issues = self.jira_con.search_issues('project=TMIT2 AND map_number ~ "MA0123"')
-    #     print(some_issues)
-
-    # def create_task_from_template(self):
-    #     flds = common_task_fields.copy()
-
-        # flds['layername'] = lyr_name
-        # flds['map_number'] = map_num
-        # flds['summary'] = 'Task created from template'
-        # # flds['description'] = 'Where do we go from here?'
-        # # flds['description'] =
-
-        # new_task = self.jira_con.create_issue(fields=flds)
-        # print(new_task)
-    #     print('new_task.fields = {}'.format(new_task.fields))
-    #     cusflds = {}
-    #     cusflds['customfield_10076'] = map_num
-    #     new_task.update(cusflds)
-
-    #     print(new_task)
-
-    # def update_task(self):
-    #     my_issue = self.jira_con.issue('TMIT2-3')
-    #     print(my_issue)
-    #     print('my_issue.fields = {}'.format(my_issue.fields))
-    #     emd = self.jira_con.editmeta('TMIT2-3')
-    #     print(emd)
-
-# jira_client = JiraClient()
 
 
 # testing
