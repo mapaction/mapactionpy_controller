@@ -29,6 +29,14 @@ def _get_secrets_from_netrc():
     return secrets
 
 
+def _check_jira_con(jira_con, username):
+    # Check that the user is actually authenticated
+    if not jira_con.myself()['emailAddress'] == username:
+        err_msg = 'JIRA Connection. Unable to authenticate with JIRA. Please check details in `.netrc` file.'
+        logger.error(err_msg)
+        raise ValueError(err_msg)
+
+
 class JiraClient():
     jira_con = None
     board_details = None
@@ -51,13 +59,7 @@ class JiraClient():
             raise ValueError(err_msg)
 
         self.jira_con = JIRA(options={'server': account}, basic_auth=(username, apikey))
-
-        # Check that the user is actually authenticated
-        if not self.jira_con.myself()['emailAddress'] == username:
-            err_msg = 'JIRA Connection. Unable to authenticate with JIRA. Please check details in `.netrc` file.'
-            logger.error(err_msg)
-            raise ValueError(err_msg)
-
+        _check_jira_con(self.jira_con, username)
         logger.debug('JIRA Connection. Details = {}'.format(self.jira_con.myself()))
 
     def _get_jira_board_details(self):
@@ -153,27 +155,3 @@ class JiraClient():
                     'This Issue appeared to be resolved when MapChef was run at {}. Please manually'
                     ' check that the outputs are as expected and then close this Issue.'.format(
                         time_stamp))
-
-
-# testing
-if __name__ == "__main__":
-    my = JiraClient()
-    # my.create_task_from_template()
-    my_issue = my.jira_con.issue('TMIT2-4')
-    # my_issue.update(description=task_renderer.get_task_description())
-
-    print(my_issue)
-    my_desc = my_issue.fields.description
-
-    my_desc = my_desc.encode('ascii', 'backslashreplace')
-    # replace(u'\u201c', '"')
-    # my_desc.replace(u'\u201d', '"')
-    print(u'my_issue.field.description = {}'.format(my_desc))
-    print(u'my_issue.field.summary = {}'.format(my_issue.fields.summary))
-    # emd = my.jira_con.editmeta('TMIT2-8')
-    # print(emd)
-    # print(ja.jira_con.myself()['emailAddress'])
-    # print(ja.jira_con.projects())
-    # update_data_task()
-    # create_data_task('my-layer','MA0123')
-    # search_for_data_task()

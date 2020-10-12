@@ -3,7 +3,7 @@ import six
 from unittest import TestCase
 # import jira
 
-from mapactionpy_controller.jira_tasks import JiraClient
+from mapactionpy_controller import jira_tasks
 
 # works differently for python 2.7 and python 3.x
 if six.PY2:
@@ -50,9 +50,65 @@ class TestJiraClient(TestCase):
 
     def call_jira_constrcutor(self, fail_msg):
         with self.assertRaises(ValueError) as ve:
-            JiraClient()
+            jira_tasks.JiraClient()
 
         if six.PY2:
             self.assertRegexpMatches(str(ve.exception), fail_msg)
         else:
             self.assertRegex(str(ve.exception), fail_msg)
+
+    @mock.patch('mapactionpy_controller.jira_tasks._check_jira_con')
+    @mock.patch('mapactionpy_controller.jira_tasks.JIRA')
+    def test_search_issue_by_unique_summary(self, mock_JIRA, mock_check_jira_con):
+        test_failing_netrc_path = os.path.join(self.parent_dir, 'tests', 'testfiles', 'test_netrc_failing_auth')
+        with mock.patch.dict(os.environ, {"MAPCHEF_NETRC": test_failing_netrc_path}):
+            # This overrides JiraClient's own self check that it has a valid connection
+            mock_check_jira_con.return_value = None
+            jira_client = jira_tasks.JiraClient()
+
+            # test case were extact one task returned
+            single_result = ['a']
+            jira_client.jira_con.search_issues = mock.MagicMock(return_value=single_result)
+            self.assertEqual('a', jira_client.search_issue_by_unique_summary('serach-string'))
+
+            # test case where no tasks returned
+            jira_client.jira_con.search_issues = mock.MagicMock(return_value=None)
+            self.assertIsNone(jira_client.search_issue_by_unique_summary('serach-string'))
+            jira_client.jira_con.search_issues = mock.MagicMock(return_value=[])
+            self.assertIsNone(jira_client.search_issue_by_unique_summary('serach-string'))
+
+            # test case where multiple task returned
+            multi_result = ['a', 'b']
+            jira_client.jira_con.search_issues = mock.MagicMock(return_value=multi_result)
+
+            with self.assertRaises(ValueError) as ve:
+                fail_msg = 'More than one JIRA Issue found'
+                jira_client.search_issue_by_unique_summary('serach-string')
+
+                if six.PY2:
+                    self.assertRegexpMatches(str(ve.exception), fail_msg)
+                else:
+                    self.assertRegex(str(ve.exception), fail_msg)
+
+    # def test_task_handler(self):
+    #     with mock.patch('mapactionpy_controller.jira_tasks.JIRA') as mock_JIRA:
+    #         while mock_lp.call_args_list:
+    #             call = mock_lp.call_args_list.pop()
+    #             # print('call={}'.format('\n'.join([str(c) for c in call])))
+    #             # print('\n')
+    #             running_msg = call[0][1]
+    #             # print('running_msg = {}'.format(running_msg))
+
+    #             # Does running_msg inc a MapID that is a failure:
+    #             for f_id in fail_list:
+    #                 fail_id = f_id.lower()
+    #                 if fail_id in running_msg.lower():
+    #                     self.fail('Found unexpected mapID "{}" in running_msg "{}".\n'
+    #                             'Only expected mapIDs "{}" with arg "{}"'.format(
+    #                                 fail_id, running_msg, should_create, mapid_arg))
+
+    #             for pass_id in should_create:
+    #                 if pass_id in running_msg:
+    #                     found_map_ids.add(pass_id)
+
+    #         self.assertEqual(should_create_set, found_map_ids)
