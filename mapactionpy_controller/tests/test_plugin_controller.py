@@ -21,7 +21,7 @@ class TestPluginController(TestCase):
         # self.path_to_event_file = os.path.join(self.parent_dir, 'example', 'event_description.json')
         # self.nonexistant_path = '/file/that/does/not/exist'
 
-    @mock.patch('mapactionpy_controller.main_stack.line_printer')
+    @mock.patch('mapactionpy_controller.main_stack.parse_feedback')
     def test_get_cookbook_steps(self, mock_lp):
         # This asserts that a list of steps is added to the stack when `get_cookbook_steps` if called
         # First do the work:
@@ -43,7 +43,7 @@ class TestPluginController(TestCase):
 
         self.assertTrue(found_list_of_steps)
 
-    @mock.patch('mapactionpy_controller.main_stack.line_printer')
+    @mock.patch('mapactionpy_controller.main_stack.parse_feedback')
     def test_select_recipes(self, mock_lp):
         # This looks for the MapID in the step.running_msg for the selected maps
 

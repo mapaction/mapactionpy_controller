@@ -6,9 +6,10 @@ import mapactionpy_controller.name_convention as name_convention
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.event import Event
 from mapactionpy_controller.steps import Step
+from mapactionpy_controller.task_renderer import FixDataNameTask
 
 
-def get_defaultcmf_step_list(cmf_config_path, verbose):
+def get_defaultcmf_step_list(cmf_config_path):
     """
     Generates a list of Steps, each of which execucutes a suitable naming convention test
     for a static item within the crash move folder.
@@ -31,7 +32,7 @@ def get_defaultcmf_step_list(cmf_config_path, verbose):
     for dir_to_check, nc_desc_file, extn_to_check, convention_name in ncs_to_check:
         nc = name_convention.NamingConvention(nc_desc_file)
         name_convention_steps.extend(
-            _step_builer(_get_all_files(dir_to_check, extn_to_check), nc, verbose, convention_name))
+            _step_builer(_get_all_files(dir_to_check, extn_to_check), nc, convention_name, cmf))
 
     return name_convention_steps
 
@@ -40,7 +41,7 @@ def _get_all_files(dir, extn):
     return glob.glob('{}/*{}'.format(dir, extn))
 
 
-def get_active_data_step_list(humev_config_path, verbose):
+def get_active_data_step_list(humev_config_path):
     """
     Generates a list of Steps, each of which execucutes a suitable naming convention test
     for a GIS dataset with the `2_Active_data` folder within the crash move folder.
@@ -48,7 +49,7 @@ def get_active_data_step_list(humev_config_path, verbose):
     humev = Event(humev_config_path)
     cmf = CrashMoveFolder(humev.cmf_descriptor_path)
     nc = name_convention.NamingConvention(cmf.data_nc_definition)
-    return _step_builer(_get_all_gisfiles(cmf), nc, verbose, 'data')
+    return _step_builer(_get_all_gisfiles(cmf), nc, 'data', cmf)
 
 
 def _get_all_gisfiles(cmf):
@@ -60,26 +61,26 @@ def _get_all_gisfiles(cmf):
     return gisfiles_with_paths
 
 
-def get_single_file_checker(f_path, nc, verbose):
+def get_single_file_checker(f_path, nc, cmf):
     def check_data_name(**kwargs):
         f_name = os.path.basename(f_path)
         ncr = nc.validate(f_name)
         if not ncr.is_valid:
-            raise ValueError(ncr)
+            raise ValueError(FixDataNameTask(ncr, cmf))
 
         return ncr
 
     return check_data_name
 
 
-def _step_builer(file_list, nc, verbose, convention_name):
+def _step_builer(file_list, nc, convention_name, cmf):
     step_list = []
     for f_path in file_list:
         # return_code += check_dir(dir_to_check, nc_desc_file, extn_to_check, args.inc_valid)
         base_name = os.path.basename(f_path)
         step_list.append(
             Step(
-                get_single_file_checker(f_path, nc, verbose),
+                get_single_file_checker(f_path, nc, cmf),
                 logging.WARNING,
                 "Checking the file '{}' against the {} naming convention".format(base_name, convention_name),
                 "The file '{}' matches the {} naming convention".format(base_name, convention_name),

@@ -51,7 +51,8 @@ class NamingLookupClause(NamingClause):
         self.known_values = {}
         lookup_field = kwargs['lookup_field']
         nc_lookup_dir = os.path.dirname(nc_json_path)
-        self.csv_filepath = os.path.join(nc_lookup_dir, kwargs['filename'])
+        self.csv_filename = kwargs['filename']
+        self.csv_filepath = os.path.join(nc_lookup_dir, self.csv_filename)
 
         if six.PY2:
             with open(self.csv_filepath, 'rb') as csv_file:
@@ -85,17 +86,19 @@ class NamingLookupClause(NamingClause):
             details = self.known_values[clause_value]
             details[self.lookup_field] = clause_value
             valid_value = True
-            message = '"{}" is a recognised value for the clause "{}"'.format(
+            message = '"{}" is a recognised value for the clause "{}" found in "{}"'.format(
                 clause_value,
-                self.clause_name
+                self.clause_name,
+                self.csv_filename
             )
         else:
             # print("{}".format(clause_value))
             details = {self.lookup_field: clause_value}
             valid_value = False
-            message = '"{}" is not a recognised value for the clause "{}"'.format(
+            message = '"{}" is not a recognised value for the clause "{}" found in "{}"'.format(
                 clause_value,
-                self.clause_name
+                self.clause_name,
+                self.csv_filename
             )
 
         class DataClauseValues(namedtuple('DataClauseValues', details.keys())):

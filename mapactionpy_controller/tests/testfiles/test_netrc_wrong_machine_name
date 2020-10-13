@@ -1,0 +1,4 @@
+machine doesnotexist.mapaction.org
+        account http://localhost:2990/jira
+        login fake@mapaction.org
+        password failing-password
