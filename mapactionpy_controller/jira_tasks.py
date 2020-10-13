@@ -131,27 +131,30 @@ class JiraClient():
         now_utc = pytz.utc.localize(datetime.now())
         time_stamp = now_utc.strftime('%Y-%m-%d %H:%M:%S %Z%z')
 
+        # prev_desc =
+        if task_desc != j_issue.fields.description:
+            j_issue.update(description=task_desc)
+
         if fail_threshold > logging.INFO:
-            prev_desc = j_issue.fields.description
-            if task_desc != prev_desc:
-                j_issue.update(description=task_desc)
+            self.jira_con.add_comment(
+                j_issue.id,
+                'This Issue was still current when MapChef was run at {}'.format(time_stamp))
 
-            if j_issue.fields.status.id == self.target_column:
-                self.jira_con.add_comment(
-                    j_issue.id,
-                    'This Issue was still current when MapChef was run at {}'.format(time_stamp))
+        # if (fail_threshold <= logging.INFO)   eg *is not* an warning or an error
+        # and (j_issue.fields.status.id == self.target_column):  eg and still in the todo column
+        # and (j_issue.fields.status.id == self.target_column):  eg and still in the todo column
+        # then add comment (and possibly automatically close).
+        # self.jira_con.add_comment(
+        #     j_issue.id,
+        #     'This Issue appeared to be resolved when MapChef was run at {}. Please manually'
+        #     ' check that the outputs are as expected and then close this Issue.'.format(
+        #         time_stamp))
 
-            else:
-                self.jira_con.add_comment(
-                    j_issue.id,
-                    'This Issue was still current on MapChef run at {}.'
-                    ' Moving the issue to the TODO column'.format(time_stamp))
-                # do transition
-                # self.jira_con
-
-            if j_issue.fields.status.id == self.target_column:
-                self.jira_con.add_comment(
-                    j_issue.id,
-                    'This Issue appeared to be resolved when MapChef was run at {}. Please manually'
-                    ' check that the outputs are as expected and then close this Issue.'.format(
-                        time_stamp))
+        # if (fail_threshold > logging.INFO)   eg *IS* an warning or an error
+        # and (not j_issue.fields.status.id == self.target_column):  # Not in the todo column
+        # then it may be necessary to re-open the ticket.
+        # self.jira_con.transition_issue(
+        #     j_issue.id,
+        #     comment='This Issue was still current on MapChef run at {}.'
+        #     ' Moving the issue to the TODO column'.format(time_stamp))
+        # )
