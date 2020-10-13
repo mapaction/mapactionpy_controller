@@ -42,10 +42,8 @@ class TestJiraClient(TestCase):
         with mock.patch('mapactionpy_controller.jira_tasks.JIRA'):
             fail_msg = 'Unable to authenticate with JIRA'
             test_failing_netrc_path = os.path.join(self.parent_dir, 'tests', 'testfiles', 'test_netrc_failing_auth')
-            print(test_failing_netrc_path)
             mock_env = mock.patch.dict(os.environ, {"MAPCHEF_NETRC": test_failing_netrc_path})
             mock_env.start()
-            print('env-var = {}'.format(os.environ["MAPCHEF_NETRC"]))
             self.call_jira_constrcutor(fail_msg)
             mock_env.stop()
 
@@ -133,7 +131,8 @@ class TestJiraClient(TestCase):
 
             mock_update_method.assert_not_called()
             mock_add_comment_method.assert_called_once()
-            comment_arg = mock_add_comment_method.call_args.args[1]
+            comment_arg = mock_add_comment_method.call_args[0][1]
+
             target_msg = 'This Issue was still current'
             if six.PY2:
                 self.assertRegexpMatches(comment_arg, target_msg)
