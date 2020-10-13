@@ -156,5 +156,5 @@ class JiraClient():
         # self.jira_con.transition_issue(
         #     j_issue.id,
         #     comment='This Issue was still current on MapChef run at {}.'
-        #     ' Moving the issue to the TODO column'.format(time_stamp))
+        #     ' Moving the issue to the DOING column'.format(time_stamp))
         # )
