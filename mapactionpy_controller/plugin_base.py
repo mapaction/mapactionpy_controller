@@ -58,17 +58,18 @@ class BaseRunnerPlugin(object):
             if re.search(recipe.template, f):
                 logger.debug('file {} matched regex'.format(f))
                 f_path = os.path.join(self.cmf.map_templates, f)
+                logger.debug('file {} joined with self.cmf.map_templates "{}"'.format(f, f_path))
                 return (os.path.isfile(f_path)) and (extension == self.get_projectfile_extension())
             else:
                 return False
 
         # TODO: This results in calling `os.path.join` twice for certain files
         logger.debug('searching for map templates in; {}'.format(self.cmf.map_templates))
-        filenames = os.listdir(self.cmf.map_templates)
-        logger.debug('all available template files:\n\t{}'.format('\n\t'.join(filenames)))
-        filenames = filter(_is_relevant_file, filenames)
-        logger.debug('possible template files:\n\t{}'.format('\n\t'.join(filenames)))
-        return [os.path.join(self.cmf.map_templates, fi) for fi in filenames]
+        all_filenames = os.listdir(self.cmf.map_templates)
+        logger.debug('all available template files:\n\t{}'.format('\n\t'.join(all_filenames)))
+        relevant_filenames = [os.path.join(self.cmf.map_templates, fi) for fi in all_filenames if _is_relevant_file(fi)]
+        logger.debug('possible template files:\n\t{}'.format('\n\t'.join(relevant_filenames)))
+        return relevant_filenames
 
     def _get_template_by_aspect_ratio(self, template_aspect_ratios, target_ar):
         """

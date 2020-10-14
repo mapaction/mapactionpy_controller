@@ -25,7 +25,7 @@ class TestPluginController(TestCase):
     def test_get_cookbook_steps(self, mock_lp):
         # This asserts that a list of steps is added to the stack when `get_cookbook_steps` if called
         # First do the work:
-        test_runner = DummyRunner()
+        test_runner = DummyRunner(self.path_to_cmf_file)
         test_runner.cmf = CrashMoveFolder(self.path_to_cmf_file)
         initial_step = plugin_controller.get_cookbook_steps(test_runner, None)
         main_stack.process_stack(initial_step, None)
@@ -72,7 +72,7 @@ class TestPluginController(TestCase):
             should_create_set = set(should_create)
             found_map_ids = set()
 
-            test_runner = DummyRunner()
+            test_runner = DummyRunner(self.path_to_cmf_file)
             test_runner.cmf = CrashMoveFolder(self.path_to_cmf_file)
             initial_step = plugin_controller.get_cookbook_steps(test_runner, mapid_arg)
             # print('initial_step={}'.format(initial_step[0].func))

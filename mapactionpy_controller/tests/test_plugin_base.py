@@ -1,10 +1,18 @@
 from mapactionpy_controller.plugin_base import BaseRunnerPlugin
+import os
 from unittest import TestCase
+import six
+
+# works differently for python 2.7 and python 3.x
+if six.PY2:
+    import mock  # noqa: F401
+else:
+    from unittest import mock  # noqa: F401
 
 
 class DummyRunner(BaseRunnerPlugin):
-    def __init__(self, **kwargs):
-        pass
+    def __init__(self, cmf_descriptor_path):
+        super(DummyRunner, self).__init__(cmf_descriptor_path)
 
     def get_templates(self, **kwargs):
         return kwargs['state']
@@ -27,10 +35,36 @@ class DummyRunner(BaseRunnerPlugin):
 
 class TestPluginBase(TestCase):
     def setUp(self):
-        self.dummy_runner = DummyRunner()
+        self.parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+        self.dir_to_valid_cmf_des = os.path.join(self.parent_dir, 'example')
+        self.path_to_valid_cmf_des = os.path.join(self.dir_to_valid_cmf_des, 'cmf_description_flat_test.json')
+        self.dummy_runner = DummyRunner(self.path_to_valid_cmf_des)
 
     def test_get_all_templates_by_regex(self):
-        pass
+        recipe = mock.Mock(name='mock_recipe')
+        recipe.template = 'abcde'
+
+        self.dummy_runner.cmf.map_templates = '/xyz/'
+
+        available_templates = [
+            'one-two-three.dummy_project_file',
+            'one-two-three.txt',
+            'abcde.dummy_project_file',
+            'abcde.txt'
+        ]
+
+        expect_result = [
+            '/xyz/abcde.dummy_project_file'
+        ]
+
+        with mock.patch('mapactionpy_controller.plugin_base.os.listdir') as mock_listdir:
+            with mock.patch('mapactionpy_controller.plugin_base.os.path.isfile') as mock_isfile:
+                mock_listdir.return_value = available_templates
+                mock_isfile.return_value = True
+
+                actual_result = self.dummy_runner._get_all_templates_by_regex(recipe)
+
+        self.assertEqual(actual_result, expect_result)
 
     def test_get_templates(self):
         pass
