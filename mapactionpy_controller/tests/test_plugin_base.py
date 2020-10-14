@@ -57,7 +57,6 @@ class TestPluginBase(TestCase):
 
         for target_ar, expect_result in test_aspect_ratios:
             actual_result = self.dummy_runner._get_template_by_aspect_ratio(template_aspect_ratios, target_ar)
-            print(target_ar, expect_result, actual_result)
             self.assertEqual(expect_result, actual_result)
 
     def test_get_next_map_version_number(self):

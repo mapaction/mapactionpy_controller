@@ -116,8 +116,8 @@ class BaseRunnerPlugin(object):
         """
         Plugins are required to implement this method.
 
-        The implementation should calculate the aspect ratio of the principal map frame within the list of 
-        templates. The definition of "principal" is left to the plugin, though is typically the largest map 
+        The implementation should calculate the aspect ratio of the principal map frame within the list of
+        templates. The definition of "principal" is left to the plugin, though is typically the largest map
         frame.
 
         @param possible_templates: A list of paths to possible templates
