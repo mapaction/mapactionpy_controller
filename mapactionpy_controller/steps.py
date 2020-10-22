@@ -22,7 +22,7 @@ class Step():
             pass_back['stack_trace'] = traceback.format_exc()
 
 
-    :param func:
+    :param func: A callable which will do the relevant "unit of work".
         * Must accept a **kwargs param. If there is a state object this is passed as `kwargs['state']`.
           The stack does not guarentee the type of object that will be passed as the state.
         * If the function completes successfully it should return the updated state object. This should be
@@ -33,9 +33,9 @@ class Step():
         * If = `logging.ERROR` - the exception will terminate the program.
         * If = `logging.WARNING` - the exception will not result in termination. A JRIA task will be logged the
           program will attempt to continue, though the results may not be want the user intended.
-    :param running_msg:
-    :param complete_msg:
-    :param fail_msg:
+    :param running_msg: A descriptive string to display (ie on the terminal) whilst this step is running.
+    :param complete_msg: A descriptive string to display (eg on the terminal or in the logs) when the step as completed successfully.
+    :param fail_msg: A descriptive string to display (eg on the terminal or in the logs) if the step fails to complete successfully.
     :returns:
     """
 

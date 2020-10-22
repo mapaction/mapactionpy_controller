@@ -33,7 +33,7 @@
             "description": "An explanation about the purpose of this instance.",
             "default": "",
             "examples": [
-                "\"NAME_0\" = '{COUNTRY_NAME}'"
+                "\"NAME_0\" = '{e.country_name}'"
             ]
         },
         "Display": {

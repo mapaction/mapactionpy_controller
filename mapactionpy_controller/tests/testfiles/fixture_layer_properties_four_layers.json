@@ -62,13 +62,13 @@
 				{
 					"class_name": "This",
 					"expression": "[NAME_0]",
-					"sql_query": "(\"NAME_0\" = '{COUNTRY_NAME}')",
+					"sql_query": "(\"NAME_0\" = '{e.country_name}')",
 					"show_class_labels": false
 				},
 				{
 					"class_name": "Other",
 					"expression": "[NAME_0]",
-					"sql_query": "(\"NAME_0\" <> '{COUNTRY_NAME}')",
+					"sql_query": "(\"NAME_0\" <> '{e.country_name}')",
 					"show_class_labels": true
 				}
 			]

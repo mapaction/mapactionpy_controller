@@ -52,13 +52,13 @@
 			"label_classes": [{
 					"className": "This",
 					"expression": "[NAME_0]",
-					"SQLQuery": "(\"NAME_0\" = '{COUNTRY_NAME}')",
+					"SQLQuery": "(\"NAME_0\" = '{e.country_name}')",
 					"showClassLabels": false
 				},
 				{
 					"className": "Other",
 					"expression": "[NAME_0]",
-					"SQLQuery": "(\"NAME_0\" <> '{COUNTRY_NAME}')",
+					"SQLQuery": "(\"NAME_0\" <> '{e.country_name}')",
 					"showClassLabels": true
 				}
 			]

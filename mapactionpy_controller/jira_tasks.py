@@ -77,7 +77,7 @@ class JiraClient():
         if self.jira_con:
             self.jira_con.kill_session()
 
-    def task_handler(self, fail_threshold, msg, task_referal=None, **kwargs):
+    def task_handler(self, fail_threshold, msg, task_referal=None):
         logger.debug('JiraClient.task_handler called with status="{}", and msg="{}"'.format(
             fail_threshold, msg))
 

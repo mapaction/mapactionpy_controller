@@ -5,6 +5,9 @@ import mapactionpy_controller.main_stack as main_stack
 from mapactionpy_controller.tests.test_plugin_base import DummyRunner
 from mapactionpy_controller.steps import Step
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
+from mapactionpy_controller.event import Event
+from mapactionpy_controller.map_cookbook import MapCookbook
+from mapactionpy_controller.layer_properties import LayerProperties
 # works differently for python 2.7 and python 3.x
 try:
     from unittest import mock
@@ -18,23 +21,28 @@ class TestPluginController(TestCase):
         self.parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         self.path_to_cmf_file = os.path.join(self.parent_dir, 'example', 'cmf_description_flat_test.json')
         # print('self.path_to_cmf_file = {}'.format(self.path_to_cmf_file))
-        # self.path_to_event_file = os.path.join(self.parent_dir, 'example', 'event_description.json')
+        self.path_to_event_file = os.path.join(self.parent_dir, 'example', 'event_description.json')
         # self.nonexistant_path = '/file/that/does/not/exist'
 
     @mock.patch('mapactionpy_controller.main_stack.parse_feedback')
-    def test_get_cookbook_steps(self, mock_lp):
+    def test_get_cookbook_steps(self, mock_pf):
         # This asserts that a list of steps is added to the stack when `get_cookbook_steps` if called
         # First do the work:
-        test_runner = DummyRunner(self.path_to_cmf_file)
+        test_runner = DummyRunner(Event(self.path_to_event_file))
         test_runner.cmf = CrashMoveFolder(self.path_to_cmf_file)
-        initial_step = plugin_controller.get_cookbook_steps(test_runner, None)
+        initial_step = plugin_controller.get_cookbook_steps(test_runner, None, False)
         main_stack.process_stack(initial_step, None)
 
         # Now get the information out of the mock:
         found_list_of_steps = False
-        for call in mock_lp.call_args_list:
+        for call in mock_pf.call_args_list:
             try:
-                retrieved_result = call[1]['result']
+                # print()
+                # print('test_get_cookbook_steps')
+                # print(call)
+                # print('END:test_get_cookbook_steps')
+                # retrieved_result = call[1]['result']
+                retrieved_result = call[1].get('result', None)
                 if all([isinstance(stp, Step) for stp in retrieved_result]):
                     # print('found_list_of_steps=True')
                     found_list_of_steps = True
@@ -43,8 +51,7 @@ class TestPluginController(TestCase):
 
         self.assertTrue(found_list_of_steps)
 
-    @mock.patch('mapactionpy_controller.main_stack.parse_feedback')
-    def test_select_recipes(self, mock_lp):
+    def test_select_recipes(self):
         # This looks for the MapID in the step.running_msg for the selected maps
 
         # A list of tuples to test
@@ -65,39 +72,21 @@ class TestPluginController(TestCase):
             (None, ['MA001', 'MA002', 'MA003', 'MA004'], [])
         ]
 
+        cmf = CrashMoveFolder(self.path_to_cmf_file)
+        lp = LayerProperties(cmf, 'test', False)
+        cb = MapCookbook(cmf, lp, False)
+
         for mapid_arg, should_create, fail_list in test_cases:
-            # print('mapid_arg = {}'.format(mapid_arg))
-            # print('should_create = {}'.format(should_create))
-            # print('fail_list = {}'.format(fail_list))
+            print('mapid_arg = {}'.format(mapid_arg))
+            print('should_create = {}'.format(should_create))
+            print('fail_list = {}'.format(fail_list))
             should_create_set = set(should_create)
-            found_map_ids = set()
 
-            test_runner = DummyRunner(self.path_to_cmf_file)
-            test_runner.cmf = CrashMoveFolder(self.path_to_cmf_file)
-            initial_step = plugin_controller.get_cookbook_steps(test_runner, mapid_arg)
-            # print('initial_step={}'.format(initial_step[0].func))
-            # print('initial_step={}'.format(initial_step[0].running_msg))
+            selected_recipes = plugin_controller.select_recipes(cb, mapid_arg)
+            selected_map_ids = set([recipe.mapnumber.upper() for recipe in selected_recipes])
 
-            main_stack.process_stack(initial_step, None)
+            # Check that no MapID were selected that shouldn't have been:
+            self.assertTrue(selected_map_ids.isdisjoint(fail_list))
 
-            # Now get the information out of the mock
-            while mock_lp.call_args_list:
-                call = mock_lp.call_args_list.pop()
-                # print('call={}'.format('\n'.join([str(c) for c in call])))
-                # print('\n')
-                running_msg = call[0][1]
-                # print('running_msg = {}'.format(running_msg))
-
-                # Does running_msg inc a MapID that is a failure:
-                for f_id in fail_list:
-                    fail_id = f_id.lower()
-                    if fail_id in running_msg.lower():
-                        self.fail('Found unexpected mapID "{}" in running_msg "{}".\n'
-                                  'Only expected mapIDs "{}" with arg "{}"'.format(
-                                      fail_id, running_msg, should_create, mapid_arg))
-
-                for pass_id in should_create:
-                    if pass_id in running_msg:
-                        found_map_ids.add(pass_id)
-
-            self.assertEqual(should_create_set, found_map_ids)
+            # Check that all of the `selected_ids` match the `should_create` set:
+            self.assertEqual(should_create_set, selected_map_ids)

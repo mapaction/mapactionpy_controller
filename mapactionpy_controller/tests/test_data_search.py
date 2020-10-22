@@ -1,4 +1,4 @@
-from unittest import TestCase
+import unittest
 import mapactionpy_controller.data_search as data_search
 import sys
 import os
@@ -13,7 +13,7 @@ else:
     from unittest.mock import mock_open, patch  # noqa: F401
 
 
-class TestDataSearch(TestCase):
+class TestDataSearch(unittest.TestCase):
 
     def setUp(self):
         self.parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -24,6 +24,7 @@ class TestDataSearch(TestCase):
 
         # self.ds = data_search.DataSearch(cmf_descriptor_path)
 
+    @unittest.skip('Out of date')
     def test_args(self):
         sys.argv[1:] = ['--event', self.event_descriptor_path,
                         '--recipe-file', self.recipe_file,
@@ -35,6 +36,7 @@ class TestDataSearch(TestCase):
 
     # @mock.patch('json.dump')
     # @mock.patch('builtins.open', new_callable=mock_open())
+    @unittest.skip('Out of date')
     def test_data_search_main(self):
         output_file_for_testing = os.path.join(
             self.parent_dir, 'tests', 'testfiles', 'delete-me-test-output-file.json')

@@ -89,7 +89,7 @@ class TestLayerProperties(TestCase):
         long_lived_lp.cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_exact_match')
         self.assertFalse(long_lived_lp.is_difference_with_layer_rendering_dir())
 
-        # 7) Same results whether or not teh '.' character is included in the file extension
+        # 7) Same results whether or not the '.' character is included in the file extension
         test_cmf.layer_rendering = os.path.join(layer_rendering_test_root, 'four_files_exact_match')
         # passing example with dot
         lyr_lp = LayerProperties(test_cmf, '.lyr', verify_on_creation=True)

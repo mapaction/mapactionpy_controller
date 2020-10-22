@@ -5,6 +5,8 @@ import mapactionpy_controller.check_naming_convention as cnc
 import mapactionpy_controller.config_verify as config_verify
 import mapactionpy_controller.plugin_controller as plugin_controller
 from mapactionpy_controller.main_stack import process_stack
+import mapactionpy_controller.data_search as data_search
+from mapactionpy_controller.event import Event
 
 VERB_BUILD = 'build'
 VERB_CREATE = 'create'
@@ -39,8 +41,10 @@ def noun_gisdata_print_output(args):
 
 def noun_maps_print_output(args):
     if args.verb == VERB_BUILD:
-
         build_maps(args.humevent_desc_path, args.map_number)
+    elif args.verb == VERB_VERIFY:
+        hum_event = Event(args.humevent_desc_path)
+        data_search.get_per_product_data_search_steps(hum_event)
     else:
         raise NotImplementedError(args)
 

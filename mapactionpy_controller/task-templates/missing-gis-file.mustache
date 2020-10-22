@@ -1,0 +1,27 @@
+h1. What is the problem?
+
+Could not locate gis data to add to this map layer: *<%layer.name%>* 
+
+The expected data files name should match this pattern:
+
+{{<%layer.reg_exp%>}}
+
+h1. What is the likely consequence of this problem? 
+
+Any automated maps will be produced with this layer missing. The usefulness of these maps may be greatly reduced.
+
+h1. How can this problem be resolved?
+
+The relevant data must be located and correctly named.
+
+* Check the Data Scramble coordination notes. Check whether this data has been obtained within the data scramble.
+  If not, follow the instructions for downloading and preparing this data.
+* Check any other JIRA tasks on this board. It may be that this data exists but it is incorrectly named. For
+  information related this specific layer see this page:
+  [https://wiki.mapaction.org/x/QIDW|https://wiki.mapaction.org/x/QIDW]
+  
+h1. Other information
+ 
+|layer name|{{<%layer.name%>}}|
+|data search regex|{{<%layer.reg_exp%>}}|
+|Full path to layer file|{{<%layer.layer_file_path%>}}|

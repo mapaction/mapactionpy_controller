@@ -83,39 +83,37 @@ class TestMAController(TestCase):
             fixtures.recipe_with_positive_iso3_code, self.lyr_props)
         pos_recipe = MapRecipe(
             fixtures.recipe_without_positive_iso3_code, self.lyr_props)
-        updated_pos_recipe = ds.update_search_with_event_details(pos_recipe)
+        updated_pos_recipe = ds.update_recipe_with_event_details(state=pos_recipe)
         self.assertEqual(updated_pos_recipe, reference_recipe)
 
         reference_recipe = MapRecipe(
             fixtures.recipe_with_negative_iso3_code, self.lyr_props)
         neg_recipe = MapRecipe(
             fixtures.recipe_without_negative_iso3_code, self.lyr_props)
-        updated_neg_recipe = ds.update_search_with_event_details(neg_recipe)
+        updated_neg_recipe = ds.update_recipe_with_event_details(state=neg_recipe)
+
         self.assertEqual(updated_neg_recipe, reference_recipe)
 
     def test_search_for_shapefiles(self):
         ds = DataSearch(self.event)
 
         # case where there is exactly one dataset per query
-        with mock.patch('mapactionpy_controller.data_search.os.walk') as mock_walk:
-            with mock.patch('mapactionpy_controller.data_search.os.path') as mock_path:
-                mock_walk.return_value = fixtures.walk_single_admn_file_search_search
-                mock_path.join.return_value = (
-                    'D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp'
-                )
-                mock_path.normpath.return_value = (
-                    'D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp'
-                )
-                mock_path.splitext.return_value = (r'moz_admn_ad0_py_s0_unknown_pp', r'.shp')
-                reference_recipe = MapRecipe(
-                    fixtures.recipe_result_one_dataset_per_layer, self.lyr_props)
-                test_recipe = MapRecipe(fixtures.recipe_with_positive_iso3_code, self.lyr_props)
-                self.assertNotEqual(test_recipe, reference_recipe)
-                updated_test_recipe = ds.update_recipe_with_datasources(test_recipe)
+        with mock.patch('mapactionpy_controller.data_search.glob.glob') as mock_glob:
+            mock_glob.return_value = fixtures.glob_single_admn_file_search_search
 
-                self.assertEqual(updated_test_recipe, test_recipe)
-                self.assertTrue(updated_test_recipe == test_recipe)
-                self.assertEqual(updated_test_recipe, reference_recipe)
+            reference_recipe = MapRecipe(
+                fixtures.recipe_result_one_dataset_per_layer, self.lyr_props)
+            test_recipe = MapRecipe(fixtures.recipe_with_positive_iso3_code, self.lyr_props)
+            self.assertNotEqual(test_recipe, reference_recipe)
+
+            # get the first layer from the test_recipe
+            test_lyr = test_recipe.all_layers().pop()
+            data_finder = ds.get_lyr_data_finder(test_lyr)
+            updated_test_recipe = data_finder(state=test_recipe)
+
+            self.assertEqual(updated_test_recipe, test_recipe)
+            self.assertTrue(updated_test_recipe == test_recipe)
+            self.assertEqual(updated_test_recipe, reference_recipe)
 
     def test_cmf_schema_validation(self):
 
