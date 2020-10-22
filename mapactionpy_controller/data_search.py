@@ -1,14 +1,8 @@
-import argparse
 import glob
-import json
-import jsonpickle
 import logging
 import os
 import re
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
-from mapactionpy_controller.event import Event
-from mapactionpy_controller.map_recipe import MapRecipe
-from mapactionpy_controller.layer_properties import LayerProperties
 from mapactionpy_controller.steps import Step
 import mapactionpy_controller.task_renderer as task_renderer
 
@@ -53,7 +47,7 @@ class DataSearch():
         (https://docs.python.org/3.3/library/string.html#formatstrings)
 
         This method replaces those strings with runtime values. Replacement fields referencing the humanitarian
-        event object should use the name `e`. For example, the value of `recipe.summary` could be set in 
+        event object should use the name `e`. For example, the value of `recipe.summary` could be set in
         the recipe files to:
         ```
         recipe.summary = "Overview map of {e.country_name}"
@@ -138,7 +132,7 @@ class DataSearch():
         def _data_finder(**kwargs):
             recipe = kwargs['state']
 
-            if not recipe_lyr in recipe.all_layers():
+            if recipe_lyr not in recipe.all_layers():
                 error_msg = 'Attempting to update a layer ("{}") which is not part of the recipe'.format(
                     recipe_lyr.name)
                 logging.error(error_msg)

@@ -1,4 +1,3 @@
-import itertools
 import json
 from os import path
 
@@ -75,7 +74,10 @@ class RecipeLayer:
                 (self.name + lyr_props.extension)
             ))
 
-        self.data_source_path = path.abspath(layer_def.get('data_source_path', None))
+        self.data_source_path = layer_def.get('data_source_path', None)
+        if self.data_source_path:
+            self.data_source_path = path.abspath(self.data_source_path)
+
         self.data_name = layer_def.get('data_name', None)
 
     def _get_data_schema(self, layer_def, lyr_props):
@@ -216,7 +218,9 @@ class MapRecipe:
         self.template = recipe_def["template"]
 
         # Optional fields
-        self.map_project_path = path.abspath(recipe_def.get('map_project_path', None))
+        self.map_project_path = recipe_def.get('map_project_path', None)
+        if self.map_project_path:
+            self.map_project_path = path.abspath(self.map_project_path)
         self.template_path = recipe_def.get('template_path', None)
         self.version_num = recipe_def.get('version_num', None)
         self.runners = recipe_def.get('runners', None)

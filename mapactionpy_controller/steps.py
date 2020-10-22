@@ -1,4 +1,3 @@
-# import mapactionpy_controller.config_verify as config_verify
 import logging
 import traceback
 
@@ -31,12 +30,19 @@ class Step():
     :param fail_threshold: Expresses the severity with which an exception from `func` should be treated. In
         any case the exception will be handled and a JIRA tasks logged as appropriate.
         * If = `logging.ERROR` - the exception will terminate the program.
-        * If = `logging.WARNING` - the exception will not result in termination. A JRIA task will be logged the
-          program will attempt to continue, though the results may not be want the user intended.
+        * If = `logging.WARNING` - the exception will not result in termination. A JRIA task will be logged
+          the program will attempt to continue, though the results may not be want the user intended.
     :param running_msg: A descriptive string to display (ie on the terminal) whilst this step is running.
-    :param complete_msg: A descriptive string to display (eg on the terminal or in the logs) when the step as completed successfully.
-    :param fail_msg: A descriptive string to display (eg on the terminal or in the logs) if the step fails to complete successfully.
-    :returns:
+    :param complete_msg: A descriptive string to display (eg on the terminal or in the logs) when the step as
+                         completed successfully.
+    :param fail_msg: A descriptive string to display (eg on the terminal or in the logs) if the step fails to
+                     complete successfully.
+    :returns: Either:
+        * An object which will be passed to the next Step. The returned value will be wrapped in the dict prior
+          to being passed to the next step.  kwargs = {'state' : return_value}
+        * Or one or more Step objects. If multiple Step objects then these should be contained within a list.
+          Any Step objects will be added to the stack in reverse order. (eg the list object in the list will be
+          the next to be executed).
     """
 
     def __init__(self, func, fail_threshold, running_msg, complete_msg, fail_msg):

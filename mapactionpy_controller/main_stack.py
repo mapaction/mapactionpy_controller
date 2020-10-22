@@ -15,7 +15,7 @@ each Step:
     * The function may return:
         - One or more new Step objects (which are inserted into the slack). Closures are very useful here
         - An updated state object (which will passed to the next step)
-    * Each Step defines each of a "running", "success" and "failure" message, which is displayed on the 
+    * Each Step defines each of a "running", "success" and "failure" message, which is displayed on the
       console and/or log as appropriate.
 
 
