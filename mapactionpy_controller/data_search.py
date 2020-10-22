@@ -144,9 +144,9 @@ class DataSearch():
             # print()
             # print('---------------')
             for f_path in get_all_gisfiles(self.cmf):
-                print('f_path = {}'.format(f_path))
+                # print('f_path = {}'.format(f_path))
                 f_name = os.path.basename(f_path)
-                print('f_name = {}'.format(f_name))
+                # print('f_name = {}'.format(f_name))
                 if re.match(recipe_lyr.reg_exp, f_name):
                     found_datasources.append(f_path)
                     found_datanames.append(os.path.splitext(f_name)[0])
@@ -161,10 +161,6 @@ class DataSearch():
 
             # If multiple matching files are found
             if len(found_datasources) > 1:
-                print()
-                print('---------------')
-                print(found_datasources)
-                print('---------------')
                 multiple_files_task = FixMultipleMatchingFilesTask(recipe_lyr, self.cmf, found_datasources)
                 raise ValueError(multiple_files_task)
 
@@ -183,10 +179,6 @@ def get_all_gisfiles(cmf):
     for extn in ['.shp', '.img', '.tif']:
         for f_path in glob.glob('{}/*/*{}'.format(cmf.active_data, extn)):
             gisfiles_with_paths.add(f_path)
-
-    if gisfiles_with_paths:
-        print('##############################')
-        print('get_all_gisfiles() = \n{}\n'.format('\n'.join(gisfiles_with_paths)))
 
     return gisfiles_with_paths
 

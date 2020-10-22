@@ -30,7 +30,7 @@ class TestPluginController(TestCase):
         # First do the work:
         test_runner = DummyRunner(Event(self.path_to_event_file))
         test_runner.cmf = CrashMoveFolder(self.path_to_cmf_file)
-        initial_step = plugin_controller.get_cookbook_steps(test_runner, None, False)
+        initial_step = plugin_controller.get_cookbook_steps(test_runner, None, dry_run=True, verify_on_creation=False)
         main_stack.process_stack(initial_step, None)
 
         # Now get the information out of the mock:

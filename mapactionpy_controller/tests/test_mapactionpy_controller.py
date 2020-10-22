@@ -9,6 +9,7 @@ from mapactionpy_controller.event import Event
 from mapactionpy_controller.layer_properties import LayerProperties
 from mapactionpy_controller.map_recipe import MapRecipe, RecipeLayer, RecipeFrame
 import jsonpickle
+import platform
 import six
 # works differently for python 2.7 and python 3.x
 try:
