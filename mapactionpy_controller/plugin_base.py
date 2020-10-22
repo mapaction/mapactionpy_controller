@@ -11,7 +11,6 @@ from zipfile import ZipFile
 from slugify import slugify
 
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
-from mapactionpy_controller.event import Event
 
 
 logger = logging.getLogger(__name__)

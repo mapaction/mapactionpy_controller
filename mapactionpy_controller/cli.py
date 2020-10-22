@@ -5,8 +5,6 @@ import mapactionpy_controller.check_naming_convention as cnc
 import mapactionpy_controller.config_verify as config_verify
 import mapactionpy_controller.plugin_controller as plugin_controller
 from mapactionpy_controller.main_stack import process_stack
-import mapactionpy_controller.data_search as data_search
-from mapactionpy_controller.event import Event
 
 VERB_BUILD = 'build'
 VERB_CREATE = 'create'
