@@ -99,7 +99,10 @@ class TestMAController(TestCase):
 
         # case where there is exactly one dataset per query
         with mock.patch('mapactionpy_controller.data_search.glob.glob') as mock_glob:
-            mock_glob.return_value = fixtures.glob_single_admn_file_search_search
+            if platform.system() == 'Windows':
+                mock_glob.return_value = fixtures.glob_single_admn_file_search_windows
+            else:
+                mock_glob.return_value = fixtures.glob_single_admn_file_search_linux
 
             reference_recipe = MapRecipe(
                 fixtures.recipe_result_one_dataset_per_layer, self.lyr_props)

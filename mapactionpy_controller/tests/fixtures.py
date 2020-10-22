@@ -339,11 +339,18 @@ walk_single_admn_file_search_search = \
         )
     ]
 
-
-glob_single_admn_file_search_search = [
+glob_single_admn_file_search_windows = [
     'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_stle_ste_pt_s0_osm_pp.shp',
     'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_admn_ad0_ln_s0_unknown_pp.shp',
     'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_admn_ad0_py_s0_unknown_pp.shp',
     'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_admn_ad1_py_s1_mapaction_pp.shp',
     'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_admn_ad1_ln_s1_mapaction_pp.shp',
+]
+
+glob_single_admn_file_search_linux = [
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_stle_ste_pt_s0_osm_pp.shp',
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_ln_s0_unknown_pp.shp',
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp',
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad1_py_s1_mapaction_pp.shp',
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad1_ln_s1_mapaction_pp.shp',
 ]
