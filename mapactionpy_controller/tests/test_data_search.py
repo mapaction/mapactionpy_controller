@@ -129,3 +129,15 @@ class TestDataSearch(unittest.TestCase):
             ve = arcm.exception
             print('ve.args[0] is instance of: {}'.format(type(ve.args[0])))
             self.assertIsInstance(ve.args[0], data_search.FixMissingGISDataTask)
+
+    def test_check_layer(self):
+
+        recipe = MapRecipe(fixtures.recipe_with_layer_details_embedded, self.lyr_props)
+        lyr = recipe.all_layers().pop()
+
+        # This will pass silently if the lyr is of the right type
+        self.assertIsNone(data_search._check_layer(lyr))
+
+        # This case should raise a ValueError
+        with self.assertRaises(ValueError):
+            data_search._check_layer('string-to-represent-a-layer')

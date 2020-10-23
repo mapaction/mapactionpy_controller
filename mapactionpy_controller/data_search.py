@@ -5,6 +5,7 @@ import re
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.steps import Step
 import mapactionpy_controller.task_renderer as task_renderer
+from mapactionpy_controller.map_recipe import RecipeLayer
 
 
 class FixMissingGISDataTask(task_renderer.TaskReferralBase):
@@ -59,11 +60,12 @@ class DataSearch():
 
         The following fields within a recipe are updated:
 
+        * `product`
         * `summary`
         * `lyr.reg_exp` for every layer
-         lyr.definition_query
-         lbl_class.expression
-         lbl_class.sql_query
+        * `lyr.definition_query`
+        * `lbl_class.expression`
+        * `lbl_class.sql_query`
 
         If the input strings do not include any replacement fields the recipe is returned unaltered.
 
@@ -99,16 +101,14 @@ class DataSearch():
         return recipe
 
 
-def get_lyr_data_finder(cmf, recipe_lyr):
+def _check_layer(recipe_lyr):
     """
-    This method returns a function which tests for the existance of data that matches
-    the param `recipe_lyr.reg_exp`.
+    Checks that the recipe is a MapRecipe object.
 
-    Create a new function for each layer within a recipe.
+    @param recipe_lyr: The object to be checked.
+    @raises ValueError: If recipe_lyr is not an instance of MapRecipe.
     """
-    try:
-        recipe_lyr.name
-    except AttributeError:
+    if not isinstance(recipe_lyr, RecipeLayer):
         error_msg = (
             'Unable to `get_lyr_data_finder` when MapRecipe is not validated against LayerProerties.'
             ' This method needs a RecipeLayer object not just a string placeholder.'
@@ -116,6 +116,46 @@ def get_lyr_data_finder(cmf, recipe_lyr):
         )
         logging.error(error_msg)
         raise ValueError(error_msg)
+
+
+def _check_found_files(found_files, recipe_lyr, cmf):
+    """
+    This method checks the list of files in `get_lyr_data_finder`. It is called within `get_lyr_data_finder`
+    so there is no need to call it seperately. A 'ValueError' exception, along with a Task and task
+    description will be raised if there are too few or too many files in the `found_files` list.
+
+    @param found_files: A list of tuples. Each tuple should be represent one of the files found and the tuple
+                        should be in the format `(full_path, filename_without_extension)`
+    @param recipe_lyr: The recipe being processed. Used for providing contact to any error message that may
+                       be created.
+    @param cmf: The crash move folder being searched. Used for providing contact to any error message that
+                may be created.
+    @raises ValueError: If there is not exactly one file in the found_files lilst.
+    """
+    # If no data matching is found:
+    # Test on list of paths as they are guarenteed to be unique, whereas base filenames are not
+    if not found_files:
+        missing_data_task = FixMissingGISDataTask(recipe_lyr, cmf)
+        raise ValueError(missing_data_task)
+
+    # If multiple matching files are found
+    if len(found_files) > 1:
+        found_datasources = [f_path for f_path, f_name in found_files]
+        multiple_files_task = FixMultipleMatchingFilesTask(recipe_lyr, cmf, found_datasources)
+        raise ValueError(multiple_files_task)
+
+
+def get_lyr_data_finder(cmf, recipe_lyr):
+    """
+    This method returns a function which tests for the existance of data that matches
+    the param `recipe_lyr.reg_exp`.
+
+    Create a new function for each layer within a recipe.
+    """
+    # This is just being paraniod. This can only occur if somewhere up the chain a MapCookbook was created
+    # with the param verify_on_creation=False. That should not occur in production code and only in
+    # some test cases.
+    _check_layer(recipe_lyr)
 
     # Get list of files, so that they are only queried on disk once.
     # Make this into a list of full_paths (as returned by `get_all_gisfiles(cmf)`) and
@@ -125,6 +165,9 @@ def get_lyr_data_finder(cmf, recipe_lyr):
     def _data_finder(**kwargs):
         recipe = kwargs['state']
 
+        # Again this is being paraniod. This can only occur if there are more than one MapRecipe objects
+        # being proceed simulatiously. There is isn't currently a use case where that would occur in
+        # production code. This check is present just in case.
         if recipe_lyr not in recipe.all_layers():
             error_msg = 'Attempting to update a layer ("{}") which is not part of the recipe'.format(
                 recipe_lyr.name)
@@ -140,17 +183,8 @@ def get_lyr_data_finder(cmf, recipe_lyr):
              for f_path, f_name in all_gis_files if re.match(recipe_lyr.reg_exp, f_name)]
         )
 
-        # If no data matching is found:
-        # Test on list of paths as they are guarenteed to be unique, whereas base filenames are not
-        if not found_files:
-            missing_data_task = FixMissingGISDataTask(recipe_lyr, cmf)
-            raise ValueError(missing_data_task)
-
-        # If multiple matching files are found
-        if len(found_files) > 1:
-            found_datasources = [f_path for f_path, f_name in found_files]
-            multiple_files_task = FixMultipleMatchingFilesTask(recipe_lyr, cmf, found_datasources)
-            raise ValueError(multiple_files_task)
+        # Do checks and raise exceptions if required.
+        _check_found_files(found_files, recipe_lyr, cmf)
 
         # else assume everthing is OK:
         recipe_lyr.data_source_path, recipe_lyr.data_name = found_files.pop()
