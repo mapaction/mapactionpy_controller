@@ -220,7 +220,6 @@ class BaseRunnerPlugin(object):
 
         self.zip_exported_files(export_params)
 
-
     def _create_export_dir(self, export_params, recipe):
         # Accumulate parameters for export XML
         version_str = "v" + str(recipe.version_num).zfill(2)
