@@ -15,13 +15,13 @@ recipe_without_positive_iso3_code = (
                         "name": "mainmap_stle_stl_pt_s0_allmaps",
                         "reg_exp": "^{e.affected_country_iso3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
                         "schema_definition": "stle_ste_pt.yml",
-                        "definition_query": "fclass IN ('national_capital', 'city', 'capital', 'town')",
+                        "definition_query": "'NAME_0' = '{e.country_name}'",
                         "display": true,
                         "add_to_legend": true,
                         "label_classes": [
                             {
                                 "class_name": "National Capital",
-                                "expression": "[name]",
+                                "expression": "[name] (Capital of {e.country_name})",
                                 "sql_query": "('fclass' = 'national_capital')",
                                 "show_class_labels": true
                             },
@@ -30,7 +30,13 @@ recipe_without_positive_iso3_code = (
                                 "expression": "[name]",
                                 "sql_query": "('fclass' = 'town')",
                                 "show_class_labels": true
-                            }
+                            },
+                            {
+                                "class_name": "Nieghbouring Country Capitals",
+                                "expression": "[name]",
+                                "sql_query": "('fclass' = 'national_capital') AND ('ADM0_Pcode' <> '{e.affected_country_iso3}')",
+                                "show_class_labels": true
+                            }                            
                         ]
                     }
                 ]
@@ -144,13 +150,13 @@ recipe_with_positive_iso3_code = (
                         "name": "mainmap_stle_stl_pt_s0_allmaps",
                         "reg_exp": "^moz_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
                         "schema_definition": "stle_ste_pt.yml",
-                        "definition_query": "fclass IN ('national_capital', 'city', 'capital', 'town')",
+                        "definition_query": "'NAME_0' = 'Mozambique'",
                         "display": true,
                         "add_to_legend": true,
                         "label_classes": [
                             {
                                 "class_name": "National Capital",
-                                "expression": "[name]",
+                                "expression": "[name] (Capital of Mozambique)",
                                 "sql_query": "('fclass' = 'national_capital')",
                                 "show_class_labels": true
                             },
@@ -159,7 +165,13 @@ recipe_with_positive_iso3_code = (
                                 "expression": "[name]",
                                 "sql_query": "('fclass' = 'town')",
                                 "show_class_labels": true
-                            }
+                            },
+                            {
+                                "class_name": "Nieghbouring Country Capitals",
+                                "expression": "[name]",
+                                "sql_query": "('fclass' = 'national_capital') AND ('ADM0_Pcode' <> 'moz')",
+                                "show_class_labels": true
+                            }                                  
                         ]
                     }
                 ]
@@ -189,6 +201,47 @@ recipe_with_negative_iso3_code = (
                         "display": true,
                         "add_to_legend": true,
                         "label_classes": []
+                    }
+                ]
+            }
+        ]
+    }'''
+)
+
+
+recipe_test_for_search_for_shapefiles = (
+    '''{
+      	"mapnumber": "MA001",
+    	"category": "Reference",
+        "product": "Mozambique: Overview Map",
+       	"summary": "Overview of Mozambique with topography displayed",
+    	"export": true,
+        "template": "reference",
+        "map_frames": [
+            {
+                "name": "Main map",
+                "layers": [
+                    {
+                        "name": "mainmap_stle_stl_pt_s0_allmaps",
+                        "reg_exp": "^moz_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+                        "schema_definition": "stle_ste_pt.yml",
+                        "definition_query": "fclass IN ('national_capital', 'city', 'capital', 'town')",
+                        "display": true,
+                        "add_to_legend": true,
+                        "label_classes": [
+                            {
+                                "class_name": "National Capital",
+                                "expression": "[name]",
+                                "sql_query": "('fclass' = 'national_capital')",
+                                "show_class_labels": true
+                            },
+                            {
+                                "class_name": "Admin 1 Capital",
+                                "expression": "[name]",
+                                "sql_query": "('fclass' = 'town')",
+                                "show_class_labels": true
+                            }
+                        ]
                     }
                 ]
             }

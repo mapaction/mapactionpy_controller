@@ -61,6 +61,9 @@ class DataSearch():
 
         * `summary`
         * `lyr.reg_exp` for every layer
+         lyr.definition_query
+         lbl_class.expression
+         lbl_class.sql_query
 
         If the input strings do not include any replacement fields the recipe is returned unaltered.
 
@@ -69,7 +72,16 @@ class DataSearch():
         """
         recipe = kwargs['state']
 
-        def update_regex(lyr):
+        # def update_regex(item):
+        #     try:
+        #         return item.format(e=self.event)
+        #     except IndexError:
+        #         return item
+
+        def update_regex_in_layer(lyr):
+            # lyr.reg_exp = update_regex(lyr.reg_exp)
+            # lyr.definition_query = update_regex(lyr.definition_query)
+
             try:
                 lyr.reg_exp = lyr.reg_exp.format(e=self.event)
             except IndexError:
@@ -96,7 +108,7 @@ class DataSearch():
 
         # Update the reg_exg for seaching for each individual layer
         for mf in recipe.map_frames:
-            mf.layers = [update_regex(lyr) for lyr in mf.layers]
+            mf.layers = [update_regex_in_layer(lyr) for lyr in mf.layers]
 
         # Update the Map Title
         try:
@@ -145,9 +157,6 @@ def get_lyr_data_finder(cmf, recipe_lyr):
             logging.error(error_msg)
             raise ValueError(error_msg)
 
-        # found_datasources = []
-        # found_datanames = []
-
         found_files = []
 
         # Match filename *including extension* against regex
@@ -156,18 +165,6 @@ def get_lyr_data_finder(cmf, recipe_lyr):
             [(f_path, os.path.splitext(f_name)[0])
              for f_path, f_name in all_gis_files if re.match(recipe_lyr.reg_exp, f_name)]
         )
-
-        # print()
-        # print('---------------')
-        # for f_path, f_name in all_gis_files:
-        #     # print('f_path = {}'.format(f_path))
-        #     # f_name = os.path.basename(f_path)
-        #     # print('f_name = {}'.format(f_name))
-        #     if re.match(recipe_lyr.reg_exp, f_name):
-        #         found_datasources.append(f_path)
-        #         found_datanames.append(os.path.splitext(f_name)[0])
-
-        # print('---------------')
 
         # If no data matching is found:
         # Test on list of paths as they are guarenteed to be unique, whereas base filenames are not

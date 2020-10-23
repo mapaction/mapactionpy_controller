@@ -33,9 +33,11 @@ class TestDataSearch(unittest.TestCase):
         self.lyr_props = LayerProperties(self.cmf, '', verify_on_creation=False)
         # self.ds = data_search.DataSearch(cmf_descriptor_path)
 
-    def test_substitute_iso3_in_regex(self):
+    def test_substitute_fields_in_recipe_strings(self):
         ds = data_search.DataSearch(self.event)
 
+        # An example with an iso code within a positive regex lookup 
+        # (eg '^{e.affected_country_iso3}_stle.....')
         reference_recipe = MapRecipe(
             fixtures.recipe_with_positive_iso3_code, self.lyr_props)
         pos_recipe = MapRecipe(
@@ -43,6 +45,8 @@ class TestDataSearch(unittest.TestCase):
         updated_pos_recipe = ds.update_recipe_with_event_details(state=pos_recipe)
         self.assertEqual(updated_pos_recipe, reference_recipe)
 
+        # An example with an iso code within a negitive regex lookup 
+        # (eg '^(?!({e.affected_country_iso3}))_admn.....')
         reference_recipe = MapRecipe(
             fixtures.recipe_with_negative_iso3_code, self.lyr_props)
         neg_recipe = MapRecipe(
@@ -50,6 +54,16 @@ class TestDataSearch(unittest.TestCase):
         updated_neg_recipe = ds.update_recipe_with_event_details(state=neg_recipe)
 
         self.assertEqual(updated_neg_recipe, reference_recipe)
+
+        # Reverse of the first example to test a case where nothing needs updating. In this case the same json 
+        # definition is used for both recipes. There are not string replacement fields within the json definition.
+        reference_recipe = MapRecipe(
+            fixtures.recipe_with_positive_iso3_code, self.lyr_props)
+        pos_recipe = MapRecipe(
+            fixtures.recipe_with_positive_iso3_code, self.lyr_props)
+        updated_pos_recipe = ds.update_recipe_with_event_details(state=pos_recipe)
+        self.assertEqual(updated_pos_recipe, reference_recipe)
+
 
     def test_search_for_shapefiles(self):
         # ds = data_search.DataSearch(self.event)
@@ -72,7 +86,7 @@ class TestDataSearch(unittest.TestCase):
 
             # Case A
             # where there is exactly one dataset per query
-            test_recipe = MapRecipe(fixtures.recipe_with_positive_iso3_code, self.lyr_props)
+            test_recipe = MapRecipe(fixtures.recipe_test_for_search_for_shapefiles, self.lyr_props)
             mock_glob.return_value = mock_single_file_glob
             self.assertNotEqual(test_recipe, reference_recipe)
 
@@ -87,7 +101,7 @@ class TestDataSearch(unittest.TestCase):
 
             # Case B
             # where there is multiple matching datasets
-            test_recipe = MapRecipe(fixtures.recipe_with_positive_iso3_code, self.lyr_props)
+            test_recipe = MapRecipe(fixtures.recipe_test_for_search_for_shapefiles, self.lyr_props)
             mock_glob.return_value = mock_multiple_file_glob
             self.assertNotEqual(test_recipe, reference_recipe)
 
@@ -103,7 +117,7 @@ class TestDataSearch(unittest.TestCase):
 
             # Case C
             # where there are no matching datasets
-            test_recipe = MapRecipe(fixtures.recipe_with_positive_iso3_code, self.lyr_props)
+            test_recipe = MapRecipe(fixtures.recipe_test_for_search_for_shapefiles, self.lyr_props)
             mock_glob.return_value = mock_no_file_glob
             self.assertNotEqual(test_recipe, reference_recipe)
 
@@ -116,6 +130,3 @@ class TestDataSearch(unittest.TestCase):
             ve = arcm.exception
             print('ve.args[0] is instance of: {}'.format(type(ve.args[0])))
             self.assertIsInstance(ve.args[0], data_search.FixMissingGISDataTask)
-
-    def test_update_recipe_with_event_details(self):
-        pass
