@@ -66,8 +66,9 @@ def _get_product_start_step(recipe):
 def _get_product_end_step(recipe):
 
     def pass_through_step(**kwargs):
-        recipe = kwargs['state']
-        print(recipe)
+        # recipe = kwargs['state']
+        # print(recipe)
+        pass
 
     return Step(
         pass_through_step,

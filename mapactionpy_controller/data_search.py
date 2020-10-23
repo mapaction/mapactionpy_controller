@@ -114,9 +114,10 @@ class DataSearch():
 
     def get_lyr_data_finder(self, recipe_lyr):
         """
-        This method searches for the existance of data that matches the `layer.reg_exp` for each layer within a recipe.
+        This method returns a function which tests for the existance of data that matches
+        the param `recipe_lyr.reg_exp`.
 
-
+        Create a new function for each layer within a recipe.
         """
         try:
             recipe_lyr.name
@@ -128,6 +129,9 @@ class DataSearch():
             )
             logging.error(error_msg)
             raise ValueError(error_msg)
+
+        # Get list of files, so that they are only queried on disk once.
+        all_gis_files = get_all_gisfiles(self.cmf)
 
         def _data_finder(**kwargs):
             recipe = kwargs['state']
@@ -143,7 +147,7 @@ class DataSearch():
 
             # print()
             # print('---------------')
-            for f_path in get_all_gisfiles(self.cmf):
+            for f_path in all_gis_files:
                 # print('f_path = {}'.format(f_path))
                 f_name = os.path.basename(f_path)
                 # print('f_name = {}'.format(f_name))

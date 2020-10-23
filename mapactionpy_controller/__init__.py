@@ -30,11 +30,11 @@ def _get_validator_for_config_schema(schema_file):
 
 logger = logging.getLogger(__name__)
 # logger = logging.getLogger()
-logger.setLevel(logging.WARNING)
+logger.setLevel(logging.DEBUG)
 # create file handler which logs even debug messages
 # create console handler with a higher log level
 ch = logging.StreamHandler()
-ch.setLevel(logging.INFO)
+ch.setLevel(logging.DEBUG)
 # create formatter and add it to the handlers
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s (%(module)s +ln%(lineno)s) ;- %(message)s')
 # formatter = logging.Formatter('%(asctime)s %(module)s %(name)s.%(funcName)s

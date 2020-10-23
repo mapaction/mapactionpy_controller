@@ -211,9 +211,15 @@ class BaseRunnerPlugin(object):
         """
         recipe = kwargs['state']
         export_params = {}
-        export_params = self._create_export_dir(export_params, recipe)
-        export_params = self._do_export(export_params, recipe)
+        try:
+            export_params = self._create_export_dir(export_params, recipe)
+            export_params = self._do_export(export_params, recipe)
+        except Exception as exp:
+            logger.error('Failed to export the map. export_params = "{}"'.format(export_params))
+            logger.error(exp)
+
         self.zip_exported_files(export_params)
+
 
     def _create_export_dir(self, export_params, recipe):
         # Accumulate parameters for export XML
