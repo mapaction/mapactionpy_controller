@@ -72,55 +72,29 @@ class DataSearch():
         """
         recipe = kwargs['state']
 
-        # def update_regex(item):
-        #     try:
-        #         return item.format(e=self.event)
-        #     except IndexError:
-        #         return item
-
-        def update_regex_in_layer(lyr):
-            # lyr.reg_exp = update_regex(lyr.reg_exp)
-            # lyr.definition_query = update_regex(lyr.definition_query)
-
+        def update_recipe_item(item):
             try:
-                lyr.reg_exp = lyr.reg_exp.format(e=self.event)
+                return item.format(e=self.event)
             except IndexError:
-                pass
+                return item
 
-            # Update the definition_query
-            try:
-                lyr.definition_query = lyr.definition_query.format(e=self.event)
-            except IndexError:
-                pass
+        def update_items_in_layer(lyr):
+            lyr.reg_exp = update_recipe_item(lyr.reg_exp)
+            lyr.definition_query = update_recipe_item(lyr.definition_query)
 
             for lbl_class in lyr.label_classes:
-                try:
-                    lbl_class.expression = lbl_class.expression.format(e=self.event)
-                except IndexError:
-                    pass
-
-                try:
-                    lbl_class.sql_query = lbl_class.sql_query.format(e=self.event)
-                except IndexError:
-                    pass
+                lbl_class.expression = update_recipe_item(lbl_class.expression)
+                lbl_class.sql_query = update_recipe_item(lbl_class.sql_query)
 
             return lyr
 
         # Update the reg_exg for seaching for each individual layer
         for mf in recipe.map_frames:
-            mf.layers = [update_regex_in_layer(lyr) for lyr in mf.layers]
+            mf.layers = [update_items_in_layer(lyr) for lyr in mf.layers]
 
         # Update the Map Title
-        try:
-            recipe.product = recipe.product.format(e=self.event)
-        except IndexError:
-            pass
-
-        # Update the Map Summary text
-        try:
-            recipe.summary = recipe.summary.format(e=self.event)
-        except IndexError:
-            pass
+        recipe.product = update_recipe_item(recipe.product)
+        recipe.summary = update_recipe_item(recipe.summary)
 
         return recipe
 
