@@ -2,7 +2,6 @@ import glob
 import logging
 import os
 import re
-from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.steps import Step
 import mapactionpy_controller.task_renderer as task_renderer
 from mapactionpy_controller.map_recipe import RecipeLayer
@@ -32,77 +31,66 @@ class FixMultipleMatchingFilesTask(task_renderer.TaskReferralBase):
         })
 
 
-# class DataSearch():
-#     """
-#     This class encapsulates a number of methods for searching for data relevant to a particular event.
-#     """
-
-#     def __init__(self, event):
-#         self.event = event
-#         self.cmf = CrashMoveFolder(self.event.cmf_descriptor_path)
-
 def get_recipe_event_updater(hum_event):
+    """
+    Creates a function which will update a recipe with situation specific information about the
+    Humanitarian Event. Certain strings within a recipe can be can include "replacement fields"
+    using Python's String format Syntax
+    (https://docs.python.org/3.3/library/string.html#formatstrings)
+
+    This method replaces those strings with runtime values. Replacement fields referencing the humanitarian
+    event object should use the name `e`. For example, the value of `recipe.summary` could be set in
+    the recipe files to:
+    ```
+    recipe.summary = "Overview map of {e.country_name}"
+    ```
+    This method will update that string with the country name from `self.event`:
+    ```
+    recipe.summary = "Overview map of Atlantis"
+    ```
+
+    The following fields within a recipe are updated:
+
+    * `product`
+    * `summary`
+    * `lyr.reg_exp` for every layer
+    * `lyr.definition_query`
+    * `lbl_class.expression`
+    * `lbl_class.sql_query`
+
+    If the input strings do not include any replacement fields the recipe is returned unaltered.
+
+    @kwargs state: The recipe to be updated.
+    @returns The same recipe object with the relevant strings updated as appropriate.
+    """
+    def update_recipe_item(item):
+        try:
+            return item.format(e=hum_event)
+        except IndexError:
+            return item
 
     def update_recipe_with_event_details(**kwargs):
-        """
-        Updates the recipe with situation specific information about the Humanitarian Event. Certain strings
-        within a recipe can be can include "replacement fields" using Python's String format Syntax
-        (https://docs.python.org/3.3/library/string.html#formatstrings)
-
-        This method replaces those strings with runtime values. Replacement fields referencing the humanitarian
-        event object should use the name `e`. For example, the value of `recipe.summary` could be set in
-        the recipe files to:
-        ```
-        recipe.summary = "Overview map of {e.country_name}"
-        ```
-        This method will update that string with the country name from `self.event`:
-        ```
-        recipe.summary = "Overview map of Atlantis"
-        ```
-
-        The following fields within a recipe are updated:
-
-        * `product`
-        * `summary`
-        * `lyr.reg_exp` for every layer
-        * `lyr.definition_query`
-        * `lbl_class.expression`
-        * `lbl_class.sql_query`
-
-        If the input strings do not include any replacement fields the recipe is returned unaltered.
-
-        @kwargs state: The recipe to be updated.
-        @returns The same recipe object with the relevant strings updated as appropriate.
-        """
         recipe = kwargs['state']
-
-        def update_recipe_item(item):
-            try:
-                return item.format(e=hum_event)
-            except IndexError:
-                return item
-
-        def update_items_in_layer(lyr):
-            lyr.reg_exp = update_recipe_item(lyr.reg_exp)
-            lyr.definition_query = update_recipe_item(lyr.definition_query)
-
-            for lbl_class in lyr.label_classes:
-                lbl_class.expression = update_recipe_item(lbl_class.expression)
-                lbl_class.sql_query = update_recipe_item(lbl_class.sql_query)
-
-            return lyr
-
-        # Update the reg_exg for seaching for each individual layer
-        for mf in recipe.map_frames:
-            mf.layers = [update_items_in_layer(lyr) for lyr in mf.layers]
-
-        # Update the Map Title
-        recipe.product = update_recipe_item(recipe.product)
-        recipe.summary = update_recipe_item(recipe.summary)
-
-        return recipe
+        return _update_items_in_recipe(recipe, update_recipe_item)
 
     return update_recipe_with_event_details
+
+
+def _update_items_in_recipe(recipe, update_recipe_item):
+    # Update the reg_exg for seaching for each individual layer
+    for lyr in recipe.all_layers():
+        lyr.reg_exp = update_recipe_item(lyr.reg_exp)
+        lyr.definition_query = update_recipe_item(lyr.definition_query)
+
+        for lbl_class in lyr.label_classes:
+            lbl_class.expression = update_recipe_item(lbl_class.expression)
+            lbl_class.sql_query = update_recipe_item(lbl_class.sql_query)
+
+    # Update the recipe level members
+    recipe.product = update_recipe_item(recipe.product)
+    recipe.summary = update_recipe_item(recipe.summary)
+
+    return recipe
 
 
 def _check_layer(recipe_lyr):
