@@ -54,7 +54,7 @@ class TestMAController(TestCase):
     def test_serialise_and_deserialise_map_recipe(self):
         recipes_fixtures = [
             fixtures.recipe_with_positive_iso3_code,
-            fixtures.recipe_result_one_dataset_per_layer,
+            fixtures.recipe_result_one_dataset_per_layer_windows,
             fixtures.recipe_without_positive_iso3_code
         ]
 
@@ -100,13 +100,16 @@ class TestMAController(TestCase):
 
         # case where there is exactly one dataset per query
         with mock.patch('mapactionpy_controller.data_search.glob.glob') as mock_glob:
+            # We use two different mock values becuase we are matching absolute paths as strings
+            # The underlying production code does not differencate between platforms.
             if platform.system() == 'Windows':
                 mock_glob.return_value = fixtures.glob_single_admn_file_search_windows
+                ref_recipe_str = fixtures.recipe_result_one_dataset_per_layer_windows
             else:
                 mock_glob.return_value = fixtures.glob_single_admn_file_search_linux
+                ref_recipe_str = fixtures.recipe_result_one_dataset_per_layer_linux
 
-            reference_recipe = MapRecipe(
-                fixtures.recipe_result_one_dataset_per_layer, self.lyr_props)
+            reference_recipe = MapRecipe(ref_recipe_str, self.lyr_props)
             test_recipe = MapRecipe(fixtures.recipe_with_positive_iso3_code, self.lyr_props)
             self.assertNotEqual(test_recipe, reference_recipe)
 
@@ -118,6 +121,10 @@ class TestMAController(TestCase):
             self.assertEqual(updated_test_recipe, test_recipe)
             self.assertTrue(updated_test_recipe == test_recipe)
             self.assertEqual(updated_test_recipe, reference_recipe)
+
+        # case where there is multiple matching datasets
+
+        # case where there are no matching datasets
 
     def test_cmf_schema_validation(self):
 

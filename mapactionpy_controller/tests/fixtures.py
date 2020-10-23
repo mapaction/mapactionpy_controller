@@ -197,7 +197,7 @@ recipe_with_negative_iso3_code = (
 )
 
 
-recipe_result_one_dataset_per_layer = (
+recipe_result_one_dataset_per_layer_windows = (
     '''{
       	"mapnumber": "MA001",
     	"category": "Reference",
@@ -214,6 +214,48 @@ recipe_result_one_dataset_per_layer = (
                         "reg_exp": "^moz_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
                         "schema_definition": "stle_ste_pt.yml",
                         "data_source_path": "D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_stle_ste_pt_s0_osm_pp.shp",
+                        "data_name": "moz_stle_ste_pt_s0_osm_pp",
+                        "definition_query": "fclass IN ('national_capital', 'city', 'capital', 'town')",
+                        "display": true,
+                        "add_to_legend": true,
+                        "label_classes": [
+                            {
+                                "class_name": "National Capital",
+                                "expression": "[name]",
+                                "sql_query": "('fclass' = 'national_capital')",
+                                "show_class_labels": true
+                            },
+                            {
+                                "class_name": "Admin 1 Capital",
+                                "expression": "[name]",
+                                "sql_query": "('fclass' = 'town')",
+                                "show_class_labels": true
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }'''
+)
+
+recipe_result_one_dataset_per_layer_linux = (
+    '''{
+      	"mapnumber": "MA001",
+    	"category": "Reference",
+        "product": "Mozambique: Overview Map",
+       	"summary": "Overview of Mozambique with topography displayed",
+    	"export": true,
+        "template": "reference",
+        "map_frames": [
+            {
+                "name": "Main map",
+                "layers": [
+                    {
+                        "name": "mainmap_stle_stl_pt_s0_allmaps",
+                        "reg_exp": "^moz_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+                        "schema_definition": "stle_ste_pt.yml",
+                        "data_source_path": "/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_stle_ste_pt_s0_osm_pp.shp",
                         "data_name": "moz_stle_ste_pt_s0_osm_pp",
                         "definition_query": "fclass IN ('national_capital', 'city', 'capital', 'town')",
                         "display": true,
