@@ -61,6 +61,8 @@ def get_single_file_checker(f_path, nc, cmf):
         if not ncr.is_valid:
             raise ValueError(FixDataNameTask(ncr, cmf))
 
+        # https://trello.com/c/BODjWZrw/184-implement-check-that-gis-files-are-in-the-right-folder
+        # Check that the file is in the right directory to go here
         return ncr
 
     return check_data_name
@@ -82,9 +84,3 @@ def _step_builer(file_list, nc, convention_name, cmf):
         )
 
     return step_list
-
-
-def check_if_file_in_wrong_dir(cmf):
-    # TODO
-    # cmf.active_data
-    pass

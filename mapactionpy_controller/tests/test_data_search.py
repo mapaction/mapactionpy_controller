@@ -34,7 +34,7 @@ class TestDataSearch(unittest.TestCase):
         # self.ds = data_search.DataSearch(cmf_descriptor_path)
 
     def test_substitute_fields_in_recipe_strings(self):
-        ds = data_search.DataSearch(self.event)
+        recipe_updater = data_search.get_recipe_event_updater(self.event)
 
         # An example with an iso code within a positive regex lookup
         # (eg '^{e.affected_country_iso3}_stle.....')
@@ -42,7 +42,7 @@ class TestDataSearch(unittest.TestCase):
             fixtures.recipe_with_positive_iso3_code, self.lyr_props)
         pos_recipe = MapRecipe(
             fixtures.recipe_without_positive_iso3_code, self.lyr_props)
-        updated_pos_recipe = ds.update_recipe_with_event_details(state=pos_recipe)
+        updated_pos_recipe = recipe_updater(state=pos_recipe)
         self.assertEqual(updated_pos_recipe, reference_recipe)
 
         # An example with an iso code within a negitive regex lookup
@@ -51,7 +51,8 @@ class TestDataSearch(unittest.TestCase):
             fixtures.recipe_with_negative_iso3_code, self.lyr_props)
         neg_recipe = MapRecipe(
             fixtures.recipe_without_negative_iso3_code, self.lyr_props)
-        updated_neg_recipe = ds.update_recipe_with_event_details(state=neg_recipe)
+        recipe_updater = data_search.get_recipe_event_updater(self.event)
+        updated_neg_recipe = recipe_updater(state=neg_recipe)
 
         self.assertEqual(updated_neg_recipe, reference_recipe)
 
@@ -61,7 +62,7 @@ class TestDataSearch(unittest.TestCase):
             fixtures.recipe_with_positive_iso3_code, self.lyr_props)
         pos_recipe = MapRecipe(
             fixtures.recipe_with_positive_iso3_code, self.lyr_props)
-        updated_pos_recipe = ds.update_recipe_with_event_details(state=pos_recipe)
+        updated_pos_recipe = recipe_updater(state=pos_recipe)
         self.assertEqual(updated_pos_recipe, reference_recipe)
 
     def test_search_for_shapefiles(self):

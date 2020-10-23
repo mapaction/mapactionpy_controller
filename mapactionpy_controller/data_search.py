@@ -32,16 +32,18 @@ class FixMultipleMatchingFilesTask(task_renderer.TaskReferralBase):
         })
 
 
-class DataSearch():
-    """
-    This class encapsulates a number of methods for searching for data relevant to a particular event.
-    """
+# class DataSearch():
+#     """
+#     This class encapsulates a number of methods for searching for data relevant to a particular event.
+#     """
 
-    def __init__(self, event):
-        self.event = event
-        self.cmf = CrashMoveFolder(self.event.cmf_descriptor_path)
+#     def __init__(self, event):
+#         self.event = event
+#         self.cmf = CrashMoveFolder(self.event.cmf_descriptor_path)
 
-    def update_recipe_with_event_details(self, **kwargs):
+def get_recipe_event_updater(hum_event):
+
+    def update_recipe_with_event_details(**kwargs):
         """
         Updates the recipe with situation specific information about the Humanitarian Event. Certain strings
         within a recipe can be can include "replacement fields" using Python's String format Syntax
@@ -76,7 +78,7 @@ class DataSearch():
 
         def update_recipe_item(item):
             try:
-                return item.format(e=self.event)
+                return item.format(e=hum_event)
             except IndexError:
                 return item
 
@@ -99,6 +101,8 @@ class DataSearch():
         recipe.summary = update_recipe_item(recipe.summary)
 
         return recipe
+
+    return update_recipe_with_event_details
 
 
 def _check_layer(recipe_lyr):
@@ -216,11 +220,11 @@ def get_per_product_data_search_steps(cmf, hum_event, recipe):
     3) Calculate checksum
 
     """
-    ds = DataSearch(hum_event)
+    # ds = DataSearch(hum_event)
 
     step_list = [
         Step(
-            ds.update_recipe_with_event_details,
+            get_recipe_event_updater(hum_event),
             logging.ERROR,
             'Updating recipe with event specific details',
             'Updated recipe with event specific details',
