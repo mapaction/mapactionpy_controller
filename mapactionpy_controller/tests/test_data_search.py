@@ -52,7 +52,7 @@ class TestDataSearch(unittest.TestCase):
         self.assertEqual(updated_neg_recipe, reference_recipe)
 
     def test_search_for_shapefiles(self):
-        ds = data_search.DataSearch(self.event)
+        # ds = data_search.DataSearch(self.event)
 
         with mock.patch('mapactionpy_controller.data_search.glob.glob') as mock_glob:
             # We use two different mock values becuase we are matching absolute paths as strings
@@ -78,7 +78,7 @@ class TestDataSearch(unittest.TestCase):
 
             # get the first layer from the test_recipe
             test_lyr = test_recipe.all_layers().pop()
-            data_finder = ds.get_lyr_data_finder(test_lyr)
+            data_finder = data_search.get_lyr_data_finder(self.cmf, test_lyr)
             updated_test_recipe = data_finder(state=test_recipe)
 
             self.assertEqual(updated_test_recipe, test_recipe)
@@ -93,7 +93,7 @@ class TestDataSearch(unittest.TestCase):
 
             # get the first layer from the test_recipe
             test_lyr = test_recipe.all_layers().pop()
-            data_finder = ds.get_lyr_data_finder(test_lyr)
+            data_finder = data_search.get_lyr_data_finder(self.cmf, test_lyr)
             with self.assertRaises(ValueError) as arcm:
                 updated_test_recipe = data_finder(state=test_recipe)
 
@@ -109,7 +109,7 @@ class TestDataSearch(unittest.TestCase):
 
             # get the first layer from the test_recipe
             test_lyr = test_recipe.all_layers().pop()
-            data_finder = ds.get_lyr_data_finder(test_lyr)
+            data_finder = data_search.get_lyr_data_finder(self.cmf, test_lyr)
             with self.assertRaises(ValueError) as arcm:
                 updated_test_recipe = data_finder(state=test_recipe)
 

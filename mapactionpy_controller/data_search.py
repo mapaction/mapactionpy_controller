@@ -112,69 +112,81 @@ class DataSearch():
 
         return recipe
 
-    def get_lyr_data_finder(self, recipe_lyr):
-        """
-        This method returns a function which tests for the existance of data that matches
-        the param `recipe_lyr.reg_exp`.
 
-        Create a new function for each layer within a recipe.
-        """
-        try:
-            recipe_lyr.name
-        except AttributeError:
-            error_msg = (
-                'Unable to `get_lyr_data_finder` when MapRecipe is not validated against LayerProerties.'
-                ' This method needs a RecipeLayer object not just a string placeholder.'
-                ' layer_name = "{}"'.format(recipe_lyr)
-            )
+def get_lyr_data_finder(cmf, recipe_lyr):
+    """
+    This method returns a function which tests for the existance of data that matches
+    the param `recipe_lyr.reg_exp`.
+
+    Create a new function for each layer within a recipe.
+    """
+    try:
+        recipe_lyr.name
+    except AttributeError:
+        error_msg = (
+            'Unable to `get_lyr_data_finder` when MapRecipe is not validated against LayerProerties.'
+            ' This method needs a RecipeLayer object not just a string placeholder.'
+            ' layer_name = "{}"'.format(recipe_lyr)
+        )
+        logging.error(error_msg)
+        raise ValueError(error_msg)
+
+    # Get list of files, so that they are only queried on disk once.
+    # Make this into a list of full_paths (as returned by `get_all_gisfiles(cmf)`) and
+    # just the file name
+    all_gis_files = [(f_path, os.path.basename(f_path)) for f_path in get_all_gisfiles(cmf)]
+
+    def _data_finder(**kwargs):
+        recipe = kwargs['state']
+
+        if recipe_lyr not in recipe.all_layers():
+            error_msg = 'Attempting to update a layer ("{}") which is not part of the recipe'.format(
+                recipe_lyr.name)
             logging.error(error_msg)
             raise ValueError(error_msg)
 
-        # Get list of files, so that they are only queried on disk once.
-        all_gis_files = get_all_gisfiles(self.cmf)
+        # found_datasources = []
+        # found_datanames = []
 
-        def _data_finder(**kwargs):
-            recipe = kwargs['state']
+        found_files = []
 
-            if recipe_lyr not in recipe.all_layers():
-                error_msg = 'Attempting to update a layer ("{}") which is not part of the recipe'.format(
-                    recipe_lyr.name)
-                logging.error(error_msg)
-                raise ValueError(error_msg)
+        # Match filename *including extension* against regex
+        # But only store the filename without extension
+        found_files.extend(
+            [(f_path, os.path.splitext(f_name)[0])
+             for f_path, f_name in all_gis_files if re.match(recipe_lyr.reg_exp, f_name)]
+        )
 
-            found_datasources = []
-            found_datanames = []
+        # print()
+        # print('---------------')
+        # for f_path, f_name in all_gis_files:
+        #     # print('f_path = {}'.format(f_path))
+        #     # f_name = os.path.basename(f_path)
+        #     # print('f_name = {}'.format(f_name))
+        #     if re.match(recipe_lyr.reg_exp, f_name):
+        #         found_datasources.append(f_path)
+        #         found_datanames.append(os.path.splitext(f_name)[0])
 
-            # print()
-            # print('---------------')
-            for f_path in all_gis_files:
-                # print('f_path = {}'.format(f_path))
-                f_name = os.path.basename(f_path)
-                # print('f_name = {}'.format(f_name))
-                if re.match(recipe_lyr.reg_exp, f_name):
-                    found_datasources.append(f_path)
-                    found_datanames.append(os.path.splitext(f_name)[0])
+        # print('---------------')
 
-            # print('---------------')
+        # If no data matching is found:
+        # Test on list of paths as they are guarenteed to be unique, whereas base filenames are not
+        if not found_files:
+            missing_data_task = FixMissingGISDataTask(recipe_lyr, cmf)
+            raise ValueError(missing_data_task)
 
-            # If no data matching is found:
-            # Test on list of paths as they are guarenteed to be unique, whereas base filenames are not
-            if not found_datasources:
-                missing_data_task = FixMissingGISDataTask(recipe_lyr, self.cmf)
-                raise ValueError(missing_data_task)
+        # If multiple matching files are found
+        if len(found_files) > 1:
+            found_datasources = [f_path for f_path, f_name in found_files]
+            multiple_files_task = FixMultipleMatchingFilesTask(recipe_lyr, cmf, found_datasources)
+            raise ValueError(multiple_files_task)
 
-            # If multiple matching files are found
-            if len(found_datasources) > 1:
-                multiple_files_task = FixMultipleMatchingFilesTask(recipe_lyr, self.cmf, found_datasources)
-                raise ValueError(multiple_files_task)
+        # else assume everthing is OK:
+        recipe_lyr.data_source_path, recipe_lyr.data_name = found_files.pop()
 
-            # else assume everthing is OK:
-            recipe_lyr.data_source_path = found_datasources[0]
-            recipe_lyr.data_name = found_datanames[0]
+        return recipe
 
-            return recipe
-
-        return _data_finder
+    return _data_finder
 
 
 def get_all_gisfiles(cmf):
@@ -187,7 +199,7 @@ def get_all_gisfiles(cmf):
     return gisfiles_with_paths
 
 
-def get_per_product_data_search_steps(hum_event, recipe):
+def get_per_product_data_search_steps(cmf, hum_event, recipe):
     """
 
     1) Find all possible datasources for a layer
@@ -213,7 +225,7 @@ def get_per_product_data_search_steps(hum_event, recipe):
     for recipe_lyr in recipe.all_layers():
         step_list.extend([
             Step(
-                ds.get_lyr_data_finder(recipe_lyr),
+                get_lyr_data_finder(cmf, recipe_lyr),
                 logging.WARNING,
                 '"Searching for data suitable for layer "{}"'.format(recipe_lyr.name),
                 'Found data for layer "{}"'.format(recipe_lyr.name),
