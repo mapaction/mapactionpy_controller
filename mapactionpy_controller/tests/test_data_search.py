@@ -1,16 +1,22 @@
 import unittest
 import mapactionpy_controller.data_search as data_search
-import sys
+from mapactionpy_controller.map_recipe import MapRecipe
+from mapactionpy_controller.event import Event
+from mapactionpy_controller.layer_properties import LayerProperties
+from mapactionpy_controller.crash_move_folder import CrashMoveFolder
+import fixtures
 import os
 import six
+import platform
+
 
 # works differently for python 2.7 and python 3.x
 if six.PY2:
     import mock  # noqa: F401
-    from mock import mock_open, patch
+    # from mock import mock_open, patch
 else:
     from unittest import mock  # noqa: F401
-    from unittest.mock import mock_open, patch  # noqa: F401
+    # from unittest.mock import mock_open, patch  # noqa: F401
 
 
 class TestDataSearch(unittest.TestCase):
@@ -21,58 +27,95 @@ class TestDataSearch(unittest.TestCase):
         self.event_descriptor_path = os.path.join(self.parent_dir, 'example', 'event_description.json')
         self.recipe_file = os.path.join(self.parent_dir, 'example', 'example_single_map_recipe.json')
         self.non_existant_file = os.path.join(self.parent_dir, 'example', 'non-existant-file.json')
-
+        self.cmf = CrashMoveFolder(self.cmf_descriptor_path, verify_on_creation=False)
+        self.event = Event(self.event_descriptor_path)
+        # self.cmf = CrashMoveFolder(self.cmf_descriptor_path)
+        self.lyr_props = LayerProperties(self.cmf, '', verify_on_creation=False)
         # self.ds = data_search.DataSearch(cmf_descriptor_path)
 
-    @unittest.skip('Out of date')
-    def test_args(self):
-        sys.argv[1:] = ['--event', self.event_descriptor_path,
-                        '--recipe-file', self.recipe_file,
-                        '--output-file', 'somefile']
-        args = data_search.get_args()
-        self.assertEqual(self.event_descriptor_path, args.event_path)
-        self.assertEqual(self.recipe_file, args.recipe_file)
-        self.assertEqual('somefile', args.output_file)
+    def test_substitute_iso3_in_regex(self):
+        ds = data_search.DataSearch(self.event)
 
-    # @mock.patch('json.dump')
-    # @mock.patch('builtins.open', new_callable=mock_open())
-    @unittest.skip('Out of date')
-    def test_data_search_main(self):
-        output_file_for_testing = os.path.join(
-            self.parent_dir, 'tests', 'testfiles', 'delete-me-test-output-file.json')
+        reference_recipe = MapRecipe(
+            fixtures.recipe_with_positive_iso3_code, self.lyr_props)
+        pos_recipe = MapRecipe(
+            fixtures.recipe_without_positive_iso3_code, self.lyr_props)
+        updated_pos_recipe = ds.update_recipe_with_event_details(state=pos_recipe)
+        self.assertEqual(updated_pos_recipe, reference_recipe)
 
-        event_descriptor_path = os.path.join(
-            self.parent_dir, 'tests', 'testfiles', 'fixture_event_description_matching_all.json')
+        reference_recipe = MapRecipe(
+            fixtures.recipe_with_negative_iso3_code, self.lyr_props)
+        neg_recipe = MapRecipe(
+            fixtures.recipe_without_negative_iso3_code, self.lyr_props)
+        updated_neg_recipe = ds.update_recipe_with_event_details(state=neg_recipe)
 
-        recipe_file = os.path.join(
-            self.parent_dir, 'tests', 'testfiles', 'fixture_cookbook_1map_4layers.json')
+        self.assertEqual(updated_neg_recipe, reference_recipe)
 
-        sys.argv[1:] = ['--event', event_descriptor_path,
-                        '--recipe-file', recipe_file,
-                        '--output-file', output_file_for_testing]
+    def test_search_for_shapefiles(self):
+        ds = data_search.DataSearch(self.event)
 
-        # check that the output file doesn't already exist. Run the main method and then check that it does exist
-        # afterwards.
-        if os.path.exists(output_file_for_testing):
-            os.remove(output_file_for_testing)
+        with mock.patch('mapactionpy_controller.data_search.glob.glob') as mock_glob:
+            # We use two different mock values becuase we are matching absolute paths as strings
+            # The underlying production code does not differencate between platforms.
+            if platform.system() == 'Windows':
+                mock_single_file_glob = fixtures.glob_single_stle_file_search_windows
+                mock_multiple_file_glob = fixtures.glob_multiple_stle_file_search_windows
+                mock_no_file_glob = fixtures.glob_no_stle_file_search_windows
+                ref_recipe_str = fixtures.recipe_result_one_dataset_per_layer_windows
+            else:
+                mock_single_file_glob = fixtures.glob_single_stle_file_search_linux
+                mock_multiple_file_glob = fixtures.glob_multiple_stle_file_search_linux
+                mock_no_file_glob = fixtures.glob_no_stle_file_search_linux
+                ref_recipe_str = fixtures.recipe_result_one_dataset_per_layer_linux
 
-        self.assertFalse(os.path.exists(output_file_for_testing))
-        data_search.main()
-        self.assertTrue(os.path.exists(output_file_for_testing))
+            reference_recipe = MapRecipe(ref_recipe_str, self.lyr_props)
 
-        # In this case we don't expect many changes to the input and output recipes
-        # - The data serach to find anything, therefore the no changes to the data_source_path
-        # - The data_search regexs should be updated with the country ISO3 code
-        # - The changes title remains the same
-        # - The number of layers remains the same
-#        input_recipe = MapRecipe(self.recipe_file)
-#        output_recipe = MapRecipe(output_file_for_testing)
-#
-#        print("input {} output {}".format(len(output_recipe.layers), len(input_recipe.layers)))
-#
-#        self.assertEqual(input_recipe.title, output_recipe.title)
-#        self.assertEqual(len(output_recipe.layers), len(input_recipe.layers))
-#
-#        # Finally remove the file so that it isn't present for future tests
-#        os.remove(output_file_for_testing)
-#        self.assertFalse(os.path.exists(output_file_for_testing))
+            # Case A
+            # where there is exactly one dataset per query
+            test_recipe = MapRecipe(fixtures.recipe_with_positive_iso3_code, self.lyr_props)
+            mock_glob.return_value = mock_single_file_glob
+            self.assertNotEqual(test_recipe, reference_recipe)
+
+            # get the first layer from the test_recipe
+            test_lyr = test_recipe.all_layers().pop()
+            data_finder = ds.get_lyr_data_finder(test_lyr)
+            updated_test_recipe = data_finder(state=test_recipe)
+
+            self.assertEqual(updated_test_recipe, test_recipe)
+            self.assertTrue(updated_test_recipe == test_recipe)
+            self.assertEqual(updated_test_recipe, reference_recipe)
+
+            # Case B
+            # where there is multiple matching datasets
+            test_recipe = MapRecipe(fixtures.recipe_with_positive_iso3_code, self.lyr_props)
+            mock_glob.return_value = mock_multiple_file_glob
+            self.assertNotEqual(test_recipe, reference_recipe)
+
+            # get the first layer from the test_recipe
+            test_lyr = test_recipe.all_layers().pop()
+            data_finder = ds.get_lyr_data_finder(test_lyr)
+            with self.assertRaises(ValueError) as arcm:
+                updated_test_recipe = data_finder(state=test_recipe)
+
+            ve = arcm.exception
+            print('ve.args[0] is instance of: {}'.format(type(ve.args[0])))
+            self.assertIsInstance(ve.args[0], data_search.FixMultipleMatchingFilesTask)
+
+            # Case C
+            # where there are no matching datasets
+            test_recipe = MapRecipe(fixtures.recipe_with_positive_iso3_code, self.lyr_props)
+            mock_glob.return_value = mock_no_file_glob
+            self.assertNotEqual(test_recipe, reference_recipe)
+
+            # get the first layer from the test_recipe
+            test_lyr = test_recipe.all_layers().pop()
+            data_finder = ds.get_lyr_data_finder(test_lyr)
+            with self.assertRaises(ValueError) as arcm:
+                updated_test_recipe = data_finder(state=test_recipe)
+
+            ve = arcm.exception
+            print('ve.args[0] is instance of: {}'.format(type(ve.args[0])))
+            self.assertIsInstance(ve.args[0], data_search.FixMissingGISDataTask)
+
+    def test_update_recipe_with_event_details(self):
+        pass

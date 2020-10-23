@@ -4,12 +4,10 @@ from unittest import TestCase
 import fixtures
 from jsonschema import ValidationError
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
-from mapactionpy_controller.data_search import DataSearch
 from mapactionpy_controller.event import Event
 from mapactionpy_controller.layer_properties import LayerProperties
 from mapactionpy_controller.map_recipe import MapRecipe, RecipeLayer, RecipeFrame
 import jsonpickle
-import platform
 import six
 # works differently for python 2.7 and python 3.x
 try:
@@ -76,55 +74,6 @@ class TestMAController(TestCase):
                     test_recipe,
                     MapRecipe(fixtures.recipe_with_negative_iso3_code, self.lyr_props)
                 )
-
-    def test_substitute_iso3_in_regex(self):
-        ds = DataSearch(self.event)
-
-        reference_recipe = MapRecipe(
-            fixtures.recipe_with_positive_iso3_code, self.lyr_props)
-        pos_recipe = MapRecipe(
-            fixtures.recipe_without_positive_iso3_code, self.lyr_props)
-        updated_pos_recipe = ds.update_recipe_with_event_details(state=pos_recipe)
-        self.assertEqual(updated_pos_recipe, reference_recipe)
-
-        reference_recipe = MapRecipe(
-            fixtures.recipe_with_negative_iso3_code, self.lyr_props)
-        neg_recipe = MapRecipe(
-            fixtures.recipe_without_negative_iso3_code, self.lyr_props)
-        updated_neg_recipe = ds.update_recipe_with_event_details(state=neg_recipe)
-
-        self.assertEqual(updated_neg_recipe, reference_recipe)
-
-    def test_search_for_shapefiles(self):
-        ds = DataSearch(self.event)
-
-        # case where there is exactly one dataset per query
-        with mock.patch('mapactionpy_controller.data_search.glob.glob') as mock_glob:
-            # We use two different mock values becuase we are matching absolute paths as strings
-            # The underlying production code does not differencate between platforms.
-            if platform.system() == 'Windows':
-                mock_glob.return_value = fixtures.glob_single_admn_file_search_windows
-                ref_recipe_str = fixtures.recipe_result_one_dataset_per_layer_windows
-            else:
-                mock_glob.return_value = fixtures.glob_single_admn_file_search_linux
-                ref_recipe_str = fixtures.recipe_result_one_dataset_per_layer_linux
-
-            reference_recipe = MapRecipe(ref_recipe_str, self.lyr_props)
-            test_recipe = MapRecipe(fixtures.recipe_with_positive_iso3_code, self.lyr_props)
-            self.assertNotEqual(test_recipe, reference_recipe)
-
-            # get the first layer from the test_recipe
-            test_lyr = test_recipe.all_layers().pop()
-            data_finder = ds.get_lyr_data_finder(test_lyr)
-            updated_test_recipe = data_finder(state=test_recipe)
-
-            self.assertEqual(updated_test_recipe, test_recipe)
-            self.assertTrue(updated_test_recipe == test_recipe)
-            self.assertEqual(updated_test_recipe, reference_recipe)
-
-        # case where there is multiple matching datasets
-
-        # case where there are no matching datasets
 
     def test_cmf_schema_validation(self):
 
