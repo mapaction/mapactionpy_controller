@@ -36,7 +36,7 @@ class TestDataSearch(unittest.TestCase):
     def test_substitute_fields_in_recipe_strings(self):
         ds = data_search.DataSearch(self.event)
 
-        # An example with an iso code within a positive regex lookup 
+        # An example with an iso code within a positive regex lookup
         # (eg '^{e.affected_country_iso3}_stle.....')
         reference_recipe = MapRecipe(
             fixtures.recipe_with_positive_iso3_code, self.lyr_props)
@@ -45,7 +45,7 @@ class TestDataSearch(unittest.TestCase):
         updated_pos_recipe = ds.update_recipe_with_event_details(state=pos_recipe)
         self.assertEqual(updated_pos_recipe, reference_recipe)
 
-        # An example with an iso code within a negitive regex lookup 
+        # An example with an iso code within a negitive regex lookup
         # (eg '^(?!({e.affected_country_iso3}))_admn.....')
         reference_recipe = MapRecipe(
             fixtures.recipe_with_negative_iso3_code, self.lyr_props)
@@ -55,7 +55,7 @@ class TestDataSearch(unittest.TestCase):
 
         self.assertEqual(updated_neg_recipe, reference_recipe)
 
-        # Reverse of the first example to test a case where nothing needs updating. In this case the same json 
+        # Reverse of the first example to test a case where nothing needs updating. In this case the same json
         # definition is used for both recipes. There are not string replacement fields within the json definition.
         reference_recipe = MapRecipe(
             fixtures.recipe_with_positive_iso3_code, self.lyr_props)
@@ -63,7 +63,6 @@ class TestDataSearch(unittest.TestCase):
             fixtures.recipe_with_positive_iso3_code, self.lyr_props)
         updated_pos_recipe = ds.update_recipe_with_event_details(state=pos_recipe)
         self.assertEqual(updated_pos_recipe, reference_recipe)
-
 
     def test_search_for_shapefiles(self):
         # ds = data_search.DataSearch(self.event)
