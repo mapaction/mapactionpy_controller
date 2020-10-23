@@ -1,10 +1,13 @@
 import json
+from os import path
+
+import jsonpickle
+import jsonschema
+
+import mapactionpy_controller.data_schemas as data_schemas
+from mapactionpy_controller import _get_validator_for_config_schema
 from mapactionpy_controller.label_class import LabelClass
 from mapactionpy_controller.recipe_atlas import RecipeAtlas
-from mapactionpy_controller import _get_validator_for_config_schema
-import mapactionpy_controller.data_schemas as data_schemas
-from os import path
-import jsonschema
 
 validate_against_layer_schema = _get_validator_for_config_schema('layer_properties-v0.2.schema')
 validate_against_recipe_schema = _get_validator_for_config_schema('map-recipe-v0.2.schema')
@@ -62,16 +65,19 @@ class RecipeLayer:
 
     def _get_layer_file_path(self, layer_def, lyr_props, verify_on_creation):
         if 'layer_file_path' in layer_def:
-            self.layer_file_path = layer_def['layer_file_path']
+            self.layer_file_path = path.abspath(layer_def['layer_file_path'])
             if verify_on_creation:
                 self.verify_layer_file_path()
         else:
-            self.layer_file_path = path.join(
+            self.layer_file_path = path.abspath(path.join(
                 lyr_props.cmf.layer_rendering,
                 (self.name + lyr_props.extension)
-            )
+            ))
 
         self.data_source_path = layer_def.get('data_source_path', None)
+        if self.data_source_path:
+            self.data_source_path = path.abspath(self.data_source_path)
+
         self.data_name = layer_def.get('data_name', None)
 
     def _get_data_schema(self, layer_def, lyr_props):
@@ -213,6 +219,8 @@ class MapRecipe:
 
         # Optional fields
         self.map_project_path = recipe_def.get('map_project_path', None)
+        if self.map_project_path:
+            self.map_project_path = path.abspath(self.map_project_path)
         self.template_path = recipe_def.get('template_path', None)
         self.version_num = recipe_def.get('version_num', None)
         self.runners = recipe_def.get('runners', None)
@@ -295,8 +303,8 @@ class MapRecipe:
     def get_frame(self, requested_frame_name):
         """
         Gets an atlas by name.
-        Returns the RecipeAtlas object
-        Raises ValueError if the requested_atlas_name does not exist
+        @returns the RecipeAtlas object
+        @raises ValueError if the requested_atlas_name does not exist
         """
         # We trust that the map frame names are unique
         try:
@@ -305,6 +313,25 @@ class MapRecipe:
             raise ValueError(
                 'The requested map frame {} does not exist in the recipe {}'.format(
                     requested_frame_name, self.product))
+
+    def all_layers(self):
+        """
+        A convenience method which all layers within the MapRecipe, irrespective of the MapFrame. Saves the
+        caller needing to iterate through the MapFrames.
+
+        @returns A list of every layer reference in the Map from all MapFrames.
+        """
+        # Doubtless there is a neater, comprehension based way of doing this.
+        result = []
+        for mf in self.map_frames:
+            result.extend(mf.layers)
+
+        # print('MapRecipe.all_layers() = {}'.format(result))
+        return result
+        # return list(itertools.chain([mf.layers for mf in self.map_frames]))
+
+    def __str__(self):
+        return json.dumps(json.loads(jsonpickle.encode(self, unpicklable=False)), indent=4)
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__

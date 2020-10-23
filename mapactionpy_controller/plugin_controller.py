@@ -4,6 +4,7 @@ from mapactionpy_controller.event import Event
 from mapactionpy_controller.layer_properties import LayerProperties
 from mapactionpy_controller.map_cookbook import MapCookbook
 from mapactionpy_controller.steps import Step
+import mapactionpy_controller.data_search as data_search
 
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -42,31 +43,47 @@ def get_plugin_step():
             logging.ERROR,
             'Identifying available plugins (ArcMapRunner/QGisRunner)',
             'Successfully loaded an available plugin',
-            'Failed to load a suitable any plugin',
+            'Failed to load a suitable plugin',
         ),
     ]
 
     return plugin_step
 
 
-def _get_per_product_steps(_runner, recipe):
-    # In due course there should be greater granularity for some of these steps
-    logger.debug('Building steps for recipe {}'.format(recipe.mapnumber))
-
+def _get_product_start_step(recipe):
     def just_return_recipe(**kwargs):
         return recipe
 
+    return Step(
+        just_return_recipe,
+        logging.ERROR,
+        'Starting to create map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
+        'Starting to create map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
+        'Failed to create map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
+    )
+
+
+def _get_product_end_step(recipe):
+
     def pass_through_step(**kwargs):
+        # recipe = kwargs['state']
+        # print(recipe)
         pass
 
+    return Step(
+        pass_through_step,
+        logging.ERROR,
+        'Completed the creation of map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
+        'Completed the creation of map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
+        'Failed to create map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
+    )
+
+
+def _get_per_product_runner_steps(_runner, recipe):
+    # In due course there should be greater granularity for some of these steps
+    logger.debug('Building steps for recipe {}'.format(recipe.mapnumber))
+
     product_steps = [
-        Step(
-            just_return_recipe,
-            logging.ERROR,
-            'Starting to create map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
-            'Starting to create map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
-            'Failed to create map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
-        ),
         Step(
             _runner.get_templates,
             logging.ERROR,
@@ -94,14 +111,7 @@ def _get_per_product_steps(_runner, recipe):
             'Exporting Maps and creating zipfile',
             'Successfully exported Maps and creating zipfile',
             'Failed to export the maps and create zipfile'
-        ),
-        Step(
-            pass_through_step,
-            logging.ERROR,
-            'Completed the creation of map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
-            'Completed the creation of map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
-            'Failed to create map "{}" - "{}"'.format(recipe.mapnumber, recipe.product),
-        ),
+        )
     ]
 
     temp_msg = product_steps[0].running_msg
@@ -110,15 +120,23 @@ def _get_per_product_steps(_runner, recipe):
     return product_steps
 
 
-def get_cookbook_steps(my_runner, map_number):
+def get_cookbook_steps(my_runner, map_number, dry_run, verify_on_creation=True):
     def get_cookbook(**kwargs):
-        lyrs = LayerProperties(my_runner.cmf, my_runner.get_lyr_render_extension(), verify_on_creation=False)
-        my_cookbook = MapCookbook(my_runner.cmf, lyrs, verify_on_creation=False)
+        lyrs = LayerProperties(my_runner.cmf, my_runner.get_lyr_render_extension(), verify_on_creation)
+        my_cookbook = MapCookbook(my_runner.cmf, lyrs, verify_on_creation)
 
         selected_product_steps = []
         for recipe in select_recipes(my_cookbook, map_number):
             logger.debug('About to create steps for recipe {}'.format(recipe.mapnumber))
-            selected_product_steps.extend(_get_per_product_steps(my_runner, recipe))
+            selected_product_steps.append(_get_product_start_step(recipe))
+            selected_product_steps.extend(data_search.get_per_product_data_search_steps(
+                my_runner.cmf, my_runner.hum_event, recipe))
+
+            # This is a crude implenmentaiton of dry-run for now.
+            if not dry_run:
+                selected_product_steps.extend(_get_per_product_runner_steps(my_runner, recipe))
+
+            selected_product_steps.append(_get_product_end_step(recipe))
 
         return selected_product_steps
 

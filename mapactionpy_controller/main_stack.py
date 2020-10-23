@@ -1,3 +1,28 @@
+"""
+# main_stack
+
+The main stack within `mapaction_controller` exists in two modules; this one and steps.py. Each individual
+step is represented by a Step object, which is a wrapper for:
+
+* A function to run (which must accept kwargs**).
+* A definition of a "running", "success" and "failure" message.
+* A severity of failure.
+
+The main function in main_stack.py is `process_stack()`, which works through a list of "Step" objects. For
+each Step:
+
+    * Its function is called.
+    * The function may return:
+        - One or more new Step objects (which are inserted into the slack). Closures are very useful here
+        - An updated state object (which will passed to the next step)
+    * Each Step defines each of a "running", "success" and "failure" message, which is displayed on the
+      console and/or log as appropriate.
+
+
+Execution continous until there are no more Steps.
+
+Note: main_stack.py also includes humanfriendly.terminal which ought really to be part of the CLI.
+"""
 import logging
 import traceback
 from collections import deque
@@ -54,7 +79,7 @@ def parse_feedback(status, msg, step, **kwargs):
             msg, str(type(exp)), str(exp.args), stack_trace)
 
     if jira_client:
-        jira_client.task_handler(status, msg, task_referal, **kwargs)
+        jira_client.task_handler(status, msg, task_referal)
 
     if hft.connected_to_terminal():
         hft.output('{} {} {}'.format(

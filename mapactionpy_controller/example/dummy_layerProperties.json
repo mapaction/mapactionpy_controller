@@ -262,7 +262,7 @@
 				{
 					"class_name": "Admin 1 Name and PCode",
 					"expression": "[ADM1_NAME] &vbNewLine & [ADM1_PCODE]",
-					"sql_query": "(\"NAME_0\" = '{COUNTRY_NAME}'",
+					"sql_query": "(\"NAME_0\" = '{e.country_name}'",
 					"show_class_labels": true
 				}
 			]
@@ -279,7 +279,7 @@
 				{
 					"class_name": "Admin 1 Name and PCode",
 					"expression": "[ADM1_NAME] &vbNewLine & [ADM1_PCODE]",
-					"sql_query": "(\"NAME_0\" = '{COUNTRY_NAME}'",
+					"sql_query": "(\"NAME_0\" = '{e.country_name}'",
 					"show_class_labels": true
 				}
 			]
@@ -296,7 +296,7 @@
 				{
 					"class_name": "Admin 1 Name and PCode",
 					"expression": "[ADM1_NAME] &vbNewLine & [ADM1_PCODE]",
-					"sql_query": "(\"NAME_0\" = '{COUNTRY_NAME}'",
+					"sql_query": "(\"NAME_0\" = '{e.country_name}'",
 					"show_class_labels": true
 				}
 			]
@@ -357,7 +357,7 @@
 				{
 					"class_name": "Admin 2 Name and PCode",
 					"expression": "[NAME_2] &vbNewLine & [ADM2_PCODE]",
-					"sql_query": "(\"ADM0_EN\" = '{COUNTRY_NAME}'",
+					"sql_query": "(\"ADM0_EN\" = '{e.country_name}'",
 					"show_class_labels": true
 				}
 			]
@@ -427,7 +427,7 @@
 			"name": "mainmap-admn-ad0-py-s0-reference",
 			"reg_exp": "^[a-z]{3}_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null-schema.yml",
-			"definition_query": "\"NAME_0\" = '{COUNTRY_NAME}'",
+			"definition_query": "\"NAME_0\" = '{e.country_name}'",
 			"display": false,
 			"add_to_legend": false,
 			"label_classes": []
@@ -437,7 +437,7 @@
 			"name": "mainmap-admn-ad0-py-s0-thematic",
 			"reg_exp": "^[a-z]{3}_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null-schema.yml",
-			"definition_query": "\"NAME_0\" = '{COUNTRY_NAME}'",
+			"definition_query": "\"NAME_0\" = '{e.country_name}'",
 			"display": false,
 			"add_to_legend": false,
 			"label_classes": []
@@ -447,7 +447,7 @@
 			"name": "mainmap-s0-py-affectedcountry",
 			"reg_exp": "^[a-z]{3}_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null-schema.yml",
-			"definition_query": "\"NAME_0\" = '{COUNTRY_NAME}'",
+			"definition_query": "\"NAME_0\" = '{e.country_name}'",
 			"display": false,
 			"add_to_legend": false,
 			"label_classes": []
@@ -464,13 +464,13 @@
 				{
 					"class_name": "This",
 					"expression": "[NAME_0]",
-					"sql_query": "(\"NAME_0\" = '{COUNTRY_NAME}')",
+					"sql_query": "(\"NAME_0\" = '{e.country_name}')",
 					"show_class_labels": false
 				},
 				{
 					"class_name": "Other",
 					"expression": "[NAME_0]",
-					"sql_query": "(\"NAME_0\" <> '{COUNTRY_NAME}')",
+					"sql_query": "(\"NAME_0\" <> '{e.country_name}')",
 					"show_class_labels": true
 				}
 			]
@@ -600,7 +600,7 @@
 			"name": "locationmap-admn-ad0-py-s0-surroundingcountries",
 			"reg_exp": "^[a-z]{3}_admn_ad0_py_s0_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null-schema.yml",
-			"definition_query": "\"NAME_0\" <> '{COUNTRY_NAME}'",
+			"definition_query": "\"NAME_0\" <> '{e.country_name}'",
 			"display": true,
 			"add_to_legend": true,
 			"label_classes": []
@@ -610,7 +610,7 @@
 			"name": "locationmap-admn-ad0-py-s0-locationmaps",
 			"reg_exp": "^[a-z]{3}_admn_ad0_py_s0_(.*?)_([phm][phm])(.*?).shp$",
 			"schema_definition": "null-schema.yml",
-			"definition_query": "\"NAME_0\" = '{COUNTRY_NAME}'",
+			"definition_query": "\"NAME_0\" = '{e.country_name}'",
 			"display": true,
 			"add_to_legend": true,
 			"label_classes": []

@@ -3,8 +3,8 @@ recipe_without_positive_iso3_code = (
     '''{
       	"mapnumber": "MA001",
        	"category": "Reference",
-        "product": "{e.affectedcountry}: Overview Map",
-       	"summary": "Overview of {e.affectedcountry} with topography displayed",
+        "product": "{e.country_name}: Overview Map",
+       	"summary": "Overview of {e.country_name} with topography displayed",
     	"export": true,
         "template": "reference",
         "map_frames": [
@@ -15,13 +15,13 @@ recipe_without_positive_iso3_code = (
                         "name": "mainmap_stle_stl_pt_s0_allmaps",
                         "reg_exp": "^{e.affected_country_iso3}_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
                         "schema_definition": "stle_ste_pt.yml",
-                        "definition_query": "fclass IN ('national_capital', 'city', 'capital', 'town')",
+                        "definition_query": "'NAME_0' = '{e.country_name}'",
                         "display": true,
                         "add_to_legend": true,
                         "label_classes": [
                             {
                                 "class_name": "National Capital",
-                                "expression": "[name]",
+                                "expression": "[name] (Capital of {e.country_name})",
                                 "sql_query": "('fclass' = 'national_capital')",
                                 "show_class_labels": true
                             },
@@ -30,7 +30,13 @@ recipe_without_positive_iso3_code = (
                                 "expression": "[name]",
                                 "sql_query": "('fclass' = 'town')",
                                 "show_class_labels": true
-                            }
+                            },
+                            {
+                                "class_name": "Nieghbouring Country Capitals",
+                                "expression": "[name]",
+                                "sql_query": "('fclass' = 'national_capital') AND ('ADM0_Pcode' <> '{e.affected_country_iso3}')",
+                                "show_class_labels": true
+                            }                            
                         ]
                     }
                 ]
@@ -43,8 +49,8 @@ recipe_without_negative_iso3_code = (
     '''{
       	"mapnumber": "MA001",
     	"category": "Reference",
-        "product": "{e.affectedcountry}: Overview Map",
-       	"summary": "Overview of {e.affectedcountry} with topography displayed",
+        "product": "{e.country_name}: Overview Map",
+       	"summary": "Overview of {e.country_name} with topography displayed",
     	"export": true,
         "template": "reference",
         "map_frames": [
@@ -55,7 +61,7 @@ recipe_without_negative_iso3_code = (
                         "name": "mainmap-admn-ad1-py-s0-reference",
                         "reg_exp": "^(?!({e.affected_country_iso3}))_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
                         "schema_definition": "admin1_reference.yml",
-                        "definition_query": "ADM0_NAME <> '{e.affectedcountry}'",
+                        "definition_query": "ADM0_NAME <> '{e.country_name}'",
                         "display": true,
                         "add_to_legend": true,
                         "label_classes": []
@@ -70,8 +76,8 @@ recipe_with_layer_name_only = (
     '''{
       	"mapnumber": "MA001",
     	"category": "Reference",
-        "product": "{e.affectedcountry}: Overview Map",
-       	"summary": "Overview of {e.affectedcountry} with topography displayed",
+        "product": "{e.country_name}: Overview Map",
+       	"summary": "Overview of {e.country_name} with topography displayed",
     	"export": true,
         "template": "reference",
         "map_frames": [
@@ -91,8 +97,8 @@ recipe_with_layer_details_embedded = (
     '''{
       	"mapnumber": "MA001",
     	"category": "Reference",
-        "product": "{e.affectedcountry}: Overview Map",
-       	"summary": "Overview of {e.affectedcountry} with topography displayed",
+        "product": "{e.country_name}: Overview Map",
+       	"summary": "Overview of {e.country_name} with topography displayed",
     	"export": true,
         "template": "reference",
         "map_frames": [
@@ -132,8 +138,83 @@ recipe_with_positive_iso3_code = (
     '''{
       	"mapnumber": "MA001",
     	"category": "Reference",
-        "product": "{e.affectedcountry}: Overview Map",
-       	"summary": "Overview of {e.affectedcountry} with topography displayed",
+        "product": "Mozambique: Overview Map",
+       	"summary": "Overview of Mozambique with topography displayed",
+    	"export": true,
+        "template": "reference",
+        "map_frames": [
+            {
+                "name": "Main map",
+                "layers": [
+                    {
+                        "name": "mainmap_stle_stl_pt_s0_allmaps",
+                        "reg_exp": "^moz_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+                        "schema_definition": "stle_ste_pt.yml",
+                        "definition_query": "'NAME_0' = 'Mozambique'",
+                        "display": true,
+                        "add_to_legend": true,
+                        "label_classes": [
+                            {
+                                "class_name": "National Capital",
+                                "expression": "[name] (Capital of Mozambique)",
+                                "sql_query": "('fclass' = 'national_capital')",
+                                "show_class_labels": true
+                            },
+                            {
+                                "class_name": "Admin 1 Capital",
+                                "expression": "[name]",
+                                "sql_query": "('fclass' = 'town')",
+                                "show_class_labels": true
+                            },
+                            {
+                                "class_name": "Nieghbouring Country Capitals",
+                                "expression": "[name]",
+                                "sql_query": "('fclass' = 'national_capital') AND ('ADM0_Pcode' <> 'moz')",
+                                "show_class_labels": true
+                            }                                  
+                        ]
+                    }
+                ]
+            }
+        ]
+    }'''
+)
+
+
+recipe_with_negative_iso3_code = (
+    '''{
+      	"mapnumber": "MA001",
+    	"category": "Reference",
+        "product": "Mozambique: Overview Map",
+       	"summary": "Overview of Mozambique with topography displayed",
+    	"export": true,
+        "template": "reference",
+        "map_frames": [
+            {
+                "name": "Main map",
+                "layers": [
+                    {
+                        "name": "mainmap-admn-ad1-py-s0-reference",
+                        "reg_exp": "^(?!(moz))_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
+                        "schema_definition": "admin1_reference.yml",
+                        "definition_query": "ADM0_NAME <> 'Mozambique'",
+                        "display": true,
+                        "add_to_legend": true,
+                        "label_classes": []
+                    }
+                ]
+            }
+        ]
+    }'''
+)
+
+
+recipe_test_for_search_for_shapefiles = (
+    '''{
+      	"mapnumber": "MA001",
+    	"category": "Reference",
+        "product": "Mozambique: Overview Map",
+       	"summary": "Overview of Mozambique with topography displayed",
     	"export": true,
         "template": "reference",
         "map_frames": [
@@ -169,40 +250,12 @@ recipe_with_positive_iso3_code = (
 )
 
 
-recipe_with_negative_iso3_code = (
+recipe_result_one_dataset_per_layer_windows = (
     '''{
       	"mapnumber": "MA001",
     	"category": "Reference",
-        "product": "{e.affectedcountry}: Overview Map",
-       	"summary": "Overview of {e.affectedcountry} with topography displayed",
-    	"export": true,
-        "template": "reference",
-        "map_frames": [
-            {
-                "name": "Main map",
-                "layers": [
-                    {
-                        "name": "mainmap-admn-ad1-py-s0-reference",
-                        "reg_exp": "^(?!(moz))_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
-                        "schema_definition": "admin1_reference.yml",
-                        "definition_query": "ADM0_NAME <> '{e.affectedcountry}'",
-                        "display": true,
-                        "add_to_legend": true,
-                        "label_classes": []
-                    }
-                ]
-            }
-        ]
-    }'''
-)
-
-
-recipe_result_one_dataset_per_layer = (
-    '''{
-      	"mapnumber": "MA001",
-    	"category": "Reference",
-        "product": "{e.affectedcountry}: Overview Map",
-       	"summary": "Overview of {e.affectedcountry} with topography displayed",
+        "product": "Mozambique: Overview Map",
+       	"summary": "Overview of Mozambique with topography displayed",
     	"export": true,
         "template": "reference",
         "map_frames": [
@@ -213,8 +266,50 @@ recipe_result_one_dataset_per_layer = (
                         "name": "mainmap_stle_stl_pt_s0_allmaps",
                         "reg_exp": "^moz_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
                         "schema_definition": "stle_ste_pt.yml",
-                        "data_source_path": "D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp",
-                        "data_name": "moz_admn_ad0_py_s0_unknown_pp",
+                        "data_source_path": "D:/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_stle_ste_pt_s0_osm_pp.shp",
+                        "data_name": "moz_stle_ste_pt_s0_osm_pp",
+                        "definition_query": "fclass IN ('national_capital', 'city', 'capital', 'town')",
+                        "display": true,
+                        "add_to_legend": true,
+                        "label_classes": [
+                            {
+                                "class_name": "National Capital",
+                                "expression": "[name]",
+                                "sql_query": "('fclass' = 'national_capital')",
+                                "show_class_labels": true
+                            },
+                            {
+                                "class_name": "Admin 1 Capital",
+                                "expression": "[name]",
+                                "sql_query": "('fclass' = 'town')",
+                                "show_class_labels": true
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }'''
+)
+
+recipe_result_one_dataset_per_layer_linux = (
+    '''{
+      	"mapnumber": "MA001",
+    	"category": "Reference",
+        "product": "Mozambique: Overview Map",
+       	"summary": "Overview of Mozambique with topography displayed",
+    	"export": true,
+        "template": "reference",
+        "map_frames": [
+            {
+                "name": "Main map",
+                "layers": [
+                    {
+                        "name": "mainmap_stle_stl_pt_s0_allmaps",
+                        "reg_exp": "^moz_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$",
+                        "schema_definition": "stle_ste_pt.yml",
+                        "data_source_path": "/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_stle_ste_pt_s0_osm_pp.shp",
+                        "data_name": "moz_stle_ste_pt_s0_osm_pp",
                         "definition_query": "fclass IN ('national_capital', 'city', 'capital', 'town')",
                         "display": true,
                         "add_to_legend": true,
@@ -338,3 +433,51 @@ walk_single_admn_file_search_search = \
              'desktop.ini']
         )
     ]
+
+glob_single_stle_file_search_windows = [
+    'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_stle_ste_pt_s0_osm_pp.shp',
+    'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_admn_ad0_ln_s0_unknown_pp.shp',
+    'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_admn_ad0_py_s0_unknown_pp.shp',
+    'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_admn_ad1_py_s1_mapaction_pp.shp',
+    'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_admn_ad1_ln_s1_mapaction_pp.shp',
+]
+
+glob_single_stle_file_search_linux = [
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_stle_ste_pt_s0_osm_pp.shp',
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_ln_s0_unknown_pp.shp',
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp',
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad1_py_s1_mapaction_pp.shp',
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad1_ln_s1_mapaction_pp.shp',
+]
+
+glob_multiple_stle_file_search_windows = [
+    'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_stle_ste_pt_s0_osm_pp.shp',
+    'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_stle_ste_pt_s0_gmapmaker_pp.shp',
+    'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_admn_ad0_ln_s0_unknown_pp.shp',
+    'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_admn_ad0_py_s0_unknown_pp.shp',
+    'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_admn_ad1_py_s1_mapaction_pp.shp',
+    'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_admn_ad1_ln_s1_mapaction_pp.shp',
+]
+
+glob_multiple_stle_file_search_linux = [
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_stle_ste_pt_s0_osm_pp.shp',
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_stle_ste_pt_s0_gmapmaker_pp.shp',
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_ln_s0_unknown_pp.shp',
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp',
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad1_py_s1_mapaction_pp.shp',
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad1_ln_s1_mapaction_pp.shp',
+]
+
+glob_no_stle_file_search_windows = [
+    'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_admn_ad0_ln_s0_unknown_pp.shp',
+    'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_admn_ad0_py_s0_unknown_pp.shp',
+    'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_admn_ad1_py_s1_mapaction_pp.shp',
+    'D:\\MapAction\\2019MOZ01\\GIS\\2_Active_Data\\202_admn\\moz_admn_ad1_ln_s1_mapaction_pp.shp',
+]
+
+glob_no_stle_file_search_linux = [
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_ln_s0_unknown_pp.shp',
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad0_py_s0_unknown_pp.shp',
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad1_py_s1_mapaction_pp.shp',
+    '/user/home/MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_admn_ad1_ln_s1_mapaction_pp.shp',
+]

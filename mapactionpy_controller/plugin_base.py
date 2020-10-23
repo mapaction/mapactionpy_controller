@@ -12,6 +12,7 @@ from slugify import slugify
 
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 
+
 logger = logging.getLogger(__name__)
 
 # abstract class
@@ -20,8 +21,9 @@ logger = logging.getLogger(__name__)
 
 
 class BaseRunnerPlugin(object):
-    def __init__(self, cmf_descriptor_path, ** kwargs):
-        self.cmf = CrashMoveFolder(cmf_descriptor_path)
+    def __init__(self, hum_event, ** kwargs):
+        self.hum_event = hum_event
+        self.cmf = CrashMoveFolder(self.hum_event.cmf_descriptor_path)
 
         if not self.cmf.verify_paths():
             raise ValueError("Cannot find paths and directories referenced by cmf {}".format(self.cmf.path))
@@ -209,8 +211,13 @@ class BaseRunnerPlugin(object):
         """
         recipe = kwargs['state']
         export_params = {}
-        export_params = self._create_export_dir(export_params, recipe)
-        export_params = self._do_export(export_params, recipe)
+        try:
+            export_params = self._create_export_dir(export_params, recipe)
+            export_params = self._do_export(export_params, recipe)
+        except Exception as exp:
+            logger.error('Failed to export the map. export_params = "{}"'.format(export_params))
+            logger.error(exp)
+
         self.zip_exported_files(export_params)
 
     def _create_export_dir(self, export_params, recipe):

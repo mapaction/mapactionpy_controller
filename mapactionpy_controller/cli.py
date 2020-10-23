@@ -39,19 +39,18 @@ def noun_gisdata_print_output(args):
 
 def noun_maps_print_output(args):
     if args.verb == VERB_BUILD:
-
-        build_maps(args.humevent_desc_path, args.map_number)
+        build_maps(args.humevent_desc_path, args.map_number, args.dry_run)
     else:
         raise NotImplementedError(args)
 
 
-def build_maps(humevent_desc_path, map_number):
+def build_maps(humevent_desc_path, map_number, dry_run):
     # build_steps = config_verify.get_config_verify_steps(args.cmf_desc_path, ['.lyr'])
     # build_steps.append(cnc.get_defaultcmf_step_list(args.cmf_desc_path, False))
     # build_steps.append(cnc.get_active_data_step_list(args.humevent_desc_path, True))
     # main_stack.process_stack(build_steps)
     my_runner = process_stack(plugin_controller.get_plugin_step(), humevent_desc_path)
-    process_stack(plugin_controller.get_cookbook_steps(my_runner, map_number), None)
+    process_stack(plugin_controller.get_cookbook_steps(my_runner, map_number, dry_run), None)
 
     # map_nums = None
     # if map_number:
@@ -193,7 +192,7 @@ def get_args():
         '--force',
         action='store_true',
         help=('Generate a new version of the specified products, even if no change is detected'
-              ' in any of the input files. (`--dry-run` and `--force` cannot'
+              ' in any of the input files. (`--force` and `--dry-run`  cannot'
               ' be specified together.)')
     )
 

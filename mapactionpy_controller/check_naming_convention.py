@@ -1,3 +1,4 @@
+
 import glob
 import logging
 import os
@@ -7,6 +8,7 @@ from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.event import Event
 from mapactionpy_controller.steps import Step
 from mapactionpy_controller.task_renderer import FixDataNameTask
+from mapactionpy_controller.data_search import get_all_gisfiles
 
 
 def get_defaultcmf_step_list(cmf_config_path):
@@ -49,16 +51,7 @@ def get_active_data_step_list(humev_config_path):
     humev = Event(humev_config_path)
     cmf = CrashMoveFolder(humev.cmf_descriptor_path)
     nc = name_convention.NamingConvention(cmf.data_nc_definition)
-    return _step_builer(_get_all_gisfiles(cmf), nc, 'data', cmf)
-
-
-def _get_all_gisfiles(cmf):
-    gisfiles_with_paths = []
-
-    for extn in ['.shp', '.img', '.tif']:
-        gisfiles_with_paths.extend(glob.glob('{}/*/*{}'.format(cmf.active_data, extn)))
-
-    return gisfiles_with_paths
+    return _step_builer(get_all_gisfiles(cmf), nc, 'data', cmf)
 
 
 def get_single_file_checker(f_path, nc, cmf):
@@ -68,6 +61,8 @@ def get_single_file_checker(f_path, nc, cmf):
         if not ncr.is_valid:
             raise ValueError(FixDataNameTask(ncr, cmf))
 
+        # https://trello.com/c/BODjWZrw/184-implement-check-that-gis-files-are-in-the-right-folder
+        # Check that the file is in the right directory to go here
         return ncr
 
     return check_data_name

@@ -11,30 +11,38 @@ To install the latest stable release via PyPi:
 python -m pip install mapactionpy_controller
 ```
 
-To install a specific version for testing see the relevant commandline from here:
+To install a specific version for testing see the relevant command line from here:
 https://pypi.org/project/mapactionpy-controller/#history
 
 
 Command-line Usage
 ==========
-Check the compliance with the Data Naming Convention, MXD Naming Convention, MXD Template Naming Convention and Layer Naming Convention.
+There are two key files `cmf_description.json` and `event_description.json` that are in the root of the crash move folder. Most command line options require one or the other of these.
+
+General help:
 ```
-> python.exe -m mapactionpy_controller.check_naming_convention /path/to/current/cmf/2019gbr01/cmf_description.json
+> mapchef --help
 ```
 
-
-Using the Data Search tool from the command-line
-----
+Verify the content of the default crash move folder (eg MXD Naming Convention, MXD Template Naming Convention, Layer Naming Convention and self consistency of various configuration files.):
 ```
-> python.exe -m mapactionpy_controller.data_search
-usage: data_search [-h] -r FILE -c FILE [-o FILE]
-data_search.py: error: the following arguments are required: -r/--recipe-file, -c/--cmf
-
-> python -m mapactionpy_controller.data_search -r example/product_bundle_example.json -c example/cmf_description.json
+> mapchef defaultcmf --verify c:/path/to/default/crash/move/folder/cmf_description.json
 ```
-This command will output an updated recipe file with the 
-If the ouput file parameter (-o) is specified than the updated recipe will be output to that file. Otherwise the updated recipe is sent to stdout.
 
+Check the compliance with the Data Naming Convention.
+```
+mapchef gisdata --verify /path/to/current/cmf/2019gbr01/event_description.json
+```
+
+Create all maps in the cookbook file:
+```
+mapchef maps --build /path/to/current/cmf/2019gbr01/event_description.json
+```
+
+Create the map "MA001" from the cookbook file:
+```
+mapchef maps --build --map-number "MA001" /path/to/current/cmf/2019gbr01/event_description.json
+```
 
 Programmatic Usage
 =====
@@ -44,11 +52,11 @@ There are three classes which are designed for reuse in other modules. For each 
 
 * **MapRecipe** : An object that represents a recipe (as read from a json file).  
 This object may be manipulated by 
-(e.g. the data_search tool, updates the datasources fields )
+(e.g. the data_search tool, updates the `datasources` fields )
 * **CrashMoveFolder** : An object that describes the CrashMoveFolder and its contents. There should be no need to hardcode any path (absolute or relative) to anywhere in a crash move folder
 * **Event** : This describes the real-world humanitarian event to which the Crash Move Folder corresponds.
 
-(**Note1:**) The name `Event` matches the naming of the equivalent concept on the Map & Data Respository (see https://github.com/mapaction/ckanext-mapactionevent). However it is rather too generic in this context. A more descriptive name for this class would be helpful.
+(**Note1:**) The name `Event` matches the naming of the equivalent concept on the Map & Data Repository (see https://github.com/mapaction/ckanext-mapactionevent). However it is rather too generic in this context. A more descriptive name for this class would be helpful.
 
 (**Note2**: in the MapExportTool the information within the CrashMoveFolder and Event used to be encapsulated in the `operational_config.xml` file. This mixed _state_ about the event/emergency and _configuration_ about the local paths to and within the crash move folder.  )
 
@@ -57,7 +65,7 @@ Using the DataNameConvention and related classes
 ----
 The `naming_convention` sub-module provides a framework for specifying a naming convention (such as for file or table). A naming convention is specified in a json configuration file and consists of:
 1) A regular expression, with named groups
-2) For each named group in the regex, details of a class which can provide futher validation of that value in that named group.
+2) For each named group in the regex, details of a class which can provide further validation of that value in that named group.
 
 Examples of the naming convention config files are in the `examples` directory, including MapAction's DataNamingConvention, MXDNamingConvention and LayerfileNamingConvention.
 

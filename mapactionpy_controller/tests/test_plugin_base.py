@@ -1,4 +1,5 @@
 from mapactionpy_controller.plugin_base import BaseRunnerPlugin
+from mapactionpy_controller.event import Event
 import os
 from unittest import TestCase
 import six
@@ -11,8 +12,8 @@ else:
 
 
 class DummyRunner(BaseRunnerPlugin):
-    def __init__(self, cmf_descriptor_path):
-        super(DummyRunner, self).__init__(cmf_descriptor_path)
+    def __init__(self, hum_event):
+        super(DummyRunner, self).__init__(hum_event)
 
     def get_templates(self, **kwargs):
         return kwargs['state']
@@ -27,7 +28,7 @@ class DummyRunner(BaseRunnerPlugin):
         return '.dummy_project_file'
 
     def get_lyr_render_extension(self):
-        return '.dummy_lyr_file'
+        return '.lyr'
 
     def create_ouput_map_project(self, **kwargs):
         return kwargs['state']
@@ -38,7 +39,8 @@ class TestPluginBase(TestCase):
         self.parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         self.dir_to_valid_cmf_des = os.path.join(self.parent_dir, 'example')
         self.path_to_valid_cmf_des = os.path.join(self.dir_to_valid_cmf_des, 'cmf_description_flat_test.json')
-        self.dummy_runner = DummyRunner(self.path_to_valid_cmf_des)
+        self.path_to_event_des = os.path.join(self.dir_to_valid_cmf_des, 'event_description.json')
+        self.dummy_runner = DummyRunner(Event(self.path_to_event_des))
 
     def test_get_all_templates_by_regex(self):
         recipe = mock.Mock(name='mock_recipe')

@@ -41,6 +41,7 @@ class XmlExporter:
         exportPropertiesDict["ref"] = params["coreFileName"]
         exportPropertiesDict["mxdfilename"] = params["coreFileName"]
         exportPropertiesDict["product-type"] = params["productType"]
+        exportPropertiesDict["summary"] = params["summary"]
         # Fixed values
         exportPropertiesDict["imagerydate"] = ""
         exportPropertiesDict["papersize"] = "A3"
@@ -59,7 +60,6 @@ class XmlExporter:
         exportPropertiesDict["paperymin"] = ""
         exportPropertiesDict["createdate"] = None
         exportPropertiesDict["createtime"] = None
-        exportPropertiesDict["summary"] = None
         exportPropertiesDict["scale"] = None
         exportPropertiesDict["datum"] = None
 
@@ -84,7 +84,6 @@ class XmlExporter:
         if (self.chef is not None):
             exportPropertiesDict["createdate"] = self.chef.createDate
             exportPropertiesDict["createtime"] = self.chef.createTime
-            exportPropertiesDict["summary"] = self.chef.summary
             exportPropertiesDict["scale"] = self.chef.scale()
             exportPropertiesDict["datum"] = self.chef.spatialReference()
 

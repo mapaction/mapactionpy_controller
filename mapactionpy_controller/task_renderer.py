@@ -8,9 +8,15 @@ from mapactionpy_controller import TASK_TEMPLATES_DIR
 """
 Module `task_renderer`
 
-There are some "adapter" functions available, which can be used extract key information from common
-objects from within `mapactionpy_controller` into a format suitable for `self.context_data`. The
-constructors for sub-classes of TaskReferralBase may used these as appropriate.
+This module provides as way to generate human-readable, context specifc task descriptions for any task
+which MapChef needs to delegate to human to complete. The main class `TaskReferralBase` represents a catch-all
+generic error condition. It is not expected to be used directly, but more commonly subclasses to represent
+more specific senarios.
+
+For the convenience of those creating subclasses of `TaskReferralBase`, there are some "adapter" functions
+available, which can be used extract key information from common objects from within `mapactionpy_controller`
+into a format suitable for `self.context_data`. They are particular useful for the constructors of any
+sub-classes.
 
 The adapter functions only cater for a single object of each type.
 ```
@@ -89,8 +95,8 @@ class FixDataNameTask(TaskReferralBase):
 
     def __init__(self, name_result, cmf):
         super(FixDataNameTask, self).__init__()
-        self.context_data.update(_name_result_adapter(name_result))
-        self.context_data.update(_cmf_description_adapter(cmf))
+        self.context_data.update(name_result_adapter(name_result))
+        self.context_data.update(cmf_description_adapter(cmf))
 
 
 class FixFileInWrongDirTask(TaskReferralBase):
@@ -98,26 +104,16 @@ class FixFileInWrongDirTask(TaskReferralBase):
     _primary_key_template = 'gisdata : ->TBC.folder_name<-'
 
 
-class FixMissingGISDataTask(TaskReferralBase):
-    _task_template_filename = 'gis-data-missing'
-    _primary_key_template = 'TBC'
-
-
 class FixSchemaErrorTask(TaskReferralBase):
     _task_template_filename = 'schema-error'
     _primary_key_template = 'TBC'
 
 
-class FixMultipleMatchingFilesTask(TaskReferralBase):
-    _task_template_filename = 'multiple-matching-files'
-    _primary_key_template = 'TBC'
-
-
-def _cmf_description_adapter(cmf):
+def cmf_description_adapter(cmf):
     return {'cmf': cmf.__dict__.copy()}
 
 
-def _name_result_adapter(name_result):
+def name_result_adapter(name_result):
     valid_clause_list = []
     invalid_clause_list = []
     if name_result.is_parsable:
@@ -134,6 +130,10 @@ def _name_result_adapter(name_result):
     }
 
     return {'name_result': nr_dict}
+
+
+def layer_adapter(recipe_lyr):
+    return {'layer': recipe_lyr.__dict__.copy()}
 
 
 def _recipe_adapter(recipe):
