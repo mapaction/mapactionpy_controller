@@ -6,6 +6,7 @@
 			"product": "Country Overview with Admin 1 Boundaries and Topography",
 			"export": true,
 			"template": "reference",
+			"principal_map_frame": "Main map",
 			"runners": [
 				{
 					"name": "arcmap",
@@ -73,6 +74,7 @@
 			"product": "Country Overview with Admin 1 Boundaries",
 			"export": true,
 			"template": "reference",
+			"principal_map_frame": "Main map",
 			"runners": [
 				{
 					"name": "arcmap",
@@ -128,6 +130,7 @@
 			"product": "Country Overview with Admin 1 & 2 Boundaries",
 			"export": true,
 			"template": "reference",
+			"principal_map_frame": "Main map",
 			"runners": [
 				{
 					"name": "arcmap",
@@ -183,6 +186,7 @@
 			"product": "Country Overview with Transport",
 			"export": true,
 			"template": "reference",
+			"principal_map_frame": "Main map",
 			"runners": [
 				{
 					"name": "arcmap",

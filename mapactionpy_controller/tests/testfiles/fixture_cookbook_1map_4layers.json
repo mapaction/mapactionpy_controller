@@ -12,6 +12,7 @@
 					"example_key": "example_value"
 				}
 			],
+			"principal_map_frame": "Main map",
 			"map_frames": [
 				{
 					"name": "Main map",
