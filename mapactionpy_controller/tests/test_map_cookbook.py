@@ -2,13 +2,14 @@ import fixtures
 import os
 import six
 from unittest import TestCase
+import json
 import jsonschema
 import yaml
 
 from mapactionpy_controller.layer_properties import LayerProperties
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.map_cookbook import MapCookbook
-from mapactionpy_controller.map_recipe import MapRecipe
+from mapactionpy_controller.map_recipe import MapRecipe, RecipeLayer, RecipeFrame
 
 try:
     from unittest import mock
@@ -23,6 +24,9 @@ class TestMapCookBook(TestCase):
         self.path_to_valid_cmf_des = os.path.join(self.parent_dir, 'example', 'cmf_description_flat_test.json')
         self.path_to_invalid_cmf_des = os.path.join(
             self.parent_dir, 'tests', 'testfiles', 'fixture_cmf_description_one_file_and_one_dir_not_valid.json')
+
+        self.cmf = CrashMoveFolder(self.path_to_valid_cmf_des, verify_on_creation=False)
+        self.lyr_props = LayerProperties(self.cmf, '', verify_on_creation=False)
 
     def test_different_cmf_args(self):
 
@@ -275,3 +279,51 @@ properties:
                 fixtures.recipe_with_positive_iso3_code,
                 test_lp
             )
+
+    def test_atlas_get_layer(self):
+        recipe_def = json.loads(fixtures.recipe_with_positive_iso3_code)
+        test_recipe = MapRecipe(recipe_def, self.lyr_props)
+        atlas = test_recipe.get_frame('Main map')
+
+        self.assertTrue(atlas.contains_layer('mainmap_stle_stl_pt_s0_allmaps'))
+        self.assertFalse(atlas.contains_layer('not-existant'))
+
+        lyr = atlas.get_layer('mainmap_stle_stl_pt_s0_allmaps')
+        self.assertIsInstance(lyr, RecipeLayer)
+
+        self.assertRaises(ValueError, atlas.get_layer, 'not-existant')
+
+    def test_get_atlas(self):
+        recipe_def = json.loads(fixtures.recipe_with_positive_iso3_code)
+        test_recipe = MapRecipe(recipe_def, self.lyr_props)
+
+        self.assertTrue(test_recipe.contains_frame('Main map'))
+        self.assertFalse(test_recipe.contains_frame('not-existant'))
+
+        lyr = test_recipe.get_frame('Main map')
+        self.assertIsInstance(lyr, RecipeFrame)
+
+        self.assertRaises(ValueError, test_recipe.get_frame, 'not-existant')
+
+    def test_map_recipe_backward_compat(self):
+        # This is required in order to get hold of a recipe object. This is because the method being
+        # tested is a member of the class.
+        recipe_obj = MapRecipe(fixtures.recipe_with_layer_name_only, self.lyr_props)
+
+        test_cases = [
+            (fixtures.recipe_schema_v2_0_with_layer_name_only, True),
+            (fixtures.recipe_with_layer_name_only, False)
+        ]
+
+        for recipe_str, expected_result in test_cases:
+            recipe_def = json.loads(recipe_str)
+            self.assertEqual(recipe_obj._check_schemas_with_backward_compat(recipe_def), expected_result)
+
+    def test_map_recipe_with_artbitary_principal_frame_name(self):
+        # Test cases where the principal map frame is not called "Main map"
+        # This should load without error
+        MapRecipe(fixtures.recipe_with_non_standard_principal_map_frame_name, self.lyr_props)
+
+        # This should raise a ValueError
+        with self.assertRaises(ValueError):
+            MapRecipe(fixtures.recipe_with_invalid_principal_map_frame_name, self.lyr_props)

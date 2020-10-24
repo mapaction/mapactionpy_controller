@@ -5,6 +5,7 @@
 			"product": "Country Overview with Admin 1 Boundaries and Topography",
 			"template": "reference",
 			"export": true,
+			"principal_map_frame": "Main map",
 			"runners": [
 				{
 					"name": "arcmap",

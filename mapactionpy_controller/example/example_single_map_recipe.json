@@ -5,6 +5,7 @@
 	"export": true,
 	"summary": "Country overview with topography displayed",
 	"template": "reference",
+	"principal_map_frame": "Main map",
 	"runners": [
 		{
 			"name": "qgis",

@@ -7,6 +7,7 @@ recipe_without_positive_iso3_code = (
        	"summary": "Overview of {e.country_name} with topography displayed",
     	"export": true,
         "template": "reference",
+        "principal_map_frame": "Main map",
         "map_frames": [
             {
                 "name": "Main map",
@@ -53,6 +54,7 @@ recipe_without_negative_iso3_code = (
        	"summary": "Overview of {e.country_name} with topography displayed",
     	"export": true,
         "template": "reference",
+        "principal_map_frame": "Main map",
         "map_frames": [
             {
                 "name": "Main map",
@@ -73,6 +75,73 @@ recipe_without_negative_iso3_code = (
 )
 
 recipe_with_layer_name_only = (
+    '''{
+      	"mapnumber": "MA001",
+    	"category": "Reference",
+        "product": "{e.country_name}: Overview Map",
+       	"summary": "Overview of {e.country_name} with topography displayed",
+    	"export": true,
+        "template": "reference",
+        "principal_map_frame": "Main map",
+        "map_frames": [
+            {
+                "name": "Main map",
+                "layers": [
+                    {
+                        "name": "mainmap-admn-ad1-py-s0-reference"
+                    }
+                ]
+            }
+        ]
+    }'''
+)
+
+recipe_with_non_standard_principal_map_frame_name = (
+    '''{
+      	"mapnumber": "MA001",
+    	"category": "Reference",
+        "product": "{e.country_name}: Overview Map",
+       	"summary": "Overview of {e.country_name} with topography displayed",
+    	"export": true,
+        "template": "reference",
+        "principal_map_frame": "My favourite map frame",
+        "map_frames": [
+            {
+                "name": "My favourite map frame",
+                "layers": [
+                    {
+                        "name": "mainmap-admn-ad1-py-s0-reference"
+                    }
+                ]
+            }
+        ]
+    }'''
+)
+
+
+recipe_with_invalid_principal_map_frame_name = (
+    '''{
+      	"mapnumber": "MA001",
+    	"category": "Reference",
+        "product": "{e.country_name}: Overview Map",
+       	"summary": "Overview of {e.country_name} with topography displayed",
+    	"export": true,
+        "template": "reference",
+        "principal_map_frame": "This map frame does not exist",
+        "map_frames": [
+            {
+                "name": "The map frame",
+                "layers": [
+                    {
+                        "name": "mainmap-admn-ad1-py-s0-reference"
+                    }
+                ]
+            }
+        ]
+    }'''
+)
+
+recipe_schema_v2_0_with_layer_name_only = (
     '''{
       	"mapnumber": "MA001",
     	"category": "Reference",
@@ -101,6 +170,7 @@ recipe_with_layer_details_embedded = (
        	"summary": "Overview of {e.country_name} with topography displayed",
     	"export": true,
         "template": "reference",
+        "principal_map_frame": "Main map",
         "map_frames": [
             {
                 "name": "Main map",
@@ -142,6 +212,7 @@ recipe_with_positive_iso3_code = (
        	"summary": "Overview of Mozambique with topography displayed",
     	"export": true,
         "template": "reference",
+        "principal_map_frame": "Main map",
         "map_frames": [
             {
                 "name": "Main map",
@@ -189,6 +260,7 @@ recipe_with_negative_iso3_code = (
        	"summary": "Overview of Mozambique with topography displayed",
     	"export": true,
         "template": "reference",
+        "principal_map_frame": "Main map",
         "map_frames": [
             {
                 "name": "Main map",
@@ -217,6 +289,7 @@ recipe_test_for_search_for_shapefiles = (
        	"summary": "Overview of Mozambique with topography displayed",
     	"export": true,
         "template": "reference",
+        "principal_map_frame": "Main map",
         "map_frames": [
             {
                 "name": "Main map",
@@ -258,6 +331,7 @@ recipe_result_one_dataset_per_layer_windows = (
        	"summary": "Overview of Mozambique with topography displayed",
     	"export": true,
         "template": "reference",
+        "principal_map_frame": "Main map",
         "map_frames": [
             {
                 "name": "Main map",
@@ -300,6 +374,7 @@ recipe_result_one_dataset_per_layer_linux = (
        	"summary": "Overview of Mozambique with topography displayed",
     	"export": true,
         "template": "reference",
+        "principal_map_frame": "Main map",
         "map_frames": [
             {
                 "name": "Main map",
