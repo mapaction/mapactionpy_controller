@@ -4,6 +4,8 @@ from os import path
 
 import jsonpickle
 import jsonschema
+import pyreproj
+import shapely
 
 import mapactionpy_controller.state_serialization as state_serialization
 from mapactionpy_controller import _get_validator_for_config_schema
@@ -21,11 +23,12 @@ class RecipeFrame:
     """
     OPTIONAL_FIELDS = ('scale_text_element', 'spatial_ref_text_element')
 
-    def __init__(self, frame_def, lyr_props):
+    def __init__(self, frame_def, lyr_props, compatiblity_mode=0.3):
         # Required fields
-        self.name = frame_def["name"]
+        self.name = frame_def['name']
         # This is a list, but see note in `_parse_layers` method
-        self.layers = self._parse_layers(frame_def["layers"], lyr_props)
+        self.layers = self._parse_layers(frame_def['layers'], lyr_props)
+        self.crs = self._parse_crs(frame_def, compatiblity_mode)
 
         # Optional fields
         self.scale_text_element = frame_def.get('scale_text_element', None)
@@ -60,6 +63,14 @@ class RecipeFrame:
         else:
             return RecipeLayer(lyr_def, lyr_props)
 
+    def _parse_crs(self, frame_def, compatiblity_mode):
+        return frame_def['crs']
+
+        # if compatiblity_mode >= 0.3:
+        #     return frame_def['crs']
+
+        # return 'epsg:4326'
+
     def contains_layer(self, requested_layer_name):
         """
         Gets a layer by name.
@@ -81,6 +92,66 @@ class RecipeFrame:
         raise ValueError(
             'The requested layer {} does not exist in the map frame {}'.format(
                 requested_layer_name, self.name))
+
+    def get_extents_calc(self, runner):
+        """
+        The layer's `use_for_frame_extent` can have one of three values; True, False or None.
+        * If one or more layers in a frame has `use_for_frame_extent==True` then those layers are used to
+          determine the frame's extent (Whitelist).
+        * If no layer has `use_for_frame_extent==True` and one or more layers in a frame has 
+          `use_for_frame_extent==False` Every layer except those will be used to determine the frame's
+          extent (Blacklist).
+        * If every layer has `use_for_frame_extent is None` then every layer will be used to determine the
+          frame's extent (Default).
+
+        """
+        # recipe = kwargs['state']
+
+        # White list
+        extent_lyrs = [lyr for lyr in self.layers if lyr.use_for_frame_extent]
+
+        # Black List
+        if not extent_lyrs:
+            extent_lyrs = [lyr for lyr in self.layers if (
+                lyr.use_for_frame_extent is not None) and (not lyr.use_for_frame_extent)]
+
+        # Default
+        if not extent_lyrs:
+            extent_lyrs = self.layers
+
+        # Check that the extent has been defined for all the relevant layer.
+        if not all([hasattr(lyr, 'extent') for lyr in extent_lyrs]):
+            raise ValueError('Cannot determine the layer extent for the relevant layers')
+
+        # Convert all of the lyr.extents into the frame.crs
+        trans_lyr_extents = []
+        rp = pyreproj.Reprojector()
+        for r_lyr in extent_lyrs:
+            trans_func = rp.get_transformation_function(
+                from_srs=r_lyr.extent['spatialReference']['wkid'],
+                to_srs=self.crs)
+            # {"xmin":35.095981070872881,
+            # "ymin":33.470789158824005,
+            # "xmax":35.957052138873699,
+            # "ymax":34.236185663713542,
+            # "spatialReference":{"wkid":4326,"latestWkid":4326}}'
+            l_ext = shapely.geometry.box(
+                r_lyr.extent['xmin'],
+                r_lyr.extent['ymin'],
+                r_lyr.extent['xmax'],
+                r_lyr.extent['ymax']
+            )
+            trans_lyr_extents.extend(shapely.ops.transform(trans_func, l_ext))
+
+        # Now get the union of all of the extents
+        mf_extent = None
+
+        for l_ext in trans_lyr_extents:
+            if mf_extent:
+                mf_extent = mf_extent.union(l_ext)
+                break
+
+        self.extent = mf_extent.bounds
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -108,7 +179,7 @@ class MapRecipe:
         else:
             recipe_def = json.loads(recipe_definition)
 
-        backwards_compat = self._check_schemas_with_backward_compat(recipe_def)
+        compatiblity_mode = self._check_schemas_with_backward_compat(recipe_def)
 
         # Required fields
         self.mapnumber = recipe_def["mapnumber"]
@@ -119,7 +190,7 @@ class MapRecipe:
         self.map_frames = self._parse_map_frames(recipe_def["map_frames"], lyr_props)
         self.summary = recipe_def["summary"]
         self.template = recipe_def["template"]
-        self.principal_map_frame = self._parse_principal_map_frame(recipe_def, backwards_compat)
+        self.principal_map_frame = self._parse_principal_map_frame(recipe_def, compatiblity_mode)
 
         # Optional fields
         self.map_project_path = recipe_def.get('map_project_path', None)
@@ -140,7 +211,7 @@ class MapRecipe:
     def _check_schemas_with_backward_compat(self, recipe_def):
         try:
             validate_against_recipe_schema_v0_3(recipe_def)
-            return False
+            return 0.3
         except jsonschema.ValidationError as ve_v0_3:
             try:
                 validate_against_recipe_schema_v0_2(recipe_def)
@@ -148,7 +219,7 @@ class MapRecipe:
                 # Hack some values? Or raise a JIRA ticket?
                 logger.warn('Attempting to load backwards compatable v0.2 MapRecipe')
                 # raise ValueError('old maprecipe format')
-                return True
+                return 0.2
             except jsonschema.ValidationError:
                 raise ve_v0_3
 
@@ -189,7 +260,7 @@ class MapRecipe:
 
         return recipe_map_frames_list
 
-    def _parse_principal_map_frame(self, recipe_def, backwards_compat):
+    def _parse_principal_map_frame(self, recipe_def, compatiblity_mode):
         """
         This assumes that `_parse_map_frames` as already been called.
         """
@@ -200,9 +271,9 @@ class MapRecipe:
                 'Unable to find a MapFrame "{}" in the recipe. The `principal_map_frame` value must have the'
                 ' name of one of the MapFram objects in the recipe.')
 
-            if backwards_compat:
+            if compatiblity_mode == 0.2:
                 err_msg = ('Unable to find a MapFrame "Main map" in the recipe. Please update the recipe to'
-                           ' v0.3 format.')
+                           ' v0.3 format or later.')
 
             raise ValueError(err_msg)
 

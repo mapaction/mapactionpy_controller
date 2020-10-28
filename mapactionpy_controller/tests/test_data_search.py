@@ -1,5 +1,6 @@
 import unittest
 import mapactionpy_controller.data_search as data_search
+import mapactionpy_controller.recipe_layer as recipe_layer
 from mapactionpy_controller.map_recipe import MapRecipe
 from mapactionpy_controller.event import Event
 from mapactionpy_controller.layer_properties import LayerProperties
@@ -88,12 +89,19 @@ class TestDataSearch(unittest.TestCase):
             # where there is exactly one dataset per query
             test_recipe = MapRecipe(fixtures.recipe_test_for_search_for_shapefiles, self.lyr_props)
             mock_glob.return_value = mock_single_file_glob
+            all_gis_files = [(f_path, os.path.basename(f_path)) for f_path in data_search.get_all_gisfiles(self.cmf)]
             self.assertNotEqual(test_recipe, reference_recipe)
 
             # get the first layer from the test_recipe
             test_lyr = test_recipe.all_layers().pop()
-            data_finder = data_search.get_lyr_data_finder(self.cmf, test_lyr)
+            data_finder = test_lyr.get_data_finder(self.cmf, all_gis_files)
             updated_test_recipe = data_finder(state=test_recipe)
+
+            print('--------------')
+            print(reference_recipe)
+            print('--------------')
+            print(updated_test_recipe)
+            print('--------------')
 
             self.assertEqual(updated_test_recipe, test_recipe)
             self.assertTrue(updated_test_recipe == test_recipe)
@@ -103,33 +111,35 @@ class TestDataSearch(unittest.TestCase):
             # where there is multiple matching datasets
             test_recipe = MapRecipe(fixtures.recipe_test_for_search_for_shapefiles, self.lyr_props)
             mock_glob.return_value = mock_multiple_file_glob
+            all_gis_files = [(f_path, os.path.basename(f_path)) for f_path in data_search.get_all_gisfiles(self.cmf)]
             self.assertNotEqual(test_recipe, reference_recipe)
 
             # get the first layer from the test_recipe
             test_lyr = test_recipe.all_layers().pop()
-            data_finder = data_search.get_lyr_data_finder(self.cmf, test_lyr)
+            data_finder = test_lyr.get_data_finder(self.cmf, all_gis_files)
             with self.assertRaises(ValueError) as arcm:
                 updated_test_recipe = data_finder(state=test_recipe)
 
             ve = arcm.exception
             print('ve.args[0] is instance of: {}'.format(type(ve.args[0])))
-            self.assertIsInstance(ve.args[0], data_search.FixMultipleMatchingFilesTask)
+            self.assertIsInstance(ve.args[0], recipe_layer.FixMultipleMatchingFilesTask)
 
             # Case C
             # where there are no matching datasets
             test_recipe = MapRecipe(fixtures.recipe_test_for_search_for_shapefiles, self.lyr_props)
             mock_glob.return_value = mock_no_file_glob
+            all_gis_files = [(f_path, os.path.basename(f_path)) for f_path in data_search.get_all_gisfiles(self.cmf)]
             self.assertNotEqual(test_recipe, reference_recipe)
 
             # get the first layer from the test_recipe
             test_lyr = test_recipe.all_layers().pop()
-            data_finder = data_search.get_lyr_data_finder(self.cmf, test_lyr)
+            data_finder = test_lyr.get_data_finder(self.cmf, all_gis_files)
             with self.assertRaises(ValueError) as arcm:
                 updated_test_recipe = data_finder(state=test_recipe)
 
             ve = arcm.exception
             print('ve.args[0] is instance of: {}'.format(type(ve.args[0])))
-            self.assertIsInstance(ve.args[0], data_search.FixMissingGISDataTask)
+            self.assertIsInstance(ve.args[0], recipe_layer.FixMissingGISDataTask)
 
     def test_check_layer(self):
 

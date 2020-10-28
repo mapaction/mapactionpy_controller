@@ -311,8 +311,8 @@ properties:
         recipe_obj = MapRecipe(fixtures.recipe_with_layer_name_only, self.lyr_props)
 
         test_cases = [
-            (fixtures.recipe_schema_v2_0_with_layer_name_only, True),
-            (fixtures.recipe_with_layer_name_only, False)
+            (fixtures.recipe_schema_v2_0_with_layer_name_only, 0.2),
+            (fixtures.recipe_with_layer_name_only, 0.3)
         ]
 
         for recipe_str, expected_result in test_cases:

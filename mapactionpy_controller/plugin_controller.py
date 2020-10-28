@@ -130,7 +130,7 @@ def get_cookbook_steps(my_runner, map_number, dry_run, verify_on_creation=True):
             logger.debug('About to create steps for recipe {}'.format(recipe.mapnumber))
             selected_product_steps.append(_get_product_start_step(recipe))
             selected_product_steps.extend(data_search.get_per_product_data_search_steps(
-                my_runner.cmf, my_runner.hum_event, recipe))
+                my_runner, recipe))
 
             # This is a crude implenmentaiton of dry-run for now.
             if not dry_run:

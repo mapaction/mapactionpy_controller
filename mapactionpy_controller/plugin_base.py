@@ -7,6 +7,7 @@ from operator import itemgetter
 import re
 from shutil import copyfile
 from zipfile import ZipFile
+import jsonschema
 
 from slugify import slugify
 
@@ -155,6 +156,59 @@ class BaseRunnerPlugin(object):
         # TODO re-enable "Have the input files changed?"
         # Have the input shapefiles changed?
         return recipe
+
+    def do_data_schema_check(self, recipe_lyr):
+        """
+        Checks that the schema of the files specificed by `recipe_lyr.data_source_path` matches the schema
+        specificed in `recipe_lyr.data_schema`.
+
+        Plugins *may need* overwrite this method.
+
+        A method which relies on geopandas is provided. If the geopandas package cannot be imported then
+        subclasses must overwrite it.'
+
+
+        @param recipe: The RecipeLayer
+        @raises ValidationError:
+        @raises NotImplementedError:
+        """
+        try:
+            import geopandas as gpd
+            from jsonschema import validate
+            gdf = gpd.read_file(recipe_lyr.data_source_path)
+
+            # Make columns needed for validation
+            gdf['geometry_type'] = gdf['geometry'].apply(lambda x: x.geom_type)
+            gdf['crs'] = gdf.crs
+            # Validate
+            validate(instance=gdf.to_dict('list'), schema=recipe_lyr.data_schema)
+
+        except ImportError:
+            raise NotImplementedError(
+                'BaseRunnerPlugin implenmentation of `do_data_schema_check` relies on geopandas. If the geopandas'
+                ' package is not available then subclasses must overwrite it.')
+
+    def check_data_schema(self, recipe_lyr):
+        """
+        Checks that the schema of the files specificed by `recipe_lyr.data_source_path` matches the schema
+        specificed in `recipe_lyr.data_schema`. Creates an appropriate Human Task if it doesn't.
+
+        Plugins *should not* overwrite this method. Overwrite `do_data_schema_check` instead.
+
+        @param recipe: The RecipeLayer
+        @raises ValueError:
+        """
+        try:
+            self.do_data_schema_check(recipe_lyr)
+        except jsonschema.ValidationError as jsve:
+            # TODO
+            raise ValueError()
+
+    def get_lyr_extents(self, recipe_lyr):
+        print('plugin_base.get_lyr_extents')
+        raise NotImplementedError(
+            'BaseRunnerPlugin is an abstract class and the `get_lyr_extents`'
+            ' method cannot be called directly')
 
     # TODO: asmith 2020/03/03
     # 1) Please avoid hardcoding the naming convention for the mxds wherever possible. The Naming Convention

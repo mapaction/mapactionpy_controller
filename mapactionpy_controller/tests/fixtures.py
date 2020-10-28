@@ -11,6 +11,7 @@ recipe_without_positive_iso3_code = (
         "map_frames": [
             {
                 "name": "Main map",
+				"crs": "EPSG:3857",
                 "layers": [
                     {
                         "name": "mainmap_stle_stl_pt_s0_allmaps",
@@ -58,6 +59,7 @@ recipe_without_negative_iso3_code = (
         "map_frames": [
             {
                 "name": "Main map",
+				"crs": "EPSG:3857",
                 "layers": [
                     {
                         "name": "mainmap-admn-ad1-py-s0-reference",
@@ -86,6 +88,7 @@ recipe_with_layer_name_only = (
         "map_frames": [
             {
                 "name": "Main map",
+				"crs": "EPSG:3857",
                 "layers": [
                     {
                         "name": "mainmap-admn-ad1-py-s0-reference"
@@ -108,6 +111,7 @@ recipe_with_non_standard_principal_map_frame_name = (
         "map_frames": [
             {
                 "name": "My favourite map frame",
+				"crs": "EPSG:3857",
                 "layers": [
                     {
                         "name": "mainmap-admn-ad1-py-s0-reference"
@@ -131,6 +135,7 @@ recipe_with_invalid_principal_map_frame_name = (
         "map_frames": [
             {
                 "name": "The map frame",
+				"crs": "EPSG:3857",
                 "layers": [
                     {
                         "name": "mainmap-admn-ad1-py-s0-reference"
@@ -174,6 +179,7 @@ recipe_with_layer_details_embedded = (
         "map_frames": [
             {
                 "name": "Main map",
+				"crs": "EPSG:3857",
                 "layers": [
                     {
                         "name": "mainmap-admn-ad1-py-s0-reference",
@@ -216,6 +222,7 @@ recipe_with_positive_iso3_code = (
         "map_frames": [
             {
                 "name": "Main map",
+				"crs": "EPSG:3857",
                 "layers": [
                     {
                         "name": "mainmap_stle_stl_pt_s0_allmaps",
@@ -264,6 +271,7 @@ recipe_with_negative_iso3_code = (
         "map_frames": [
             {
                 "name": "Main map",
+				"crs": "EPSG:3857",
                 "layers": [
                     {
                         "name": "mainmap-admn-ad1-py-s0-reference",
@@ -293,6 +301,7 @@ recipe_test_for_search_for_shapefiles = (
         "map_frames": [
             {
                 "name": "Main map",
+				"crs": "EPSG:3857",
                 "layers": [
                     {
                         "name": "mainmap_stle_stl_pt_s0_allmaps",
@@ -335,6 +344,7 @@ recipe_result_one_dataset_per_layer_windows = (
         "map_frames": [
             {
                 "name": "Main map",
+				"crs": "EPSG:3857",
                 "layers": [
                     {
                         "name": "mainmap_stle_stl_pt_s0_allmaps",
@@ -378,6 +388,7 @@ recipe_result_one_dataset_per_layer_linux = (
         "map_frames": [
             {
                 "name": "Main map",
+				"crs": "EPSG:3857",
                 "layers": [
                     {
                         "name": "mainmap_stle_stl_pt_s0_allmaps",
