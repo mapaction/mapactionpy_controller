@@ -1,7 +1,6 @@
 import glob
 import logging
 import os
-import re
 from mapactionpy_controller.steps import Step
 from mapactionpy_controller.map_recipe import RecipeLayer
 

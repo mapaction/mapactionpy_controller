@@ -236,7 +236,8 @@ class RecipeLayer:
         def _schema_checker(**kwargs):
             if not self.data_source_path:
                 raise ValueError(
-                    'Cannot check data schema until relevant data has been found. Please use `get_data_finder()` first.')
+                    'Cannot check data schema until relevant data has been found.'
+                    ' Please use `get_data_finder()` first.')
             recipe = kwargs['state']
             self._check_lyr_is_in_recipe(recipe)
             runner.check_data_schema(self)
@@ -249,7 +250,8 @@ class RecipeLayer:
             if not self.data_source_path:
                 print('Have no self.data_source_path')
                 raise ValueError(
-                    'Cannot calculate bounding box until relevant data has been found. Please use `get_data_finder()` first.')
+                    'Cannot calculate bounding box until relevant data has been found.'
+                    ' Please use `get_data_finder()` first.')
 
             print('Has self.data_source_path')
             recipe = kwargs['state']

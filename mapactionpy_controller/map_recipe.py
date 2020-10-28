@@ -98,7 +98,7 @@ class RecipeFrame:
         The layer's `use_for_frame_extent` can have one of three values; True, False or None.
         * If one or more layers in a frame has `use_for_frame_extent==True` then those layers are used to
           determine the frame's extent (Whitelist).
-        * If no layer has `use_for_frame_extent==True` and one or more layers in a frame has 
+        * If no layer has `use_for_frame_extent==True` and one or more layers in a frame has
           `use_for_frame_extent==False` Every layer except those will be used to determine the frame's
           extent (Blacklist).
         * If every layer has `use_for_frame_extent is None` then every layer will be used to determine the

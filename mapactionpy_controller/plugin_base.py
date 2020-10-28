@@ -202,7 +202,7 @@ class BaseRunnerPlugin(object):
             self.do_data_schema_check(recipe_lyr)
         except jsonschema.ValidationError as jsve:
             # TODO
-            raise ValueError()
+            raise ValueError(jsve.message)
 
     def get_lyr_extents(self, recipe_lyr):
         print('plugin_base.get_lyr_extents')
