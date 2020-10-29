@@ -64,12 +64,10 @@ class RecipeFrame:
             return RecipeLayer(lyr_def, lyr_props)
 
     def _parse_crs(self, frame_def, compatiblity_mode):
-        return frame_def['crs']
+        if compatiblity_mode >= 0.3:
+            return frame_def['crs']
 
-        # if compatiblity_mode >= 0.3:
-        #     return frame_def['crs']
-
-        # return 'epsg:4326'
+        return 'epsg:4326'
 
     def contains_layer(self, requested_layer_name):
         """

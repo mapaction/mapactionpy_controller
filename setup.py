@@ -90,7 +90,7 @@ setup(
         'pyreproj==1.0.1',
         'requests',
         'pyyaml',
-        'Shapely',
+        'Shapely==1.6.4.post2',
         'six',
         'slugify'
     ],
