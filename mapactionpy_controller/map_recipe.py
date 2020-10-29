@@ -5,7 +5,7 @@ from os import path
 import jsonpickle
 import jsonschema
 import pyreproj
-import shapely
+# import shapely
 
 import mapactionpy_controller.state_serialization as state_serialization
 from mapactionpy_controller import _get_validator_for_config_schema
@@ -122,7 +122,13 @@ class RecipeFrame:
             raise ValueError('Cannot determine the layer extent for the relevant layers')
 
         # Convert all of the lyr.extents into the frame.crs
-        trans_lyr_extents = []
+        # trans_lyr_extents = []
+
+        mf_xmin = float('inf')
+        mf_xmax = float('-inf')
+        mf_ymin = float('inf')
+        mf_ymax = float('-inf')
+
         rp = pyreproj.Reprojector()
         for r_lyr in extent_lyrs:
             trans_func = rp.get_transformation_function(
@@ -133,23 +139,38 @@ class RecipeFrame:
             # "xmax":35.957052138873699,
             # "ymax":34.236185663713542,
             # "spatialReference":{"wkid":4326,"latestWkid":4326}}'
-            l_ext = shapely.geometry.box(
-                r_lyr.extent['xmin'],
-                r_lyr.extent['ymin'],
-                r_lyr.extent['xmax'],
-                r_lyr.extent['ymax']
-            )
-            trans_lyr_extents.extend(shapely.ops.transform(trans_func, l_ext))
+            top_right = trans_func([r_lyr.extent['xmax'], r_lyr.extent['ymax']])
+            top_left = trans_func([r_lyr.extent['xmax'], r_lyr.extent['ymin']])
+            bottom_right = trans_func([r_lyr.extent['xmin'], r_lyr.extent['ymax']])
+            bottom_left = trans_func([r_lyr.extent['xmin'], r_lyr.extent['ymin']])
 
-        # Now get the union of all of the extents
-        mf_extent = None
+            mf_xmin = min(mf_xmin, top_left[0], bottom_left[0])
+            mf_xmax = max(mf_xmax, top_right[0], bottom_right[0])
+            mf_ymin = min(mf_ymin, bottom_left[1], bottom_right[1])
+            mf_ymax = max(mf_ymax, top_left[1], top_right[1])
 
-        for l_ext in trans_lyr_extents:
-            if mf_extent:
-                mf_extent = mf_extent.union(l_ext)
-                break
+        #     l_ext = shapely.geometry.box(
+        #         r_lyr.extent['xmin'],
+        #         r_lyr.extent['ymin'],
+        #         r_lyr.extent['xmax'],
+        #         r_lyr.extent['ymax']
+        #     )
+        #     trans_lyr_extents.extend(shapely.ops.transform(trans_func, l_ext))
 
-        self.extent = mf_extent.bounds
+        # # Now get the union of all of the extents
+        # mf_extent = None
+
+        # for l_ext in trans_lyr_extents:
+        #     if mf_extent:
+        #         mf_extent = mf_extent.union(l_ext)
+        #         break
+
+        self.extent = {
+            "xmin": mf_xmin,
+            "ymin": mf_xmax,
+            "xmax": mf_ymin,
+            "ymax": mf_ymax,
+        }
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
