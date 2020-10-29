@@ -87,8 +87,10 @@ setup(
         'jsonschema',
         'pyrsistent<=0.16.1',
         'pycountry<=19.8.18',
+        'pyreproj==1.0.1',
         'requests',
         'pyyaml',
+        'Shapely',
         'six',
         'slugify'
     ],
