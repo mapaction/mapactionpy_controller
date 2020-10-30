@@ -5,7 +5,7 @@ from os import path
 import jsonpickle
 import jsonschema
 import pyreproj
-# import shapely
+import shapely
 
 import mapactionpy_controller.state_serialization as state_serialization
 from mapactionpy_controller import _get_validator_for_config_schema
@@ -130,47 +130,54 @@ class RecipeFrame:
         mf_ymax = float('-inf')
 
         rp = pyreproj.Reprojector()
+
+        # def _transform_tuple(target, from_proj, to_proj):
+        #     x, y = pyproj_transform(from_proj, to_proj, target[0], target[1])
+        #     return x, y
+
         for r_lyr in extent_lyrs:
             trans_func = rp.get_transformation_function(
                 from_srs=r_lyr.extent['spatialReference']['wkid'],
                 to_srs=self.crs)
-            # {"xmin":35.095981070872881,
-            # "ymin":33.470789158824005,
-            # "xmax":35.957052138873699,
-            # "ymax":34.236185663713542,
-            # "spatialReference":{"wkid":4326,"latestWkid":4326}}'
-            top_right = trans_func([r_lyr.extent['xmax'], r_lyr.extent['ymax']])
-            top_left = trans_func([r_lyr.extent['xmax'], r_lyr.extent['ymin']])
-            bottom_right = trans_func([r_lyr.extent['xmin'], r_lyr.extent['ymax']])
-            bottom_left = trans_func([r_lyr.extent['xmin'], r_lyr.extent['ymin']])
+            # # {"xmin":35.095981070872881,
+            # # "ymin":33.470789158824005,
+            # # "xmax":35.957052138873699,
+            # # "ymax":34.236185663713542,
+            # # "spatialReference":{"wkid":4326,"latestWkid":4326}}'
+            # top_right = trans_func([r_lyr.extent['xmax'], r_lyr.extent['ymax']])
+            # top_left = trans_func([r_lyr.extent['xmax'], r_lyr.extent['ymin']])
+            # bottom_right = trans_func([r_lyr.extent['xmin'], r_lyr.extent['ymax']])
+            # bottom_left = trans_func([r_lyr.extent['xmin'], r_lyr.extent['ymin']])
 
-            mf_xmin = min(mf_xmin, top_left[0], bottom_left[0])
-            mf_xmax = max(mf_xmax, top_right[0], bottom_right[0])
-            mf_ymin = min(mf_ymin, bottom_left[1], bottom_right[1])
-            mf_ymax = max(mf_ymax, top_left[1], top_right[1])
+            # mf_xmin = min(mf_xmin, top_left[0], bottom_left[0])
+            # mf_xmax = max(mf_xmax, top_right[0], bottom_right[0])
+            # mf_ymin = min(mf_ymin, bottom_left[1], bottom_right[1])
+            # mf_ymax = max(mf_ymax, top_left[1], top_right[1])
 
-        #     l_ext = shapely.geometry.box(
-        #         r_lyr.extent['xmin'],
-        #         r_lyr.extent['ymin'],
-        #         r_lyr.extent['xmax'],
-        #         r_lyr.extent['ymax']
-        #     )
-        #     trans_lyr_extents.extend(shapely.ops.transform(trans_func, l_ext))
+            l_ext = shapely.geometry.box(
+                r_lyr.extent['xmin'],
+                r_lyr.extent['ymin'],
+                r_lyr.extent['xmax'],
+                r_lyr.extent['ymax']
+            )
+            trans_lyr_extents.extend(shapely.ops.transform(trans_func, l_ext))
 
-        # # Now get the union of all of the extents
-        # mf_extent = None
+        # Now get the union of all of the extents
+        mf_extent = None
 
-        # for l_ext in trans_lyr_extents:
-        #     if mf_extent:
-        #         mf_extent = mf_extent.union(l_ext)
-        #         break
+        for l_ext in trans_lyr_extents:
+            if mf_extent:
+                mf_extent = mf_extent.union(l_ext)
+                break
 
-        self.extent = {
-            "xmin": mf_xmin,
-            "ymin": mf_xmax,
-            "xmax": mf_ymin,
-            "ymax": mf_ymax,
-        }
+        # self.extent = {
+        #     "xmin": mf_xmin,
+        #     "ymin": mf_xmax,
+        #     "xmax": mf_ymin,
+        #     "ymax": mf_ymax,
+        # }
+
+        self.extent = mf_extent.bounds
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
