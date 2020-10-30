@@ -122,12 +122,12 @@ class RecipeFrame:
             raise ValueError('Cannot determine the layer extent for the relevant layers')
 
         # Convert all of the lyr.extents into the frame.crs
-        # trans_lyr_extents = []
+        trans_lyr_extents = []
 
-        mf_xmin = float('inf')
-        mf_xmax = float('-inf')
-        mf_ymin = float('inf')
-        mf_ymax = float('-inf')
+        # mf_xmin = float('inf')
+        # mf_xmax = float('-inf')
+        # mf_ymin = float('inf')
+        # mf_ymax = float('-inf')
 
         rp = pyreproj.Reprojector()
 
