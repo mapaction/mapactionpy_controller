@@ -31,10 +31,19 @@ def install_from_wheels(command_subclass):
             # The order these packages are intalled  matters, which is why
             # this does just do something like
             # `glob.glob('{}/dependancy_wheels/*.whl'.format(root_dir))`
-            wheel_list = [
-                'pyproj-1.9.6-cp27-cp27m-win32.whl',
-                'Shapely-1.6.4.post2-cp27-cp27m-win32.whl'
-            ]
+
+            if sys.maxsize > 2**32:
+                # if 64bit:
+                wheel_list = [
+                    'pyproj-1.9.6-cp27-cp27m-win_amd64.whl',
+                    'Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl'
+                ]
+            else:
+                # 32 bit
+                wheel_list = [
+                    'pyproj-1.9.6-cp27-cp27m-win32.whl',
+                    'Shapely-1.6.4.post2-cp27-cp27m-win32.whl'
+                ]
 
             for wheel_name in wheel_list:
                 wheel_path = path.join(root_dir, 'dependency_wheels', wheel_name)
