@@ -45,7 +45,7 @@ install:
 before_script:
 - flake8
 # Check if windows if 32 or 64 bit
-- python -c "import sys; print('Python verion ={}, sys.platform={}'.format(sys.version_info.major, sys.platform))"
+- python -c "import sys; print('Python verion ={}, sys.platform={}, is 64bit? = {}'.format(sys.version_info.major, sys.platform, (sys.maxsize > 2**32)))"
 script:
 - coverage run --source ./mapactionpy_controller -m unittest discover -v ./mapactionpy_controller/tests
 after_success:
