@@ -37,7 +37,7 @@ def install_from_wheels(command_subclass):
             ]
 
             for wheel_name in wheel_list:
-                wheel_path = path.join(root_dir, 'dependancy_wheels', wheel_name)
+                wheel_path = path.join(root_dir, 'dependency_wheels', wheel_name)
                 print('Installing {} from wheel file.'.format(wheel_path))
                 pip.main(['install', wheel_path])
 
@@ -88,6 +88,39 @@ def _get_version_number():
     return version
 
 
+def _get_requires_list():
+    # Items for which the version does not need to be pinned to support py2.7
+    requires = [
+        'chevron',
+        'humanfriendly',
+        'jsonpickle',
+        'jsonschema',
+        'requests',
+        'pyyaml',
+        'six',
+        'slugify'
+    ]
+
+    if (sys.version_info.major == 2):
+        # Items for which do need a pinned version to support py2.7
+        # For debate whether this is useful 'pyreproj==1.0.1'
+        requires.extend([
+            'pyrsistent<=0.16.1',
+            'pycountry<=19.8.18'
+        ])
+    else:
+        # The same items but for py3.x
+        requires.extend([
+            'pyrsistent',
+            'pycountry',
+            'pyproj',
+            'Shapely'
+
+        ])
+
+    return requires
+
+
 setup(
     name='mapactionpy_controller',
     cmdclass={
@@ -109,19 +142,7 @@ setup(
     },
     packages=find_packages(),
     include_package_data=True,
-    install_requires=[
-        'chevron',
-        'humanfriendly',
-        'jsonpickle',
-        'jsonschema',
-        'pyrsistent<=0.16.1',
-        'pycountry<=19.8.18',
-        'pyreproj==1.0.1',
-        'requests',
-        'pyyaml',
-        'six',
-        'slugify'
-    ],
+    install_requires=_get_requires_list(),
     test_suite='unittest',
     tests_require=['unittest'],
     zip_safe=False,

@@ -288,7 +288,7 @@
 						]
 					},
 					"extent": {
-						"$id": "#/properties/map_frames/items/properties/crs",
+						"$id": "#/properties/map_frames/items/properties/extent",
 						"type": "object",
 						"title": "Extent",
 						"description": "The spatial extent of the MapFrame, if it has been calculated.",

@@ -229,7 +229,8 @@ class RecipeLayer:
             return None
 
         hash = hashlib.md5()
-        hash.update(open(self.layer_file_path, "rb").read())
+        with open(self.layer_file_path, "rb") as lf:
+            hash.update(lf.read())
         return hash.hexdigest()
 
     def get_schema_checker(self, runner):
