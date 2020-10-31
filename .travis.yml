@@ -41,10 +41,11 @@ install:
 - pip install -r requirements-dev.txt
 - pip install -r requirements-jira.txt
 - pip install .
+- pip list
 before_script:
 - flake8
 # Check if windows if 32 or 64 bit
-- py -c "import sys; print('Python verion ={}, sys.platform={}'.format(sys.version_info.major, sys.platform))"
+- python -c "import sys; print('Python verion ={}, sys.platform={}'.format(sys.version_info.major, sys.platform))"
 script:
 - coverage run --source ./mapactionpy_controller -m unittest discover -v ./mapactionpy_controller/tests
 after_success:
