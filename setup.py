@@ -108,6 +108,11 @@ def _get_requires_list():
             'pyrsistent<=0.16.1',
             'pycountry<=19.8.18'
         ])
+        if sys.platform != 'win32':
+            requires.extend([
+                'pyproj==1.9.6',
+                'Shapely==1.6.4.post2'
+            ])
     else:
         # The same items but for py3.x
         requires.extend([
@@ -115,7 +120,6 @@ def _get_requires_list():
             'pycountry',
             'pyproj',
             'Shapely'
-
         ])
 
     return requires
