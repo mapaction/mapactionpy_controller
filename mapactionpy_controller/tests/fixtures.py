@@ -420,6 +420,69 @@ recipe_result_one_dataset_per_layer_linux = (
     }'''
 )
 
+
+recipe_with_invalid_layer_file_path = (
+    '''{
+        "category": "Reference",
+        "product": "Mozambique: Overview Map",
+        "principal_map_frame": "Main map",
+        "mapnumber": "MA001",
+        "summary": "Overview of Mozambique with topography displayed",
+        "export": true,
+        "template": "reference",
+        "map_frames": [
+            {
+                "layers": [
+                    {
+                        "data_source_path": "D://MapAction/2019MOZ01/GIS/2_Active_Data/202_admn/moz_stle_ste_pt_s0_osm_pp.shp",
+                        "name": "mainmap_stle_stl_pt_s0_allmaps",
+                        "schema_definition": "stle_ste_pt.yml",
+                        "data_schema": {
+                            "required": [
+                                "name_en"
+                            ],
+                            "properties": {
+                                "geometry_type": {
+                                    "items": {
+                                        "enum": [
+                                            "MultiPolygon",
+                                            "Polygon"
+                                        ]
+                                    },
+                                    "additionalItems": false
+                                }
+                            }
+                        },
+                        "data_name": "moz_stle_ste_pt_s0_osm_pp",
+                        "definition_query": "fclass IN ('national_capital', 'city', 'capital', 'town')",
+                        "label_classes": [
+                            {
+                                "class_name": "National Capital",
+                                "sql_query": "('fclass' = 'national_capital')",
+                                "expression": "[name]",
+                                "show_class_labels": true
+                            },
+                            {
+                                "class_name": "Admin 1 Capital",
+                                "sql_query": "('fclass' = 'town')",
+                                "expression": "[name]",
+                                "show_class_labels": true
+                            }
+                        ],
+                        "layer_file_path": "D:/code/github/mapactionpy_controller/mapactionpy_controller/example/mainmap_stle_stl_pt_s0_allmaps",
+                        "data_source_checksum": "d41d8cd98f00b204e9800998ecf8427e",
+                        "add_to_legend": true,
+                        "display": true,
+                        "reg_exp": "^moz_stle_ste_pt_(.*?)_(.*?)_([phm][phm])(.*?).shp$"
+                    }
+                ],
+                "crs": "EPSG:3857",
+                "name": "Main map"
+            }
+        ]
+    }'''
+)
+
 #     '''{
 #         "title": "{e.affectedcountry}: Overview Map",
 #     "layers": [

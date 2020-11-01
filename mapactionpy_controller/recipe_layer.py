@@ -201,36 +201,38 @@ class RecipeLayer:
     def _calc_data_source_checksum(self):
 
         def files_in_shp_file():
-            base_path = os.path.splitext(self.data_source_path)
+            base_path = os.path.splitext(self.data_source_path)[0]
             files = glob.glob('{}*'.format(base_path))
-            return [f_path for f_path in files if (os.path.isfile(f_path) and f_path.endswith('.lock'))]
+            return [f_path for f_path in files if (os.path.isfile(f_path) and not f_path.endswith('.lock'))]
 
         def files_in_dir():
             return [os.path.join(f_path, f_name) for f_path, d_name, f_name in os.walk(self.data_source_path)]
 
-        if not self.data_source_path:
-            return None
-
         f_list = []
 
-        if (os.path.isfile(self.data_source_path)):
-            f_list = files_in_shp_file()
-        elif (os.path.isdir(self.data_source_path)):
-            f_list = files_in_dir()
+        if self.data_source_path:
+            if (os.path.isfile(self.data_source_path)):
+                f_list = files_in_shp_file()
+            elif (os.path.isdir(self.data_source_path)):
+                f_list = files_in_dir()
+
+        f_list.sort()
 
         hash = hashlib.md5()
-        for f_path in sorted(f_list):
-            hash.update(open(f_path, "rb").read())
+        for f_path in f_list:
+            with open(f_path, "rb") as data_file:
+                hash.update(data_file.read())
 
         return hash.hexdigest()
 
     def _calc_layer_file_checksum(self):
-        if not os.path.isfile(self.layer_file_path):
-            return None
+        # if not os.path.isfile(self.layer_file_path):
+        #     return None
 
         hash = hashlib.md5()
-        with open(self.layer_file_path, "rb") as lf:
-            hash.update(lf.read())
+        if os.path.isfile(self.layer_file_path):
+            with open(self.layer_file_path, "rb") as lf:
+                hash.update(lf.read())
         return hash.hexdigest()
 
     def get_schema_checker(self, runner):
