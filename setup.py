@@ -51,7 +51,7 @@ def install_from_wheels(command_subclass):
                     'Rtree-0.9.3-cp27-cp27m-win32.whl'
                 ]
 
-            # platform netural packages. This is installed here (rather than using the 
+            # platform netural packages. This is installed here (rather than using the
             # `install_requires` parameter, becuase of the dependancy on other wheel files.
             wheel_list.extend(['geopandas-0.6.2-py2.py3-none-any.whl'])
 
