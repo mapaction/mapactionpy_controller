@@ -36,14 +36,24 @@ def install_from_wheels(command_subclass):
                 # if 64bit:
                 wheel_list = [
                     'pyproj-1.9.6-cp27-cp27m-win_amd64.whl',
-                    'Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl'
+                    'Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl',
+                    'GDAL-2.2.4-cp27-cp27m-win_amd64.whl',
+                    'Fiona-1.8.13-cp27-cp27m-win_amd64.whl',
+                    'Rtree-0.9.3-cp27-cp27m-win_amd64.whl'
                 ]
             else:
                 # 32 bit
                 wheel_list = [
                     'pyproj-1.9.6-cp27-cp27m-win32.whl',
-                    'Shapely-1.6.4.post2-cp27-cp27m-win32.whl'
+                    'Shapely-1.6.4.post2-cp27-cp27m-win32.whl',
+                    'GDAL-2.2.4-cp27-cp27m-win32.whl',
+                    'Fiona-1.8.13-cp27-cp27m-win32.whl',
+                    'Rtree-0.9.3-cp27-cp27m-win32.whl'
                 ]
+
+            # platform netural packages. This is installed here (rather than using the 
+            # `install_requires` parameter, becuase of the dependancy on other wheel files.
+            wheel_list.extend(['geopandas-0.6.2-py2.py3-none-any.whl'])
 
             for wheel_name in wheel_list:
                 wheel_path = path.join(root_dir, 'dependency_wheels', wheel_name)

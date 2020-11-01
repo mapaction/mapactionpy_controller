@@ -5,3 +5,4 @@ autopep8
 mock
 virtualenv
 coveralls
+pylint
