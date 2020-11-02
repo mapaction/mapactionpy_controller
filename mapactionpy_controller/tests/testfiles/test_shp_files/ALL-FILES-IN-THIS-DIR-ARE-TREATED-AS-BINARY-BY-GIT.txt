@@ -1,0 +1,2 @@
+This is so that checksum tests on these files still work when run on CI on multiple different OSs.
+See .gitattributes for details.
