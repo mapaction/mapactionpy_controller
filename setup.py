@@ -138,7 +138,11 @@ def _get_requires_list():
             'pyrsistent',
             'pycountry',
             'pyproj',
-            'Shapely'
+            'Shapely',
+            'GDAL',
+            'Fiona',
+            'Rtree',
+            'geopandas'
         ])
 
     return requires

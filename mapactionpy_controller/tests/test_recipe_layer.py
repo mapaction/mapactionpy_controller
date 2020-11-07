@@ -158,6 +158,20 @@ properties:
     def test_get_schema_checker(self):
         self.fail()
 
-    @skip('Not ready yet')
-    def test_get_extents_calc(self):
-        self.fail()
+    def test_calc_extent(self):
+        test_recipe = MapRecipe(fixtures.recipe_with_layer_name_only, self.lyr_props)
+
+        test_lyr = test_recipe.all_layers().pop()
+        # Use a simple test shapefile
+        test_lyr.data_source_path = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'test_shp_files',
+            'lbn_admn_ad0_py_s1_pp_cdr.shp')
+
+        # Get the extents shapefile and update the test_lyr object
+        test_lyr.calc_extent(state=test_recipe)
+
+        expected_extent = (35.10348736558511, 33.054996785738204, 36.62291533501688, 34.69206915371)
+        expected_crs = 'epsg:4326'
+
+        self.assertEqual(test_lyr.extent, expected_extent)
+        self.assertEqual(test_lyr.crs, expected_crs)

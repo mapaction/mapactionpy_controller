@@ -1,7 +1,7 @@
 import fixtures
 import os
 import six
-from unittest import TestCase
+from unittest import TestCase, skip
 import json
 
 from mapactionpy_controller.layer_properties import LayerProperties
@@ -257,3 +257,107 @@ class TestMapCookBook(TestCase):
         # This should raise a ValueError
         with self.assertRaises(ValueError):
             MapRecipe(fixtures.recipe_with_invalid_principal_map_frame_name, self.lyr_props)
+
+    def test_filter_lyr_for_use_in_frame_extent(self):
+        # Have included teh digit at the start of the string, so that can be sorted easily.
+        cmf = CrashMoveFolder(
+            os.path.join(self.parent_dir, 'example', 'cmf_description_relative_paths_test.json'))
+        cmf.layer_properties = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'cookbooks', 'fixture_layer_properties_for_atlas.json'
+        )
+        test_lp = LayerProperties(cmf, ".lyr", verify_on_creation=False)
+
+        # recipe with layer name only
+        with open(os.path.join(self.parent_dir, 'tests', 'testfiles',
+                               'fixture_cookbook_1map_5layers_1frame.json')) as rf:
+            cookbook_def = json.load(rf)
+        # get the first (only) recipe in the cookbook
+        recipe_def = cookbook_def['recipes'].pop()
+
+        generic_lyr_def = json.loads('''{
+            "name": "the_name",
+            "reg_exp": "^wrl_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
+            "schema_definition": "admin1_reference.yml",
+            "definition_query": "",
+            "display": true,
+            "add_to_legend": true,
+            "label_classes": []
+        }''')
+
+        # Case 1
+        # test white list
+        test_white_list = [
+            ('1one', True),
+            ('2two', False),
+            ('3three', None),
+            ('4four', True),
+            ('5five', False)
+        ]
+        expected_white_result = ['1one', '4four']
+
+        # Case 2
+        # Black List
+        test_black_list = [
+            ('1one', None),
+            ('2two', False),
+            ('3three', None),
+            ('4four', None),
+            ('5five', False)
+        ]
+        expected_black_result = ['1one', '3three', '4four']
+
+        # Case 3
+        # Default
+        test_default_list = [
+            ('1one', None),
+            ('2two', None),
+            ('3three', None),
+            ('4four', None),
+            ('5five', None)
+        ]
+        expected_default_result = ['1one', '2two', '3three', '4four', '5five']
+
+        all_test_params = [
+            (test_white_list, expected_white_result),
+            (test_black_list, expected_black_result),
+            (test_default_list, expected_default_result)
+        ]
+
+        for test_list, expected_result in all_test_params:
+            test_recipe = MapRecipe(recipe_def, test_lp)
+
+            # Build up a mock list of layer to test
+            replacement_lyrs = []
+            for test_lyr_details in test_list:
+                new_lyr = RecipeLayer(generic_lyr_def, test_lp, verify_on_creation=False)
+                new_lyr = RecipeLayer(generic_lyr_def, test_lp, verify_on_creation=False)
+                new_lyr.name = test_lyr_details[0]
+                new_lyr.use_for_frame_extent = test_lyr_details[1]
+                # vaugely near Lebanon
+                new_lyr.extent = (35, 33, 36, 34)
+                new_lyr.crs = 'epsg:4326'
+
+                replacement_lyrs.append(new_lyr)
+
+            test_frame = test_recipe.map_frames.pop()
+            test_frame.layers = replacement_lyrs
+            result_lyrs = test_frame._filter_lyr_for_use_in_frame_extent()
+            actual_result = [lyr.name for lyr in result_lyrs]
+            self.assertEqual(actual_result, expected_result)
+
+    @skip('Not ready yet')
+    def test_get_map_frame_extents(self):
+
+        # Case 1
+        # One or more layers does not have it's extent defined
+
+        # Case 1
+        # Simple union with two lyrs of same crs
+
+        # Case 2
+        # Union with two lyrs of with different crs
+
+        # Case 3
+        # One layer which stradles 180 degree meridian
+
+        self.fail()

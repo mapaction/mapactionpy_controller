@@ -1,8 +1,10 @@
 import logging
 import os
+import fiona
 import glob
 import re
 import hashlib
+import geopandas
 
 import jsonschema
 
@@ -38,6 +40,11 @@ class FixMultipleMatchingFilesTask(task_renderer.TaskReferralBase):
         self.context_data.update({
             'datasources_list': [{'datasources': datasources} for datasources in sorted(datasources_list)]
         })
+
+
+class FixSchemaErrorTask(task_renderer.TaskReferralBase):
+    _task_template_filename = 'schema-error'
+    _primary_key_template = 'TBC'
 
 
 class LabelClass:
@@ -235,35 +242,107 @@ class RecipeLayer:
                 hash.update(lf.read())
         return hash.hexdigest()
 
-    def get_schema_checker(self, runner):
-        def _schema_checker(**kwargs):
-            if not self.data_source_path:
-                raise ValueError(
-                    'Cannot check data schema until relevant data has been found.'
-                    ' Please use `get_data_finder()` first.')
-            recipe = kwargs['state']
-            self._check_lyr_is_in_recipe(recipe)
-            runner.check_data_schema(self)
+    # def get_schema_checker(self, runner):
+    def checker_data_against_schema(self, **kwargs):
+        if not self.data_source_path:
+            raise ValueError(
+                'Cannot check data schema until relevant data has been found.'
+                ' Please use `get_data_finder()` first.')
+        recipe = kwargs['state']
+        self._check_lyr_is_in_recipe(recipe)
 
-        return _schema_checker
+        from jsonschema import validate
+        gdf = geopandas.read_file(self.data_source_path)
 
-    def get_extents_calc(self, runner):
-        def _extents_calc(**kwargs):
-            print('layer._extents_calc')
-            if not self.data_source_path:
-                print('Have no self.data_source_path')
-                raise ValueError(
-                    'Cannot calculate bounding box until relevant data has been found.'
-                    ' Please use `get_data_finder()` first.')
+        # Make columns needed for validation
+        gdf['geometry_type'] = gdf['geometry'].apply(lambda x: x.geom_type)
+        gdf['crs'] = gdf.crs
+        # Validate
 
-            print('Has self.data_source_path')
-            recipe = kwargs['state']
-            self._check_lyr_is_in_recipe(recipe)
-            print('passed _check_lyr_is_in_recipe')
-            runner.get_lyr_extents(self)
-            return recipe
+        try:
+            validate(instance=gdf.to_dict('list'), schema=self.data_schema)
+            return True
+        except jsonschema.ValidationError as jsve:
+            # TODO
+            # FixSchemaErrorTask
+            raise ValueError(jsve.message)
 
-        return _extents_calc
+    # def do_data_schema_check(self, recipe_lyr):
+    #     """
+    #     Checks that the schema of the files specificed by `recipe_lyr.data_source_path` matches the schema
+    #     specificed in `recipe_lyr.data_schema`.
+
+    #     Plugins *may need* overwrite this method.
+
+    #     A method which relies on geopandas is provided. If the geopandas package cannot be imported then
+    #     subclasses must overwrite it.'
+
+    #     @param recipe: The RecipeLayer
+    #     @raises ValidationError:
+    #     @raises NotImplementedError:
+    #     """
+    #     try:
+    #         import geopandas as gpd
+    #         from jsonschema import validate
+    #         gdf = gpd.read_file(recipe_lyr.data_source_path)
+
+    #         # Make columns needed for validation
+    #         gdf['geometry_type'] = gdf['geometry'].apply(lambda x: x.geom_type)
+    #         gdf['crs'] = gdf.crs
+    #         # Validate
+    #         validate(instance=gdf.to_dict('list'), schema=recipe_lyr.data_schema)
+
+    #     except ImportError:
+    #         raise NotImplementedError(
+    #             'BaseRunnerPlugin implenmentation of `do_data_schema_check` relies on geopandas. If the geopandas'
+    #             ' package is not available then subclasses must overwrite it.')
+
+    # def check_data_schema(self, recipe_lyr):
+    #     """
+    #     Checks that the schema of the files specificed by `recipe_lyr.data_source_path` matches the schema
+    #     specificed in `recipe_lyr.data_schema`. Creates an appropriate Human Task if it doesn't.
+
+    #     Plugins *should not* overwrite this method. Overwrite `do_data_schema_check` instead.
+
+    #     @param recipe: The RecipeLayer
+    #     @raises ValueError:
+    #     """
+    #     try:
+    #         self.do_data_schema_check(recipe_lyr)
+    #     except jsonschema.ValidationError as jsve:
+    #         # TODO
+    #         raise ValueError(jsve.message)
+
+    #    return _schema_checker
+
+    def calc_extent(self, **kwargs):
+        """
+        sf = fiona.open(some_path)
+        sf
+        # <open Collection 'some_path', mode 'r' at 0x303d1d0>
+        sf.bounds
+        # (35.10348736558511, 33.054996785738204, 36.62291533501688, 34.69206915371)
+        sf.crs
+        # {u'init': u'epsg:4326'}
+        """
+        print('layer.calc_extent')
+        if not self.data_source_path:
+            print('Have no self.data_source_path')
+            raise ValueError(
+                'Cannot calculate bounding box until relevant data has been found.'
+                ' Please use `get_data_finder()` first.')
+
+        print('Has self.data_source_path')
+        recipe = kwargs['state']
+        self._check_lyr_is_in_recipe(recipe)
+
+        print('passed _check_lyr_is_in_recipe')
+        sf = fiona.open(self.data_source_path)
+        self.extent = sf.bounds
+        # (35.10348736558511, 33.054996785738204, 36.62291533501688, 34.69206915371)
+        self.crs = sf.crs['init']
+
+        return recipe
 
     def __eq__(self, other):
         try:

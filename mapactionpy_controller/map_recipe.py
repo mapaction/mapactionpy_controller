@@ -92,7 +92,38 @@ class RecipeFrame:
             'The requested layer {} does not exist in the map frame {}'.format(
                 requested_layer_name, self.name))
 
-    def get_extents_calc(self, runner):
+    def _filter_lyr_for_use_in_frame_extent(self):
+        """
+        The layer's `use_for_frame_extent` can have one of three values; True, False or None.
+        * If one or more layers in a frame has `use_for_frame_extent==True` then those layers are used to
+          determine the frame's extent (Whitelist).
+        * If no layer has `use_for_frame_extent==True` and one or more layers in a frame has
+          `use_for_frame_extent==False` Every layer except those will be used to determine the frame's
+          extent (Blacklist).
+        * If every layer has `use_for_frame_extent is None` then every layer will be used to determine the
+          frame's extent (Default).
+        """
+        # White list
+        extent_lyrs = [lyr for lyr in self.layers if lyr.use_for_frame_extent]
+
+        # Black List
+        if not extent_lyrs:
+            # We already know that there are no cases where lyr.use_for_frame_extent==True
+            extent_lyrs = [lyr for lyr in self.layers if lyr.use_for_frame_extent is None]
+            #    lyr.use_for_frame_extent is None) and (not lyr.use_for_frame_extent)]
+            # extent_lyrs = [lyr for lyr in self.layers if lyr.use_for_frame_extent is False]
+
+        # Default
+        if not extent_lyrs:
+            extent_lyrs = self.layers
+
+        # Check that the extent has been defined for all the relevant layer.
+        if not all([hasattr(lyr, 'extent') and hasattr(lyr, 'crs') for lyr in extent_lyrs]):
+            raise ValueError('Cannot determine the layer extent for the relevant layers')
+
+        return extent_lyrs
+
+    def get_extents_calc(self, **kwargs):
         """
         The layer's `use_for_frame_extent` can have one of three values; True, False or None.
         * If one or more layers in a frame has `use_for_frame_extent==True` then those layers are used to
@@ -104,90 +135,33 @@ class RecipeFrame:
           frame's extent (Default).
 
         """
-        # recipe = kwargs['state']
-
-        # White list
-        extent_lyrs = [lyr for lyr in self.layers if lyr.use_for_frame_extent]
-
-        # Black List
-        if not extent_lyrs:
-            extent_lyrs = [lyr for lyr in self.layers if (
-                lyr.use_for_frame_extent is not None) and (not lyr.use_for_frame_extent)]
-
-        # Default
-        if not extent_lyrs:
-            extent_lyrs = self.layers
-
-        # Check that the extent has been defined for all the relevant layer.
-        if not all([hasattr(lyr, 'extent') for lyr in extent_lyrs]):
-            raise ValueError('Cannot determine the layer extent for the relevant layers')
+        recipe = kwargs['state']
 
         # Convert all of the lyr.extents into the frame.crs
-        trans_lyr_extents = []
+        projected_lyr_extents = []
+        to_crs = pyproj.Proj(init=self.crs)
 
-        # mf_xmin = float('inf')
-        # mf_xmax = float('-inf')
-        # mf_ymin = float('inf')
-        # mf_ymax = float('-inf')
-
-        # rp = pyreproj.Reprojector()
-
-        # def _transform_tuple(target, from_proj, to_proj):
-        #     x, y = transform(from_proj, to_proj, target[0], target[1])
-        #     return x, y
-
-        # to_crs=self.crs
-        to_crs = pyproj.Proj(init='epsg:26913')
-
-        for r_lyr in extent_lyrs:
-            # from_crs=r_lyr.extent['spatialReference']['wkid']
-            to_crs = self.crs
-
+        for r_lyr in self._filter_lyr_for_use_in_frame_extent():
+            # Get the projection transformation
             project_func = partial(
                 pyproj.transform,
-                pyproj.Proj(init=r_lyr.extent['spatialReference']['wkid']),
+                pyproj.Proj(init=r_lyr.crs),
                 to_crs
             )
 
-            # # {"xmin":35.095981070872881,
-            # # "ymin":33.470789158824005,
-            # # "xmax":35.957052138873699,
-            # # "ymax":34.236185663713542,
-            # # "spatialReference":{"wkid":4326,"latestWkid":4326}}'
-            # top_right = trans_func([r_lyr.extent['xmax'], r_lyr.extent['ymax']])
-            # top_left = trans_func([r_lyr.extent['xmax'], r_lyr.extent['ymin']])
-            # bottom_right = trans_func([r_lyr.extent['xmin'], r_lyr.extent['ymax']])
-            # bottom_left = trans_func([r_lyr.extent['xmin'], r_lyr.extent['ymin']])
-
-            # mf_xmin = min(mf_xmin, project_func([r_lyr.extent['xmax'], r_lyr.extent['ymax']])
-            # mf_xmax = max(mf_xmax, project_func([r_lyr.extent['xmax'], r_lyr.extent['ymin']])
-            # mf_ymin = min(mf_ymin, project_func([r_lyr.extent['xmin'], r_lyr.extent['ymax']])
-            # mf_ymax = max(mf_ymax, project_func([r_lyr.extent['xmin'], r_lyr.extent['ymin']])
-
+            # Create a shapely box from the lyr's bounds
             l_ext = shapely.geometry.box(
                 r_lyr.extent['xmin'],
                 r_lyr.extent['ymin'],
                 r_lyr.extent['xmax'],
                 r_lyr.extent['ymax']
             )
-            trans_lyr_extents.extend(shapely.ops.transform(project_func, l_ext))
+            # reproject the lyr bounds
+            projected_lyr_extents.extend(shapely.ops.transform(project_func, l_ext))
 
         # Now get the union of all of the extents
-        self.extent = shapely.ops.cascaded_union(trans_lyr_extents).bounds
-
-        # for l_ext in trans_lyr_extents:
-        #     if mf_extent:
-        #         mf_extent = mf_extent.union(l_ext)
-        #         break
-
-        # # self.extent = {
-        # #     "xmin": mf_xmin,
-        # #     "ymin": mf_xmax,
-        # #     "xmax": mf_ymin,
-        # #     "ymax": mf_ymax,
-        # # }
-
-        # self.extent = mf_extent.bounds
+        self.extent = shapely.ops.cascaded_union(projected_lyr_extents).bounds
+        return recipe
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
