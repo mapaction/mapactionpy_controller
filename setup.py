@@ -52,7 +52,7 @@ def install_from_wheels(command_subclass):
                 ]
 
             # platform netural packages. This is installed here (rather than using the
-            # `install_requires` parameter, becuase of the dependancy on other wheel files.
+            # `install_requires` parameter, because of the dependancy on other wheel files.
             wheel_list.extend(['geopandas-0.6.2-py2.py3-none-any.whl'])
 
             for wheel_name in wheel_list:
@@ -139,7 +139,6 @@ def _get_requires_list():
             'pycountry',
             'pyproj',
             'Shapely',
-            'GDAL',
             'Fiona',
             'Rtree',
             'geopandas'

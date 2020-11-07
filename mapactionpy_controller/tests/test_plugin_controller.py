@@ -37,10 +37,12 @@ class TestPluginController(TestCase):
         found_list_of_steps = False
         for call in mock_pf.call_args_list:
             try:
-                # print()
-                # print('test_get_cookbook_steps')
-                # print(call)
-                # print('END:test_get_cookbook_steps')
+                print()
+                print('---------------------')
+                print('test_get_cookbook_steps')
+                print(call)
+                print('END:test_get_cookbook_steps')
+                print('---------------------')
                 # retrieved_result = call[1]['result']
                 retrieved_result = call[1].get('result', None)
                 if all([isinstance(stp, Step) for stp in retrieved_result]):

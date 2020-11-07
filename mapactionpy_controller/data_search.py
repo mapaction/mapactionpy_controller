@@ -135,7 +135,7 @@ def get_per_product_data_search_steps(runner, recipe):
                 'Failed to find data suitable for layer "{}"'.format(recipe_lyr.name)
             ),
             Step(
-                recipe_lyr.get_extents_calc(runner),
+                recipe_lyr.calc_extent,
                 logging.WARNING,
                 'Calculating extent for the data for layer "{}"'.format(recipe_lyr.name),
                 'Calculated extent for the data for layer "{}"'.format(recipe_lyr.name),
