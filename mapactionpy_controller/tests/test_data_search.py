@@ -141,6 +141,15 @@ class TestDataSearch(unittest.TestCase):
             print('ve.args[0] is instance of: {}'.format(type(ve.args[0])))
             self.assertIsInstance(ve.args[0], recipe_layer.FixMissingGISDataTask)
 
+            # Case D
+            # Case insensitive search
+            self.fail()
+
+            # Case E
+            # match not at begining of string (eg re.match() vs re.search())
+            self.fail()
+
+
     def test_check_layer(self):
 
         recipe = MapRecipe(fixtures.recipe_with_layer_details_embedded, self.lyr_props)

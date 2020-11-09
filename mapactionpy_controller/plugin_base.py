@@ -133,6 +133,13 @@ class BaseRunnerPlugin(object):
             'BaseRunnerPlugin is an abstract class and the `_get_aspect_ratios_of_templates`'
             ' method cannot be called directly')
 
+    def _get_aspect_ratio_of_bounds(self, bounds):
+        minx, miny, maxx, maxy = bounds
+        dx = (maxx - minx) % 360  # Accounts for the case where the bounds stradles the 180 meridian
+        dy = maxy - miny
+
+        return float(dx)/dy
+
     def get_templates(self, **kwargs):
         recipe = kwargs['state']
         # If there already is a valid `recipe.map_project_path` just skip with method
@@ -148,9 +155,12 @@ class BaseRunnerPlugin(object):
         # Select the template with the most appropriate aspect ratio
         possible_aspect_ratios = self.get_aspect_ratios_of_templates(possible_templates)
 
+        mf = recipe.get_frame(recipe.principal_map_frame)
+        target_aspect_ratio = self._get_aspect_ratio_of_bounds(mf.extent)
+
         # use logic to workout which template has best aspect ratio
         # obviously not this logic though:
-        recipe.template_path = self._get_template_by_aspect_ratio(possible_aspect_ratios, 1.0)
+        recipe.template_path = self._get_template_by_aspect_ratio(possible_aspect_ratios, target_aspect_ratio)
 
         # TODO re-enable "Have the input files changed?"
         # Have the input shapefiles changed?

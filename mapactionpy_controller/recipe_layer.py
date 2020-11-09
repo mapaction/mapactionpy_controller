@@ -165,7 +165,7 @@ class RecipeLayer:
             # But only store the filename without extension
             found_files.extend(
                 [(f_path, os.path.splitext(f_name)[0])
-                 for f_path, f_name in all_gis_files if re.match(self.reg_exp, f_name)]
+                 for f_path, f_name in all_gis_files if re.match(self.reg_exp, f_name, re.IGNORECASE)]
             )
 
             # Do checks and raise exceptions if required.

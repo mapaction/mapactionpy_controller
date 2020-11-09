@@ -151,16 +151,15 @@ def get_per_product_data_search_steps(runner, recipe):
         #     'The data available for layer "{}" failed schema check'.format(recipe_lyr.name)
         # ),
 
-    # for map_frame in recipe.map_frames:
-    #     calc extent
-    #     step_list.extend([
-    #         Step(
-    #             map_frame.calculate extent(),
-    #             logging.WARNING,
-    #         'Calculating extent for the map frame "{}"'.format(map_frame.name),
-    #         'Calculated extent for the map frame "{}"'.format(map_frame.name),
-    #         'Error whilst extent for the map frame "{}"'.format(map_frame.name)
-    #         )
-    #     ])
+    for map_frame in recipe.map_frames:
+        step_list.extend([
+            Step(
+                map_frame.calc_extent,
+                logging.ERROR,
+                'Calculating extent for the map frame "{}"'.format(map_frame.name),
+                'Calculated extent for the map frame "{}"'.format(map_frame.name),
+                'Error whilst extent for the map frame "{}"'.format(map_frame.name)
+            )
+        ])
 
     return step_list

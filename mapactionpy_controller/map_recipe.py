@@ -56,11 +56,19 @@ class RecipeFrame:
         return recipe_lyrs_list
 
     def _parse_single_layer(self, l_name, lyr_def, lyr_props):
-        # if lyr_def only includes the name of the layer and no other properties
-        # then import them from a LayerProperties object
-        # Else, load them from the lyr_def
-        if len(lyr_def) == 1:
-            return lyr_props.properties.get(l_name, l_name)
+        # If lyr_def only includes as the only non-optional field is the `name` the retrive the layer
+        # from the lyr_props object, and then apply the relevant optional properties
+        # If not create a new recipe_lyr.
+        opt_fields = [k for k in lyr_def.keys() if k in set(RecipeLayer.OPTIONAL_FIELDS)]
+        if len(lyr_def) - len(opt_fields) == 1:
+            r_lyr = lyr_props.properties.get(l_name, l_name)
+            try:
+                # This is the only field that needs to be handled explictly at presence
+                r_lyr.use_for_frame_extent = lyr_def.get('use_for_frame_extent', None)
+            except AttributeError:
+                pass
+
+            return r_lyr
         else:
             return RecipeLayer(lyr_def, lyr_props)
 
@@ -68,6 +76,7 @@ class RecipeFrame:
         if compatiblity_mode >= 0.3:
             return frame_def['crs']
 
+        # This hard coded values is for legacy recipes (schema==v0.2)
         return 'epsg:4326'
 
     def contains_layer(self, requested_layer_name):
@@ -123,7 +132,7 @@ class RecipeFrame:
 
         return extent_lyrs
 
-    def get_extents_calc(self, **kwargs):
+    def calc_extent(self, **kwargs):
         """
         The layer's `use_for_frame_extent` can have one of three values; True, False or None.
         * If one or more layers in a frame has `use_for_frame_extent==True` then those layers are used to
@@ -149,18 +158,15 @@ class RecipeFrame:
                 to_crs
             )
 
+            print('r_lyr.extent = {}'.format(r_lyr.extent))
             # Create a shapely box from the lyr's bounds
-            l_ext = shapely.geometry.box(
-                r_lyr.extent['xmin'],
-                r_lyr.extent['ymin'],
-                r_lyr.extent['xmax'],
-                r_lyr.extent['ymax']
-            )
+            l_ext = shapely.geometry.box(*r_lyr.extent)
             # reproject the lyr bounds
-            projected_lyr_extents.extend(shapely.ops.transform(project_func, l_ext))
+            projected_lyr_extents.append(shapely.ops.transform(project_func, l_ext))
 
         # Now get the union of all of the extents
         self.extent = shapely.ops.cascaded_union(projected_lyr_extents).bounds
+        print('r_frame.extent = {}'.format(self.extent))
         return recipe
 
     def __eq__(self, other):
@@ -197,7 +203,7 @@ class MapRecipe:
         self.export = recipe_def["export"]
         self.product = recipe_def["product"]
         # This is a list, but see note in `_parse_map_frames` method
-        self.map_frames = self._parse_map_frames(recipe_def["map_frames"], lyr_props)
+        self.map_frames = self._parse_map_frames(recipe_def["map_frames"], lyr_props, compatiblity_mode)
         self.summary = recipe_def["summary"]
         self.template = recipe_def["template"]
         self.principal_map_frame = self._parse_principal_map_frame(recipe_def, compatiblity_mode)
@@ -250,7 +256,7 @@ class MapRecipe:
 
         return unique_lyrs
 
-    def _parse_map_frames(self, map_frames_def, lyr_props):
+    def _parse_map_frames(self, map_frames_def, lyr_props, compatiblity_mode=0.3):
         # We create a seperate list nad set here so that we can enforce unique map_frames names. However only
         # the list is returned. Client code is generally more readable and elegant if `self.map_frames` is a
         # list. This enforces that map_frames names must be unique in the json representation, however
@@ -259,7 +265,7 @@ class MapRecipe:
         recipe_map_frames_list = []
         map_frames_set = set()
         for frame_def in map_frames_def:
-            mf = RecipeFrame(frame_def, lyr_props)
+            mf = RecipeFrame(frame_def, lyr_props, compatiblity_mode)
             if mf.name in map_frames_set:
                 raise ValueError(
                     'Duplicate mapframe name {} in recipe {}. Each mapframe name within a'
@@ -274,6 +280,7 @@ class MapRecipe:
         """
         This assumes that `_parse_map_frames` as already been called.
         """
+        # The hard coded value "Main map" is for legacy reasons (recipe schema v0.2)
         p_map_frame = recipe_def.get('principal_map_frame', "Main map")
 
         if p_map_frame not in [mf.name for mf in self.map_frames]:
