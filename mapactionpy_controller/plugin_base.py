@@ -1,7 +1,6 @@
 import errno
 import glob
 import logging
-# import math
 import os
 from operator import itemgetter
 import re
@@ -211,8 +210,13 @@ class BaseRunnerPlugin(object):
         """
         recipe = kwargs['state']
         export_params = {}
+        properties = {}  # For properties from MapAction Toolbox
         try:
             export_params = self._create_export_dir(export_params, recipe)
+            if 'properties' in kwargs:
+                properties = kwargs['properties']
+                export_params['themes'] = properties.get('themes', set())
+
             export_params = self._do_export(export_params, recipe)
         except Exception as exp:
             logger.error('Failed to export the map. export_params = "{}"'.format(export_params))

@@ -93,8 +93,10 @@ class MapDoc:
         location = SubElement(mapdata, 'location')
         location.text = str(self.mapdata.location)
 
-        access = SubElement(mapdata, 'themes')
-        access.themes = str(self.mapdata.themes)
+        themes = SubElement(mapdata, 'themes')
+        for setTheme in self.mapdata.themes:
+            theme = SubElement(themes, 'theme')
+            theme.text = setTheme
 
         scale = SubElement(mapdata, 'scale')
         scale.text = str(self.mapdata.scale)

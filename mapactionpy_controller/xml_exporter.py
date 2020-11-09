@@ -29,6 +29,7 @@ class XmlExporter:
         # Copy from params
         exportPropertiesDict["versionNumber"] = params["versionNumber"]
         exportPropertiesDict["mapNumber"] = params["mapNumber"]
+        exportPropertiesDict["themes"] = params["themes"]
         exportPropertiesDict["pdffilename"] = params["pdfFileName"]
         exportPropertiesDict["jpgfilename"] = params["jpgFileName"]
         exportPropertiesDict["pdffilesize"] = params["pdfFileSize"]
@@ -50,7 +51,6 @@ class XmlExporter:
         exportPropertiesDict["location"] = ""
         exportPropertiesDict["qclevel"] = "Automatically generated"
         exportPropertiesDict["qcname"] = ""
-        exportPropertiesDict["themes"] = {}
         exportPropertiesDict["proj"] = ""
         exportPropertiesDict["datasource"] = ""
         exportPropertiesDict["kmlresolutiondpi"] = ""
