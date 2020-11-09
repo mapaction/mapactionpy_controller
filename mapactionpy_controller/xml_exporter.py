@@ -44,24 +44,24 @@ class XmlExporter:
         exportPropertiesDict["product-type"] = params["productType"]
         exportPropertiesDict["summary"] = params["summary"]
         # Fixed values
-        exportPropertiesDict["imagerydate"] = ""
-        exportPropertiesDict["papersize"] = "A3"
-        exportPropertiesDict["access"] = "MapAction"  # Until we work out how to get the values for this
-        exportPropertiesDict["accessnotes"] = ""
-        exportPropertiesDict["location"] = ""
-        exportPropertiesDict["qclevel"] = "Automatically generated"
-        exportPropertiesDict["qcname"] = ""
-        exportPropertiesDict["proj"] = ""
-        exportPropertiesDict["datasource"] = ""
-        exportPropertiesDict["kmlresolutiondpi"] = ""
-        exportPropertiesDict["paperxmax"] = ""
-        exportPropertiesDict["paperxmin"] = ""
-        exportPropertiesDict["paperymax"] = ""
-        exportPropertiesDict["paperymin"] = ""
-        exportPropertiesDict["createdate"] = None
-        exportPropertiesDict["createtime"] = None
-        exportPropertiesDict["scale"] = None
-        exportPropertiesDict["datum"] = None
+        exportPropertiesDict["imagerydate"] = params.get('imagerydate', "")
+        exportPropertiesDict["papersize"] = params.get('papersize', "A3")
+        exportPropertiesDict["access"] = params.get('access', "MapAction")
+        exportPropertiesDict["accessnotes"] = params.get('accessnotes', "")
+        exportPropertiesDict["location"] = params.get('location', "")
+        exportPropertiesDict["qclevel"] = params.get('qclevel', "Automatically generated")
+        exportPropertiesDict["qcname"] = params.get('qcname', "")
+        exportPropertiesDict["proj"] = params.get('proj', "")
+        exportPropertiesDict["datasource"] = params.get('datasource', "")
+        exportPropertiesDict["kmlresolutiondpi"] = params.get('kmlresolutiondpi', "")
+        exportPropertiesDict["paperxmax"] = params.get('paperxmax', "")
+        exportPropertiesDict["paperxmin"] = params.get('paperxmin', "")
+        exportPropertiesDict["paperymax"] = params.get('paperymax', "")
+        exportPropertiesDict["paperymin"] = params.get('paperymin', "")
+        exportPropertiesDict["createdate"] = params.get('createdate', "")
+        exportPropertiesDict["createtime"] = params.get('createtime', "")
+        exportPropertiesDict["scale"] = params.get('scale', "")
+        exportPropertiesDict["datum"] = params.get('datum', "")
 
         if (params["versionNumber"] == 1):
             exportPropertiesDict["status"] = "New"
