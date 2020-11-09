@@ -1,6 +1,7 @@
 import errno
 import glob
 import logging
+# import math
 import os
 from operator import itemgetter
 import re
@@ -23,6 +24,7 @@ class BaseRunnerPlugin(object):
     def __init__(self, hum_event, ** kwargs):
         self.hum_event = hum_event
         self.cmf = CrashMoveFolder(self.hum_event.cmf_descriptor_path)
+        #self.themes = set()
 
         if not self.cmf.verify_paths():
             raise ValueError("Cannot find paths and directories referenced by cmf {}".format(self.cmf.path))
@@ -215,8 +217,8 @@ class BaseRunnerPlugin(object):
             export_params = self._create_export_dir(export_params, recipe)
             if 'properties' in kwargs:
                 properties = kwargs['properties']
-                export_params['themes'] = properties.get('themes', set())
-
+                for key in list(properties.keys()):
+                    export_params[str(key)] = properties[str(key)]
             export_params = self._do_export(export_params, recipe)
         except Exception as exp:
             logger.error('Failed to export the map. export_params = "{}"'.format(export_params))
