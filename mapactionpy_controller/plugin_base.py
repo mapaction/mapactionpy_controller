@@ -215,8 +215,8 @@ class BaseRunnerPlugin(object):
             export_params = self._create_export_dir(export_params, recipe)
             if 'properties' in kwargs:
                 properties = kwargs['properties']
-                export_params['themes'] = properties.get('themes', set())
-
+                for key in list(properties.keys()):
+                    export_params[str(key)] = properties[str(key)]
             export_params = self._do_export(export_params, recipe)
         except Exception as exp:
             logger.error('Failed to export the map. export_params = "{}"'.format(export_params))
