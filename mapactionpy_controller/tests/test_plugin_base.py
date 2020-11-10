@@ -81,18 +81,20 @@ class TestPluginBase(TestCase):
             ('six',   10)
         ]
 
+        # half way between 5.0 and 10.0 ==> 10^(0.5*(log(10)+LOG(5)) = 7.071067812
         test_aspect_ratios = [
             (5.0, 'five'),
             (4.9, 'five'),
             (5.1, 'five'),
             (100, 'six'),
             (0.0001, 'one'),
-            (7.5, 'six'),
-            (7.49998, 'five')
+            (7.0711, 'six'),
+            (7.0710, 'five')
         ]
 
         for target_ar, expect_result in test_aspect_ratios:
             actual_result = self.dummy_runner._get_template_by_aspect_ratio(template_aspect_ratios, target_ar)
+            # print('expect_result={}, actual_result={}'.format(expect_result, actual_result))
             self.assertEqual(expect_result, actual_result)
 
     def test_get_next_map_version_number(self):

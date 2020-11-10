@@ -1,7 +1,7 @@
 import errno
 import glob
 import logging
-# import math
+import math
 import os
 from operator import itemgetter
 import re
@@ -85,14 +85,18 @@ class BaseRunnerPlugin(object):
                           being mapped.
         @returns: The path of the template with the best matching aspect ratio.
         """
+        logger.info('Selecting from available templates based on the most best matching aspect ratio')
+
         # Target is more landscape than the most landscape template
         most_landscape = max(template_aspect_ratios, key=itemgetter(1))
         if most_landscape[1] < target_ar:
+            logger.info('Target area of interest is more landscape than the most landscape template')
             return most_landscape[0]
 
         # Target is more portrait than the most portrait template
         most_portrait = min(template_aspect_ratios, key=itemgetter(1))
         if most_portrait[1] > target_ar:
+            logger.info('Target area of interest is more portrait than the most portrait template')
             return most_portrait[0]
 
         # The option with the smallest aspect ratio that is larger than target_ar
@@ -105,13 +109,15 @@ class BaseRunnerPlugin(object):
             key=itemgetter(1))
 
         # Linear combination:
-        if (2*target_ar) >= (larger_ar[1] + smaller_ar[1]):
-            return larger_ar[0]
+        # if (2*target_ar) >= (larger_ar[1] + smaller_ar[1]):
+        #    return larger_ar[0]
 
         # asmith: personally I think that this is the better option, but will go with the linear combination for now
         # logarithmic combination
-        # if (2*math.log(target_ar)) > (math.log(larger_ar[1]) + math.log(smaller_ar[1])):
-        #     return larger_ar[0]
+        if (2*math.log(target_ar)) > (math.log(larger_ar[1]) + math.log(smaller_ar[1])):
+            logger.info('Aspect ratio of the target area of interest lies between the aspect ratios of the'
+                        ' available templates')
+            return larger_ar[0]
 
         return smaller_ar[0]
 
