@@ -62,12 +62,6 @@ class XmlExporter:
         exportPropertiesDict["createtime"] = params.get('createtime', "")
         exportPropertiesDict["scale"] = params.get('scale', "")
         exportPropertiesDict["datum"] = params.get('datum', "")
-
-        if (params["versionNumber"] == 1):
-            exportPropertiesDict["status"] = "New"
-        else:
-            exportPropertiesDict["status"] = "Update"
-
         exportPropertiesDict["language-iso2"] = self.event.language_iso2
         exportPropertiesDict["pdfresolutiondpi"] = self.event.default_pdf_res_dpi
         exportPropertiesDict["jpgresolutiondpi"] = self.event.default_jpeg_res_dpi
@@ -75,6 +69,12 @@ class XmlExporter:
         exportPropertiesDict["glideno"] = self.event.glide_number
         exportPropertiesDict["operationID"] = self.event.operation_id
         exportPropertiesDict["sourceorg"] = self.event.default_source_organisation
+
+        if (params["versionNumber"] == 1):
+            exportPropertiesDict["status"] = "New"
+        else:
+            exportPropertiesDict["status"] = "Update"
+
         language = pycountry.languages.get(alpha_2=self.event.language_iso2)
         if (language is not None):
             exportPropertiesDict["language"] = language.name
