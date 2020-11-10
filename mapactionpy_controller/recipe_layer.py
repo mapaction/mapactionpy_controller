@@ -165,7 +165,7 @@ class RecipeLayer:
             # But only store the filename without extension
             found_files.extend(
                 [(f_path, os.path.splitext(f_name)[0])
-                 for f_path, f_name in all_gis_files if re.match(self.reg_exp, f_name, re.IGNORECASE)]
+                 for f_path, f_name in all_gis_files if re.search(self.reg_exp, f_name, re.IGNORECASE)]
             )
 
             # Do checks and raise exceptions if required.
@@ -325,18 +325,17 @@ class RecipeLayer:
         sf.crs
         # {u'init': u'epsg:4326'}
         """
-        print('layer.calc_extent')
         if not self.data_source_path:
-            print('Have no self.data_source_path')
+            logger.info('Have no self.data_source_path')
             raise ValueError(
                 'Cannot calculate bounding box until relevant data has been found.'
                 ' Please use `get_data_finder()` first.')
 
-        print('Has self.data_source_path')
+        logger.info('Has self.data_source_path')
         recipe = kwargs['state']
         self._check_lyr_is_in_recipe(recipe)
 
-        print('passed _check_lyr_is_in_recipe')
+        logger.info('passed _check_lyr_is_in_recipe')
         sf = fiona.open(self.data_source_path)
         self.extent = sf.bounds
         # (35.10348736558511, 33.054996785738204, 36.62291533501688, 34.69206915371)
