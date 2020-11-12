@@ -141,7 +141,7 @@ def _get_requires_list():
             'pycountry',
             'pyproj',
             'Shapely',
-            'GDAL==3.0.4',
+            'GDAL',
             'Rtree',
             'geopandas'
         ])
