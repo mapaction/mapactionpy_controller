@@ -5,7 +5,7 @@ import fiona
 import glob
 import re
 import hashlib
-# import geopandas
+import geopandas
 
 import jsonschema
 
@@ -364,7 +364,8 @@ class RecipeLayer:
 
         #     # prj = open("%s.prj" % filename, "w")
         #     # epsg = 'GEOGCS["WGS 84", DATUM["WGS_1984",
-        #     #     SPHEROID["WGS 84", 6378137, 298.257223563]], PRIMEM["Greenwich", 0], UNIT["degree", 0.0174532925199433]]'
+        #     #     SPHEROID["WGS 84", 6378137, 298.257223563]], PRIMEM["Greenwich", 0],
+        #     #     UNIT["degree", 0.0174532925199433]]'
         #     #  prj.write(epsg) prj.close() ```
         return recipe
 
