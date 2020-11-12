@@ -50,6 +50,7 @@ before_install:
 - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get -y install gdal-bin libgdal-dev libspatialindex-dev; fi
 - if [ $TRAVIS_OS_NAME = linux ]; then export CPLUS_INCLUDE_PATH=/usr/include/gdal; fi
 - if [ $TRAVIS_OS_NAME = linux ]; then export C_INCLUDE_PATH=/usr/include/gdal; fi
+- if [ $TRAVIS_OS_NAME = linux ]; then ogrinfo --version; fi
 install:
 - pip install -r requirements-dev.txt
 - pip install -r requirements-jira.txt
