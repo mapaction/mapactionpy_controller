@@ -46,7 +46,7 @@ jobs:
 
 before_install:
 # sudo apt -y install libgdal-dev python3-gdal
-- if [ $TRAVIS_OS_NAME = linux ]; then install-dependencies-ubuntu.sh; fi
+- if [ $TRAVIS_OS_NAME = linux ]; then ./install-dependencies-ubuntu.sh; fi
 install:
 - pip install -r requirements-dev.txt
 - pip install -r requirements-jira.txt
