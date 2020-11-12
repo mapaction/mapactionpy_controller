@@ -6,7 +6,7 @@ def get_state_optional_fields(obj, optional_fields):
     state = obj.__dict__.copy()
     # Remove any optional members which have a value of None.
     for option in optional_fields:
-        if not state[option]:
+        if state[option] is None:
             del state[option]
     return state
 

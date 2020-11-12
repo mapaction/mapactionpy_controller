@@ -116,6 +116,7 @@ def _get_requires_list():
         'jsonschema',
         'requests',
         'pyyaml',
+        'pyshp',
         'six',
         'slugify'
     ]
@@ -135,11 +136,12 @@ def _get_requires_list():
     else:
         # The same items but for py3.x
         requires.extend([
+            'fiona',
             'pyrsistent',
             'pycountry',
             'pyproj',
             'Shapely',
-            'Fiona',
+            'GDAL==3.0.4',
             'Rtree',
             'geopandas'
         ])

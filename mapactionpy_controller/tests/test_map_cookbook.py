@@ -286,39 +286,49 @@ class TestMapCookBook(TestCase):
 
         # Case 1
         # test white list
-        test_white_list = [
-            ('1one', True),
-            ('2two', False),
-            ('3three', None),
-            ('4four', True),
-            ('5five', False)
+        test_white_list1 = [
+            ('1a', True),
+            ('1b', False),
+            ('1c', None),
+            ('1d', True),
+            ('1e', False)
         ]
-        expected_white_result = ['1one', '4four']
+        expected_white_result1 = ['1a', '1d']
+
+        test_white_list2 = [
+            ('2a', True),
+            ('2b', None),
+            ('2c', None),
+            ('2d', True),
+            ('2e', None)
+        ]
+        expected_white_result2 = ['2a', '2d']
 
         # Case 2
         # Black List
         test_black_list = [
-            ('1one', None),
-            ('2two', False),
-            ('3three', None),
-            ('4four', None),
-            ('5five', False)
+            ('3a', None),
+            ('3b', False),
+            ('3c', None),
+            ('3d', None),
+            ('3e', False)
         ]
-        expected_black_result = ['1one', '3three', '4four']
+        expected_black_result = ['3a', '3c', '3d']
 
         # Case 3
         # Default
         test_default_list = [
-            ('1one', None),
-            ('2two', None),
-            ('3three', None),
-            ('4four', None),
-            ('5five', None)
+            ('4a', None),
+            ('4b', None),
+            ('4c', None),
+            ('4d', None),
+            ('4e', None)
         ]
-        expected_default_result = ['1one', '2two', '3three', '4four', '5five']
+        expected_default_result = ['4a', '4b', '4c', '4d', '4e']
 
         all_test_params = [
-            (test_white_list, expected_white_result),
+            (test_white_list1, expected_white_result1),
+            (test_white_list2, expected_white_result2),
             (test_black_list, expected_black_result),
             (test_default_list, expected_default_result)
         ]

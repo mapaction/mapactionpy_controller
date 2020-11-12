@@ -2,11 +2,13 @@ import json
 import logging
 from os import path
 from functools import partial
+from copy import deepcopy
 import jsonpickle
 import jsonschema
 # import pyreproj
 import pyproj
-import shapely
+from shapely.geometry import box
+from shapely.ops import cascaded_union, transform
 
 import mapactionpy_controller.state_serialization as state_serialization
 from mapactionpy_controller import _get_validator_for_config_schema
@@ -36,7 +38,7 @@ class RecipeFrame:
         self.spatial_ref_text_element = frame_def.get('spatial_ref_text_element', None)
 
     def _parse_layers(self, lyr_defs, lyr_props):
-        # We create a seperate list nad set here so that we can enforce unique layernames. However only
+        # We create a seperate list and set here so that we can enforce unique layernames. However only
         # the list is returned. Client code is generally more readable and elegant if `self.layers` is a
         # list. This enforces that layer names must be unique in the json representation, however
         # theoretically allows client code to create multiple layers with identical names. The behaviour
@@ -61,10 +63,14 @@ class RecipeFrame:
         # If not create a new recipe_lyr.
         opt_fields = [k for k in lyr_def.keys() if k in set(RecipeLayer.OPTIONAL_FIELDS)]
         if len(lyr_def) - len(opt_fields) == 1:
-            r_lyr = lyr_props.properties.get(l_name, l_name)
+            r_lyr = deepcopy(lyr_props.properties.get(l_name, l_name))
             try:
-                # This is the only field that needs to be handled explictly at presence
-                r_lyr.use_for_frame_extent = lyr_def.get('use_for_frame_extent', None)
+                # This is the only field that needs to be handled explictly at present
+                if 'use_for_frame_extent' in lyr_def:
+                    r_lyr.use_for_frame_extent = bool(lyr_def['use_for_frame_extent'])
+                else:
+                    r_lyr.use_for_frame_extent = None
+
             except AttributeError:
                 pass
 
@@ -119,8 +125,6 @@ class RecipeFrame:
         if not extent_lyrs:
             # We already know that there are no cases where lyr.use_for_frame_extent==True
             extent_lyrs = [lyr for lyr in self.layers if lyr.use_for_frame_extent is None]
-            #    lyr.use_for_frame_extent is None) and (not lyr.use_for_frame_extent)]
-            # extent_lyrs = [lyr for lyr in self.layers if lyr.use_for_frame_extent is False]
 
         # Default
         if not extent_lyrs:
@@ -142,31 +146,31 @@ class RecipeFrame:
           extent (Blacklist).
         * If every layer has `use_for_frame_extent is None` then every layer will be used to determine the
           frame's extent (Default).
-
         """
         recipe = kwargs['state']
 
         # Convert all of the lyr.extents into the frame.crs
         projected_lyr_extents = []
         to_crs = pyproj.Proj(init=self.crs)
+        print('to_frame_crs = {}'.format(self.crs))
 
         for r_lyr in self._filter_lyr_for_use_in_frame_extent():
             # Get the projection transformation
             project_func = partial(
                 pyproj.transform,
-                pyproj.Proj(init=r_lyr.crs),
+                pyproj.Proj(r_lyr.crs),
                 to_crs
             )
+            print('from_lyr_crs = {}'.format(r_lyr.crs))
 
-            print('r_lyr.extent = {}'.format(r_lyr.extent))
             # Create a shapely box from the lyr's bounds
-            l_ext = shapely.geometry.box(*r_lyr.extent)
+            l_ext = box(*r_lyr.extent)
             # reproject the lyr bounds
-            projected_lyr_extents.append(shapely.ops.transform(project_func, l_ext))
+            projected_lyr_extents.append(transform(project_func, l_ext))
 
+        print('projected_lyr_extents = {}'.format(projected_lyr_extents))
         # Now get the union of all of the extents
-        self.extent = shapely.ops.cascaded_union(projected_lyr_extents).bounds
-        print('r_frame.extent = {}'.format(self.extent))
+        self.extent = cascaded_union(projected_lyr_extents).bounds
         return recipe
 
     def __eq__(self, other):
@@ -223,6 +227,7 @@ class MapRecipe:
 
         # Self consistency checks
         self._check_for_dup_text_elements()
+        # print(self)
 
     def _check_schemas_with_backward_compat(self, recipe_def):
         try:

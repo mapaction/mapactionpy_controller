@@ -170,8 +170,14 @@ properties:
         # Get the extents shapefile and update the test_lyr object
         test_lyr.calc_extent(state=test_recipe)
 
-        expected_extent = (35.10348736558511, 33.054996785738204, 36.62291533501688, 34.69206915371)
-        expected_crs = 'epsg:4326'
+        expected_extent = [35.10348736558511, 33.054996785738204, 36.62291533501688, 34.69206915371]
+        # expected_crs = (
+        #     'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",'
+        #     'SPHEROID["WGS_1984",6378137.0,298.257223563]],'
+        #     'PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]')
+        expected_crs = {'init': 'epsg:4326'}
 
-        self.assertEqual(test_lyr.extent, expected_extent)
+        for actual, expected in zip(test_lyr.extent, expected_extent):
+            self.assertEqual(actual, expected)
+
         self.assertEqual(test_lyr.crs, expected_crs)

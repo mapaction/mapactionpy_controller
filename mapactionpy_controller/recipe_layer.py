@@ -1,10 +1,11 @@
 import logging
 import os
+# import shapefile
 import fiona
 import glob
 import re
 import hashlib
-import geopandas
+# import geopandas
 
 import jsonschema
 
@@ -103,7 +104,11 @@ class RecipeLayer:
         self.data_source_checksum = layer_def.get('data_source_checksum', self._calc_data_source_checksum())
         self.data_name = layer_def.get('data_name', None)
         self.extent = layer_def.get('extent', None)
-        self.use_for_frame_extent = layer_def.get('use_for_frame_extent', None)
+        # Allow for three valid values True/False/None
+        if 'use_for_frame_extent' in layer_def:
+            self.use_for_frame_extent = bool(layer_def['use_for_frame_extent'])
+        else:
+            self.use_for_frame_extent = None
 
     def _get_layer_file_path(self, layer_def, lyr_props, verify_on_creation):
         if 'layer_file_path' in layer_def:
@@ -333,14 +338,34 @@ class RecipeLayer:
 
         logger.info('Has self.data_source_path')
         recipe = kwargs['state']
+        # print('recipe before in layer.calc_extent:')
+        # print(recipe)
         self._check_lyr_is_in_recipe(recipe)
 
         logger.info('passed _check_lyr_is_in_recipe')
+        print('passed _check_lyr_is_in_recipe')
         sf = fiona.open(self.data_source_path)
+        print('openned in fiona')
+        # sf = shapefile.Reader(self.data_source_path)
         self.extent = sf.bounds
+        print('got bounds')
+        print('sf.crs = {}'.format(sf.crs))
+        self.crs = sf.crs
+        print('got extent')
+        print('self.extent', self.extent)
+        print('type(self.extent)', type(self.extent))
         # (35.10348736558511, 33.054996785738204, 36.62291533501688, 34.69206915371)
-        self.crs = sf.crs['init']
+        # Now get the projection system
+        # prj_path = '{}.prj'.format(os.path.splitext(self.data_source_path)[0])
+        # with open(prj_path, 'r') as prj_f:
+        #     crs = prj_f.read()
+        #     print(crs)
+        #     self.crs = crs
 
+        #     # prj = open("%s.prj" % filename, "w")
+        #     # epsg = 'GEOGCS["WGS 84", DATUM["WGS_1984",
+        #     #     SPHEROID["WGS 84", 6378137, 298.257223563]], PRIMEM["Greenwich", 0], UNIT["degree", 0.0174532925199433]]'
+        #     #  prj.write(epsg) prj.close() ```
         return recipe
 
     def __eq__(self, other):
