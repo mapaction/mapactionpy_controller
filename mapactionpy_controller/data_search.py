@@ -52,13 +52,14 @@ def get_recipe_event_updater(hum_event):
 
 def _update_items_in_recipe(recipe, update_recipe_item):
     # Update the reg_exg for seaching for each individual layer
-    for lyr in recipe.all_layers():
-        lyr.reg_exp = update_recipe_item(lyr.reg_exp)
-        lyr.definition_query = update_recipe_item(lyr.definition_query)
+    for mf in recipe.map_frames:
+        for lyr in mf.layers:
+            lyr.reg_exp = update_recipe_item(lyr.reg_exp)
+            lyr.definition_query = update_recipe_item(lyr.definition_query)
 
-        for lbl_class in lyr.label_classes:
-            lbl_class.expression = update_recipe_item(lbl_class.expression)
-            lbl_class.sql_query = update_recipe_item(lbl_class.sql_query)
+            for lbl_class in lyr.label_classes:
+                lbl_class.expression = update_recipe_item(lbl_class.expression)
+                lbl_class.sql_query = update_recipe_item(lbl_class.sql_query)
 
     # Update the recipe level members
     recipe.product = update_recipe_item(recipe.product)
@@ -120,38 +121,37 @@ def get_per_product_data_search_steps(runner, recipe):
             'Failed to update recipe with event specific details'
         )]
 
-    for recipe_lyr in recipe.all_layers():
-        # This is just being paraniod. This can only occur if somewhere up the chain a MapCookbook was created
-        # with the param verify_on_creation=False. That should not occur in production code and only in
-        # some test cases.
-        _check_layer(recipe_lyr)
-
-        step_list.extend([
-            Step(
-                recipe_lyr.get_data_finder(runner.cmf, all_gis_files),
-                logging.WARNING,
-                '"Searching for data suitable for layer "{}"'.format(recipe_lyr.name),
-                'Found data for layer "{}"'.format(recipe_lyr.name),
-                'Failed to find data suitable for layer "{}"'.format(recipe_lyr.name)
-            ),
-            Step(
-                recipe_lyr.calc_extent,
-                logging.WARNING,
-                'Calculating extent for the data for layer "{}"'.format(recipe_lyr.name),
-                'Calculated extent for the data for layer "{}"'.format(recipe_lyr.name),
-                'Error whilst calculating extent for the data for layer "{}"'.format(recipe_lyr.name)
-            )
-        ])
-
-        # Step(
-        #     recipe_lyr.get_schema_checker(runner),
-        #     logging.WARNING,
-        #     'Checking the schema for the data available for layer "{}"'.format(recipe_lyr.name),
-        #     'Verified schema the data available for layer "{}"'.format(recipe_lyr.name),
-        #     'The data available for layer "{}" failed schema check'.format(recipe_lyr.name)
-        # ),
-
     for map_frame in recipe.map_frames:
+        for recipe_lyr in map_frame.layers:
+            # This is just being paraniod. This can only occur if somewhere up the chain a MapCookbook was created
+            # with the param verify_on_creation=False. That should not occur in production code and only in
+            # some test cases.
+            _check_layer(recipe_lyr)
+            step_list.extend([
+                Step(
+                    recipe_lyr.get_data_finder(runner.cmf, all_gis_files),
+                    logging.WARNING,
+                    '"Searching for data suitable for layer "{}"'.format(recipe_lyr.name),
+                    'Found data for layer "{}"'.format(recipe_lyr.name),
+                    'Failed to find data suitable for layer "{}"'.format(recipe_lyr.name)
+                ),
+                Step(
+                    recipe_lyr.calc_extent,
+                    logging.WARNING,
+                    'Calculating extent for the data for layer "{}"'.format(recipe_lyr.name),
+                    'Calculated extent for the data for layer "{}"'.format(recipe_lyr.name),
+                    'Error whilst calculating extent for the data for layer "{}"'.format(recipe_lyr.name)
+                )
+            ])
+
+            # Step(
+            #     recipe_lyr.get_schema_checker(runner),
+            #     logging.WARNING,
+            #     'Checking the schema for the data available for layer "{}"'.format(recipe_lyr.name),
+            #     'Verified schema the data available for layer "{}"'.format(recipe_lyr.name),
+            #     'The data available for layer "{}" failed schema check'.format(recipe_lyr.name)
+            # ),
+
         step_list.extend([
             Step(
                 map_frame.calc_extent,

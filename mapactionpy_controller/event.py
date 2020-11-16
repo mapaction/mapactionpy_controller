@@ -9,7 +9,7 @@ validate_against_event_schema = _get_validator_for_config_schema('event-v0.2.sch
 
 
 class Event:
-    def __init__(self, event_file, orientation=None):
+    def __init__(self, event_file):
 
         self.path = os.path.dirname(event_file)
         with open(event_file, 'r') as f:
@@ -37,20 +37,21 @@ class Event:
             self.default_disclaimer_text = obj['default_disclaimer_text']
             self.default_donor_credits = obj['default_donor_credits']
             # self.donors = obj['donors']
-            self.country_name = self.countryName()
+            self.country_name = self.get_country_name()
 
-            self.set_orientation(orientation)
+            # self.set_orientation(orientation)
 
-    def countryName(self):
-        self.country_name = None
+    def get_country_name(self):
+        result = 'Unknown country name'
         if (self.affected_country_iso3 is not None):
             country = pycountry.countries.get(alpha_3=self.affected_country_iso3.upper())
-            if (country is None):
-                raise Exception('Event', ('Could not derive country with alpha-3 code: ' +
-                                          self.affected_country_iso3.upper()))
-            else:
-                self.country_name = country.name
-        return self.country_name
+            if country is not None:
+                result = country.name
+
+                # raise Exception('Event', ('Could not derive country with alpha-3 code: ' +
+                #                           self.affected_country_iso3.upper()))
+
+        return result
 
     # TODO: asmith 2020/03/03
     #

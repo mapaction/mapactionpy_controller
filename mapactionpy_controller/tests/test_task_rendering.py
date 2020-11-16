@@ -1,5 +1,5 @@
 import os
-from unittest import TestCase
+from unittest import TestCase, skip
 
 import mapactionpy_controller.task_renderer as task_renderer
 from mapactionpy_controller.name_convention import NamingConvention
@@ -96,5 +96,6 @@ class TestTaskRendering(TestCase):
         test_cd = task_renderer.cmf_description_adapter(test_cmf)
         self.assertEqual(self.dir_to_valid_cmf_des, test_cd['cmf']['path'])
 
+    @skip('Not ready yet')
     def test_render_with_schema_error(self):
-        pass
+        self.fail()

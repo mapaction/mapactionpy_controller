@@ -136,7 +136,7 @@ def _get_requires_list():
     else:
         # The same items but for py3.x
         requires.extend([
-            'fiona',
+            'Fiona',
             'pyrsistent',
             'pycountry',
             'pyproj',

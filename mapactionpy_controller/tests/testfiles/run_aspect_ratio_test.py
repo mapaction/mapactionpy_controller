@@ -34,6 +34,8 @@ iso_codes = [
     'VNM', 'MMR', 'TZA', 'KHM'
 ]
 
+# Aparently these are the only one that might differ between linear and log based selection
+iso_codes = ['FRA', 'MAR', 'SRB']
 
 for iso3 in iso_codes:
     with open(path_to_event_file, 'w') as ef:

@@ -1,7 +1,7 @@
 from mapactionpy_controller.plugin_base import BaseRunnerPlugin
 from mapactionpy_controller.event import Event
 import os
-from unittest import TestCase
+from unittest import TestCase, skip
 import six
 
 # works differently for python 2.7 and python 3.x
@@ -68,9 +68,6 @@ class TestPluginBase(TestCase):
 
         self.assertEqual(actual_result, expect_result)
 
-    def test_get_templates(self):
-        pass
-
     def test_get_template_by_aspect_ratio(self):
         template_aspect_ratios = [
             ('one',   1.1),
@@ -97,17 +94,47 @@ class TestPluginBase(TestCase):
             # print('expect_result={}, actual_result={}'.format(expect_result, actual_result))
             self.assertEqual(expect_result, actual_result)
 
+        template_aspect_ratios = [
+            ('landscape_bottom',	1.975),
+            ('landscape_side',		1.294117647),
+            ('portrait'	,	0.816816817)
+        ]
+
+        # linear_aspect_ratios = [
+        #     (1.623, 'landscape_side'),
+        #     (1.036, 'portrait'),
+        #     (1.038, 'portrait'),
+        #     (1.031, 'portrait')
+        # ]
+
+        log_aspect_ratios = [
+            (1.623, 'landscape_bottom'),
+            (1.036, 'landscape_side'),
+            (1.038, 'landscape_side'),
+            (1.031, 'landscape_side')
+        ]
+
+        for target_ar, expect_result in log_aspect_ratios:
+            actual_result = self.dummy_runner._get_template_by_aspect_ratio(template_aspect_ratios, target_ar)
+            # print('expect_result={}, actual_result={}'.format(expect_result, actual_result))
+            self.assertEqual(expect_result, actual_result)
+
+    @skip('Not ready yet')
     def test_get_next_map_version_number(self):
-        pass
+        self.fail()
 
+    @skip('Not ready yet')
     def test_create_ouput_map_project(self):
-        pass
+        self.fail()
 
+    @skip('Not ready yet')
     def test_export_maps(self):
-        pass
+        self.fail()
 
+    @skip('Not ready yet')
     def test_create_export_dir(self):
-        pass
+        self.fail()
 
+    @skip('Not ready yet')
     def test_zip_exported_files(self):
-        pass
+        self.fail()

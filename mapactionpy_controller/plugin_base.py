@@ -109,8 +109,8 @@ class BaseRunnerPlugin(object):
             key=itemgetter(1))
 
         # Linear combination:
-        # if (2*target_ar) >= (larger_ar[1] + smaller_ar[1]):
-        #    return larger_ar[0]
+        # if (2*target_ar) > (larger_ar[1] + smaller_ar[1]):
+        #     return larger_ar[0]
 
         # asmith: personally I think that this is the better option, but will go with the linear combination for now
         # logarithmic combination
@@ -121,7 +121,7 @@ class BaseRunnerPlugin(object):
 
         return smaller_ar[0]
 
-    def get_aspect_ratios_of_templates(self, possible_templates):
+    def get_aspect_ratios_of_templates(self, possible_templates, recipe):
         """
         Plugins are required to implement this method.
 
@@ -159,7 +159,7 @@ class BaseRunnerPlugin(object):
         possible_templates = self._get_all_templates_by_regex(recipe)
 
         # Select the template with the most appropriate aspect ratio
-        possible_aspect_ratios = self.get_aspect_ratios_of_templates(possible_templates)
+        possible_aspect_ratios = self.get_aspect_ratios_of_templates(possible_templates, recipe)
 
         mf = recipe.get_frame(recipe.principal_map_frame)
         target_aspect_ratio = self._get_aspect_ratio_of_bounds(mf.extent)
