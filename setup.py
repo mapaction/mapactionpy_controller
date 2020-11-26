@@ -4,77 +4,75 @@ from setuptools import setup, find_packages
 # from setuptools import find_packages
 # from distutils.cmd import Command
 # from distutils.command.install import install as Command
-from setuptools.command.develop import develop
-from setuptools.command.install import install
 # from distutils.core import setup
 from os import path, environ
 
-_base_version = '1.0.4'
+_base_version = '1.1.0'
 
 root_dir = path.abspath(path.dirname(__file__))
 
 
-def install_from_wheels(command_subclass):
-    """A decorator for classes subclassing one of the setuptools commands.
+# def install_from_wheels(command_subclass):
+#     """A decorator for classes subclassing one of the setuptools commands.
 
-    It modifies the run() method so that it prints a friendly greeting.
+#     It modifies the run() method so that it prints a friendly greeting.
 
-    https://blog.niteo.co/setuptools-run-custom-code-in-setup-py/
-    """
-    orig_run = command_subclass.run
+#     https://blog.niteo.co/setuptools-run-custom-code-in-setup-py/
+#     """
+#     orig_run = command_subclass.run
 
-    def modified_run(self):
-        print('Custom run() method')
+#     def modified_run(self):
+#         print('Custom run() method')
 
-        if (sys.version_info.major == 2) and (sys.platform == 'win32'):
-            import pip
-            # The order these packages are intalled  matters, which is why
-            # this does just do something like
-            # `glob.glob('{}/dependancy_wheels/*.whl'.format(root_dir))`
+#         if (sys.version_info.major == 2) and (sys.platform == 'win32'):
+#             import pip
+#             # The order these packages are intalled  matters, which is why
+#             # this does just do something like
+#             # `glob.glob('{}/dependancy_wheels/*.whl'.format(root_dir))`
 
-            if sys.maxsize > 2**32:
-                # if 64bit:
-                wheel_list = [
-                    'pyproj-1.9.6-cp27-cp27m-win_amd64.whl',
-                    'Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl',
-                    'GDAL-2.2.4-cp27-cp27m-win_amd64.whl',
-                    'Fiona-1.8.13-cp27-cp27m-win_amd64.whl',
-                    'Rtree-0.9.3-cp27-cp27m-win_amd64.whl'
-                ]
-            else:
-                # 32 bit
-                wheel_list = [
-                    'pyproj-1.9.6-cp27-cp27m-win32.whl',
-                    'Shapely-1.6.4.post2-cp27-cp27m-win32.whl',
-                    'GDAL-2.2.4-cp27-cp27m-win32.whl',
-                    'Fiona-1.8.13-cp27-cp27m-win32.whl',
-                    'Rtree-0.9.3-cp27-cp27m-win32.whl'
-                ]
+#             if sys.maxsize > 2**32:
+#                 # if 64bit:
+#                 wheel_list = [
+#                     'pyproj-1.9.6-cp27-cp27m-win_amd64.whl',
+#                     'Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl',
+#                     'GDAL-2.2.4-cp27-cp27m-win_amd64.whl',
+#                     'Fiona-1.8.13-cp27-cp27m-win_amd64.whl',
+#                     'Rtree-0.9.3-cp27-cp27m-win_amd64.whl'
+#                 ]
+#             else:
+#                 # 32 bit
+#                 wheel_list = [
+#                     'pyproj-1.9.6-cp27-cp27m-win32.whl',
+#                     'Shapely-1.6.4.post2-cp27-cp27m-win32.whl',
+#                     'GDAL-2.2.4-cp27-cp27m-win32.whl',
+#                     'Fiona-1.8.13-cp27-cp27m-win32.whl',
+#                     'Rtree-0.9.3-cp27-cp27m-win32.whl'
+#                 ]
 
-            # platform netural packages. This is installed here (rather than using the
-            # `install_requires` parameter, because of the dependancy on other wheel files.
-            wheel_list.extend(['geopandas-0.6.2-py2.py3-none-any.whl'])
+#             # platform netural packages. This is installed here (rather than using the
+#             # `install_requires` parameter, because of the dependancy on other wheel files.
+#             wheel_list.extend(['geopandas-0.6.2-py2.py3-none-any.whl'])
 
-            for wheel_name in wheel_list:
-                wheel_path = path.join(root_dir, 'dependency_wheels', wheel_name)
-                print('Installing {} from wheel file.'.format(wheel_path))
-                pip.main(['install', wheel_path])
+#             for wheel_name in wheel_list:
+#                 wheel_path = path.join(root_dir, 'dependency_wheels', wheel_name)
+#                 print('Installing {} from wheel file.'.format(wheel_path))
+#                 pip.main(['install', wheel_path])
 
-        print('About to call default install run() method')
-        orig_run(self)
+#         print('About to call default install run() method')
+#         orig_run(self)
 
-    command_subclass.run = modified_run
-    return command_subclass
-
-
-@install_from_wheels
-class CustomDevelopCommand(develop):
-    pass
+#     command_subclass.run = modified_run
+#     return command_subclass
 
 
-@install_from_wheels
-class CustomInstallCommand(install):
-    pass
+# @install_from_wheels
+# class CustomDevelopCommand(develop):
+#     pass
+
+
+# @install_from_wheels
+# class CustomInstallCommand(install):
+#     pass
 
 
 def readme():
@@ -107,6 +105,35 @@ def _get_version_number():
     return version
 
 
+def can_import_geo_packages():
+    try:
+        # Test PyProj
+        import pyproj  # noqa: F401
+
+        # Test Shapely
+        from shapely.geometry import box  # noqa: F401
+
+        # Test GDAL
+        from osgeo import gdal  # noqa: F401
+        from osgeo import ogr  # noqa: F401
+        from osgeo import osr  # noqa: F401
+        from osgeo import gdal_array  # noqa: F401
+        from osgeo import gdalconst  # noqa: F401
+
+        # Test Fiona
+        import fiona  # noqa: F401
+
+        # Test RTree
+        from rtree import index  # noqa: F401
+
+        # Test geopandas
+        import geopandas  # noqa: F401
+
+        return True
+    except ImportError:
+        return False
+
+
 def _get_requires_list():
     # Items for which the version does not need to be pinned to support py2.7
     requires = [
@@ -128,17 +155,21 @@ def _get_requires_list():
             'pyrsistent<=0.16.1',
             'pycountry<=19.8.18'
         ])
-        if sys.platform != 'win32':
-            requires.extend([
-                'pyproj==1.9.6',
-                'Shapely==1.6.4.post2'
-            ])
+    else:
+        requires.extend([
+            'pyrsistent',
+            'pycountry',
+        ])
+
+    if sys.platform == 'win32' and not can_import_geo_packages():
+        requires.extend([
+            'mapactionpy_controller_dependancies@git+'
+            'https://github.com/mapaction/mapactionpy_controller_dependencies.git'
+        ])
     else:
         # The same items but for py3.x
         requires.extend([
             'Fiona',
-            'pyrsistent',
-            'pycountry',
             'pyproj',
             'Shapely',
             'GDAL',
@@ -148,13 +179,14 @@ def _get_requires_list():
 
     return requires
 
+    # cmdclass={
+    #    'install': CustomInstallCommand,
+    #    'develop': CustomDevelopCommand,
+    # },
+
 
 setup(
     name='mapactionpy_controller',
-    cmdclass={
-        'install': CustomInstallCommand,
-        'develop': CustomDevelopCommand,
-    },
     version=_get_version_number(),
     description='Controls the workflow of map and infographic production',
     long_description=readme(),
