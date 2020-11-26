@@ -96,11 +96,14 @@ class TestTaskRendering(TestCase):
         test_cd = task_renderer.cmf_description_adapter(test_cmf)
         self.assertEqual(self.dir_to_valid_cmf_des, test_cd['cmf']['path'])
 
+    @skip('Not ready yet')
     def test_render_with_schema_error(self):
         self.fail()
 
+    @skip('Not ready yet')
     def test_render_with_missing_file(self):
         self.fail()
 
+    @skip('Not ready yet')
     def test_render_with_misplaced_file(self):
         self.fail()
