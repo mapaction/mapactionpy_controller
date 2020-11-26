@@ -93,8 +93,10 @@ class MapDoc:
         location = SubElement(mapdata, 'location')
         location.text = str(self.mapdata.location)
 
-        access = SubElement(mapdata, 'themes')
-        access.themes = str(self.mapdata.themes)
+        themes = SubElement(mapdata, 'themes')
+        for setTheme in self.mapdata.themes:
+            theme = SubElement(themes, 'theme')
+            theme.text = setTheme
 
         scale = SubElement(mapdata, 'scale')
         scale.text = str(self.mapdata.scale)
@@ -141,11 +143,20 @@ class MapDoc:
         pdffilename = SubElement(mapdata, 'pdffilename')
         pdffilename.text = str(self.mapdata.pdffilename)
 
+        emffilename = SubElement(mapdata, 'emffilename')
+        emffilename.text = self.mapdata.emffilename
+
         jpgfilesize = SubElement(mapdata, 'jpgfilesize')
         jpgfilesize.text = str(self.mapdata.jpgfilesize)
 
         pdffilesize = SubElement(mapdata, 'pdffilesize')
         pdffilesize.text = str(self.mapdata.pdffilesize)
+
+        emffilesize = SubElement(mapdata, 'emffilesize')
+        if self.mapdata.emffilesize is not None:
+            emffilesize.text = str(self.mapdata.emffilesize)
+        else:
+            emffilesize.text = ""
 
         dom = xml.dom.minidom.parseString(tostring(mapDoc, encoding='utf-8', method='xml'))
         return(dom.toprettyxml())

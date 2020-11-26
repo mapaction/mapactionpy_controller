@@ -18,8 +18,10 @@ class MapData:
 
         self.jpgfilename = row["jpgfilename"]
         self.pdffilename = row["pdffilename"]
+        self.emffilename = row.get("emffilename", "")
         self.jpgfilesize = row["jpgfilesize"]
         self.pdffilesize = row["pdffilesize"]
+        self.emffilesize = row.get("emffilesize", '')
 
         self.title = row["title"]
         self.ref = row["ref"]
