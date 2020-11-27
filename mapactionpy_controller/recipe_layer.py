@@ -229,11 +229,11 @@ class RecipeLayer:
 
         f_list = []
 
-        if self.data_source_path:
-            if (os.path.isfile(self.data_source_path)):
-                f_list = files_in_shp_file()
-            elif (os.path.isdir(self.data_source_path)):
-                f_list = files_in_dir()
+        if (os.path.isfile(self.data_source_path)):
+            f_list = files_in_shp_file()
+
+        if (os.path.isdir(self.data_source_path)):
+            f_list = files_in_dir()
 
         f_list.sort()
 
@@ -277,53 +277,6 @@ class RecipeLayer:
             fset = FixSchemaErrorTask(self, jsve)
             raise ValueError(fset)
 
-    # def do_data_schema_check(self, recipe_lyr):
-    #     """
-    #     Checks that the schema of the files specificed by `recipe_lyr.data_source_path` matches the schema
-    #     specificed in `recipe_lyr.data_schema`.
-
-    #     Plugins *may need* overwrite this method.
-
-    #     A method which relies on geopandas is provided. If the geopandas package cannot be imported then
-    #     subclasses must overwrite it.'
-
-    #     @param recipe: The RecipeLayer
-    #     @raises ValidationError:
-    #     @raises NotImplementedError:
-    #     """
-    #     try:
-    #         import geopandas as gpd
-    #         from jsonschema import validate
-    #         gdf = gpd.read_file(recipe_lyr.data_source_path)
-
-    #         # Make columns needed for validation
-    #         gdf['geometry_type'] = gdf['geometry'].apply(lambda x: x.geom_type)
-    #         gdf['crs'] = gdf.crs
-    #         # Validate
-    #         validate(instance=gdf.to_dict('list'), schema=recipe_lyr.data_schema)
-
-    #     except ImportError:
-    #         raise NotImplementedError(
-    #             'BaseRunnerPlugin implenmentation of `do_data_schema_check` relies on geopandas. If the geopandas'
-    #             ' package is not available then subclasses must overwrite it.')
-
-    # def check_data_schema(self, recipe_lyr):
-    #     """
-    #     Checks that the schema of the files specificed by `recipe_lyr.data_source_path` matches the schema
-    #     specificed in `recipe_lyr.data_schema`. Creates an appropriate Human Task if it doesn't.
-
-    #     Plugins *should not* overwrite this method. Overwrite `do_data_schema_check` instead.
-
-    #     @param recipe: The RecipeLayer
-    #     @raises ValueError:
-    #     """
-    #     try:
-    #         self.do_data_schema_check(recipe_lyr)
-    #     except jsonschema.ValidationError as jsve:
-    #         # TODO
-    #         raise ValueError(jsve.message)
-
-    #    return _schema_checker
 
     def calc_extent(self, **kwargs):
         """
@@ -348,30 +301,10 @@ class RecipeLayer:
         self._check_lyr_is_in_recipe(recipe)
 
         logger.info('passed _check_lyr_is_in_recipe')
-        print('passed _check_lyr_is_in_recipe')
         sf = fiona.open(self.data_source_path)
-        print('openned in fiona')
-        # sf = shapefile.Reader(self.data_source_path)
         self.extent = sf.bounds
-        print('got bounds')
-        print('sf.crs = {}'.format(sf.crs))
         self.crs = sf.crs
-        print('got extent')
-        print('self.extent', self.extent)
-        print('type(self.extent)', type(self.extent))
-        # (35.10348736558511, 33.054996785738204, 36.62291533501688, 34.69206915371)
-        # Now get the projection system
-        # prj_path = '{}.prj'.format(os.path.splitext(self.data_source_path)[0])
-        # with open(prj_path, 'r') as prj_f:
-        #     crs = prj_f.read()
-        #     print(crs)
-        #     self.crs = crs
 
-        #     # prj = open("%s.prj" % filename, "w")
-        #     # epsg = 'GEOGCS["WGS 84", DATUM["WGS_1984",
-        #     #     SPHEROID["WGS 84", 6378137, 298.257223563]], PRIMEM["Greenwich", 0],
-        #     #     UNIT["degree", 0.0174532925199433]]'
-        #     #  prj.write(epsg) prj.close() ```
         return recipe
 
     def __eq__(self, other):
