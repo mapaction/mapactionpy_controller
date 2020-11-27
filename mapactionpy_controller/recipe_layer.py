@@ -51,7 +51,7 @@ class FixSchemaErrorTask(task_renderer.TaskReferralBase):
         super(FixSchemaErrorTask, self).__init__()
         self.context_data.update(task_renderer.layer_adapter(recipe_lyr))
         self.validation_error = validation_error
-        # TODO
+        # See https://trello.com/c/dcC8JpYf/180-implenment-task-descriptions-for-all-gis-data-related-tasks
         # self.context_data.update(do_something_with(validation_error))
 
 

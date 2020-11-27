@@ -81,7 +81,7 @@ def _parse_country_name(event_def):
 
     # Real ISO
     if lookup_ctry:
-        return _parse_real_country_name(raw_name, validation_results, lookup_ctry)
+        return _parse_real_country_name(raw_name, validation_results, lookup_ctry, affected_country_iso3)
 
     # Fictional ISO
     return _parse_fictional_country_name(raw_name, validation_results, affected_country_iso3)
@@ -105,7 +105,7 @@ def _parse_fictional_country_name(raw_name, validation_results, affected_country
     return raw_name
 
 
-def _parse_real_country_name(raw_name, validation_results, lookup_ctry):
+def _parse_real_country_name(raw_name, validation_results, lookup_ctry, affected_country_iso3):
     if validation_results and len(validation_results) > 0:
         if lookup_ctry.alpha_3 in [country.alpha_3 for country in validation_results]:
             # Real ISO, Real Country name - OK
