@@ -1,8 +1,10 @@
 import glob
+import itertools
 import logging
 import os
-from mapactionpy_controller.steps import Step
+
 from mapactionpy_controller.map_recipe import RecipeLayer
+from mapactionpy_controller.steps import Step
 
 
 def get_recipe_event_updater(hum_event):
@@ -51,15 +53,13 @@ def get_recipe_event_updater(hum_event):
 
 
 def _update_items_in_recipe(recipe, update_recipe_item):
-    # Update the reg_exg for seaching for each individual layer
-    for mf in recipe.map_frames:
-        for lyr in mf.layers:
-            lyr.reg_exp = update_recipe_item(lyr.reg_exp)
-            lyr.definition_query = update_recipe_item(lyr.definition_query)
+    for lyr in itertools.chain(*[mf.layers for mf in recipe.map_frames]):
+        lyr.reg_exp = update_recipe_item(lyr.reg_exp)
+        lyr.definition_query = update_recipe_item(lyr.definition_query)
 
-            for lbl_class in lyr.label_classes:
-                lbl_class.expression = update_recipe_item(lbl_class.expression)
-                lbl_class.sql_query = update_recipe_item(lbl_class.sql_query)
+        for lbl_class in lyr.label_classes:
+            lbl_class.expression = update_recipe_item(lbl_class.expression)
+            lbl_class.sql_query = update_recipe_item(lbl_class.sql_query)
 
     # Update the recipe level members
     recipe.product = update_recipe_item(recipe.product)
