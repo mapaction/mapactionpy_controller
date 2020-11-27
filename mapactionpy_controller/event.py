@@ -79,25 +79,33 @@ def _parse_country_name(event_def):
     except (LookupError, AttributeError):
         pass
 
-    # Fictional ISO
-    if lookup_ctry is None:
-        if validation_results:
-            # Fictional ISO, Real Country name - BAD
-            real_ctrys = ', '.join([country.name for country in validation_results])
-            raise ValueError('It is not valid to supply a real country name with a fictional ISO3 code.'
-                             ' Fictional value for affected_country_iso3="{}". Supplied country_name="{}".'
-                             ' Simular real country name(s)="{}".'.format(
-                                 affected_country_iso3, raw_name, real_ctrys))
-
-        # Fictional ISO, No Country name - BAD
-        if raw_name is None:
-            raise ValueError('A `country_name` value must be specified for fictional countries.'
-                             ' Fictional value for affected_country_iso3="{}"'.format(affected_country_iso3))
-
-        # Fictional ISO, Fictional Country name - OK
-        return raw_name
-
     # Real ISO
+    if lookup_ctry:
+        return _parse_real_country_name(raw_name, validation_results, lookup_ctry)
+
+    # Fictional ISO
+    return _parse_fictional_country_name(raw_name, validation_results, affected_country_iso3)
+
+
+def _parse_fictional_country_name(raw_name, validation_results, affected_country_iso3):
+    if validation_results:
+        # Fictional ISO, Real Country name - BAD
+        real_ctrys = ', '.join([country.name for country in validation_results])
+        raise ValueError('It is not valid to supply a real country name with a fictional ISO3 code.'
+                         ' Fictional value for affected_country_iso3="{}". Supplied country_name="{}".'
+                         ' Simular real country name(s)="{}".'.format(
+                             affected_country_iso3, raw_name, real_ctrys))
+
+    # Fictional ISO, No Country name - BAD
+    if raw_name is None:
+        raise ValueError('A `country_name` value must be specified for fictional countries.'
+                         ' Fictional value for affected_country_iso3="{}"'.format(affected_country_iso3))
+
+    # Fictional ISO, Fictional Country name - OK
+    return raw_name
+
+
+def _parse_real_country_name(raw_name, validation_results, lookup_ctry):
     if validation_results and len(validation_results) > 0:
         if lookup_ctry.alpha_3 in [country.alpha_3 for country in validation_results]:
             # Real ISO, Real Country name - OK
