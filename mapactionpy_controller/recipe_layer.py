@@ -45,7 +45,14 @@ class FixMultipleMatchingFilesTask(task_renderer.TaskReferralBase):
 
 class FixSchemaErrorTask(task_renderer.TaskReferralBase):
     _task_template_filename = 'schema-error'
-    _primary_key_template = 'TBC'
+    _primary_key_template = 'Schema error in dataset "{{<%layer.data_source_path%>}}"'
+
+    def __init__(self, recipe_lyr, validation_error):
+        super(FixSchemaErrorTask, self).__init__()
+        self.context_data.update(task_renderer.layer_adapter(recipe_lyr))
+        self.validation_error = validation_error
+        # TODO
+        # self.context_data.update(do_something_with(validation_error))
 
 
 class LabelClass:
@@ -248,7 +255,7 @@ class RecipeLayer:
         return hash.hexdigest()
 
     # def get_schema_checker(self, runner):
-    def checker_data_against_schema(self, **kwargs):
+    def check_data_against_schema(self, **kwargs):
         if not self.data_source_path:
             raise ValueError(
                 'Cannot check data schema until relevant data has been found.'
@@ -263,14 +270,12 @@ class RecipeLayer:
         gdf['geometry_type'] = gdf['geometry'].apply(lambda x: x.geom_type)
         gdf['crs'] = gdf.crs
         # Validate
-
         try:
             validate(instance=gdf.to_dict('list'), schema=self.data_schema)
             return True
         except jsonschema.ValidationError as jsve:
-            # TODO
-            # FixSchemaErrorTask
-            raise ValueError(jsve.message)
+            fset = FixSchemaErrorTask(self, jsve)
+            raise ValueError(fset)
 
     # def do_data_schema_check(self, recipe_lyr):
     #     """

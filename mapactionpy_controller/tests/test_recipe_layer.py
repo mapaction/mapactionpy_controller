@@ -1,5 +1,5 @@
 
-from unittest import TestCase, skip
+from unittest import TestCase
 import fixtures
 import jsonschema
 import os
@@ -9,6 +9,7 @@ import yaml
 from mapactionpy_controller.layer_properties import LayerProperties
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.map_recipe import MapRecipe
+import mapactionpy_controller.recipe_layer as recipe_layer
 
 try:
     from unittest import mock
@@ -154,9 +155,89 @@ properties:
         expected_hash_of_shp_file = '1acb212b47c8ccb3006ae9b4c5f1cfc0'
         self.assertEqual(actual_has_of_shp_file, expected_hash_of_shp_file)
 
-    @skip('Not ready yet')
     def test_get_schema_checker(self):
-        self.fail()
+        test_recipe = MapRecipe(fixtures.recipe_with_layer_name_only, self.lyr_props)
+
+        test_lyr = test_recipe.all_layers().pop()
+        # Use a simple test shapefile
+        test_lyr.data_source_path = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'test_shp_files',
+            'lbn_admn_ad0_py_s1_pp_cdr.shp')
+
+        passing_schema = yaml.safe_load(r"""
+required:
+    - admin0Name
+    - admin0Na_1
+    - admin0Pcod
+    - admin0RefN
+    - admin0AltN
+properties:
+    geometry_type:
+        items:
+            enum:
+                - MultiPolygon
+                - Polygon
+        additionalItems: false
+    additionalItems: true
+""")
+
+        incorrect_geom_schema = yaml.safe_load(r"""
+required:
+    - admin0Name
+    - admin0Na_1
+    - admin0Pcod
+    - admin0RefN
+    - admin0AltN
+properties:
+    geometry_type:
+        items:
+            enum:
+                - Point
+        additionalItems: false
+    additionalItems: true
+""")
+
+        incorrect_columns_schema = yaml.safe_load(r"""
+required:
+    - county_name,
+    - parish_name
+properties:
+    geometry_type:
+        items:
+            enum:
+                - MultiPolygon
+                - Polygon
+        additionalItems: false
+    additionalItems: true
+""")
+
+        incorrect_columns_and_geom_schema = yaml.safe_load(r"""
+required:
+    - county_name,
+    - parish_name
+properties:
+    geometry_type:
+        items:
+            enum:
+                - Point
+        additionalItems: false
+    additionalItems: true
+""")
+
+        # Case where data matches schema
+        for test_schema in [passing_schema]:
+            test_lyr.data_schema = test_schema
+            result = test_lyr.check_data_against_schema(state=test_recipe)
+            self.assertTrue(result)
+
+        # Cases where data doesn't match schema
+        for test_schema in [incorrect_geom_schema, incorrect_columns_schema, incorrect_columns_and_geom_schema]:
+            test_lyr.data_schema = test_schema
+            with self.assertRaises(ValueError) as arcm:
+                test_lyr.check_data_against_schema(state=test_recipe)
+
+            ve = arcm.exception
+            self.assertIsInstance(ve.args[0], recipe_layer.FixSchemaErrorTask)
 
     def test_calc_extent(self):
         test_recipe = MapRecipe(fixtures.recipe_with_layer_name_only, self.lyr_props)

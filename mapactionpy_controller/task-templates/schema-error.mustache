@@ -1,0 +1,21 @@
+h1. What is the problem?
+The shapefile {{ken_admn_ad2_ln_s1_IEBC_pp_HDX.shp}} does not have the fields/attributes expected for the layer {{mainmap-carto-fea-py-s0-allmaps}}. The full schema validation error is given below:
+{code:json}
+{code}
+
+h1. What is the likely consequence of this problem?
+This layer will not be added to map {{MA0001}}. If this layer is the index layer for an atlas (aka Data Driven Page), then it will not be possible to create the individual altas pages.
+
+h1. How can this problem be resolved?
+The shapefile {{ken_admn_ad2_ln_s1_IEBC_pp_HDX.shp}} should be updated so that it includes the all of the fields specified in the {{required}} section of the schema definition {{admin2_reference.yml}}. Fields:
+* {{name_en}}
+Either update existing field or add new fields as appropriate. The order of the field does not matter.
+For information related the purpose of the schema definitions within MapChef see here; ({color:#ff5630}_link to follow_{color})
+h1. Other information
+||*EventID*||2020ken01||
+|*layer name*|mainmap-carto-fea-py-s0-allmaps|
+|*data name*|ken_admn_ad2_ln_s1_IEBC_pp_HDX|
+|*schema definition*|admin2_reference.yml|
+|*Full path to layer file*|"GIS\\\\\\\\3_Mapping\\\\\\\\31_Resources\\\\\\\\312_Layer_files\nmainmap-carto-fea-py-s0-allmaps.lyr\u201d|
+|*Full path to shapefile*|"GIS\\\\2_Active_Data\\\\202_admn\\\\ken_admn_ad2_ln_s1_IEBC_pp_HDX.shp"|
+|*Full path to schemafile*|"GIS\\\\5_Data_schemas\\\\admin2_reference.yml"|
