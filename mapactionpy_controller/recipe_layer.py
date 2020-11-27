@@ -229,10 +229,10 @@ class RecipeLayer:
 
         f_list = []
 
-        if (os.path.isfile(self.data_source_path)):
+        if self.data_source_path and (os.path.isfile(self.data_source_path)):
             f_list = files_in_shp_file()
 
-        if (os.path.isdir(self.data_source_path)):
+        if self.data_source_path and (os.path.isdir(self.data_source_path)):
             f_list = files_in_dir()
 
         f_list.sort()
@@ -277,6 +277,7 @@ class RecipeLayer:
             fset = FixSchemaErrorTask(self, jsve)
             raise ValueError(fset)
 
+        return recipe
 
     def calc_extent(self, **kwargs):
         """

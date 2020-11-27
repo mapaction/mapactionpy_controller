@@ -64,19 +64,19 @@ class RecipeFrame:
         opt_fields = [k for k in lyr_def.keys() if k in set(RecipeLayer.OPTIONAL_FIELDS)]
         if len(lyr_def) - len(opt_fields) == 1:
             r_lyr = deepcopy(lyr_props.properties.get(l_name, l_name))
-            try:
-                # This is the only field that needs to be handled explictly at present
-                if 'use_for_frame_extent' in lyr_def:
-                    r_lyr.use_for_frame_extent = bool(lyr_def['use_for_frame_extent'])
-                else:
-                    r_lyr.use_for_frame_extent = None
-
-            except AttributeError:
-                pass
-
-            return r_lyr
         else:
-            return RecipeLayer(lyr_def, lyr_props)
+            r_lyr = RecipeLayer(lyr_def, lyr_props)
+
+        # This is the only field that needs to be handled explictly at present
+        try:
+            if 'use_for_frame_extent' in lyr_def:
+                r_lyr.use_for_frame_extent = bool(lyr_def['use_for_frame_extent'])
+            else:
+                r_lyr.use_for_frame_extent = None
+        except AttributeError:
+            pass
+
+        return r_lyr
 
     def _parse_crs(self, frame_def, compatiblity_mode):
         if compatiblity_mode >= 0.3:

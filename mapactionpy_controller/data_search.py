@@ -141,16 +141,15 @@ def get_per_product_data_search_steps(runner, recipe):
                     'Calculating extent for the data for layer "{}"'.format(recipe_lyr.name),
                     'Calculated extent for the data for layer "{}"'.format(recipe_lyr.name),
                     'Error whilst calculating extent for the data for layer "{}"'.format(recipe_lyr.name)
+                ),
+                Step(
+                    recipe_lyr.check_data_against_schema,
+                    logging.WARNING,
+                    'Checking the schema for the data available for layer "{}"'.format(recipe_lyr.name),
+                    'Verified schema the data available for layer "{}"'.format(recipe_lyr.name),
+                    'The data available for layer "{}" failed schema check'.format(recipe_lyr.name)
                 )
             ])
-
-            # Step(
-            #     recipe_lyr.get_schema_checker(runner),
-            #     logging.WARNING,
-            #     'Checking the schema for the data available for layer "{}"'.format(recipe_lyr.name),
-            #     'Verified schema the data available for layer "{}"'.format(recipe_lyr.name),
-            #     'The data available for layer "{}" failed schema check'.format(recipe_lyr.name)
-            # ),
 
         step_list.extend([
             Step(
