@@ -111,6 +111,9 @@ class RecipeLayer:
         self.data_source_checksum = layer_def.get('data_source_checksum', self._calc_data_source_checksum())
         self.data_name = layer_def.get('data_name', None)
         self.extent = layer_def.get('extent', None)
+        self._apply_use_for_frame_extent(layer_def)
+
+    def _apply_use_for_frame_extent(self, layer_def):
         # Allow for three valid values True/False/None
         if 'use_for_frame_extent' in layer_def:
             self.use_for_frame_extent = bool(layer_def['use_for_frame_extent'])

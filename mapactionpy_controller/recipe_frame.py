@@ -62,10 +62,7 @@ class RecipeFrame:
 
         # This is the only field that needs to be handled explictly at present
         try:
-            if 'use_for_frame_extent' in lyr_def:
-                r_lyr.use_for_frame_extent = bool(lyr_def['use_for_frame_extent'])
-            else:
-                r_lyr.use_for_frame_extent = None
+            r_lyr._apply_use_for_frame_extent(lyr_def)
         except AttributeError:
             pass
 
