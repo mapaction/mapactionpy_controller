@@ -1,6 +1,6 @@
 import json
 import os
-from mapactionpy_controller.map_recipe import RecipeLayer
+from mapactionpy_controller.recipe_layer import RecipeLayer
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 
 

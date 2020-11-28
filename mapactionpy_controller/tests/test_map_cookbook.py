@@ -7,7 +7,8 @@ import json
 from mapactionpy_controller.layer_properties import LayerProperties
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 from mapactionpy_controller.map_cookbook import MapCookbook
-from mapactionpy_controller.map_recipe import MapRecipe, RecipeLayer, RecipeFrame
+from mapactionpy_controller.map_recipe import MapRecipe,  RecipeFrame
+from mapactionpy_controller.recipe_layer import RecipeLayer
 
 
 class TestMapCookBook(TestCase):

@@ -3,7 +3,7 @@ import itertools
 import logging
 import os
 
-from mapactionpy_controller.map_recipe import RecipeLayer
+from mapactionpy_controller.recipe_layer import RecipeLayer
 from mapactionpy_controller.steps import Step
 
 
