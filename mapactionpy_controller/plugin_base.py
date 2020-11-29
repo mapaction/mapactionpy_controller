@@ -263,6 +263,8 @@ class BaseRunnerPlugin(object):
             zipObj.write(mdr_xml_file_path, os.path.basename(mdr_xml_file_path))
             zipObj.write(jpg_path, os.path.basename(jpg_path))
             zipObj.write(png_thumbnail_path, os.path.basename(png_thumbnail_path))
+            if (len(export_params.get("emfFileLocation", "")) > 0):
+                zipObj.write(export_params['emfFileLocation'], os.path.basename(export_params['emfFileLocation']))
 
             # TODO: asmith 2020/03/03
             # Given we are explictly setting the pdfFileName for each page within the DDPs
