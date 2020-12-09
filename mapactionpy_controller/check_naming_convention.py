@@ -25,6 +25,7 @@ def get_defaultcmf_step_list(cmf_config_path):
         (cmf.map_projects, cmf.map_projects_nc_definition, '.qgs', 'map project'),
         (cmf.map_projects, cmf.map_projects_nc_definition, '.mxd', 'map project'),
         (cmf.map_templates, cmf.map_template_nc_definition, '.qgs', 'map template'),
+        (cmf.map_templates, cmf.map_template_nc_definition, '.aprx', 'map template'),
         (cmf.map_templates, cmf.map_template_nc_definition, '.pagx', 'map template'),
         (cmf.map_templates, cmf.map_template_nc_definition, '.mxd', 'map template')
     )
