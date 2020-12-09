@@ -148,7 +148,7 @@ class RecipeFrame:
             # Get the projection transformation
             project_func = partial(
                 pyproj.transform,
-                pyproj.Proj(r_lyr.crs),
+                pyproj.Proj(init=r_lyr.crs),
                 to_crs
             )
             print('from_lyr_crs = {}'.format(r_lyr.crs))

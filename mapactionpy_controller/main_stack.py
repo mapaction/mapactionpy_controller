@@ -157,6 +157,6 @@ def process_stack(step_list, initial_state):
             'stack_trace': traceback.format_exc()
         }
 
-        print(pass_back)
+        # print(pass_back)
 
         parse_feedback(logging.ERROR, 'Unable to continue following the previous error', None, **pass_back)

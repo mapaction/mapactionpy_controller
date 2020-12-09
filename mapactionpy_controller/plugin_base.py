@@ -69,7 +69,8 @@ class BaseRunnerPlugin(object):
         logger.debug('searching for map templates in; {}'.format(self.cmf.map_templates))
         all_filenames = os.listdir(self.cmf.map_templates)
         logger.debug('all available template files:\n\t{}'.format('\n\t'.join(all_filenames)))
-        relevant_filenames = [os.path.join(self.cmf.map_templates, fi) for fi in all_filenames if _is_relevant_file(fi)]
+        relevant_filenames = [os.path.realpath(os.path.join(self.cmf.map_templates, fi))
+                              for fi in all_filenames if _is_relevant_file(fi)]
         logger.debug('possible template files:\n\t{}'.format('\n\t'.join(relevant_filenames)))
         return relevant_filenames
 

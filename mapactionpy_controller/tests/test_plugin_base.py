@@ -3,6 +3,7 @@ from mapactionpy_controller.event import Event
 import os
 from unittest import TestCase, skip
 import six
+import sys
 
 # works differently for python 2.7 and python 3.x
 if six.PY2:
@@ -46,7 +47,12 @@ class TestPluginBase(TestCase):
         recipe = mock.Mock(name='mock_recipe')
         recipe.template = 'abcde'
 
-        self.dummy_runner.cmf.map_templates = '/xyz/'
+        dummy_map_templates = '/xyz/'
+
+        if sys.platform == 'win32':
+            dummy_map_templates = 'C:\\xyz\\'
+
+        self.dummy_runner.cmf.map_templates = dummy_map_templates
 
         available_templates = [
             'one-two-three.dummy_project_file',
@@ -56,7 +62,7 @@ class TestPluginBase(TestCase):
         ]
 
         expect_result = [
-            '/xyz/abcde.dummy_project_file'
+            '{}abcde.dummy_project_file'.format(dummy_map_templates)
         ]
 
         with mock.patch('mapactionpy_controller.plugin_base.os.listdir') as mock_listdir:

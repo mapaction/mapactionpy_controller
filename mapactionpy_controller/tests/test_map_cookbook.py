@@ -260,7 +260,7 @@ class TestMapCookBook(TestCase):
             MapRecipe(fixtures.recipe_with_invalid_principal_map_frame_name, self.lyr_props)
 
     def test_filter_lyr_for_use_in_frame_extent(self):
-        # Have included teh digit at the start of the string, so that can be sorted easily.
+        # Have included the digit at the start of the string, so that can be sorted easily.
         cmf = CrashMoveFolder(
             os.path.join(self.parent_dir, 'example', 'cmf_description_relative_paths_test.json'))
         cmf.layer_properties = os.path.join(
@@ -341,7 +341,6 @@ class TestMapCookBook(TestCase):
             replacement_lyrs = []
             for test_lyr_details in test_list:
                 new_lyr = RecipeLayer(generic_lyr_def, test_lp, verify_on_creation=False)
-                new_lyr = RecipeLayer(generic_lyr_def, test_lp, verify_on_creation=False)
                 new_lyr.name = test_lyr_details[0]
                 new_lyr.use_for_frame_extent = test_lyr_details[1]
                 # vaugely near Lebanon
@@ -356,19 +355,87 @@ class TestMapCookBook(TestCase):
             actual_result = [lyr.name for lyr in result_lyrs]
             self.assertEqual(actual_result, expected_result)
 
-    @skip('Not ready yet')
     def test_get_map_frame_extents(self):
+        cmf = CrashMoveFolder(
+            os.path.join(self.parent_dir, 'example', 'cmf_description_relative_paths_test.json'))
+        cmf.layer_properties = os.path.join(
+            self.parent_dir, 'tests', 'testfiles', 'cookbooks', 'fixture_layer_properties_for_atlas.json'
+        )
+        test_lp = LayerProperties(cmf, ".lyr", verify_on_creation=False)
+
+        # recipe with layer name only
+        with open(os.path.join(self.parent_dir, 'tests', 'testfiles',
+                               'fixture_cookbook_1map_5layers_1frame.json')) as rf:
+            cookbook_def = json.load(rf)
+        # get the first (only) recipe in the cookbook
+        recipe_def = cookbook_def['recipes'].pop()
+
+        generic_lyr_def = json.loads('''{
+            "name": "the_name",
+            "reg_exp": "^wrl_admn_ad0_py_(.*?)_(.*?)_([phm][phm])(.+)shp$",
+            "schema_definition": "admin1_reference.yml",
+            "definition_query": "",
+            "display": true,
+            "add_to_legend": true,
+            "label_classes": []
+        }''')
 
         # Case 1
         # One or more layers does not have it's extent defined
-
-        # Case 1
-        # Simple union with two lyrs of same crs
+        case1_list = [
+            ('case1_lyrA', (35, 33, 36, 34), 'epsg:4326'),
+            ('case1_lyrB', None, None)
+        ]
+        case1_result = (35, 33, 36, 34)
 
         # Case 2
-        # Union with two lyrs of with different crs
+        # Simple union with two lyrs of same crs
+        case2_list = [
+            ('case2_lyrA', (33, 51, 36, 58), 'epsg:4326'),
+            ('case2_lyrB', (15, 52, 35, 55),  'epsg:4326')
+        ]
+        case2_result = (15, 51, 36, 58)
 
         # Case 3
+        # Union with two lyrs of with different crs
+        # 'epsg:4326'== WGS1984, 'epsg:3785' == Web Mercator
+        case3_list = [
+            ('case3_lyrA', (33, 51, 36, 58), 'epsg:4326'),
+            ('case3_lyrB', (1669792.36, 6800125.45, 3896182.18, 7361866.11),  'epsg:3785')
+        ]
+        case3_result = (15, 51, 36, 58)
+
+        # Case 4
         # One layer which stradles 180 degree meridian
 
-        self.fail()
+        all_test_params = [
+            (case1_list, case1_result),
+            (case2_list, case2_result),
+            (case3_list, case3_result)
+        ]
+
+        for test_list, expected_result in all_test_params:
+            test_recipe = MapRecipe(recipe_def, test_lp)
+
+            # Build up a mock list of layer to test
+            replacement_lyrs = []
+            for name, extent, crs in test_list:
+                new_lyr = RecipeLayer(generic_lyr_def, test_lp, verify_on_creation=False)
+                new_lyr.name = name
+                new_lyr.use_for_frame_extent = bool(extent)
+                # vaugely near Lebanon
+                new_lyr.extent = extent
+                new_lyr.crs = crs
+
+                replacement_lyrs.append(new_lyr)
+
+            print('test_get_map_frame_extents')
+            print('expected_result = {}'.format(expected_result))
+            test_frame = test_recipe.map_frames.pop()
+            test_frame.crs = 'epsg:4326'
+            test_frame.layers = replacement_lyrs
+            test_frame.calc_extent(state=test_recipe)
+            actual_result = test_frame.extent
+            print('actual_result = {}'.format(actual_result))
+            for actual, expected in zip(actual_result, expected_result):
+                self.assertAlmostEqual(actual, expected)
