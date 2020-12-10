@@ -40,7 +40,7 @@ def _get_version_number():
 
 
 def get_gis_environment():
-    gis_dependancies = []
+    gis_dependencies = []
 
     # The key is the module name that is detected
     # The value is the module name that will be installed if the key is detected.
@@ -54,13 +54,13 @@ def get_gis_environment():
         try:
             sys.stderr.write('\ntrying to import {}\n'.format(env_mod))
             importlib.import_module(env_mod)
-            gis_dependancies.append(target_mod)
-            sys.stderr.write('\nsucessed importing {}, added {} to gis_dependancies\n'.format(env_mod, target_mod))
+            gis_dependencies.append(target_mod)
+            sys.stderr.write('\nsuccessed importing {}, added {} to gis_dependencies\n'.format(env_mod, target_mod))
         except ImportError:
             sys.stderr.write('\nfailed to import {}\n'.format(env_mod))
             # pass
 
-    return gis_dependancies
+    return gis_dependencies
 
 
 setup(
@@ -79,6 +79,8 @@ setup(
         ]
     },
     packages=find_packages(),
+    package_dir={'mapactionpy_controller': 'mapactionpy_controller'},
+    package_data={'mapactionpy_controller': ['schemas/*.schema']},
     include_package_data=True,
     install_requires=[
         'chevron',
