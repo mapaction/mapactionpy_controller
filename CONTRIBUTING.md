@@ -8,7 +8,29 @@ python -m pip install --user -e .
 
 Tests
 =====
-Please accompany any contribution with relevant unittests or integration tests.
+Please accompany any contribution with relevant unittests or integration tests. Two scripts exist to help with local testing
+
+`create_new_venv.cmd`
+--------
+This creates a number of virtual envs covering key target environments. 
+
+The following environments already exist on the development computer:
+* Python 2.7, 32bit (with arcpy) installed `C:/py27arcgis106/ArcGIS10.6/python.exe`
+* Python 3.7, 64bit installed `"C:\Program Files\Python37\python.exe"`
+* Python 3.7, 64bit installed `"C:\Program Files\Python38\python.exe"`
+* Windows Subsystem for Linux with python 3.8
+
+Additionally
+* The package `virtualenv` must be installed in each of the python environments above
+* The source for `mapactionpy_arcmap` must be cloned in the same parent directory as `mapactionpy_controller`. (ie so that is it possible to reach using `../mapactionpy_arcmap`).
+
+This script is only run occasionally to (re)create the test environments.
+
+`all-tests.cmd`
+--------
+This script runs linting and unittests for each of the environments established by `create_new_venv.cmd`. It also creates a local coverage report in './htmlcov/index.html'.
+
+This script is indented to be run regularly during development.
 
 
 Further development
