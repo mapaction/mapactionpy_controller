@@ -1,7 +1,7 @@
 import fixtures
 import os
 import six
-from unittest import TestCase, skip
+from unittest import TestCase
 import json
 
 from mapactionpy_controller.layer_properties import LayerProperties

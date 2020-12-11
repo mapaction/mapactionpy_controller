@@ -7,7 +7,6 @@ from shapely.geometry import box
 from shapely.ops import cascaded_union, transform
 
 import mapactionpy_controller.state_serialization as state_serialization
-from mapactionpy_controller.recipe_atlas import RecipeAtlas
 from mapactionpy_controller.recipe_layer import RecipeLayer
 
 logger = logging.getLogger(__name__)
