@@ -9,7 +9,6 @@ for %%g in (env27, env37, env38) do (
  %%g\Scripts\python.exe -m pip install -r requirements-jira.txt
  %%g\Scripts\python.exe -m pip install -r requirements-dev.txt
 )
-
 :: Install arcmap plugin
 .\env27\Scripts\python.exe -m pip install --no-color -e ..\mapactionpy_arcmap
 

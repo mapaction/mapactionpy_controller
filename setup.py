@@ -7,6 +7,7 @@ _base_version = '1.1.0'
 
 root_dir = path.abspath(path.dirname(__file__))
 
+
 def readme():
     with open(path.join(root_dir, 'README.md')) as f:
         return f.read()
@@ -99,22 +100,33 @@ def _get_requires_list():
             'https://github.com/mapaction/mapactionpy_controller_dependencies.git'
         ])
     else:
-        # The same items but for py3.x
-
-        # Test the underlying version of GDAL, so that we can install the matching python bindings
-        gdal_ver = subprocess.check_output(['gdal-config', '--version'])
-        gdal_str = 'GDAL=={}'.format(gdal_ver.decode('ascii').strip())
-
         requires.extend([
             'Fiona',
             'pyproj',
-            'Shapely',
-            gdal_str,
+            'Shapely'
+        ])
+
+        # Test the underlying version of GDAL, so that we can install the matching python bindings
+        try:
+            # Test the underlying version of GDAL, so that we can install the matching python bindings
+            gdal_cmd_ver = subprocess.check_output(['gdal-config', '--version'])
+            gdal_ver = gdal_cmd_ver.decode('ascii').strip()
+            gdal_str = 'GDAL=={}'.format(gdal_ver)
+
+        except OSError:
+            # from osgeo import gdal  # noqa: F401
+            # gdal_ver = gdal.__version__
+            gdal_str = 'GDAL'
+
+        requires.extend([gdal_str])
+
+        requires.extend([
             'Rtree',
             'geopandas'
         ])
 
     return requires
+
 
 setup(
     name='mapactionpy_controller',

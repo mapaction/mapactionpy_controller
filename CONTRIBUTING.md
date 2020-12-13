@@ -18,7 +18,7 @@ The following environments already exist on the development computer:
 * Python 2.7, 32bit (with arcpy) installed `C:/py27arcgis106/ArcGIS10.6/python.exe`
 * Python 3.7, 64bit installed `"C:\Program Files\Python37\python.exe"`
 * Python 3.7, 64bit installed `"C:\Program Files\Python38\python.exe"`
-* Windows Subsystem for Linux with python 3.8
+* Ubuntu 18.04 LTS on Windows Subsystem for Linux with python 3.8 (Ubuntu 20.4 is not supported)
 
 Additionally
 * The package `virtualenv` must be installed in each of the python environments above
