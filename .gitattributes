@@ -1,1 +1,2 @@
 /mapactionpy_controller/tests/testfiles/test_shp_files/** binary
+*.sh text eol=lf

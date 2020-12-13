@@ -256,7 +256,8 @@ properties:
         #     'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",'
         #     'SPHEROID["WGS_1984",6378137.0,298.257223563]],'
         #     'PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]')
-        expected_crs = {'init': 'epsg:4326'}
+        # expected_crs = {'init': 'epsg:4326'}
+        expected_crs = 'epsg:4326'
 
         for actual, expected in zip(test_lyr.extent, expected_extent):
             self.assertEqual(actual, expected)

@@ -76,8 +76,9 @@ class LabelClass:
 
 class RecipeLayer:
 
-    OPTIONAL_FIELDS = ('data_source_path', 'data_name', 'data_schema', 'data_source_checksum',
-                       'layer_file_checksum', 'extent', 'use_for_frame_extent')
+    OPTIONAL_FIELDS = ('crs', 'data_name', 'data_schema', 'data_source_checksum', 'data_source_path',
+                       'error_messages', 'extent', 'layer_file_checksum', 'success',
+                       'use_for_frame_extent', 'visible')
 
     def __init__(self, layer_def, lyr_props, verify_on_creation=True):
         """Constructor.  Creates an instance of layer properties
@@ -111,6 +112,10 @@ class RecipeLayer:
         self.data_source_checksum = layer_def.get('data_source_checksum', self._calc_data_source_checksum())
         self.data_name = layer_def.get('data_name', None)
         self.extent = layer_def.get('extent', None)
+        self.crs = layer_def.get('crs', None)
+        self.error_messages = layer_def.get('error_messages', [])
+        self.success = layer_def.get('success', False)
+        self.visible = layer_def.get('visible', True)
         self._apply_use_for_frame_extent(layer_def)
 
     def _apply_use_for_frame_extent(self, layer_def):
@@ -211,11 +216,13 @@ class RecipeLayer:
         # If no data matching is found:
         # Test on list of paths as they are guarenteed to be unique, whereas base filenames are not
         if not found_files:
+            self.error_messages.append('Unable to find dataset for this layer')
             missing_data_task = FixMissingGISDataTask(self, cmf)
             raise ValueError(missing_data_task)
 
         # If multiple matching files are found
         if len(found_files) > 1:
+            self.error_messages.append('Found multiple datasets which match this layer')
             found_datasources = [f_path for f_path, f_name in found_files]
             multiple_files_task = FixMultipleMatchingFilesTask(self, cmf, found_datasources)
             raise ValueError(multiple_files_task)
@@ -271,12 +278,14 @@ class RecipeLayer:
 
         # Make columns needed for validation
         gdf['geometry_type'] = gdf['geometry'].apply(lambda x: x.geom_type)
+        # gdf['crs'] = gdf.crs['init']
         gdf['crs'] = gdf.crs
+
         # Validate
         try:
             validate(instance=gdf.to_dict('list'), schema=self.data_schema)
-            return True
         except jsonschema.ValidationError as jsve:
+            self.error_messages.append('Data schema check failed')
             fset = FixSchemaErrorTask(self, jsve)
             raise ValueError(fset)
 
@@ -307,7 +316,7 @@ class RecipeLayer:
         logger.info('passed _check_lyr_is_in_recipe')
         sf = fiona.open(self.data_source_path)
         self.extent = sf.bounds
-        self.crs = sf.crs
+        self.crs = sf.crs['init']
 
         return recipe
 

@@ -154,7 +154,7 @@ def get_per_product_data_search_steps(runner, recipe):
         step_list.extend([
             Step(
                 map_frame.calc_extent,
-                logging.ERROR,
+                logging.WARNING,
                 'Calculating extent for the map frame "{}"'.format(map_frame.name),
                 'Calculated extent for the map frame "{}"'.format(map_frame.name),
                 'Error whilst extent for the map frame "{}"'.format(map_frame.name)

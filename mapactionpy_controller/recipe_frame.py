@@ -16,7 +16,7 @@ class RecipeFrame:
     """
     RecipeFrame - Includes an ordered list of layers for each Map Frame
     """
-    OPTIONAL_FIELDS = ('scale_text_element', 'spatial_ref_text_element')
+    OPTIONAL_FIELDS = ('extent', 'scale_text_element', 'spatial_ref_text_element')
 
     def __init__(self, frame_def, lyr_props, compatiblity_mode=0.3):
         # Required fields
@@ -26,6 +26,7 @@ class RecipeFrame:
         self.crs = self._parse_crs(frame_def, compatiblity_mode)
 
         # Optional fields
+        self.extent = frame_def.get('extent', None)
         self.scale_text_element = frame_def.get('scale_text_element', None)
         self.spatial_ref_text_element = frame_def.get('spatial_ref_text_element', None)
 
@@ -53,17 +54,22 @@ class RecipeFrame:
         # If lyr_def only includes as the only non-optional field is the `name` the retrive the layer
         # from the lyr_props object, and then apply the relevant optional properties
         # If not create a new recipe_lyr.
-        opt_fields = [k for k in lyr_def.keys() if k in set(RecipeLayer.OPTIONAL_FIELDS)]
-        if len(lyr_def) - len(opt_fields) == 1:
+        present_manditatory_fields = set(lyr_def.keys()).difference(set(RecipeLayer.OPTIONAL_FIELDS))
+        # opt_fields = [k for k in lyr_def.keys() if k in set(RecipeLayer.OPTIONAL_FIELDS)]
+        if present_manditatory_fields == {'name'}:
             r_lyr = deepcopy(lyr_props.properties.get(l_name, l_name))
         else:
             r_lyr = RecipeLayer(lyr_def, lyr_props)
 
-        # This is the only field that needs to be handled explictly at present
+        # This only two fields that needs to be handled explictly at present are
+        # `use_for_frame_extent` and `visable`
         try:
             r_lyr._apply_use_for_frame_extent(lyr_def)
         except AttributeError:
             pass
+
+        if 'visible' in lyr_def:
+            r_lyr.visible = lyr_def['visible']
 
         return r_lyr
 
@@ -141,23 +147,24 @@ class RecipeFrame:
         # Convert all of the lyr.extents into the frame.crs
         projected_lyr_extents = []
         to_crs = pyproj.Proj(init=self.crs)
-        print('to_frame_crs = {}'.format(self.crs))
+        # print('to_frame_crs = {}'.format(self.crs))
 
         for r_lyr in self._filter_lyr_for_use_in_frame_extent():
             # Get the projection transformation
+            # print('from_lyr_crs = {}'.format(r_lyr.crs))
             project_func = partial(
                 pyproj.transform,
                 pyproj.Proj(init=r_lyr.crs),
                 to_crs
             )
-            print('from_lyr_crs = {}'.format(r_lyr.crs))
+            # print('from_lyr_crs = {}'.format(r_lyr.crs))
 
             # Create a shapely box from the lyr's bounds
             l_ext = box(*r_lyr.extent)
             # reproject the lyr bounds
             projected_lyr_extents.append(transform(project_func, l_ext))
 
-        print('projected_lyr_extents = {}'.format(projected_lyr_extents))
+        # print('projected_lyr_extents = {}'.format(projected_lyr_extents))
         # Now get the union of all of the extents
         self.extent = cascaded_union(projected_lyr_extents).bounds
         return recipe
