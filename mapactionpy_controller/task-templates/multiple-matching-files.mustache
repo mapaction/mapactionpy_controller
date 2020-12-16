@@ -4,6 +4,21 @@ There are multiple dataset which fulfil the requirements for this map layer: *<%
 
 {{<%layer.reg_exp%>}}
 
+<%#search_info.is_parsable%>
+These bits of the filename must match exactly these values:
+
+<%#search_info.valid_clause_list%>
+* {{<%&valid_clause%>}}
+<%/search_info.valid_clause_list%>
+
+These bits look wrong:
+
+<%#search_info.invalid_clause_list %>
+* {{<%&invalid_clause%>}}
+<%/search_info.invalid_clause_list %>
+<%/search_info.is_parsable%>
+
+
 Each of these files matched the search requirements:
 
 <%#datasources_list%>
@@ -18,11 +33,11 @@ h1. How can this problem be resolved?
 
 Identify the most appropriate dataset to use for this layer within this map.
 
-* (*_Recommended usage_*); Remove the other datasets from the folder {{GIS\2_Active_Data\207_carto}} by one of these methods:
-** Store them in the relevant location under {{GIS\1_Original_Data}}
-** Create a subdirectory below {{GIS\2_Active_Data\207_carto}} and store them there. (Subdirectories are not searched when looking for available data)
+* (*_Recommended usage_*); Remove the other datasets from the folder {{<%layer.data_dir%>}} by one of these methods:
+** Store them in the relevant location under {{<%cmf.original_data%>}}
+** Create a subdirectory below {{<%layer.data_dir%>}} and store them there. (Subdirectories are not searched when looking for available data)
 ** If you are confident that they are not required by any other map, delete the other layers.
-* (_Advanced option_) It is also possible to update the search regex for layer *mainmap-carto-fea-py-s0-allmaps* in the {{layerProperties.json}} file, so that it is more specific and only selects a single dataset (for example by explictly specifying the data source clause).
+* (_Advanced option_) It is also possible to update the search regex for layer {{<%layer.name%>}} in the {{<%cmf.layer_properties%>}} file, so that it is more specific and only selects a single dataset (for example by explicitly specifying the data source clause).
 
 For information related this specific layer see this page:
 
@@ -33,3 +48,4 @@ h1. Other information
 |layer name|{{<%layer.name%>}}|
 |data search regex|{{<%layer.reg_exp%>}}|
 |Full path to layer file|{{<%layer.layer_file_path%>}}|
+|Operation ID|{{<%hum_event.operation_id%>}}|

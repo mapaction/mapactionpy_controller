@@ -20,9 +20,9 @@ class MapRecipe:
     """
     MapRecipe
     """
-    OPTIONAL_FIELDS = ('runners', 'atlas', 'map_project_path', 'template_path', 'version_num')
+    OPTIONAL_FIELDS = ('atlas', 'hum_event', 'map_project_path', 'runners', 'template_path', 'version_num')
 
-    def __init__(self, recipe_definition, lyr_props):
+    def __init__(self, recipe_definition, lyr_props, hum_event=None):
         if isinstance(recipe_definition, dict):
             recipe_def = recipe_definition
         else:
@@ -42,6 +42,7 @@ class MapRecipe:
         self.principal_map_frame = self._parse_principal_map_frame(recipe_def, compatiblity_mode)
 
         # Optional fields
+        self.hum_event = hum_event
         self.map_project_path = recipe_def.get('map_project_path', None)
         if self.map_project_path:
             self.map_project_path = path.abspath(self.map_project_path)

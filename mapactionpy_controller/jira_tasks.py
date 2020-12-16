@@ -7,7 +7,7 @@ from datetime import datetime
 import pytz
 from jira import JIRA
 
-# import mapactionpy_controller.task_renderer as task_renderer
+from mapactionpy_controller.task_renderer import TaskReferralBase
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +70,7 @@ class JiraClient():
         self.target_column = '10110'
         self.common_task_fields = {
             'project': self.project_key,
-            'issuetype': {'id': '10096'}
+            'issuetype': {'id': '10235'}
         }
 
     def __del__(self):
@@ -85,10 +85,13 @@ class JiraClient():
             logger.debug('JiraClient.task_handler; `None` value passed for task_referal parameter. Nothing to handle.')
             return
 
-        unique_summary = task_referal.get_task_unique_summary()
-        task_desc = task_referal.get_task_description()
+        assured_referal = self.ensure_task_referal_type(task_referal, msg)
 
-        j_issue = self.search_issue_by_unique_summary(unique_summary)
+        unique_summary = assured_referal.get_task_unique_summary()
+        task_desc = assured_referal.get_task_description()
+        op_id = assured_referal.get_operation_id()
+
+        j_issue = self.search_issue_by_unique_summary(unique_summary, op_id)
 
         if j_issue:
             # Update existing card and maybe move it back into "Doing" column
@@ -96,11 +99,30 @@ class JiraClient():
         else:
             if fail_threshold > logging.INFO:
                 # Create a new task
-                self.create_new_jira_issue(unique_summary, task_desc)
+                self.create_new_jira_issue(unique_summary, task_desc, op_id)
 
-    def search_issue_by_unique_summary(self, search_summary):
-        found_issues = self.jira_con.search_issues(
-            'project={} AND summary ~ "{}"'.format(self.project_key, search_summary), maxResults=2)
+    def ensure_task_referal_type(self, task_referal, msg):
+        """
+        Check whether or not the `task_referal` is an instance of TaskReferralBase object. If it is the object is
+        then it is returned unchanged. If not then an generic TaskReferralBase will be created and returned. The 
+        value of `str(task_referal)` will be used.
+
+        @param task_referal: An object that may or may not be a TaskReferralBase object.
+        @returns: If the `task_referal` param is 
+        """
+        if isinstance(task_referal, TaskReferralBase):
+            return task_referal
+
+        return TaskReferralBase(None, msg=msg, other=str(task_referal))
+
+    def search_issue_by_unique_summary(self, search_summary, op_id):
+        # Default if `op_id` is None
+        jql_op_id = 'operational_id is EMPTY'
+        if op_id:
+            jql_op_id = 'operational_id ~ "{}"'.format(op_id)
+
+        jql_str = 'project={} AND {} AND summary ~ "{}"'.format(self.project_key, jql_op_id, search_summary)
+        found_issues = self.jira_con.search_issues(jql_str, maxResults=2)
 
         if found_issues:
             if len(found_issues) > 1:
@@ -119,10 +141,11 @@ class JiraClient():
         else:
             return None
 
-    def create_new_jira_issue(self, unique_summary, task_desc):
+    def create_new_jira_issue(self, unique_summary, task_desc, op_id):
         flds = self.common_task_fields.copy()
         flds['summary'] = unique_summary
         flds['description'] = task_desc
+        # flds['operational_id'] = op_id
 
         new_task = self.jira_con.create_issue(fields=flds)
         print(new_task)

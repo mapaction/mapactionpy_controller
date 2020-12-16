@@ -21,22 +21,24 @@ validate_against_layer_schema = _get_validator_for_config_schema('layer_properti
 
 class FixMissingGISDataTask(task_renderer.TaskReferralBase):
     _task_template_filename = 'missing-gis-file'
-    _primary_key_template = 'Could not find data for "{{<%layer.name%>}}"'
+    _primary_key_template = 'Could not find data for ><%layer.name%><'
 
-    def __init__(self, recipe_lyr, cmf):
-        super(FixMissingGISDataTask, self).__init__()
+    def __init__(self, hum_event, recipe_lyr, cmf):
+        super(FixMissingGISDataTask, self).__init__(hum_event)
         self.context_data.update(task_renderer.layer_adapter(recipe_lyr))
         self.context_data.update(task_renderer.cmf_description_adapter(cmf))
+        self.context_data.update(task_renderer.layer_reg_ex_adapter(recipe_lyr, cmf))
 
 
 class FixMultipleMatchingFilesTask(task_renderer.TaskReferralBase):
     _task_template_filename = 'multiple-matching-files'
-    _primary_key_template = 'More than one dataset available for "{{<%layer.name%>}}"'
+    _primary_key_template = 'More than one dataset available for ><%layer.name%><'
 
-    def __init__(self, recipe_lyr, cmf, datasources_list):
-        super(FixMultipleMatchingFilesTask, self).__init__()
+    def __init__(self, hum_event, recipe_lyr, cmf, datasources_list):
+        super(FixMultipleMatchingFilesTask, self).__init__(hum_event)
         self.context_data.update(task_renderer.layer_adapter(recipe_lyr))
         self.context_data.update(task_renderer.cmf_description_adapter(cmf))
+        self.context_data.update(task_renderer.layer_reg_ex_adapter(recipe_lyr, cmf))
         # Roll-our-own one-line adapter here:
         self.context_data.update({
             'datasources_list': [{'datasources': datasources} for datasources in sorted(datasources_list)]
@@ -45,10 +47,10 @@ class FixMultipleMatchingFilesTask(task_renderer.TaskReferralBase):
 
 class FixSchemaErrorTask(task_renderer.TaskReferralBase):
     _task_template_filename = 'schema-error'
-    _primary_key_template = 'Schema error in dataset "{{<%layer.data_source_path%>}}"'
+    _primary_key_template = 'Schema error in dataset ><%layer.data_source_path%><'
 
-    def __init__(self, recipe_lyr, validation_error):
-        super(FixSchemaErrorTask, self).__init__()
+    def __init__(self, hum_event, recipe_lyr, validation_error):
+        super(FixSchemaErrorTask, self).__init__(hum_event)
         self.context_data.update(task_renderer.layer_adapter(recipe_lyr))
         self.validation_error = validation_error
         # See https://trello.com/c/dcC8JpYf/180-implenment-task-descriptions-for-all-gis-data-related-tasks
@@ -189,7 +191,7 @@ class RecipeLayer:
             )
 
             # Do checks and raise exceptions if required.
-            self._check_found_files(found_files, cmf)
+            self._check_found_files(found_files, cmf, recipe.hum_event)
 
             # else assume everthing is OK:
             self.data_source_path, self.data_name = found_files.pop()
@@ -199,7 +201,7 @@ class RecipeLayer:
 
         return _data_finder
 
-    def _check_found_files(self, found_files, cmf):
+    def _check_found_files(self, found_files, cmf, hum_event):
         """
         This method checks the list of files in `get_lyr_data_finder`. It is called within `get_lyr_data_finder`
         so there is no need to call it seperately. A 'ValueError' exception, along with a Task and task
@@ -217,14 +219,14 @@ class RecipeLayer:
         # Test on list of paths as they are guarenteed to be unique, whereas base filenames are not
         if not found_files:
             self.error_messages.append('Unable to find dataset for this layer')
-            missing_data_task = FixMissingGISDataTask(self, cmf)
+            missing_data_task = FixMissingGISDataTask(hum_event, self, cmf)
             raise ValueError(missing_data_task)
 
         # If multiple matching files are found
         if len(found_files) > 1:
             self.error_messages.append('Found multiple datasets which match this layer')
             found_datasources = [f_path for f_path, f_name in found_files]
-            multiple_files_task = FixMultipleMatchingFilesTask(self, cmf, found_datasources)
+            multiple_files_task = FixMultipleMatchingFilesTask(hum_event, self, cmf, found_datasources)
             raise ValueError(multiple_files_task)
 
     def _calc_data_source_checksum(self):
@@ -286,20 +288,17 @@ class RecipeLayer:
             validate(instance=gdf.to_dict('list'), schema=self.data_schema)
         except jsonschema.ValidationError as jsve:
             self.error_messages.append('Data schema check failed')
-            fset = FixSchemaErrorTask(self, jsve)
+            fset = FixSchemaErrorTask(recipe.hum_event, self, jsve)
             raise ValueError(fset)
 
         return recipe
 
     def calc_extent(self, **kwargs):
         """
-        sf = fiona.open(some_path)
-        sf
-        # <open Collection 'some_path', mode 'r' at 0x303d1d0>
-        sf.bounds
-        # (35.10348736558511, 33.054996785738204, 36.62291533501688, 34.69206915371)
-        sf.crs
-        # {u'init': u'epsg:4326'}
+        Extracts the Coordinate Reference System (crs) and extent for the dataset located at 
+        `data_source_path`. This method will update `self.crs` and `self.extent`.
+
+        @raises ValueError: If the `self.data_source_path` has not be set or is invalid.
         """
         if not self.data_source_path:
             logger.info('Have no self.data_source_path')

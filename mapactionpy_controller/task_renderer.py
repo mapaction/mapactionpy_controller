@@ -2,6 +2,7 @@ import os
 
 import chevron
 
+import mapactionpy_controller.name_convention as name_convention
 from mapactionpy_controller import TASK_TEMPLATES_DIR
 
 
@@ -72,8 +73,17 @@ class TaskReferralBase(object):
     _task_template_filename = 'major-configuration-error'
     context_data = {}
 
-    def __init__(self):
+    def __init__(self, hum_event, **kwargs):
+        """
+        @param hum_event: An Event object. Used to determine the `operational_id`. `None` is accepted value if
+                          a suitable Event object is not available.
+        """
         self.template = self._get_task_template()
+        if hum_event:
+            self.context_data.update(hum_event_adapter(hum_event))
+
+        if kwargs:
+            self.context_data.update(catch_all_adapter(**kwargs))
 
     def _get_task_template(self):
         m_path = os.path.join(TASK_TEMPLATES_DIR, '{}.mustache'.format(self._task_template_filename))
@@ -88,13 +98,23 @@ class TaskReferralBase(object):
     def get_task_description(self):
         return chevron.render(self.template, self.context_data, def_ldel='<%', def_rdel='%>')
 
+    def get_operation_id(self):
+        """
+        @returns The `operational_id` files from the Event object passed to the constructor (if it exists).
+                 Else the value `None` is returned.
+        """
+        try:
+            return self.context_data['hum_event']['operation_id']
+        except:
+            return None
+
 
 class FixDataNameTask(TaskReferralBase):
     _task_template_filename = 'misnamed-gis-file'
     _primary_key_template = 'gisdata : <%name_result.name_to_validate%> : Incorrectly Named'
 
     def __init__(self, name_result, cmf):
-        super(FixDataNameTask, self).__init__()
+        super(FixDataNameTask, self).__init__(None)
         self.context_data.update(name_result_adapter(name_result))
         self.context_data.update(cmf_description_adapter(cmf))
 
@@ -104,13 +124,21 @@ class FixFileInWrongDirTask(TaskReferralBase):
     _primary_key_template = 'gisdata : ->TBC.folder_name<-'
 
 
-class FixSchemaErrorTask(TaskReferralBase):
-    _task_template_filename = 'schema-error'
-    _primary_key_template = 'TBC'
-
-
 def cmf_description_adapter(cmf):
     return {'cmf': cmf.__dict__.copy()}
+
+
+def hum_event_adapter(hum_event):
+    return {'hum_event': hum_event.__dict__.copy()}
+
+
+def catch_all_adapter(**kwargs):
+    """
+    Used to create generic catch all messages, with unknown context data. Creates a list 
+    """
+    ocl_dict = {'oc_list': [{'other_context': info_str} for info_str in kwargs.items()]}
+
+    return {'catch_all': ocl_dict}
 
 
 def name_result_adapter(name_result):
@@ -133,24 +161,21 @@ def name_result_adapter(name_result):
 
 
 def layer_adapter(recipe_lyr):
-    return {'layer': recipe_lyr.__dict__.copy()}
+    dict_copy = recipe_lyr.__dict__.copy()
+    if dict_copy['data_source_path']:
+        dict_copy['data_dir'] = os.path.dirname(dict_copy['data_source_path'])
+    return {'layer': dict_copy}
 
 
-def _recipe_adapter(recipe):
-    # Example of return value style
-    #
-    # values = {
-    #     'regex': '^ken_carto_fea_py_(.?)_(.?)_([phm][phm])(.*?).shp$',
-    #     'shpfile_list': [
-    #         {'shpf': r'GIS\2_Active_Data\207_carto\ken_carto_fea_py_s0_mapaction_pp_100kfeather.shp'},
-    #         {'shpf': r'GIS\2_Active_Data\207_carto\ken_carto_fea_py_s0_mapaction_pp_50kfeather.shp'},
-    #         {'shpf': r'GIS\2_Active_Data\207_carto\ken_carto_fea_py_s0_mapaction_pp_75kfeather.shp'}
-    #     ],
-    #     'event_id': '2020ken01',
-    #     'lyr_stuff': {
-    #         'lyr_name': 'mainmap-carto-fea-py-s0-allmaps',
-    #         'lyr_file_path': r'GIS\3_Mapping\31_Resources\312_Layer_files\mainmap-carto-fea-py-s0-allmaps.lyr',
-    #         'lyr_props_path': r'GIS\3_Mapping\31_Resources\316_Automation\layerProperties.json'
-    #     }
-    # }
-    pass
+def layer_reg_ex_adapter(recipe_lyr, cmf):
+    """
+    Creates context data to support human readable intepritation of the regex used to
+    seach for datasets.
+    The key to this adapter is the fact that in most cases the layer's `reg_ex` property
+    itself can be parse using the Data Naming Convention.
+    """
+    nc = name_convention.NamingConvention(cmf.data_nc_definition)
+    ncr = nc.validate(recipe_lyr.reg_exp)
+    ncr_context = name_result_adapter(ncr)
+    # Replace the key for the returned dict
+    return {'search_info': ncr_context['name_result']}

@@ -5,6 +5,7 @@ import mapactionpy_controller.task_renderer as task_renderer
 from mapactionpy_controller.name_convention import NamingConvention
 from mapactionpy_controller.task_renderer import FixDataNameTask, TaskReferralBase
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
+from mapactionpy_controller.event import Event
 
 
 class TestTaskRendering(TestCase):
@@ -13,6 +14,8 @@ class TestTaskRendering(TestCase):
         self.parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         self.dir_to_valid_cmf_des = os.path.join(self.parent_dir, 'example')
         self.path_to_valid_cmf_des = os.path.join(self.dir_to_valid_cmf_des, 'cmf_description_flat_test.json')
+        self.path_to_valid_event_des = os.path.join(self.dir_to_valid_cmf_des, 'event_description.json')
+        self.hum_event = Event(self.path_to_valid_event_des)
 
     def test_get_task_unique_summary(self):
         dnc_json_path = os.path.join(self.parent_dir, 'example', 'data_naming_convention.json')
@@ -88,7 +91,7 @@ class TestTaskRendering(TestCase):
                 self.assertEqual(actual_result, expected_result)
 
     def test_get_task_description(self):
-        trb = TaskReferralBase()
+        trb = TaskReferralBase(self.hum_event)
         self.assertIn('Major Configuration Error', trb.get_task_description())
 
     def test_cmf_description_adapter(self):

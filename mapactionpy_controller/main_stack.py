@@ -71,7 +71,8 @@ def parse_feedback(status, msg, step, **kwargs):
     task_referal = None
     if status > logging.INFO:
         exp = kwargs['exp']
-        task_referal = exp.args[0]
+        if exp.args:
+            task_referal = exp.args[0]
 
     if status > logging.WARNING:
         stack_trace = kwargs['stack_trace']

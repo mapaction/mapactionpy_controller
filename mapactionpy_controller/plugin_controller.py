@@ -123,7 +123,7 @@ def _get_per_product_runner_steps(_runner, recipe):
 def get_cookbook_steps(my_runner, map_number, dry_run, verify_on_creation=True):
     def get_cookbook(**kwargs):
         lyrs = LayerProperties(my_runner.cmf, my_runner.get_lyr_render_extension(), verify_on_creation)
-        my_cookbook = MapCookbook(my_runner.cmf, lyrs, verify_on_creation)
+        my_cookbook = MapCookbook(my_runner.cmf, lyrs, verify_on_creation, my_runner.hum_event)
 
         selected_product_steps = []
         for recipe in select_recipes(my_cookbook, map_number):
