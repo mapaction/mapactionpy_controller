@@ -21,7 +21,7 @@ validate_against_layer_schema = _get_validator_for_config_schema('layer_properti
 
 class FixMissingGISDataTask(task_renderer.TaskReferralBase):
     _task_template_filename = 'missing-gis-file'
-    _primary_key_template = 'Could not find data for ><%layer.name%><'
+    _primary_key_template = 'Could not find data for <%layer.name%>'
 
     def __init__(self, hum_event, recipe_lyr, cmf):
         super(FixMissingGISDataTask, self).__init__(hum_event)
@@ -32,7 +32,7 @@ class FixMissingGISDataTask(task_renderer.TaskReferralBase):
 
 class FixMultipleMatchingFilesTask(task_renderer.TaskReferralBase):
     _task_template_filename = 'multiple-matching-files'
-    _primary_key_template = 'More than one dataset available for ><%layer.name%><'
+    _primary_key_template = 'More than one dataset available for <%layer.name%>'
 
     def __init__(self, hum_event, recipe_lyr, cmf, datasources_list):
         super(FixMultipleMatchingFilesTask, self).__init__(hum_event)
@@ -43,11 +43,15 @@ class FixMultipleMatchingFilesTask(task_renderer.TaskReferralBase):
         self.context_data.update({
             'datasources_list': [{'datasources': datasources} for datasources in sorted(datasources_list)]
         })
+        target_dir = os.path.dirname(datasources_list.pop())
+        self.context_data.update({
+            'datasources_dir': target_dir
+        })
 
 
 class FixSchemaErrorTask(task_renderer.TaskReferralBase):
     _task_template_filename = 'schema-error'
-    _primary_key_template = 'Schema error in dataset ><%layer.data_source_path%><'
+    _primary_key_template = 'Schema error in dataset <%layer.data_source_path%>'
 
     def __init__(self, hum_event, recipe_lyr, validation_error):
         super(FixSchemaErrorTask, self).__init__(hum_event)

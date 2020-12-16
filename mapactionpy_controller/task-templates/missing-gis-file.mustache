@@ -2,9 +2,24 @@ h1. What is the problem?
 
 Could not locate gis data to add to this map layer: *<%layer.name%>* 
 
-The expected data files name should match this pattern:
+The expected data files name should match this pattern (as a 'Regular Expression'):
 
 {{<%layer.reg_exp%>}}
+
+<%#search_info.is_parsable%>
+In more human terms, this means that these bits of the filename must match exactly these values:
+
+<%#search_info.valid_clause_list%>
+* {{<%&valid_clause%>}}
+<%/search_info.valid_clause_list%>
+
+Whilst _in general_ any valid value is acceptable for these part of the filename:
+
+<%#search_info.invalid_clause_list %>
+* {{<%&invalid_clause%>}}
+<%/search_info.invalid_clause_list %>
+<%/search_info.is_parsable%>
+
 
 h1. What is the likely consequence of this problem? 
 
