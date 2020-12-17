@@ -1,19 +1,25 @@
 def get_gis_environment():
-    gis_dependancies = []
+    gis_dependencies = []
 
     try:
         import arcpy  # noqa
-        gis_dependancies.append('mapactionpy_arcmap')
+        gis_dependencies.append('mapactionpy_arcmap')
+    except ImportError:
+        pass
+
+    try:
+        import arcpy  # noqa
+        gis_dependencies.append('mapactionpy_arcpro')
     except ImportError:
         pass
 
     try:
         import qgis.core  # noqa
-        gis_dependancies.append('mapactionpy_qgis')
+        gis_dependencies.append('mapactionpy_qgis')
     except ImportError:
         pass
 
-    return gis_dependancies
+    return gis_dependencies
 
 
 if __name__ == "__main__":

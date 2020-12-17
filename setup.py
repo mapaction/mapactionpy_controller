@@ -144,6 +144,8 @@ setup(
         ]
     },
     packages=find_packages(),
+    package_dir={'mapactionpy_controller': 'mapactionpy_controller'},
+    package_data={'mapactionpy_controller': ['schemas/*.schema']},
     include_package_data=True,
     install_requires=_get_requires_list(),
     test_suite='unittest',
