@@ -105,7 +105,7 @@ class TaskReferralBase(object):
         """
         try:
             return self.context_data['hum_event']['operation_id']
-        except:
+        except Exception:
             return None
 
 
@@ -134,7 +134,7 @@ def hum_event_adapter(hum_event):
 
 def catch_all_adapter(**kwargs):
     """
-    Used to create generic catch all messages, with unknown context data. Creates a list 
+    Used to create generic catch all messages, with unknown context data. Creates a list
     """
     ocl_dict = {'oc_list': [{'other_context': info_str} for info_str in kwargs.items()]}
 
@@ -164,6 +164,7 @@ def layer_adapter(recipe_lyr):
     dict_copy = recipe_lyr.__dict__.copy()
     if dict_copy['data_source_path']:
         dict_copy['data_dir'] = os.path.dirname(dict_copy['data_source_path'])
+        dict_copy['data_filename'] = os.path.basename(dict_copy['data_source_path'])
     return {'layer': dict_copy}
 
 
@@ -188,33 +189,15 @@ def layer_reg_ex_adapter(recipe_lyr, cmf):
             # whether or not it needs handling differently because it a freetext clause. The string
             # matching here is actually matching on something that originates from a config file, not
             # elsewhere within the code.
-            if clause_res.is_valid and (clause_name is not 'freetext'):
+            if clause_res.is_valid and (clause_name != 'freetext'):
                 msg = "The '{}' clause value *must* be '{}' (representing {})".format(
                     clause_name, clause_value, clause_desc)
-                print(msg)
                 valid_clause_list.append(msg)
             else:
                 if clause_value:
                     part2 = " that matches this expression '{}'".format(clause_value)
                 msg = "The '{}' clause value may be any valid value{}.".format(clause_name, part2)
-                print(msg)
                 invalid_clause_list.append(msg)
-
-    print('valid_clause_list = ', valid_clause_list)
-    print('invalid_clause_list = [] ', invalid_clause_list)
-        # valid_clause_list = [
-        #     "The '{}' clause value must be '{}' (representing {})".format(cls_name, cls_res.Value, cls_res.Description)
-        #     for cls_name, cls_res in ncr._asdict().items() if cls_res.is_valid]
-
-        # valid_clause_list = [
-        #     "The '{}' clause value must be '{}' (representing {})".format(cls_name, cls_res.Value, cls_res.Description)
-        #     for cls_name, cls_res in ncr._asdict().items() if cls_res.is_valid]
-        # invalid_clause_list = [
-        #     "The '{}' clause value may be any valid value that matches this expression '{}'".format(
-        #         cls_name, cls_res.Value)
-        #         for cls_name, cls_res in ncr._asdict().items() if not cls_res.is_valid]
-        # valid_clause_list = [clause for cnname, ncr in ncr._asdict().items() if clause.is_valid]
-        # invalid_clause_list = [clause for clause in ncr._asdict().items() if not clause.is_valid]
 
     nr_dict = {
         'name_to_validate': ncr.name_to_validate,

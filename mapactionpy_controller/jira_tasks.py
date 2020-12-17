@@ -74,8 +74,10 @@ class JiraClient():
         }
 
     def __del__(self):
-        if self.jira_con:
+        try:
             self.jira_con.kill_session()
+        except TypeError:
+            pass
 
     def task_handler(self, fail_threshold, msg, task_referal=None):
         logger.debug('JiraClient.task_handler called with status="{}", and msg="{}"'.format(
@@ -108,7 +110,11 @@ class JiraClient():
         value of `str(task_referal)` will be used.
 
         @param task_referal: An object that may or may not be a TaskReferralBase object.
-        @returns: If the `task_referal` param is 
+        @returns: If the `task_referal` param is an instance of TaskReferralBase object, then `task_referal` is
+                  returned.
+                  If `task_referal` param is NOT an instance of TaskReferralBase AND fail_threshold is logging.ERROR
+                  then a new TaskReferralBase object is created (using `msg` and `str(task_referal)` for context).
+                  Else `None` is returned.
         """
         if isinstance(task_referal, TaskReferralBase):
             logger.debug('JiraClient.ensure_task_referal_type found a TaskReferralBase object')

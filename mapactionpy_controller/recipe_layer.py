@@ -51,14 +51,28 @@ class FixMultipleMatchingFilesTask(task_renderer.TaskReferralBase):
 
 class FixSchemaErrorTask(task_renderer.TaskReferralBase):
     _task_template_filename = 'schema-error'
-    _primary_key_template = 'Schema error in dataset <%layer.data_source_path%>'
+    _primary_key_template = 'Schema error in dataset <%layer.data_filename%>'
 
-    def __init__(self, hum_event, recipe_lyr, validation_error):
+    def __init__(self, hum_event, recipe_lyr, validation_error, instance_list):
         super(FixSchemaErrorTask, self).__init__(hum_event)
         self.context_data.update(task_renderer.layer_adapter(recipe_lyr))
         self.validation_error = validation_error
         # See https://trello.com/c/dcC8JpYf/180-implenment-task-descriptions-for-all-gis-data-related-tasks
         # self.context_data.update(do_something_with(validation_error))
+        i_set = set(instance_list.keys())
+        self.context_data.update({
+            'data_fields': [{'extant_fields': r_field} for r_field in sorted(i_set)]
+        })
+        if 'required' in recipe_lyr.data_schema:
+            r_set = set(recipe_lyr.data_schema['required'])
+            diff_fields = r_set.difference(i_set)
+
+            self.context_data.update({
+                'data_schema': [{'required_fields': r_field} for r_field in sorted(r_set)]
+            })
+            self.context_data.update({
+                'missing_fields': [{'fields': r_field} for r_field in sorted(diff_fields)]
+            })
 
 
 class LabelClass:
@@ -272,34 +286,46 @@ class RecipeLayer:
 
     # def get_schema_checker(self, runner):
     def check_data_against_schema(self, **kwargs):
+        logging.debug('Attempting to validate jsonschema for gis data')
         if not self.data_source_path:
-            raise ValueError(
-                'Cannot check data schema until relevant data has been found.'
-                ' Please use `get_data_finder()` first.')
-        recipe = kwargs['state']
-        self._check_lyr_is_in_recipe(recipe)
-
-        from jsonschema import validate
-        gdf = geopandas.read_file(self.data_source_path)
-
-        # Make columns needed for validation
-        gdf['geometry_type'] = gdf['geometry'].apply(lambda x: x.geom_type)
-        # gdf['crs'] = gdf.crs['init']
-        gdf['crs'] = gdf.crs
+            error_msg = ('Cannot check data schema for layer ("{}") before the relevant data has been found.'
+                         ' Please use `get_data_finder()` first.'.format(self.name))
+            logging.debug(error_msg)
+            raise ValueError(error_msg)
 
         # Validate
         try:
-            validate(instance=gdf.to_dict('list'), schema=self.data_schema)
-        except jsonschema.ValidationError as jsve:
+            recipe = kwargs['state']
+            self._check_lyr_is_in_recipe(recipe)
+
+            from jsonschema import validate
+            gdf = geopandas.read_file(self.data_source_path)
+
+            # Make columns needed for validation
+            gdf['geometry_type'] = gdf['geometry'].apply(lambda x: x.geom_type)
+            # print(gdf.crs)
+            if isinstance(gdf.crs, dict):
+                gdf['crs'] = gdf.crs['init']
+            else:
+                gdf['crs'] = gdf.crs
+
+            instance_list = gdf.to_dict('list')
+            validate(instance=instance_list, schema=self.data_schema)
+            logging.debug('Successfully validates jsonschema for gis data')
+        # except jsonschema.ValidationError as jsve:
+        except Exception as exp:
+            error_msg = ('Failed whilst check data schema for layer ("{}") with exception: {}'.format(
+                self.name, exp))
+            logging.debug(error_msg)
             self.error_messages.append('Data schema check failed')
-            fset = FixSchemaErrorTask(recipe.hum_event, self, jsve)
+            fset = FixSchemaErrorTask(recipe.hum_event, self, exp, instance_list)
             raise ValueError(fset)
 
         return recipe
 
     def calc_extent(self, **kwargs):
         """
-        Extracts the Coordinate Reference System (crs) and extent for the dataset located at 
+        Extracts the Coordinate Reference System (crs) and extent for the dataset located at
         `data_source_path`. This method will update `self.crs` and `self.extent`.
 
         @raises ValueError: If the `self.data_source_path` has not be set or is invalid.
