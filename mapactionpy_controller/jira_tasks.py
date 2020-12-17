@@ -78,13 +78,13 @@ class JiraClient():
             self.jira_con.kill_session()
 
     def task_handler(self, fail_threshold, msg, task_referal=None):
-        logger.error('JiraClient.task_handler called with status="{}", and msg="{}"'.format(
+        logger.debug('JiraClient.task_handler called with status="{}", and msg="{}"'.format(
             fail_threshold, msg))
 
         assured_referal = self.ensure_task_referal_type(task_referal, msg, fail_threshold)
 
         if not assured_referal:
-            logger.error('JiraClient.task_handler; `None` value passed for task_referal parameter. Nothing to handle.')
+            logger.debug('JiraClient.task_handler; `None` value passed for task_referal parameter. Nothing to handle.')
             return
 
         unique_summary = assured_referal.get_task_unique_summary()
@@ -111,14 +111,14 @@ class JiraClient():
         @returns: If the `task_referal` param is 
         """
         if isinstance(task_referal, TaskReferralBase):
-            logger.error('JiraClient.ensure_task_referal_type found a TaskReferralBase object')
+            logger.debug('JiraClient.ensure_task_referal_type found a TaskReferralBase object')
             return task_referal
 
         if task_referal and (fail_threshold > logging.WARNING):
-            logger.error('JiraClient.ensure_task_referal_type created a new TaskReferralBase object')
+            logger.debug('JiraClient.ensure_task_referal_type created a new TaskReferralBase object')
             return TaskReferralBase(None, msg=msg, other=str(task_referal))
-        
-        logger.error('JiraClient.ensure_task_referal_type passed "{}" but returned `None`'.format(
+
+        logger.debug('JiraClient.ensure_task_referal_type passed "{}" but returned `None`'.format(
             str(task_referal)
         ))
         return None
@@ -153,10 +153,22 @@ class JiraClient():
         flds = self.common_task_fields.copy()
         flds['summary'] = unique_summary
         flds['description'] = task_desc
-        # flds['operational_id'] = op_id
+        # This is the JIRA API's field ID for operational_id. To work this out execute:
+        # ```
+        # a = j.jira_con.createmeta(projectKeys=['PIPET'], issuetypeIds=[10235], expand='projects.issuetypes.fields')
+        # print(a)
+        # ```
+        # Then search the output for your custom field name. Doubtless there is a programmatic way to do this.
+        flds['customfield_10234'] = op_id
 
         new_task = self.jira_con.create_issue(fields=flds)
+        # new_task.update(fields={'operational_id':op_id})
+        # new_task.update(operational_id=op_id)
         print(new_task)
+        # print('desc', new_task.fields.description)
+        # print('opid', new_task.fields.operational_id)
+        # for f in new_task.fields:
+        #     print('field itr', f)
 
     def update_jira_issue(self, j_issue, task_desc, fail_threshold):
         now_utc = pytz.utc.localize(datetime.now())

@@ -196,8 +196,7 @@ def layer_reg_ex_adapter(recipe_lyr, cmf):
             else:
                 if clause_value:
                     part2 = " that matches this expression '{}'".format(clause_value)
-                msg = "The '{}' clause value may be any valid value{}.".format(
-                clause_name, part2)
+                msg = "The '{}' clause value may be any valid value{}.".format(clause_name, part2)
                 print(msg)
                 invalid_clause_list.append(msg)
 
