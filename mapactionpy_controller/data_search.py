@@ -1,34 +1,10 @@
 import glob
+import itertools
 import logging
 import os
-import re
+
+from mapactionpy_controller.recipe_layer import RecipeLayer
 from mapactionpy_controller.steps import Step
-import mapactionpy_controller.task_renderer as task_renderer
-from mapactionpy_controller.map_recipe import RecipeLayer
-
-
-class FixMissingGISDataTask(task_renderer.TaskReferralBase):
-    _task_template_filename = 'missing-gis-file'
-    _primary_key_template = 'Could not find data for "{{<%layer.name%>}}"'
-
-    def __init__(self, recipe_lyr, cmf):
-        super(FixMissingGISDataTask, self).__init__()
-        self.context_data.update(task_renderer.layer_adapter(recipe_lyr))
-        self.context_data.update(task_renderer.cmf_description_adapter(cmf))
-
-
-class FixMultipleMatchingFilesTask(task_renderer.TaskReferralBase):
-    _task_template_filename = 'multiple-matching-files'
-    _primary_key_template = 'More than one dataset available for "{{<%layer.name%>}}"'
-
-    def __init__(self, recipe_lyr, cmf, datasources_list):
-        super(FixMultipleMatchingFilesTask, self).__init__()
-        self.context_data.update(task_renderer.layer_adapter(recipe_lyr))
-        self.context_data.update(task_renderer.cmf_description_adapter(cmf))
-        # Roll-our-own one-line adapter here:
-        self.context_data.update({
-            'datasources_list': [{'datasources': datasources} for datasources in sorted(datasources_list)]
-        })
 
 
 def get_recipe_event_updater(hum_event):
@@ -77,8 +53,7 @@ def get_recipe_event_updater(hum_event):
 
 
 def _update_items_in_recipe(recipe, update_recipe_item):
-    # Update the reg_exg for seaching for each individual layer
-    for lyr in recipe.all_layers():
+    for lyr in itertools.chain(*[mf.layers for mf in recipe.map_frames]):
         lyr.reg_exp = update_recipe_item(lyr.reg_exp)
         lyr.definition_query = update_recipe_item(lyr.definition_query)
 
@@ -110,82 +85,6 @@ def _check_layer(recipe_lyr):
         raise ValueError(error_msg)
 
 
-def _check_found_files(found_files, recipe_lyr, cmf):
-    """
-    This method checks the list of files in `get_lyr_data_finder`. It is called within `get_lyr_data_finder`
-    so there is no need to call it seperately. A 'ValueError' exception, along with a Task and task
-    description will be raised if there are too few or too many files in the `found_files` list.
-
-    @param found_files: A list of tuples. Each tuple should be represent one of the files found and the tuple
-                        should be in the format `(full_path, filename_without_extension)`
-    @param recipe_lyr: The recipe being processed. Used for providing contact to any error message that may
-                       be created.
-    @param cmf: The crash move folder being searched. Used for providing contact to any error message that
-                may be created.
-    @raises ValueError: If there is not exactly one file in the found_files lilst.
-    """
-    # If no data matching is found:
-    # Test on list of paths as they are guarenteed to be unique, whereas base filenames are not
-    if not found_files:
-        missing_data_task = FixMissingGISDataTask(recipe_lyr, cmf)
-        raise ValueError(missing_data_task)
-
-    # If multiple matching files are found
-    if len(found_files) > 1:
-        found_datasources = [f_path for f_path, f_name in found_files]
-        multiple_files_task = FixMultipleMatchingFilesTask(recipe_lyr, cmf, found_datasources)
-        raise ValueError(multiple_files_task)
-
-
-def get_lyr_data_finder(cmf, recipe_lyr):
-    """
-    This method returns a function which tests for the existance of data that matches
-    the param `recipe_lyr.reg_exp`.
-
-    Create a new function for each layer within a recipe.
-    """
-    # This is just being paraniod. This can only occur if somewhere up the chain a MapCookbook was created
-    # with the param verify_on_creation=False. That should not occur in production code and only in
-    # some test cases.
-    _check_layer(recipe_lyr)
-
-    # Get list of files, so that they are only queried on disk once.
-    # Make this into a list of full_paths (as returned by `get_all_gisfiles(cmf)`) and
-    # just the file name
-    all_gis_files = [(f_path, os.path.basename(f_path)) for f_path in get_all_gisfiles(cmf)]
-
-    def _data_finder(**kwargs):
-        recipe = kwargs['state']
-
-        # Again this is being paraniod. This can only occur if there are more than one MapRecipe objects
-        # being proceed simulatiously. There is isn't currently a use case where that would occur in
-        # production code. This check is present just in case.
-        if recipe_lyr not in recipe.all_layers():
-            error_msg = 'Attempting to update a layer ("{}") which is not part of the recipe'.format(
-                recipe_lyr.name)
-            logging.error(error_msg)
-            raise ValueError(error_msg)
-
-        found_files = []
-
-        # Match filename *including extension* against regex
-        # But only store the filename without extension
-        found_files.extend(
-            [(f_path, os.path.splitext(f_name)[0])
-             for f_path, f_name in all_gis_files if re.match(recipe_lyr.reg_exp, f_name)]
-        )
-
-        # Do checks and raise exceptions if required.
-        _check_found_files(found_files, recipe_lyr, cmf)
-
-        # else assume everthing is OK:
-        recipe_lyr.data_source_path, recipe_lyr.data_name = found_files.pop()
-
-        return recipe
-
-    return _data_finder
-
-
 def get_all_gisfiles(cmf):
     gisfiles_with_paths = set()
 
@@ -196,53 +95,70 @@ def get_all_gisfiles(cmf):
     return gisfiles_with_paths
 
 
-def get_per_product_data_search_steps(cmf, hum_event, recipe):
+def get_per_product_data_search_steps(runner, recipe):
     """
 
     1) Find all possible datasources for a layer
             JIRA if there are multiple datasources per layer
 
-    2) Check that all datasources match teh required schema
+    2) Check that all datasources match the required schema
             JIRA if there is a schema mismatch.
 
     3) Calculate checksum
 
+    4) Calculate extent
+
     """
     # ds = DataSearch(hum_event)
+    all_gis_files = [(f_path, os.path.basename(f_path)) for f_path in get_all_gisfiles(runner.cmf)]
 
     step_list = [
         Step(
-            get_recipe_event_updater(hum_event),
+            get_recipe_event_updater(runner.hum_event),
             logging.ERROR,
             'Updating recipe with event specific details',
             'Updated recipe with event specific details',
             'Failed to update recipe with event specific details'
         )]
 
-    for recipe_lyr in recipe.all_layers():
+    for map_frame in recipe.map_frames:
+        for recipe_lyr in map_frame.layers:
+            # This is just being paraniod. This can only occur if somewhere up the chain a MapCookbook was created
+            # with the param verify_on_creation=False. That should not occur in production code and only in
+            # some test cases.
+            _check_layer(recipe_lyr)
+            step_list.extend([
+                Step(
+                    recipe_lyr.get_data_finder(runner.cmf, all_gis_files),
+                    logging.WARNING,
+                    '"Searching for data suitable for layer "{}"'.format(recipe_lyr.name),
+                    'Found data for layer "{}"'.format(recipe_lyr.name),
+                    'Failed to find data suitable for layer "{}"'.format(recipe_lyr.name)
+                ),
+                Step(
+                    recipe_lyr.calc_extent,
+                    logging.WARNING,
+                    'Calculating extent for the data for layer "{}"'.format(recipe_lyr.name),
+                    'Calculated extent for the data for layer "{}"'.format(recipe_lyr.name),
+                    'Error whilst calculating extent for the data for layer "{}"'.format(recipe_lyr.name)
+                ),
+                Step(
+                    recipe_lyr.check_data_against_schema,
+                    logging.WARNING,
+                    'Checking the schema for the data available for layer "{}"'.format(recipe_lyr.name),
+                    'Verified schema the data available for layer "{}"'.format(recipe_lyr.name),
+                    'The data available for layer "{}" failed schema check'.format(recipe_lyr.name)
+                )
+            ])
+
         step_list.extend([
             Step(
-                get_lyr_data_finder(cmf, recipe_lyr),
+                map_frame.calc_extent,
                 logging.WARNING,
-                '"Searching for data suitable for layer "{}"'.format(recipe_lyr.name),
-                'Found data for layer "{}"'.format(recipe_lyr.name),
-                'Failed to find data suitable for layer "{}"'.format(recipe_lyr.name)
+                'Calculating extent for the map frame "{}"'.format(map_frame.name),
+                'Calculated extent for the map frame "{}"'.format(map_frame.name),
+                'Error whilst extent for the map frame "{}"'.format(map_frame.name)
             )
         ])
-
-        # Step(
-        #     ds.check schema(),
-        #     logging.WARNING,
-        #     'Checking the schema for the data available for layer "{}"'.format(recipe_lyr.name),
-        #     'Verified schema the data available for layer "{}"'.format(recipe_lyr.name),
-        #     'The data available for layer "{}" failed schema check'.format(recipe_lyr.name)
-        # ),
-        # Step(
-        #     ds.calculate checksum(),
-        #     logging.ERROR,
-        #     'Calculating checksum for the data for layer "{}"'.format(recipe_lyr.name),
-        #     'Calculated checksum for the data for layer "{}"'.format(recipe_lyr.name),
-        #     'Error whilst calculating checksum for the data for layer "{}"'.format(recipe_lyr.name)
-        # )
 
     return step_list

@@ -1,10 +1,9 @@
-import importlib
 import subprocess
 import sys
 from setuptools import setup, find_packages
 from os import path, environ
 
-_base_version = '1.0.4'
+_base_version = '1.1.0'
 
 root_dir = path.abspath(path.dirname(__file__))
 
@@ -39,28 +38,94 @@ def _get_version_number():
     return version
 
 
-def get_gis_environment():
-    gis_dependencies = []
+def can_import_geo_packages():
+    try:
+        # Test PyProj
+        import pyproj  # noqa: F401
 
-    # The key is the module name that is detected
-    # The value is the module name that will be installed if the key is detected.
-    possible_envs = {
-        'arcpy': 'mapactionpy_arcmap',
-        'qgis.core': 'mapactionpy_qgis'
-    }
+        # Test Shapely
+        from shapely.geometry import box  # noqa: F401
 
-    for env_mod, target_mod in possible_envs.items():
-        sys.stderr.write('\nsys.path={}\n'.format(sys.path))
+        # Test GDAL
+        from osgeo import gdal  # noqa: F401
+        from osgeo import ogr  # noqa: F401
+        from osgeo import osr  # noqa: F401
+        from osgeo import gdal_array  # noqa: F401
+        from osgeo import gdalconst  # noqa: F401
+
+        # Test Fiona
+        import fiona  # noqa: F401
+
+        # Test RTree
+        from rtree import index  # noqa: F401
+
+        # Test geopandas
+        import geopandas  # noqa: F401
+
+        return True
+    except ImportError:
+        return False
+
+
+def _get_requires_list():
+    # Items for which the version does not need to be pinned to support py2.7
+    requires = [
+        'chevron',
+        'humanfriendly',
+        'jsonpickle',
+        'jsonschema',
+        'requests',
+        'pyyaml',
+        'pyshp',
+        'six',
+        'slugify'
+    ]
+
+    if (sys.version_info.major == 2):
+        # Items for which do need a pinned version to support py2.7
+        # For debate whether this is useful 'pyreproj==1.0.1'
+        requires.extend([
+            'pyrsistent<=0.16.1',
+            'pycountry<=19.8.18'
+        ])
+    else:
+        requires.extend([
+            'pyrsistent',
+            'pycountry',
+        ])
+
+    if sys.platform == 'win32' and not can_import_geo_packages():
+        requires.extend([
+            'mapactionpy_controller_dependancies@git+'
+            'https://github.com/mapaction/mapactionpy_controller_dependencies.git'
+        ])
+    else:
+        requires.extend([
+            'Fiona',
+            'pyproj',
+            'Shapely'
+        ])
+
+        # Test the underlying version of GDAL, so that we can install the matching python bindings
         try:
-            sys.stderr.write('\ntrying to import {}\n'.format(env_mod))
-            importlib.import_module(env_mod)
-            gis_dependencies.append(target_mod)
-            sys.stderr.write('\nsuccessed importing {}, added {} to gis_dependencies\n'.format(env_mod, target_mod))
-        except ImportError:
-            sys.stderr.write('\nfailed to import {}\n'.format(env_mod))
-            # pass
+            # Test the underlying version of GDAL, so that we can install the matching python bindings
+            gdal_cmd_ver = subprocess.check_output(['gdal-config', '--version'])
+            gdal_ver = gdal_cmd_ver.decode('ascii').strip()
+            gdal_str = 'GDAL=={}'.format(gdal_ver)
 
-    return gis_dependencies
+        except OSError:
+            # from osgeo import gdal  # noqa: F401
+            # gdal_ver = gdal.__version__
+            gdal_str = 'GDAL'
+
+        requires.extend([gdal_str])
+
+        requires.extend([
+            'Rtree',
+            'geopandas'
+        ])
+
+    return requires
 
 
 setup(
@@ -82,18 +147,7 @@ setup(
     package_dir={'mapactionpy_controller': 'mapactionpy_controller'},
     package_data={'mapactionpy_controller': ['schemas/*.schema']},
     include_package_data=True,
-    install_requires=[
-        'chevron',
-        'humanfriendly',
-        'jsonpickle',
-        'jsonschema',
-        'pyrsistent<=0.16.1',
-        'pycountry<=19.8.18',
-        'requests',
-        'pyyaml',
-        'six',
-        'slugify'
-    ],
+    install_requires=_get_requires_list(),
     test_suite='unittest',
     tests_require=['unittest'],
     zip_safe=False,

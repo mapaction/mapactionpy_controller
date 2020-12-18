@@ -1,0 +1,32 @@
+h1. What is the problem?
+
+The shapefile {{<%layer.data_filename%>}} does not have the fields/attributes expected for the layer {{<%layer.name%>}}. The following required fields are missing:
+
+<%#missing_fields%>
+* {{<%fields%>}}
+<%/missing_fields%>
+
+The full list of *_available_* fields is:
+
+<%#data_fields%>
+* {{<%extant_fields%>}}
+<%/data_fields%>
+
+h1. What is the likely consequence of this problem?
+This layer will not be added to added to any of the maps that require it. If this layer is the index layer for an atlas (aka Data Driven Page), then it will not be possible to create the individual altas pages.
+
+h1. How can this problem be resolved?
+The shapefile {{<%layer.data_source_path%>}} should be updated so that it includes the all of the fields specified in the {{required}} section of the schema definition {{<%layer.schema_definition%>}}. The full list of *_required_* fields is:
+
+<%#data_schema%>
+* {{<%required_fields%>}}
+<%/data_schema%>
+
+Either update existing field or add new fields as appropriate. The order of the fields does not matter.
+
+h1. Other information
+
+|layer name|{{<%layer.name%>}}|
+|Full path to data file|{{<%layer.data_source_path%>}}|
+|Full path to layer file|{{<%layer.schema_definition%>}}|
+|Operation ID|{{<%hum_event.operation_id%>}}|

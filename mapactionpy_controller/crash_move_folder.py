@@ -8,7 +8,7 @@ validate_against_cmf_schema = _get_validator_for_config_schema('cmf-v0.2.schema'
 class CrashMoveFolder:
     def __init__(self, cmf_path, verify_on_creation=True):
 
-        self.path = os.path.dirname(cmf_path)
+        self.path = os.path.realpath(os.path.expanduser(os.path.dirname(cmf_path)))
 
         with open(cmf_path, 'r') as f:
             obj = json.loads(f.read())

@@ -21,6 +21,7 @@
 			"name": "Main map",
 			"scale_text_element": "scale",
 			"spatial_ref_text_element": "spatial_reference",
+			"crs": "EPSG:3857",
 			"layers": [
 				{
 					"name": "mainmap-stle-stl-pt-s0-allmaps"
@@ -71,6 +72,7 @@
 		},
 		{
 			"name": "Location map",
+			"crs": "EPSG:3857",
 			"layers": [
 				{
 					"name": "locationmap-admn-adx-ln-s0-locationmaps"

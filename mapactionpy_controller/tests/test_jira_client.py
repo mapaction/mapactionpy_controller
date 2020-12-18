@@ -64,17 +64,18 @@ class TestJiraClient(TestCase):
             # This overrides JiraClient's own self check that it has a valid connection
             mock_check_jira_con.return_value = None
             jira_client = jira_tasks.JiraClient()
+            test_op_id = 'testopid123'
 
             # test case were extact one task returned
             single_result = ['a']
             jira_client.jira_con.search_issues = mock.MagicMock(return_value=single_result)
-            self.assertEqual('a', jira_client.search_issue_by_unique_summary('serach-string'))
+            self.assertEqual('a', jira_client.search_issue_by_unique_summary('serach-string', test_op_id))
 
             # test case where no tasks returned
             jira_client.jira_con.search_issues = mock.MagicMock(return_value=None)
-            self.assertIsNone(jira_client.search_issue_by_unique_summary('serach-string'))
+            self.assertIsNone(jira_client.search_issue_by_unique_summary('serach-string', test_op_id))
             jira_client.jira_con.search_issues = mock.MagicMock(return_value=[])
-            self.assertIsNone(jira_client.search_issue_by_unique_summary('serach-string'))
+            self.assertIsNone(jira_client.search_issue_by_unique_summary('serach-string', test_op_id))
 
             # test case where multiple task returned
             multi_result = ['a', 'b']
@@ -82,7 +83,7 @@ class TestJiraClient(TestCase):
 
             with self.assertRaises(ValueError) as ve:
                 fail_msg = 'More than one JIRA Issue found'
-                jira_client.search_issue_by_unique_summary('serach-string')
+                jira_client.search_issue_by_unique_summary('serach-string', test_op_id)
 
                 if six.PY2:
                     self.assertRegexpMatches(str(ve.exception), fail_msg)
@@ -108,7 +109,7 @@ class TestJiraClient(TestCase):
             # where there is no existing issue for the task, therefore a new JIRA issue should be created
             jira_client.jira_con.search_issues = mock.MagicMock(return_value=None)
             with mock.patch.object(jira_client.jira_con, 'create_issue', return_value=None) as mock_method:
-                test_task = TaskReferralBase()
+                test_task = TaskReferralBase(None)
                 jira_client.task_handler(logging.ERROR, 'test-case', test_task)
 
             # assert that jira_client.create_new_jira_issue is called once
@@ -116,7 +117,7 @@ class TestJiraClient(TestCase):
 
             # Case 3)
             # where there was an existing *open* task, which is in the correct column, that requires commenting on.
-            test_task = TaskReferralBase()
+            test_task = TaskReferralBase(None)
 
             mock_issue = mock.Mock(name='mock_issue')
             mock_issue.id = "123"  # issue ID
@@ -141,7 +142,7 @@ class TestJiraClient(TestCase):
 
             # Case 4)
             # where the issue description requires updating
-            test_task = TaskReferralBase()
+            test_task = TaskReferralBase(None)
 
             mock_issue = mock.Mock(name='mock_issue')
             mock_issue.id = "123"  # issue ID

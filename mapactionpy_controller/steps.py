@@ -71,6 +71,7 @@ class Step():
 
             # Do we want to raise an ERROR or a WARNING?
             if self.fail_threshold >= logging.ERROR:
+                # print(kwargs.get('state', None))
                 raise exp
 
             # If this is just a warning then we return the unaltered state object

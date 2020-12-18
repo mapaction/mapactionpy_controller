@@ -7,6 +7,9 @@
 # Python egg metadata, regenerated from source files by setuptools.
 /*.egg-info
 
+# python test virtual envs
+/env*/
+
 # unittest results
 .pytest_cache/
 .coverage
@@ -14,5 +17,4 @@
 .vscode/
 nosetests.xml
 mapactionpy_controller/tests/testfiles/delete-me-test-output-file.json
-all-tests.cmd
 htmlcov/

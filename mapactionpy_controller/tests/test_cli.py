@@ -1,4 +1,4 @@
-from unittest import TestCase
+from unittest import TestCase, skip
 import mapactionpy_controller.cli as cli
 import sys
 import os
@@ -104,6 +104,7 @@ class TestCLI(TestCase):
             sys.argv[1:] = testargs
             self.assertRaises(SystemExit, cli.entry_point)
 
+    @skip('Not implenmented yet')
     def test_cli_with_cmf_deduced_from_current_dir(self):
         # TODO
-        pass
+        self.fail()

@@ -1,7 +1,8 @@
--r requirements.txt
+# -r requirements.txt
 coverage
 flake8
 autopep8
 mock
 virtualenv
 coveralls
+pylint
