@@ -25,12 +25,14 @@ Note: main_stack.py also includes humanfriendly.terminal which ought really to b
 """
 import logging
 import traceback
+import six
 from collections import deque
 
 import humanfriendly.terminal as hft
 import humanfriendly.terminal.spinners as spinners
 
 from mapactionpy_controller.steps import Step
+from mapactionpy_controller.task_renderer import TaskReferralBase
 
 logger = logging.getLogger(__name__)
 
@@ -72,12 +74,16 @@ def parse_feedback(status, msg, step, **kwargs):
     if status > logging.INFO:
         exp = kwargs['exp']
         if exp.args:
-            task_referal = exp.args[0]
+            if isinstance(exp.args[0], TaskReferralBase):
+                task_referal = exp.args[0]
+                # error_str = task_referal.get_task_unique_summary()
+            else:
+                error_str = '\n'.join(str(s) for s in exp.args if isinstance(s, six.string_types))
 
-    if status > logging.WARNING:
-        stack_trace = kwargs['stack_trace']
-        the_msg = '{}\nerror message={}\n{}\n{}'.format(
-            msg, str(type(exp)), str(exp.args), stack_trace)
+                stack_trace = kwargs['stack_trace']
+                # error_str = '\n'.join(str(s) for s in exp.args if isinstance(s, six.string_types))
+                the_msg = '{}\nerror message={}\n\n{}'.format(
+                    msg, error_str, stack_trace)
 
     if jira_client:
         jira_client.task_handler(status, msg, task_referal)

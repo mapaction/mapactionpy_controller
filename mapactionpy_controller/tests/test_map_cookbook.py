@@ -429,13 +429,13 @@ class TestMapCookBook(TestCase):
 
                 replacement_lyrs.append(new_lyr)
 
-            print('test_get_map_frame_extents')
-            print('expected_result = {}'.format(expected_result))
+            # print('test_get_map_frame_extents')
+            # print('expected_result = {}'.format(expected_result))
             test_frame = test_recipe.map_frames.pop()
             test_frame.crs = 'epsg:4326'
             test_frame.layers = replacement_lyrs
             test_frame.calc_extent(state=test_recipe)
             actual_result = test_frame.extent
-            print('actual_result = {}'.format(actual_result))
+            # print('actual_result = {}'.format(actual_result))
             for actual, expected in zip(actual_result, expected_result):
                 self.assertAlmostEqual(actual, expected)
