@@ -76,7 +76,7 @@ class JiraClient():
     def __del__(self):
         try:
             self.jira_con.kill_session()
-        except TypeError:
+        except (TypeError, AttributeError):
             pass
 
     def task_handler(self, fail_threshold, msg, task_referal=None):
