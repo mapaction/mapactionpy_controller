@@ -95,10 +95,11 @@ def _get_requires_list():
         ])
 
     if sys.platform == 'win32' and not can_import_geo_packages():
-        requires.extend([
-            'mapactionpy_controller_dependancies@git+'
-            'https://github.com/mapaction/mapactionpy_controller_dependencies.git'
-        ])
+        requires.extend(['pytz'])
+        # requires.extend([
+        #     'mapactionpy_controller_dependancies@git+'
+        #     'https://github.com/mapaction/mapactionpy_controller_dependencies.git'
+        # ])
     else:
         requires.extend([
             'Fiona',
