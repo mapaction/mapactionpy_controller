@@ -75,4 +75,4 @@ deploy:
   skip_cleanup: true
   on:
     all_branches: true
-    condition: ${TRAVIS_OS_NAME,,} =~ ^linux$ && ${TRAVIS_BRANCH,,} =~ ^(master|${TRAVIS_TAG,,})$
+    condition: ${TRAVIS_OS_NAME,,} =~ ^linux$ && ${TRAVIS_BRANCH,,} =~ ^(master|${TRAVIS_TAG,,})$ &&  ${TRAVIS_PYTHON_VERSION,,} =~ ^3
