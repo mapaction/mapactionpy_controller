@@ -105,6 +105,11 @@ class TestCLI(TestCase):
             self.assertRaises(SystemExit, cli.entry_point)
 
     @skip('Not implenmented yet')
+    def test_cli_output_to_non_terminal(self):
+        out_msg = 'fail - Not implenmented yet'
+        self.assertRegexpMatches(out_msg, '20\d\d-\d\d-\d\d \d\d:\d\d:\d\d')
+
+    @skip('Not implenmented yet')
     def test_cli_with_cmf_deduced_from_current_dir(self):
         # TODO
         self.fail()
