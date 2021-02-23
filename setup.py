@@ -104,7 +104,7 @@ def _get_requires_list():
         #     'https://github.com/mapaction/mapactionpy_controller_dependencies.git'
         # ])
     else:
-         # Test the underlying version of GDAL, so that we can install the matching python bindings
+        # Test the underlying version of GDAL, so that we can install the matching python bindings
         try:
             # Test the underlying version of GDAL, so that we can install the matching python bindings
             gdal_cmd_ver = subprocess.check_output(['gdal-config', '--version'])
@@ -129,6 +129,7 @@ def _get_requires_list():
             )
 
     return requires
+
 
 setup(
     name='mapactionpy_controller',
