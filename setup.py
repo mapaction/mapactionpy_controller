@@ -99,34 +99,23 @@ def _get_requires_list():
             'pytz',
             'mapactionpy_controller_dependencies'
         ])
-        # requires.extend([
-        #     'mapactionpy_controller_dependancies@git+'
-        #     'https://github.com/mapaction/mapactionpy_controller_dependencies.git'
-        # ])
     else:
-        # Test the underlying version of GDAL, so that we can install the matching python bindings
         try:
             # Test the underlying version of GDAL, so that we can install the matching python bindings
             gdal_cmd_ver = subprocess.check_output(['gdal-config', '--version'])
             gdal_ver = gdal_cmd_ver.decode('ascii').strip()
             gdal_str = 'GDAL=={}'.format(gdal_ver)
-            requires.extend([
-                'Fiona',
-                'pyproj',
-                'Shapely',
-                gdal_str,
-                'Rtree',
-                'geopandas'
-            ])
         except OSError:
-            # from osgeo import gdal  # noqa: F401
-            # gdal_ver = gdal.__version__
             gdal_str = 'GDAL'
-            raise RuntimeError(
-                'Cannot complete setup.py. mapactionpy_controller requires GDAL to be installed and'
-                ' available on the path. setup.py runs this command `gdal-config', '--version` to'
-                ' determine which version of the python GDAL libary is required.'
-            )
+
+        requires.extend([
+            'Fiona',
+            'pyproj',
+            'Shapely',
+            gdal_str,
+            'Rtree',
+            'geopandas'
+        ])
 
     return requires
 
