@@ -204,13 +204,16 @@ def get_args():
               ' be specified together.)')
     )
 
-    return mainparser.parse_args()
+    return mainparser
 
 
 def entry_point():
-    args = get_args()
-    args.func(args)
-
+    mainparser = get_args()
+    args =  mainparser.parse_args()
+    try:
+        args.func(args)
+    except AttributeError:
+        mainparser.print_usage()
 
 if __name__ == "__main__":
     entry_point()
