@@ -18,8 +18,11 @@ def readme():
 def _get_version_number():
     travis_build = environ.get('TRAVIS_BUILD_NUMBER')
     travis_tag = environ.get('TRAVIS_TAG')
+    repo_slug = environ.get('TRAVIS_REPO_SLUG')
+    if repo_slug:
+        repo_slug = repo_slug.lower().strip()
 
-    if travis_build:
+    if travis_build and (repo_slug == 'mapaction/mapactionpy_controller'):
         if travis_tag:
             version = travis_tag
         else:
@@ -95,33 +98,24 @@ def _get_requires_list():
         ])
 
     if sys.platform == 'win32' and not can_import_geo_packages():
-        requires.extend(['pytz'])
-        # requires.extend([
-        #     'mapactionpy_controller_dependancies@git+'
-        #     'https://github.com/mapaction/mapactionpy_controller_dependencies.git'
-        # ])
-    else:
         requires.extend([
-            'Fiona',
-            'pyproj',
-            'Shapely'
+            'pytz',
+            'mapactionpy_controller_dependencies'
         ])
-
-        # Test the underlying version of GDAL, so that we can install the matching python bindings
+    else:
         try:
             # Test the underlying version of GDAL, so that we can install the matching python bindings
             gdal_cmd_ver = subprocess.check_output(['gdal-config', '--version'])
             gdal_ver = gdal_cmd_ver.decode('ascii').strip()
             gdal_str = 'GDAL=={}'.format(gdal_ver)
-
         except OSError:
-            # from osgeo import gdal  # noqa: F401
-            # gdal_ver = gdal.__version__
             gdal_str = 'GDAL'
 
-        requires.extend([gdal_str])
-
         requires.extend([
+            'Fiona',
+            'pyproj',
+            'Shapely',
+            gdal_str,
             'Rtree',
             'geopandas'
         ])
