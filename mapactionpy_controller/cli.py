@@ -209,11 +209,12 @@ def get_args():
 
 def entry_point():
     mainparser = get_args()
-    args =  mainparser.parse_args()
+    args = mainparser.parse_args()
     try:
         args.func(args)
     except AttributeError:
         mainparser.print_usage()
+
 
 if __name__ == "__main__":
     entry_point()
