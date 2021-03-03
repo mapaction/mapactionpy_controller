@@ -296,15 +296,15 @@ class RecipeLayer:
         recipe = kwargs['state']
 
         if not self.data_source_path.endswith('.shp'):
-            logging.debug("Unable to check schema on for data sources which aren't shapefiles."
-                          " Skipping schema check on file: {}".format(self.data_source_path))
-            return recipe 
+            logging.info("Unable to check schema on for data sources which aren't shapefiles."
+                         " Skipping schema check on file: {}".format(self.data_source_path))
+            return recipe
 
         # Validate
         try:
             # Check for self consistancy before proceeding
             self._check_lyr_is_in_recipe(recipe)
-            
+
             # Only load one row since we are only checking the schema
             gdf = geopandas.read_file(self.data_source_path, rows=1)
             # Make columns needed for validation
