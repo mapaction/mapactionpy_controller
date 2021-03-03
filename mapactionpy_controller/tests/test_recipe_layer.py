@@ -239,6 +239,23 @@ properties:
             ve = arcm.exception
             self.assertIsInstance(ve.args[0], recipe_layer.FixSchemaErrorTask)
 
+        # test a logger is call for case where a raster layer is tested. This unittest
+        # is only available for py3.4+, though the production code is required for py2.7
+        if six.PY3:
+            test_lyr.data_source_path = os.path.join(
+                self.parent_dir, 'tests', 'testfiles', 'test_shp_files',
+                'lbn_evel_dem_ras_s1_pp_cdr.tif')
+            test_lyr.data_schema = passing_schema
+
+            with self.assertLogs(level='INFO') as cm:
+                result = test_lyr.check_data_against_schema(state=test_recipe)
+
+            print('cm.output = {}'.format(cm.output))
+            self.assertRegexpMatches(
+                cm.output.pop(),
+                'Unable to check schema on for data sources which aren.t shapefiles'
+            )
+
     def test_calc_extent(self):
         test_recipe = MapRecipe(fixtures.recipe_with_layer_name_only, self.lyr_props)
 

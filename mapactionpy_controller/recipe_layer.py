@@ -293,14 +293,20 @@ class RecipeLayer:
             logging.debug(error_msg)
             raise ValueError(error_msg)
 
+        recipe = kwargs['state']
+
+        if not self.data_source_path.endswith('.shp'):
+            logging.info("Unable to check schema on for data sources which aren't shapefiles."
+                         " Skipping schema check on file: {}".format(self.data_source_path))
+            return recipe
+
         # Validate
         try:
-            recipe = kwargs['state']
+            # Check for self consistancy before proceeding
             self._check_lyr_is_in_recipe(recipe)
 
-            from jsonschema import validate
-            gdf = geopandas.read_file(self.data_source_path)
-
+            # Only load one row since we are only checking the schema
+            gdf = geopandas.read_file(self.data_source_path, rows=1)
             # Make columns needed for validation
             gdf['geometry_type'] = gdf['geometry'].apply(lambda x: x.geom_type)
             # print(gdf.crs)
@@ -310,7 +316,7 @@ class RecipeLayer:
                 gdf['crs'] = gdf.crs
 
             instance_list = gdf.to_dict('list')
-            validate(instance=instance_list, schema=self.data_schema)
+            jsonschema.validate(instance=instance_list, schema=self.data_schema)
             logging.debug('Successfully validates jsonschema for gis data')
         # except jsonschema.ValidationError as jsve:
         except Exception as exp:
