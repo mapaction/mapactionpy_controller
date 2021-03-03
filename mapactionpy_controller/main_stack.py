@@ -26,6 +26,7 @@ Note: main_stack.py also includes humanfriendly.terminal which ought really to b
 import logging
 import traceback
 import six
+import sys
 from collections import deque
 
 import humanfriendly.terminal as hft
@@ -163,7 +164,6 @@ def process_stack(step_list, initial_state):
             'exp': exp,
             'stack_trace': traceback.format_exc()
         }
-
-        # print(pass_back)
-
+        # print error and then exist with a non-zero exit code
         parse_feedback(logging.ERROR, 'Unable to continue following the previous error', None, **pass_back)
+        sys.exit(1)
