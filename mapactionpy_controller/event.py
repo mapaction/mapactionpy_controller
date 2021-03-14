@@ -37,7 +37,7 @@ class Event:
                 # self.donors = event_def['donors']
                 self.country_name = _parse_country_name(event_def)
         else:
-                print("File does'nt exist")
+                print("File does not exist")
                 return 
         
 
