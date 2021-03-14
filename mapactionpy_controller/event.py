@@ -8,35 +8,38 @@ validate_against_event_schema = _get_validator_for_config_schema('event-v0.2.sch
 
 class Event:
     def __init__(self, event_file):
+        if(os.path.exists(event_file)):
+            self.path = os.path.dirname(event_file)
+            with open(event_file, 'r') as f:
+                event_def = json.loads(f.read())
+                validate_against_event_schema(event_def)
 
-        self.path = os.path.dirname(event_file)
-        with open(event_file, 'r') as f:
-            event_def = json.loads(f.read())
-            validate_against_event_schema(event_def)
-
-            # Doubtless there is a more elegant way to do this.
-            # 1x file path
-            self.cmf_descriptor_path = os.path.join(self.path, event_def['cmf_descriptor_path'])
-            # 3x integers
-            self.default_jpeg_res_dpi = int(event_def['default_jpeg_res_dpi'])
-            self.default_pdf_res_dpi = int(event_def['default_pdf_res_dpi'])
-            self.default_emf_res_dpi = int(event_def['default_emf_res_dpi'])
-            # 12x others
-            self.operation_name = event_def['operation_name']
-            self.glide_number = event_def['glide_number']
-            self.affected_country_iso3 = event_def['affected_country_iso3'].lower()
-            self.time_zone = event_def['time_zone']
-            self.language_iso2 = event_def['language_iso2']
-            self.operation_id = (event_def['operation_id']).lower()
-            self.default_source_organisation = event_def['default_source_organisation']
-            self.default_source_organisation_url = event_def['default_source_organisation_url']
-            self.default_publishing_base_url = event_def['default_publishing_base_url']
-            self.deployment_primary_email = event_def['deployment_primary_email']
-            self.default_disclaimer_text = event_def['default_disclaimer_text']
-            self.default_donor_credits = event_def['default_donor_credits']
-            # self.donors = event_def['donors']
-            self.country_name = _parse_country_name(event_def)
-
+                # Doubtless there is a more elegant way to do this.
+                # 1x file path
+                self.cmf_descriptor_path = os.path.join(self.path, event_def['cmf_descriptor_path'])
+                # 3x integers
+                self.default_jpeg_res_dpi = int(event_def['default_jpeg_res_dpi'])
+                self.default_pdf_res_dpi = int(event_def['default_pdf_res_dpi'])
+                self.default_emf_res_dpi = int(event_def['default_emf_res_dpi'])
+                # 12x others
+                self.operation_name = event_def['operation_name']
+                self.glide_number = event_def['glide_number']
+                self.affected_country_iso3 = event_def['affected_country_iso3'].lower()
+                self.time_zone = event_def['time_zone']
+                self.language_iso2 = event_def['language_iso2']
+                self.operation_id = (event_def['operation_id']).lower()
+                self.default_source_organisation = event_def['default_source_organisation']
+                self.default_source_organisation_url = event_def['default_source_organisation_url']
+                self.default_publishing_base_url = event_def['default_publishing_base_url']
+                self.deployment_primary_email = event_def['deployment_primary_email']
+                self.default_disclaimer_text = event_def['default_disclaimer_text']
+                self.default_donor_credits = event_def['default_donor_credits']
+                # self.donors = event_def['donors']
+                self.country_name = _parse_country_name(event_def)
+        else:
+                print("File does'nt exist")
+                return 
+        
 
 def _parse_country_name(event_def):
     """
