@@ -154,8 +154,8 @@ class BaseRunnerPlugin(object):
         To select the appropriate template it uses two inputs.
         * The `recipe.template` value, which is a regex for the filename of the possible templates
         * The target asspect ratio. If the aspect ratio of the target data can be determined then this is
-          also used to select the best matching template, amogst those which match the regex. If the 
-          target ratio cannot be determined fromsource gis data, then the target ratio of 1.0 will be 
+          also used to select the best matching template, amogst those which match the regex. If the
+          target ratio cannot be determined fromsource gis data, then the target ratio of 1.0 will be
           used.
         """
         recipe = kwargs['state']
