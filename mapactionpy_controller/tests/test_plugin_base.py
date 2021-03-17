@@ -1,5 +1,9 @@
 from mapactionpy_controller.plugin_base import BaseRunnerPlugin
 from mapactionpy_controller.event import Event
+from mapactionpy_controller.crash_move_folder import CrashMoveFolder
+from mapactionpy_controller.layer_properties import LayerProperties
+from mapactionpy_controller.map_recipe import MapRecipe
+import fixtures
 import os
 from unittest import TestCase, skip
 import six
@@ -16,8 +20,11 @@ class DummyRunner(BaseRunnerPlugin):
     def __init__(self, hum_event):
         super(DummyRunner, self).__init__(hum_event)
 
-    def get_templates(self, **kwargs):
-        return kwargs['state']
+    def get_aspect_ratios_of_templates(self, possible_templates, recipe):
+        return [
+            ('one', 1.0),
+            ('two', 2.0)
+        ]
 
     def export_maps(self, **kwargs):
         return kwargs['state']
@@ -41,6 +48,8 @@ class TestPluginBase(TestCase):
         self.dir_to_valid_cmf_des = os.path.join(self.parent_dir, 'example')
         self.path_to_valid_cmf_des = os.path.join(self.dir_to_valid_cmf_des, 'cmf_description_flat_test.json')
         self.path_to_event_des = os.path.join(self.dir_to_valid_cmf_des, 'event_description.json')
+        self.cmf = CrashMoveFolder(self.path_to_valid_cmf_des)
+        self.lyr_props = LayerProperties(self.cmf, '', verify_on_creation=False)
         self.dummy_runner = DummyRunner(Event(self.path_to_event_des))
 
     def test_get_all_templates_by_regex(self):
@@ -124,6 +133,48 @@ class TestPluginBase(TestCase):
             actual_result = self.dummy_runner._get_template_by_aspect_ratio(template_aspect_ratios, target_ar)
             # print('expect_result={}, actual_result={}'.format(expect_result, actual_result))
             self.assertEqual(expect_result, actual_result)
+
+    def test_get_templates(self):
+
+        # Case 1
+        # Pre-existing valid `map_project_path` value
+        expect_result = MapRecipe(fixtures.recipe_test_for_search_for_shapefiles, self.lyr_props)
+        test_recipe = MapRecipe(fixtures.recipe_test_for_search_for_shapefiles, self.lyr_props)
+        expect_result.map_project_path = '/path/that/exists.mxd'
+        test_recipe.map_project_path = '/path/that/exists.mxd'
+
+        with mock.patch('mapactionpy_controller.plugin_base.os.path.exists') as mock_path_exists:
+            mock_path_exists.return_value = True
+            actual_result = self.dummy_runner.get_templates(state=test_recipe)
+
+        self.assertEqual(actual_result, expect_result)
+
+        # Case 2
+        # Non-None `map_project_path` value which points of non-existing file
+        test_recipe = MapRecipe(fixtures.recipe_test_for_search_for_shapefiles, self.lyr_props)
+        test_recipe.map_project_path = '/path/that/does/not/exists.mxd'
+
+        with mock.patch('mapactionpy_controller.plugin_base.os.path.exists') as mock_path_exists:
+            mock_path_exists.return_value = False
+            with self.assertRaises(ValueError):
+                self.dummy_runner.get_templates(state=test_recipe)
+
+        # Case 3 & 4
+        # mf.extent exists and has a valid value
+        # mf.entent is None
+        test_extents = [
+            ('one', (1, 1, 5, 5)),
+            ('two', (1, 1, 9, 5)),
+            ('one', None)
+        ]
+
+        for expected_result, extent in test_extents:
+            print(expected_result, extent)
+            test_recipe = MapRecipe(fixtures.recipe_test_for_search_for_shapefiles, self.lyr_props)
+            test_recipe.map_frames[0].extent = extent
+            # mf.extent = extent
+            actual_recipe = self.dummy_runner.get_templates(state=test_recipe)
+            self.assertEquals(expected_result, actual_recipe.template_path)
 
     @skip('Not ready yet')
     def test_get_next_map_version_number(self):

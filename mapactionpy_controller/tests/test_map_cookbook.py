@@ -392,7 +392,7 @@ class TestMapCookBook(TestCase):
         # Simple union with two lyrs of same crs
         case2_list = [
             ('case2_lyrA', (33, 51, 36, 58), 'epsg:4326'),
-            ('case2_lyrB', (15, 52, 35, 55),  'epsg:4326')
+            ('case2_lyrB', (15, 52, 35, 55), 'epsg:4326')
         ]
         case2_result = (15, 51, 36, 58)
 
@@ -401,7 +401,7 @@ class TestMapCookBook(TestCase):
         # 'epsg:4326'== WGS1984, 'epsg:3785' == Web Mercator
         case3_list = [
             ('case3_lyrA', (33, 51, 36, 58), 'epsg:4326'),
-            ('case3_lyrB', (1669792.36, 6800125.45, 3896182.18, 7361866.11),  'epsg:3785')
+            ('case3_lyrB', (1669792.36, 6800125.45, 3896182.18, 7361866.11), 'epsg:3785')
         ]
         case3_result = (15, 51, 36, 58)
 

@@ -102,7 +102,7 @@ class BaseRunnerPlugin(object):
 
         # The option with the smallest aspect ratio that is larger than target_ar
         larger_ar = min(
-            [(templ_path, templ_ar) for templ_path, templ_ar in template_aspect_ratios if templ_ar > target_ar],
+            [(templ_path, templ_ar) for templ_path, templ_ar in template_aspect_ratios if templ_ar >= target_ar],
             key=itemgetter(1))
         # The option with the largest aspect ratio that is smaller than target_ar
         smaller_ar = max(
@@ -133,11 +133,11 @@ class BaseRunnerPlugin(object):
         @param possible_templates: A list of paths to possible templates
         @returns: A list of tuples. For each tuple the first element is the path to the template. The second
                   element is the aspect ratio of the largest* map frame within that template.
-                  See `_get_largest_map_frame` for the description of hour largest is determined.
+                  See `_get_largest_map_frame` for the description of how largest is determined.
         @raises NotImplementedError: In the base class.
         """
         raise NotImplementedError(
-            'BaseRunnerPlugin is an abstract class and the `_get_aspect_ratios_of_templates`'
+            'BaseRunnerPlugin is an abstract class and the `get_aspect_ratios_of_templates`'
             ' method cannot be called directly')
 
     def _get_aspect_ratio_of_bounds(self, bounds):
