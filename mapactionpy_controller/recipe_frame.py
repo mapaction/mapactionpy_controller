@@ -152,21 +152,26 @@ class RecipeFrame:
         for r_lyr in self._filter_lyr_for_use_in_frame_extent():
             # Get the projection transformation
             # print('from_lyr_crs = {}'.format(r_lyr.crs))
-            project_func = partial(
-                pyproj.transform,
-                pyproj.Proj(init=r_lyr.crs),
-                to_crs
-            )
-            # print('from_lyr_crs = {}'.format(r_lyr.crs))
 
-            # Create a shapely box from the lyr's bounds
-            l_ext = box(*r_lyr.extent)
-            # reproject the lyr bounds
-            projected_lyr_extents.append(transform(project_func, l_ext))
+            if r_lyr.crs:
+                project_func = partial(
+                    pyproj.transform,
+                    pyproj.Proj(init=r_lyr.crs),
+                    to_crs
+                )
+                # print('from_lyr_crs = {}'.format(r_lyr.crs))
+
+                # Create a shapely box from the lyr's bounds
+                l_ext = box(*r_lyr.extent)
+                # reproject the lyr bounds
+                projected_lyr_extents.append(transform(project_func, l_ext))
 
         # print('projected_lyr_extents = {}'.format(projected_lyr_extents))
         # Now get the union of all of the extents
-        self.extent = cascaded_union(projected_lyr_extents).bounds
+        self.extent = None
+        if projected_lyr_extents:
+            self.extent = cascaded_union(projected_lyr_extents).bounds
+
         return recipe
 
     def __eq__(self, other):
