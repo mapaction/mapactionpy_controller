@@ -148,6 +148,16 @@ class BaseRunnerPlugin(object):
         return float(dx)/dy
 
     def get_templates(self, **kwargs):
+        """
+        Updates the recipe's `template_path` value. The result is the absolute path to the template.
+
+        To select the appropriate template it uses two inputs.
+        * The `recipe.template` value, which is a regex for the filename of the possible templates
+        * The target asspect ratio. If the aspect ratio of the target data can be determined then this is
+          also used to select the best matching template, amogst those which match the regex. If the 
+          target ratio cannot be determined fromsource gis data, then the target ratio of 1.0 will be 
+          used.
+        """
         recipe = kwargs['state']
         # If there already is a valid `recipe.map_project_path` just skip with method
         if recipe.map_project_path:
@@ -163,7 +173,11 @@ class BaseRunnerPlugin(object):
         possible_aspect_ratios = self.get_aspect_ratios_of_templates(possible_templates, recipe)
 
         mf = recipe.get_frame(recipe.principal_map_frame)
-        target_aspect_ratio = self._get_aspect_ratio_of_bounds(mf.extent)
+        # Default value
+        target_aspect_ratio = 1.0
+        # If the MapFrame's target extent is not None, then use that:
+        if mf.extent:
+            target_aspect_ratio = self._get_aspect_ratio_of_bounds(mf.extent)
 
         # use logic to workout which template has best aspect ratio
         # obviously not this logic though:
