@@ -151,7 +151,7 @@ class RecipeFrame:
 
         for r_lyr in self._filter_lyr_for_use_in_frame_extent():
             # Get the projection transformation
-            print('from_lyr_crs = {}'.format(r_lyr.crs))
+            # print('from_lyr_crs = {}'.format(r_lyr.crs))
 
             if r_lyr.crs:
                 project_func = partial(
