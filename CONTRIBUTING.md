@@ -20,12 +20,21 @@ The individual plugins do not need to support all of these versions of Python.
 
 The `six` module is helpful for cases where the syntax or the dependencies differ. See [examples](https://github.com/mapaction/mapactionpy_controller/search?q=six).
 
+
+Other related repos
+===============
+
+* [ArcMap plugin for MapChef](https://github.com/mapaction/mapactionpy_arcmap) (in production use)
+* [QGIS plugin for MapChef](https://github.com/mapaction/mapactionpy_qgis/) (planned)
+* [Vector Tile generation](https://github.com/mapaction/vector-tiles) (planned - possibly as a plugin for MapChef)
+* [ArcGIS Pro plugin for MapChef](https://github.com/mapaction/mapactionpy_arcpro) (in development)
+* [Dashboard proof of concept](https://github.com/mapaction/rolling-data-scramble-dashboard-poc) (generates a Google Spreadsheet to summarise the status of available data for the specified countries and maps).
+
 Tests
 =====
 Please accompany any contribution with relevant unit tests or integration tests. Two scripts exist to help with local testing:
 
-`create_new_venv.cmd`
---------
+### `create_new_venv.cmd`
 This script creates several virtual envs covering key target environments. 
 
 The following environments already exist on the development computer:
@@ -40,8 +49,7 @@ Additionally:
 
 This script is only run occasionally to (re)create the test environments.
 
-`all-tests.cmd`
---------
+### `all-tests.cmd`
 This script runs linting and unit tests for each of the environments established by `create_new_venv.cmd`. It also creates a local coverage report in './htmlcov/index.html'.
 
 This script is intended to be run regularly during development.
