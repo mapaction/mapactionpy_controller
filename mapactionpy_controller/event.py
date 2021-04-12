@@ -38,7 +38,7 @@ class Event:
             self.default_disclaimer_text = event_def['default_disclaimer_text']
             self.default_donor_credits = event_def['default_donor_credits']
             # self.donors = event_def['donors']
-            self.country_name = _parse_country_name(event_def) 
+            self.country_name = _parse_country_name(event_def)
 
     def _is_valid_group_id(self, operation_id, default_publishing_base_url):
         # Check if valid group number then return
