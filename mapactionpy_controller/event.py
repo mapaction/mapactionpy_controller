@@ -1,5 +1,6 @@
 import json
 import urllib
+import urllib.error
 import os
 import pycountry
 from mapactionpy_controller import _get_validator_for_config_schema
@@ -33,25 +34,29 @@ class Event:
             self.default_source_organisation_url = event_def['default_source_organisation_url']
             self.default_publishing_base_url = event_def['default_publishing_base_url']
             op_id = (event_def['operation_id']).lower()
-            self.operation_id = self._is_valid_group_id(op_id, self.default_publishing_base_url)
+            self.operation_id = _is_valid_group_id(op_id, self.default_publishing_base_url)
             self.deployment_primary_email = event_def['deployment_primary_email']
             self.default_disclaimer_text = event_def['default_disclaimer_text']
             self.default_donor_credits = event_def['default_donor_credits']
             # self.donors = event_def['donors']
             self.country_name = _parse_country_name(event_def)
 
-    def _is_valid_group_id(self, operation_id, default_publishing_base_url):
-        # Check if valid group number then return
-        url = default_publishing_base_url + '/api/3/action/group_show?id={}'.format(operation_id)
-        try:
-            response = urllib.request.urlopen(url)
-            response_dict = json.loads(response.read())
-        if not response_dict['success']:
-            raise ValueError('Not a valid Group ID on the target CKAN Site')
-        except Exception:
-            raise ValueError('Not a valid Group ID on the target CKAN Site')
-    
-        return operation_id
+
+def _is_valid_group_id(operation_id, default_publishing_base_url):
+    # Check if valid group number then return
+    url = default_publishing_base_url + '/api/3/action/group_show?id={}'.format(operation_id)
+    try:
+        response = urllib.request.urlopen(url)
+        assert response.code == 200
+    except urllib.error.HTTPError as e:
+        print(e.code)
+        raise ValueError('Not a valid URL, error = {}'.format(e.code))
+    response_dict = json.loads(response.read())
+    if response_dict['success'] == True:
+        print("Success")
+    else:
+        raise ValueError('Not a valid Group ID on the target CKAN Site')
+    return operation_id
 
 
 def _parse_country_name(event_def):
