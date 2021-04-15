@@ -45,11 +45,12 @@ class Event:
         url = default_publishing_base_url + '/api/3/action/group_show?id={}'.format(operation_id)
         try:
             response = urllib.request.urlopen(url)
-        except Exception:
-            raise ValueError('Not a valid Group ID on the target CKAN Site')
-        response_dict = json.loads(response.read())
+            response_dict = json.loads(response.read())
         if not response_dict['success']:
             raise ValueError('Not a valid Group ID on the target CKAN Site')
+        except Exception:
+            raise ValueError('Not a valid Group ID on the target CKAN Site')
+    
         return operation_id
 
 
