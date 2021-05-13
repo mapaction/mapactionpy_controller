@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 def _get_secrets_from_netrc():
     """
-    If `MAPCHEF_NETRC` exists as an environment varible then that value will be used as the 
+    If `MAPCHEF_NETRC` exists as an environment varible then that value will be used as the
     absolute path to the .netrc file.
     If `MAPCHEF_NETRC` does not exists as an environment varible, then the 'HOME' and 'USERPROFILE'
     locations will be searched for `.netrc` files.
