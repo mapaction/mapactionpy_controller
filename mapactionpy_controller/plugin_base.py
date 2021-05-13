@@ -250,11 +250,12 @@ class BaseRunnerPlugin(object):
                 for key in list(properties.keys()):
                     export_params[str(key)] = properties[str(key)]
             export_params = self._do_export(export_params, recipe)
+            self._check_plugin_supplied_params(export_params)
+            self.zip_exported_files(export_params)
+            logger.info('Exported the map using these export_params = "{}"'.format(export_params))
         except Exception as exp:
             logger.error('Failed to export the map. export_params = "{}"'.format(export_params))
             logger.error(exp)
-
-        self.zip_exported_files(export_params)
 
     def _create_export_dir(self, export_params, recipe):
         # Accumulate parameters for export XML
@@ -276,9 +277,43 @@ class BaseRunnerPlugin(object):
         return export_params
 
     def _do_export(self, export_params, recipe):
+        """
+        Note implenmenting subclasses, must return teh dict `export_params`, with
+        key/value pairs which satisfies the `_check_plugin_supplied_params` method.
+        """
         raise NotImplementedError(
             'BaseRunnerPlugin is an abstract class and the `export_maps`'
             ' method cannot be called directly')
+
+    def _check_plugin_supplied_params(self, params):
+        """
+        Checks for the presence of a number of keys in the `export_params` returned by `_do_export`.
+        This method does not check for the validity/sanity of any of the values.
+        """
+        mininal_keys = {
+            "coreFileName",
+            "productType",
+            'themes',
+            'pdfFileLocation',
+            'jpgFileLocation',
+            'pngThumbNailFileLocation',
+            'mapNumber',
+            'productName',
+            'versionNumber',
+            'summary',
+            "xmin",
+            "ymin",
+            "xmax",
+            "ymax",
+            'exportXmlFileLocation'
+        }
+
+        missing_keys = mininal_keys.difference(set(params.keys()))
+        if missing_keys:
+            if len(missing_keys) > 0:
+                raise ValueError(
+                    'Error in plugin. Method `_do_export` did not return the required export_parameters.'
+                    ' The missing parameter(s) is/are: {}'.format(', '.join(mininal_keys)))
 
     def zip_exported_files(self, export_params):
         # Get key params as local variables

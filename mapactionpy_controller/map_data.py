@@ -18,10 +18,8 @@ class MapData:
 
         self.jpgfilename = row["jpgfilename"]
         self.pdffilename = row["pdffilename"]
-        self.emffilename = row.get("emffilename", "")
         self.jpgfilesize = row["jpgfilesize"]
         self.pdffilesize = row["pdffilesize"]
-        self.emffilesize = row.get("emffilesize", '')
 
         self.title = row["title"]
         self.ref = row["ref"]
@@ -55,5 +53,8 @@ class MapData:
         self.paperymax = row["paperymax"]
         self.paperymin = row["paperymin"]
         self.accessnotes = row["accessnotes"]
+        self.emffilename = row["emffilename"]
+        self.emffilesize = row["emffilesize"]
+
         self.product_type = row["product-type"]  # Name contains hyphen "-"
         self.language_iso2 = row["language-iso2"]  # Name contains hyphen "-"

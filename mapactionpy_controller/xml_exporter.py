@@ -5,15 +5,15 @@ from mapactionpy_controller.map_doc import MapDoc
 
 
 class XmlExporter:
-    def __init__(self, event, chef):
+    def __init__(self, event):
         self.event = event
-        self.chef = chef
+        # self.chef = chef
 
     def write(self, params):
         # Set up dictionary for all the values required for the export XML file
         exportPropertiesDict = self.setExportParameters(params)
-        exportData = MapData(exportPropertiesDict)
-        mapDocument = MapDoc(exportData)
+        map_data = MapData(exportPropertiesDict)
+        mapDocument = MapDoc(map_data)
 
         exportXmlFileName = params["coreFileName"]+".xml"
         exportXmlFileLocation = os.path.join(params["exportDirectory"], exportXmlFileName)
@@ -62,6 +62,8 @@ class XmlExporter:
         exportPropertiesDict["createtime"] = params.get('createtime', "")
         exportPropertiesDict["scale"] = params.get('scale', "")
         exportPropertiesDict["datum"] = params.get('datum', "")
+        exportPropertiesDict["emffilename"] = params.get('emffilename', "")
+        exportPropertiesDict["emffilesize"] = params.get('emffilesize', "")
         exportPropertiesDict["language-iso2"] = self.event.language_iso2
         exportPropertiesDict["pdfresolutiondpi"] = self.event.default_pdf_res_dpi
         exportPropertiesDict["jpgresolutiondpi"] = self.event.default_jpeg_res_dpi
@@ -80,12 +82,6 @@ class XmlExporter:
             exportPropertiesDict["language"] = language.name
         else:
             exportPropertiesDict["language"] = None
-
-        if (self.chef is not None):
-            exportPropertiesDict["createdate"] = self.chef.createDate
-            exportPropertiesDict["createtime"] = self.chef.createTime
-            exportPropertiesDict["scale"] = self.chef.scale()
-            exportPropertiesDict["datum"] = self.chef.spatialReference()
 
         # return
         return exportPropertiesDict
