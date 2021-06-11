@@ -1,5 +1,6 @@
 from xml.etree.ElementTree import Element, SubElement, tostring
 import xml.dom.minidom
+import six
 
 
 class MapDoc:
@@ -51,17 +52,17 @@ class MapDoc:
         status = SubElement(mapdata, 'status')
         status.text = str(self.mapdata.status)
 
-        xmin = SubElement(mapdata, 'xmin')
-        xmin.text = str(self.mapdata.xmin)
-
-        ymin = SubElement(mapdata, 'ymin')
-        ymin.text = str(self.mapdata.ymin)
-
         xmax = SubElement(mapdata, 'xmax')
         xmax.text = str(self.mapdata.xmax)
 
+        xmin = SubElement(mapdata, 'xmin')
+        xmin.text = str(self.mapdata.xmin)
+
         ymax = SubElement(mapdata, 'ymax')
         ymax.text = str(self.mapdata.ymax)
+
+        ymin = SubElement(mapdata, 'ymin')
+        ymin.text = str(self.mapdata.ymin)
 
         proj = SubElement(mapdata, 'proj')
         proj.text = str(self.mapdata.proj)
@@ -94,9 +95,17 @@ class MapDoc:
         location.text = str(self.mapdata.location)
 
         themes = SubElement(mapdata, 'themes')
-        for setTheme in self.mapdata.themes:
+
+        if not self.mapdata.themes:
+            SubElement(themes, 'theme')
+
+        if isinstance(self.mapdata.themes, six.string_types):
             theme = SubElement(themes, 'theme')
-            theme.text = setTheme
+            theme.text = self.mapdata.themes
+        else:
+            for setTheme in self.mapdata.themes:
+                theme = SubElement(themes, 'theme')
+                theme.text = setTheme
 
         scale = SubElement(mapdata, 'scale')
         scale.text = str(self.mapdata.scale)
@@ -113,8 +122,8 @@ class MapDoc:
         kmlresolutiondpi = SubElement(mapdata, 'kmlresolutiondpi')
         kmlresolutiondpi.text = str(self.mapdata.kmlresolutiondpi)
 
-        mxdfilename = SubElement(mapdata, 'mxdfilename')
-        mxdfilename.text = str(self.mapdata.mxdfilename)
+        mapfilename = SubElement(mapdata, 'mapfilename')
+        mapfilename.text = str(self.mapdata.mapfilename)
 
         paperxmax = SubElement(mapdata, 'paperxmax')
         paperxmax.text = str(self.mapdata.paperxmax)
@@ -143,8 +152,8 @@ class MapDoc:
         pdffilename = SubElement(mapdata, 'pdffilename')
         pdffilename.text = str(self.mapdata.pdffilename)
 
-        emffilename = SubElement(mapdata, 'emffilename')
-        emffilename.text = self.mapdata.emffilename
+        # emffilename = SubElement(mapdata, 'emffilename')
+        # emffilename.text = self.mapdata.emffilename
 
         jpgfilesize = SubElement(mapdata, 'jpgfilesize')
         jpgfilesize.text = str(self.mapdata.jpgfilesize)
@@ -152,11 +161,11 @@ class MapDoc:
         pdffilesize = SubElement(mapdata, 'pdffilesize')
         pdffilesize.text = str(self.mapdata.pdffilesize)
 
-        emffilesize = SubElement(mapdata, 'emffilesize')
-        if self.mapdata.emffilesize is not None:
-            emffilesize.text = str(self.mapdata.emffilesize)
-        else:
-            emffilesize.text = ""
+        # emffilesize = SubElement(mapdata, 'emffilesize')
+        # if self.mapdata.emffilesize is not None:
+        #     emffilesize.text = str(self.mapdata.emffilesize)
+        # else:
+        #     emffilesize.text = ""
 
         dom = xml.dom.minidom.parseString(tostring(mapDoc, encoding='utf-8', method='xml'))
         return(dom.toprettyxml())

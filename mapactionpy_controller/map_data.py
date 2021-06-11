@@ -39,7 +39,7 @@ class MapData:
         self.access = row["access"]
         self.summary = row["summary"]
         self.imagerydate = row["imagerydate"]
-        self.datasource = row["datasource"]
+        self.datasource = row["datasource"].strip()
         self.location = row["location"]
         self.themes = row["themes"]
         self.scale = row["scale"]
@@ -47,14 +47,14 @@ class MapData:
         self.jpgresolutiondpi = row["jpgresolutiondpi"]
         self.pdfresolutiondpi = row["pdfresolutiondpi"]
         self.kmlresolutiondpi = row["kmlresolutiondpi"]
-        self.mxdfilename = row["mxdfilename"]
+        self.mapfilename = row["mapfilename"]
         self.paperxmax = row["paperxmax"]
         self.paperxmin = row["paperxmin"]
         self.paperymax = row["paperymax"]
         self.paperymin = row["paperymin"]
         self.accessnotes = row["accessnotes"]
-        self.emffilename = row["emffilename"]
-        self.emffilesize = row["emffilesize"]
+        # self.emffilename = row["emffilename"]
+        # self.emffilesize = row["emffilesize"]
 
         self.product_type = row["product-type"]  # Name contains hyphen "-"
         self.language_iso2 = row["language-iso2"]  # Name contains hyphen "-"

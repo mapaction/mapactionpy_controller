@@ -9,7 +9,7 @@ import mapactionpy_controller.state_serialization as state_serialization
 from mapactionpy_controller import _get_validator_for_config_schema
 from mapactionpy_controller.recipe_frame import RecipeFrame
 from mapactionpy_controller.recipe_atlas import RecipeAtlas
-
+from dateutil.parser import parse as dateparse
 
 logger = logging.getLogger(__name__)
 validate_against_recipe_schema_v0_3 = _get_validator_for_config_schema('map-recipe-v0.3.schema')
@@ -20,7 +20,9 @@ class MapRecipe:
     """
     MapRecipe
     """
-    OPTIONAL_FIELDS = ('atlas', 'hum_event', 'map_project_path', 'runners', 'template_path', 'version_num')
+    OPTIONAL_FIELDS = (
+        'atlas', 'core_file_name', 'creation_time_stamp', 'export_metadata', 'export_path', 'hum_event',
+        'map_project_path', 'runners', 'template_path', 'version_num', 'zip_file_contents')
 
     def __init__(self, recipe_definition, lyr_props, hum_event=None):
         if isinstance(recipe_definition, dict):
@@ -44,11 +46,26 @@ class MapRecipe:
         # Optional fields
         self.hum_event = hum_event
         self.map_project_path = recipe_def.get('map_project_path', None)
+        self.creation_time_stamp = recipe_def.get('creation_time_stamp', None)
+        if self.creation_time_stamp:
+            self.creation_time_stamp = dateparse(self.creation_time_stamp)
+        self.core_file_name = recipe_def.get('core_file_name', None)
         if self.map_project_path:
             self.map_project_path = path.abspath(self.map_project_path)
+            if not self.core_file_name:
+                self.core_file_name = path.splitext(path.basename(self.map_project_path))[0]
+
+        self.export_path = recipe_def.get('export_path', None)
+        if self.export_path:
+            self.export_path = path.abspath(self.export_path)
+
         self.template_path = recipe_def.get('template_path', None)
         self.version_num = recipe_def.get('version_num', None)
         self.runners = recipe_def.get('runners', None)
+        # Default is an empty dict
+        self.export_metadata = recipe_def.get('export_metadata', {})
+        # Default is an empty list
+        self.zip_file_contents = recipe_def.get('zip_file_contents', [])
         atlas_def = recipe_def.get('atlas', None)
         if atlas_def:
             self.atlas = RecipeAtlas(atlas_def, self, lyr_props)

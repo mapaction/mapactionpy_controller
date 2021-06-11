@@ -188,9 +188,79 @@ class TestPluginBase(TestCase):
     def test_export_maps(self):
         self.fail()
 
-    @skip('Not ready yet')
     def test_create_export_dir(self):
-        self.fail()
+        test_recipe = MapRecipe(fixtures.recipe_test_for_search_for_shapefiles, self.lyr_props)
+        test_recipe.map_project_path = '/path/that/does/not/exists.mxd'
+
+        dummy_export_dir = '/xyz/'
+
+        if sys.platform == 'win32':
+            dummy_export_dir = 'C:\\xyz\\'
+
+        test_cases = [
+            ((dummy_export_dir, 'MA1234', 1), '{}MA1234{}v01'.format(dummy_export_dir, os.path.sep)),
+            ((dummy_export_dir, 'MA1234', 22), '{}MA1234{}v22'.format(dummy_export_dir, os.path.sep)),
+            ((dummy_export_dir, 'MA1234', 333), '{}MA1234{}v333'.format(dummy_export_dir, os.path.sep))
+        ]
+
+        with mock.patch('mapactionpy_controller.plugin_base.os.makedirs') as mock_makedirs:
+            mock_makedirs.return_value = None
+            for input_params, expect_result in test_cases:
+                self.dummy_runner.cmf.export_dir, test_recipe.mapnumber, test_recipe.version_num = input_params
+                actual_result = self.dummy_runner._create_export_dir(test_recipe)
+
+                self.assertEqual(actual_result.export_path, expect_result)
+
+    def test_check_paths_for_zip_contents(self):
+        test_recipe = MapRecipe(fixtures.recipe_test_for_search_for_shapefiles, self.lyr_props)
+
+        # Case 1: No files have been specified
+        test_recipe.zip_file_contents = []
+        fail_msg = 'No paths are specified'
+
+        with self.assertRaises(ValueError) as ve:
+            self.dummy_runner._check_paths_for_zip_contents(test_recipe)
+
+        if six.PY2:
+            self.assertRegexpMatches(str(ve.exception), fail_msg)
+        else:
+            self.assertRegex(str(ve.exception), fail_msg)
+
+        # Case 2: Two valid and two invalid paths. The invalid paths are correctly idenified in the error message.
+        # Mocking this across different platforms is too complex. Therefore use two arbitary files that exist within
+        # the repo and two fictional paths
+        invalid_path1 = '/xyz/abc'
+        invalid_path2 = '/abc/xyz'
+        test_recipe.zip_file_contents = [
+            self.path_to_valid_cmf_des,
+            invalid_path1,
+            self.path_to_event_des,
+            invalid_path2
+        ]
+
+        with self.assertRaises(ValueError) as ve:
+            self.dummy_runner._check_paths_for_zip_contents(test_recipe)
+
+        if six.PY2:
+            self.assertRegexpMatches(str(ve.exception), invalid_path1)
+            self.assertRegexpMatches(str(ve.exception), invalid_path2)
+            self.assertNotRegexpMatches(str(ve.exception), self.path_to_valid_cmf_des)
+            self.assertNotRegexpMatches(str(ve.exception), self.path_to_event_des)
+        else:
+            self.assertRegex(str(ve.exception), fail_msg)
+            self.assertRegex(str(ve.exception), invalid_path1)
+            self.assertRegex(str(ve.exception), invalid_path2)
+            self.assertNotRegex(str(ve.exception), self.path_to_valid_cmf_des)
+            self.assertNotRegex(str(ve.exception), self.path_to_event_des)
+
+        # Case 3: two valid paths, hence no exception raised
+        # Hence just call the method and pass is no exception is handled
+        test_recipe.zip_file_contents = [
+            self.path_to_valid_cmf_des,
+            self.path_to_event_des
+        ]
+        self.dummy_runner._check_paths_for_zip_contents(test_recipe)
+        self.assertTrue(True)
 
     @skip('Not ready yet')
     def test_zip_exported_files(self):
