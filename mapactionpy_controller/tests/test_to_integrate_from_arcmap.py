@@ -2,12 +2,10 @@
 from unittest import TestCase
 
 import mapactionpy_controller.data_source
-import mapactionpy_controller.map_doc
 import mapactionpy_controller.map_report
 import mapactionpy_controller.map_result
 import mapactionpy_controller.plugin_base
 import mapactionpy_controller.plugin_controller
-import mapactionpy_controller.xml_exporter
 
 
 class TestAllStuffTransfered(TestCase):

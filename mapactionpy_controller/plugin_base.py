@@ -7,8 +7,6 @@ from operator import itemgetter
 import re
 from shutil import copyfile
 from zipfile import ZipFile
-from datetime import datetime
-import pytz
 
 from slugify import slugify
 import mapactionpy_controller.xml_exporter as xml_exporter
@@ -244,25 +242,19 @@ class BaseRunnerPlugin(object):
         _do_export(....) to do that actual work
         """
         recipe = kwargs['state']
-        export_params = {}
-        # properties = {}  # For properties from MapAction Toolbox
-        #try:
         recipe = self._create_export_dir(recipe)
-        # if 'properties' in kwargs:
-        #     properties = kwargs['properties']
-        #     for key in list(properties.keys()):
-        #         export_params[str(key)] = properties[str(key)]
-        # recipe.creation_time_stamp = datetime.now(pytz.utc)
+        # Do the export the map products
         recipe = self._do_export(recipe)
-        xml_exporter._check_for_export_metadata(recipe)
-        xmlExporter = xml_exporter.XmlExporter(self.hum_event)
-        # recipe.export_metadata['exportXmlFileLocation'] = xmlExporter.write(recipe.export_metadata)
-        recipe.zip_file_contents.append(xmlExporter.write(recipe))
-        self.zip_exported_files(recipe)
+        # Now generate the xml file
+        xml_fpath = xml_exporter.write_export_metadata_to_xml(recipe)
+        recipe.zip_file_contents.append(xml_fpath)
         logger.info('Exported the map using these export_params = "{}"'.format(recipe.export_metadata))
-        # except Exception as exp:
-        #     logger.error('Failed to export the map. export_params = "{}"'.format(recipe.export_metadata))
-        #     logger.error(exp)
+
+        # Now create the zip file:
+        self.zip_exported_files(recipe)
+        logger.info('Created zipfile using these files = \n\t"{}"'.format("\n\t".join(recipe.zip_file_contents)))
+
+        return recipe
 
     def _create_export_dir(self, recipe):
         # Accumulate parameters for export XML

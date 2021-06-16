@@ -247,11 +247,10 @@ class TestPluginBase(TestCase):
             self.assertNotRegexpMatches(str(ve.exception), self.path_to_valid_cmf_des)
             self.assertNotRegexpMatches(str(ve.exception), self.path_to_event_des)
         else:
-            self.assertRegex(str(ve.exception), fail_msg)
             self.assertRegex(str(ve.exception), invalid_path1)
             self.assertRegex(str(ve.exception), invalid_path2)
-            self.assertNotRegex(str(ve.exception), self.path_to_valid_cmf_des)
-            self.assertNotRegex(str(ve.exception), self.path_to_event_des)
+            self.assertNotRegex(str(ve.exception), 'cmf_description_flat_test.json')
+            self.assertNotRegex(str(ve.exception), 'event_description.json')
 
         # Case 3: two valid paths, hence no exception raised
         # Hence just call the method and pass is no exception is handled
