@@ -45,15 +45,12 @@ class MapRecipe:
 
         # Optional fields
         self.hum_event = hum_event
-        self.map_project_path = recipe_def.get('map_project_path', None)
         self.creation_time_stamp = recipe_def.get('creation_time_stamp', None)
         if self.creation_time_stamp:
             self.creation_time_stamp = dateparse(self.creation_time_stamp)
-        self.core_file_name = recipe_def.get('core_file_name', None)
-        if self.map_project_path:
-            self.map_project_path = path.abspath(self.map_project_path)
-            if not self.core_file_name:
-                self.core_file_name = path.splitext(path.basename(self.map_project_path))[0]
+
+        self.map_project_path = self._parse_map_project_path(recipe_def)
+        self.core_file_name = self._parse_core_file_name(recipe_def)
 
         self.export_path = recipe_def.get('export_path', None)
         if self.export_path:
@@ -108,8 +105,24 @@ class MapRecipe:
 
         return unique_lyrs
 
+    def _parse_map_project_path(self, recipe_def):
+        mp_path = recipe_def.get('map_project_path', None)
+
+        if mp_path:
+            mp_path = path.abspath(self.map_project_path)
+
+        return mp_path
+
+    def _parse_core_file_name(self, recipe_def):
+        core_fname = recipe_def.get('core_file_name', None)
+
+        if (self.map_project_path) and (not core_fname):
+            core_fname = path.splitext(path.basename(self.map_project_path))[0]
+
+        return core_fname
+
     def _parse_map_frames(self, map_frames_def, lyr_props, compatiblity_mode=0.3):
-        # We create a seperate list nad set here so that we can enforce unique map_frames names. However only
+        # We create a seperate list and set here so that we can enforce unique map_frames names. However only
         # the list is returned. Client code is generally more readable and elegant if `self.map_frames` is a
         # list. This enforces that map_frames names must be unique in the json representation, however
         # theoretically allows client code to create multiple map frames with identical names. The behaviour

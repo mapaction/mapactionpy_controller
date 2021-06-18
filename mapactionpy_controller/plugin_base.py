@@ -314,6 +314,7 @@ class BaseRunnerPlugin(object):
 
     def zip_exported_files(self, recipe):
 
+        logger.debug("Started creation of zipfile")
         # First check the
         self._check_paths_for_zip_contents(recipe)
 
@@ -325,34 +326,7 @@ class BaseRunnerPlugin(object):
             for fpath in recipe.zip_file_contents:
                 zip_file.write(fpath, os.path.basename(fpath))
 
-        # # Get key params as local variables
-        # core_file_name = export_params['coreFileName']
-        # export_dir = export_params['exportDirectory']
-        # mdr_xml_file_path = export_params['exportXmlFileLocation']
-        # jpg_path = export_params['jpgFileLocation']
-        # png_thumbnail_path = export_params['pngThumbNailFileLocation']
-        # # And now Zip
-        # zipFileName = core_file_name+".zip"
-        # zipFileLocation = os.path.join(export_dir, zipFileName)
-
-        # with ZipFile(zipFileLocation, 'w') as zipObj:
-        #     zipObj.write(mdr_xml_file_path, os.path.basename(mdr_xml_file_path))
-        #     zipObj.write(jpg_path, os.path.basename(jpg_path))
-        #     zipObj.write(png_thumbnail_path, os.path.basename(png_thumbnail_path))
-        #     if (len(export_params.get("emfFileLocation", "")) > 0):
-        #         zipObj.write(export_params['emfFileLocation'], os.path.basename(export_params['emfFileLocation']))
-
-        #     # TODO: asmith 2020/03/03
-        #     # Given we are explictly setting the pdfFileName for each page within the DDPs
-        #     # it is possible return a list of all of the filenames for all of the PDFs. Please
-        #     # can we use this list to include in the zip file. There are edge cases where just
-        #     # adding all of the pdfs in a particular directory might not behave correctly (eg if
-        #     # the previous run had crashed midway for some reason)
-        #     for pdf in os.listdir(export_dir):
-        #         if pdf.endswith(".pdf"):
-        #             zipObj.write(os.path.join(export_dir, pdf),
-        #                          os.path.basename(os.path.join(export_dir, pdf)))
-        # print("Export complete to " + export_dir)
+        logger.debug("Completed creation of zipfile {}".format(zip_fpath))
 
     def build_project_files(self, **kwargs):
         raise NotImplementedError(
