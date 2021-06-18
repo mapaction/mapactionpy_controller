@@ -64,7 +64,6 @@ class TestXmlExport(XmlTestCase):
         except AssertionError:
             self.assertTrue(True)
 
-    # @mock.patch('__main__.open')
     def test_write_xml_file(self):
         test_recipe = MapRecipe(fixtures.recipe_test_for_search_for_shapefiles, self.lyr_props)
         test_recipe.hum_event = Event(self.path_to_event_des)
