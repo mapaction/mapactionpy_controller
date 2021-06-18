@@ -9,7 +9,7 @@ from shutil import copyfile
 from zipfile import ZipFile
 
 from slugify import slugify
-
+import mapactionpy_controller.xml_exporter as xml_exporter
 from mapactionpy_controller.crash_move_folder import CrashMoveFolder
 
 
@@ -222,8 +222,9 @@ class BaseRunnerPlugin(object):
         output_map_base = slugify(recipe.product)
         logger.debug('Set output name for new map project file to "{}"'.format(output_map_base))
         recipe.version_num = self.get_next_map_version_number(output_dir, recipe.mapnumber, output_map_base)
-        output_map_name = '{}-v{}-{}{}'.format(
-            recipe.mapnumber, str(recipe.version_num).zfill(2), output_map_base, self.get_projectfile_extension())
+        recipe.core_file_name = '{}-v{}-{}'.format(
+            recipe.mapnumber, str(recipe.version_num).zfill(2), output_map_base)
+        output_map_name = '{}{}'.format(recipe.core_file_name, self.get_projectfile_extension())
         recipe.map_project_path = os.path.abspath(os.path.join(output_dir, output_map_name))
         logger.debug('Path for new map project file; {}'.format(recipe.map_project_path))
         logger.debug('Map Version number; {}'.format(recipe.version_num))
@@ -241,27 +242,26 @@ class BaseRunnerPlugin(object):
         _do_export(....) to do that actual work
         """
         recipe = kwargs['state']
-        export_params = {}
-        properties = {}  # For properties from MapAction Toolbox
-        try:
-            export_params = self._create_export_dir(export_params, recipe)
-            if 'properties' in kwargs:
-                properties = kwargs['properties']
-                for key in list(properties.keys()):
-                    export_params[str(key)] = properties[str(key)]
-            export_params = self._do_export(export_params, recipe)
-        except Exception as exp:
-            logger.error('Failed to export the map. export_params = "{}"'.format(export_params))
-            logger.error(exp)
+        recipe = self._create_export_dir(recipe)
+        # Do the export the map products
+        recipe = self._do_export(recipe)
+        # Now generate the xml file
+        xml_fpath = xml_exporter.write_export_metadata_to_xml(recipe)
+        recipe.zip_file_contents.append(xml_fpath)
+        logger.info('Exported the map using these export_params = "{}"'.format(recipe.export_metadata))
 
-        self.zip_exported_files(export_params)
+        # Now create the zip file:
+        self.zip_exported_files(recipe)
+        logger.info('Created zipfile using these files = \n\t"{}"'.format("\n\t".join(recipe.zip_file_contents)))
 
-    def _create_export_dir(self, export_params, recipe):
+        return recipe
+
+    def _create_export_dir(self, recipe):
         # Accumulate parameters for export XML
         version_str = "v" + str(recipe.version_num).zfill(2)
         export_directory = os.path.abspath(
             os.path.join(self.cmf.export_dir, recipe.mapnumber, version_str))
-        export_params["exportDirectory"] = export_directory
+        recipe.export_path = export_directory
 
         try:
             os.makedirs(export_directory)
@@ -273,42 +273,60 @@ class BaseRunnerPlugin(object):
             else:
                 raise
 
-        return export_params
+        return recipe
 
     def _do_export(self, export_params, recipe):
+        """
+        Note implenmenting subclasses, must return the dict `export_params`, with
+        key/value pairs which satisfies the `_check_plugin_supplied_params` method.
+        """
         raise NotImplementedError(
             'BaseRunnerPlugin is an abstract class and the `export_maps`'
             ' method cannot be called directly')
 
-    def zip_exported_files(self, export_params):
-        # Get key params as local variables
-        core_file_name = export_params['coreFileName']
-        export_dir = export_params['exportDirectory']
-        mdr_xml_file_path = export_params['exportXmlFileLocation']
-        jpg_path = export_params['jpgFileLocation']
-        png_thumbnail_path = export_params['pngThumbNailFileLocation']
+    def _check_paths_for_zip_contents(self, recipe):
+        """
+        Checks that `recipe.zip_file_contents` contains the information required to produce a zip file.
+        Specificly:
+        * That there is one or more entries in `recipe.zip_file_contents`.
+        * That each of those entries is a path to a valid file.
+
+        returns: None (if everything is in order)
+        raises: ValueError
+        """
+
+        # First check that there is a least one entry:
+        if not recipe.zip_file_contents:
+            raise ValueError('No paths are specified in `recipe.zip_file_contents`')
+
+        # Secound check that all of the entries in `recipe.zip_file_contents` point to a valid file.
+        #
+        # erroneous_paths = []
+        # for fpath in recipe.zip_file_contents:
+        #     if not os.path.isfile(fpath):
+        #         erroneous_paths.append(fpath)
+        erroneous_paths = [fp for fp in recipe.zip_file_contents if not os.path.isfile(fp)]
+
+        if erroneous_paths:
+            raise ValueError(
+                'Cannot add the specificed files to a zip file. The following file(s) either'
+                ' do not exist or are not a valid files:\n\t{}'.format('\n\t'.join(erroneous_paths)))
+
+    def zip_exported_files(self, recipe):
+
+        logger.debug("Started creation of zipfile")
+        # First check the
+        self._check_paths_for_zip_contents(recipe)
+
         # And now Zip
-        zipFileName = core_file_name+".zip"
-        zipFileLocation = os.path.join(export_dir, zipFileName)
+        zip_fname = recipe.core_file_name+".zip"
+        zip_fpath = os.path.join(recipe.export_path, zip_fname)
 
-        with ZipFile(zipFileLocation, 'w') as zipObj:
-            zipObj.write(mdr_xml_file_path, os.path.basename(mdr_xml_file_path))
-            zipObj.write(jpg_path, os.path.basename(jpg_path))
-            zipObj.write(png_thumbnail_path, os.path.basename(png_thumbnail_path))
-            if (len(export_params.get("emfFileLocation", "")) > 0):
-                zipObj.write(export_params['emfFileLocation'], os.path.basename(export_params['emfFileLocation']))
+        with ZipFile(zip_fpath, 'w') as zip_file:
+            for fpath in recipe.zip_file_contents:
+                zip_file.write(fpath, os.path.basename(fpath))
 
-            # TODO: asmith 2020/03/03
-            # Given we are explictly setting the pdfFileName for each page within the DDPs
-            # it is possible return a list of all of the filenames for all of the PDFs. Please
-            # can we use this list to include in the zip file. There are edge cases where just
-            # adding all of the pdfs in a particular directory might not behave correctly (eg if
-            # the previous run had crashed midway for some reason)
-            for pdf in os.listdir(export_dir):
-                if pdf.endswith(".pdf"):
-                    zipObj.write(os.path.join(export_dir, pdf),
-                                 os.path.basename(os.path.join(export_dir, pdf)))
-        print("Export complete to " + export_dir)
+        logger.debug("Completed creation of zipfile {}".format(zip_fpath))
 
     def build_project_files(self, **kwargs):
         raise NotImplementedError(

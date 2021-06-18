@@ -9,7 +9,7 @@ import mapactionpy_controller.state_serialization as state_serialization
 from mapactionpy_controller import _get_validator_for_config_schema
 from mapactionpy_controller.recipe_frame import RecipeFrame
 from mapactionpy_controller.recipe_atlas import RecipeAtlas
-
+from dateutil.parser import parse as dateparse
 
 logger = logging.getLogger(__name__)
 validate_against_recipe_schema_v0_3 = _get_validator_for_config_schema('map-recipe-v0.3.schema')
@@ -20,7 +20,9 @@ class MapRecipe:
     """
     MapRecipe
     """
-    OPTIONAL_FIELDS = ('atlas', 'hum_event', 'map_project_path', 'runners', 'template_path', 'version_num')
+    OPTIONAL_FIELDS = (
+        'atlas', 'core_file_name', 'creation_time_stamp', 'export_metadata', 'export_path', 'hum_event',
+        'map_project_path', 'runners', 'template_path', 'version_num', 'zip_file_contents')
 
     def __init__(self, recipe_definition, lyr_props, hum_event=None):
         if isinstance(recipe_definition, dict):
@@ -43,17 +45,25 @@ class MapRecipe:
 
         # Optional fields
         self.hum_event = hum_event
-        self.map_project_path = recipe_def.get('map_project_path', None)
-        if self.map_project_path:
-            self.map_project_path = path.abspath(self.map_project_path)
+        self.creation_time_stamp = recipe_def.get('creation_time_stamp', None)
+        if self.creation_time_stamp:
+            self.creation_time_stamp = dateparse(self.creation_time_stamp)
+
+        self.map_project_path = self._parse_map_project_path(recipe_def)
+        self.core_file_name = self._parse_core_file_name(recipe_def)
+
+        self.export_path = recipe_def.get('export_path', None)
+        if self.export_path:
+            self.export_path = path.abspath(self.export_path)
+
         self.template_path = recipe_def.get('template_path', None)
         self.version_num = recipe_def.get('version_num', None)
         self.runners = recipe_def.get('runners', None)
-        atlas_def = recipe_def.get('atlas', None)
-        if atlas_def:
-            self.atlas = RecipeAtlas(atlas_def, self, lyr_props)
-        else:
-            self.atlas = None
+        # Default is an empty dict
+        self.export_metadata = recipe_def.get('export_metadata', {})
+        # Default is an empty list
+        self.zip_file_contents = recipe_def.get('zip_file_contents', [])
+        self.atlas = self._parse_atlas_def(recipe_def, lyr_props)
 
         # Self consistency checks
         self._check_for_dup_text_elements()
@@ -91,8 +101,31 @@ class MapRecipe:
 
         return unique_lyrs
 
+    def _parse_map_project_path(self, recipe_def):
+        mp_path = recipe_def.get('map_project_path', None)
+
+        if mp_path:
+            mp_path = path.abspath(self.map_project_path)
+
+        return mp_path
+
+    def _parse_core_file_name(self, recipe_def):
+        core_fname = recipe_def.get('core_file_name', None)
+
+        if (self.map_project_path) and (not core_fname):
+            core_fname = path.splitext(path.basename(self.map_project_path))[0]
+
+        return core_fname
+
+    def _parse_atlas_def(self, recipe_def, lyr_props):
+        atlas_def = recipe_def.get('atlas', None)
+        if atlas_def:
+            return RecipeAtlas(atlas_def, self, lyr_props)
+
+        return None
+
     def _parse_map_frames(self, map_frames_def, lyr_props, compatiblity_mode=0.3):
-        # We create a seperate list nad set here so that we can enforce unique map_frames names. However only
+        # We create a seperate list and set here so that we can enforce unique map_frames names. However only
         # the list is returned. Client code is generally more readable and elegant if `self.map_frames` is a
         # list. This enforces that map_frames names must be unique in the json representation, however
         # theoretically allows client code to create multiple map frames with identical names. The behaviour

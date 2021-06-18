@@ -13,11 +13,17 @@ logger = logging.getLogger(__name__)
 
 
 def _get_secrets_from_netrc():
+    """
+    If `MAPCHEF_NETRC` exists as an environment varible then that value will be used as the
+    absolute path to the .netrc file.
+    If `MAPCHEF_NETRC` does not exists as an environment varible, then the 'HOME' and 'USERPROFILE'
+    locations will be searched for `.netrc` files.
+    """
     possible_netrc_locations = [os.path.join(os.environ[envar], '.netrc')
                                 for envar in ['HOME', 'USERPROFILE'] if envar in os.environ]
 
     if 'MAPCHEF_NETRC' in os.environ:
-        possible_netrc_locations.append(os.environ['MAPCHEF_NETRC'])
+        possible_netrc_locations = [os.environ['MAPCHEF_NETRC']]
 
     secrets = None
     for netrc_path in possible_netrc_locations:

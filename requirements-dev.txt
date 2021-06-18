@@ -7,3 +7,5 @@ mock
 virtualenv
 coveralls
 pylint
+xmlunittest
+python-dateutil

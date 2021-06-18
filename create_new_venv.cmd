@@ -5,7 +5,7 @@ if not exist env38\Scripts\python.exe (cmd /c "C:\Program Files\Python38\python.
 
 
 :: for %%g in (env27, env37, env38) do (
-for %%g in (env27, env37) do (
+for %%g in (env27, env38) do (
  %%g\Scripts\python.exe -m pip install --no-cache-dir --no-color -e %~dp0
  %%g\Scripts\python.exe -m pip install -r requirements-jira.txt
  %%g\Scripts\python.exe -m pip install -r requirements-dev.txt

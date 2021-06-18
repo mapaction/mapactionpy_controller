@@ -74,6 +74,7 @@ def _get_requires_list():
     # Items for which the version does not need to be pinned to support py2.7
     requires = [
         'chevron',
+        'dicttoxml',
         'humanfriendly',
         'jsonpickle',
         'jsonschema',

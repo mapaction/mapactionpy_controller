@@ -8,7 +8,8 @@
 /*.egg-info
 
 # python test virtual envs
-/env*/
+env*/
+env27/
 
 # unittest results
 .pytest_cache/
