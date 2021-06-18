@@ -63,11 +63,7 @@ class MapRecipe:
         self.export_metadata = recipe_def.get('export_metadata', {})
         # Default is an empty list
         self.zip_file_contents = recipe_def.get('zip_file_contents', [])
-        atlas_def = recipe_def.get('atlas', None)
-        if atlas_def:
-            self.atlas = RecipeAtlas(atlas_def, self, lyr_props)
-        else:
-            self.atlas = None
+        self.atlas = self._parse_atlas_def(recipe_def, lyr_props)
 
         # Self consistency checks
         self._check_for_dup_text_elements()
@@ -120,6 +116,13 @@ class MapRecipe:
             core_fname = path.splitext(path.basename(self.map_project_path))[0]
 
         return core_fname
+
+    def _parse_atlas_def(self, recipe_def, lyr_props):
+        atlas_def = recipe_def.get('atlas', None)
+        if atlas_def:
+            return RecipeAtlas(atlas_def, self, lyr_props)
+
+        return None
 
     def _parse_map_frames(self, map_frames_def, lyr_props, compatiblity_mode=0.3):
         # We create a seperate list and set here so that we can enforce unique map_frames names. However only
