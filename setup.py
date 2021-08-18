@@ -81,7 +81,7 @@ def _get_requires_list():
         'requests',
         'pyyaml',
         'pyshp',
-        'six',
+        'six>=1.11.0',
         'slugify'
     ]
 
