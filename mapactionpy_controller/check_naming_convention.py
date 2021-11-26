@@ -35,7 +35,7 @@ def get_defaultcmf_step_list(cmf_config_path):
     for dir_to_check, nc_desc_file, extn_to_check, convention_name in ncs_to_check:
         nc = name_convention.NamingConvention(nc_desc_file)
         name_convention_steps.extend(
-            _step_builer(_get_all_files(dir_to_check, extn_to_check), nc, convention_name, cmf))
+            _step_builder(_get_all_files(dir_to_check, extn_to_check), nc, convention_name, cmf))
 
     return name_convention_steps
 
@@ -52,7 +52,7 @@ def get_active_data_step_list(humev_config_path):
     humev = Event(humev_config_path)
     cmf = CrashMoveFolder(humev.cmf_descriptor_path)
     nc = name_convention.NamingConvention(cmf.data_nc_definition)
-    return _step_builer(get_all_gisfiles(cmf), nc, 'data', cmf)
+    return _step_builder(get_all_gisfiles(cmf), nc, 'data', cmf)
 
 
 def get_single_file_checker(f_path, nc, cmf):
@@ -69,7 +69,7 @@ def get_single_file_checker(f_path, nc, cmf):
     return check_data_name
 
 
-def _step_builer(file_list, nc, convention_name, cmf):
+def _step_builder(file_list, nc, convention_name, cmf):
     step_list = []
     for f_path in file_list:
         # return_code += check_dir(dir_to_check, nc_desc_file, extn_to_check, args.inc_valid)

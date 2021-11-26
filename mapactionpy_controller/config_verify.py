@@ -80,7 +80,7 @@ def get_config_verify_steps(cmf_desc_path, lyr_file_exn_list):
             logging.WARNING,
             'Comparing the contents of the layer properties json file and the layer rendering directory',
             'Compared the contents of the layer properties json file and the layer rendering directory',
-            'Inconsistancy found in between the contents of the layer properties json file and the layer'
+            'Inconsistency found in between the contents of the layer properties json file and the layer'
             ' rendering directory'
         ),
         Step(
@@ -88,7 +88,7 @@ def get_config_verify_steps(cmf_desc_path, lyr_file_exn_list):
             logging.WARNING,
             'Comparing the contents of the layer properties json file and the MapCookbook',
             'Compared the contents of the layer properties json file and the MapCookbook',
-            'Inconsistancy found in between the contents of the layer properties json file and the MapCookbook'
+            'Inconsistency found in between the contents of the layer properties json file and the MapCookbook'
         )
     ]
 

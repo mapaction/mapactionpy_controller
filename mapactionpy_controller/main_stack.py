@@ -71,13 +71,13 @@ def parse_feedback(status, msg, step, **kwargs):
     # pass_back['exp'] = exp
 
     the_msg = msg
-    task_referal = None
+    task_referral = None
     if status > logging.INFO:
         exp = kwargs['exp']
         if exp.args:
             if isinstance(exp.args[0], TaskReferralBase):
-                task_referal = exp.args[0]
-                # error_str = task_referal.get_task_unique_summary()
+                task_referral = exp.args[0]
+                # error_str = task_referral.get_task_unique_summary()
             else:
                 error_str = '\n'.join(str(s) for s in exp.args if isinstance(s, six.string_types))
 
@@ -87,7 +87,7 @@ def parse_feedback(status, msg, step, **kwargs):
                     msg, error_str, stack_trace)
 
     if jira_client:
-        jira_client.task_handler(status, msg, task_referal)
+        jira_client.task_handler(status, msg, task_referral)
 
     if hft.connected_to_terminal():
         hft.output('{} {} {}'.format(

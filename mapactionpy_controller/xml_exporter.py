@@ -10,7 +10,7 @@ def _check_for_export_metadata(recipe):
     Checks for the presence of a number of keys in the `recipe.export_metadata` returned by `_do_export`.
     This method does not check for the validity/sanity of any of the values.
 
-    raises ValueError: If any of the requried keys are missing.
+    raises ValueError: If any of the required keys are missing.
     """
     mininal_keys = {
         'themes',
@@ -57,7 +57,7 @@ def write_export_metadata_to_xml(recipe):
 
 def _sort_xml_by_element(xml_str):
     """
-    Sorts a string represenation of a XML and sorts it by elment name.
+    Sorts a string representation of a XML and sorts it by element name.
     Used to make comparision and testing of XML output easier
     Based on https://stackoverflow.com/a/47097105
     """
@@ -119,10 +119,6 @@ def _create_export_params_dict(recipe):
         'proj': "",
         'datasource': "",
         'kmlresolutiondpi': "",
-        'paperxmax': "",
-        'paperxmin': "",
-        'paperymax': "",
-        'paperymin': "",
         'createdate': "",
         'createtime': "",
         'scale': "",

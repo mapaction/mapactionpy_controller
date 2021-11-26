@@ -85,19 +85,19 @@ class JiraClient():
         except (TypeError, AttributeError):
             pass
 
-    def task_handler(self, fail_threshold, msg, task_referal=None):
+    def task_handler(self, fail_threshold, msg, task_referral=None):
         logger.debug('JiraClient.task_handler called with status="{}", and msg="{}"'.format(
             fail_threshold, msg))
 
-        assured_referal = self.ensure_task_referal_type(task_referal, msg, fail_threshold)
+        assured_referral = self.ensure_task_referral_type(task_referral, msg, fail_threshold)
 
-        if not assured_referal:
-            logger.debug('JiraClient.task_handler; `None` value passed for task_referal parameter. Nothing to handle.')
+        if not assured_referral:
+            logger.debug('JiraClient.task_handler; `None` value passed for task_referral parameter. Nothing to handle.')
             return
 
-        unique_summary = assured_referal.get_task_unique_summary()
-        task_desc = assured_referal.get_task_description()
-        op_id = assured_referal.get_operation_id()
+        unique_summary = assured_referral.get_task_unique_summary()
+        task_desc = assured_referral.get_task_description()
+        op_id = assured_referral.get_operation_id()
 
         j_issue = self.search_issue_by_unique_summary(unique_summary, op_id)
 
@@ -109,29 +109,29 @@ class JiraClient():
                 # Create a new task
                 self.create_new_jira_issue(unique_summary, task_desc, op_id)
 
-    def ensure_task_referal_type(self, task_referal, msg, fail_threshold):
+    def ensure_task_referral_type(self, task_referral, msg, fail_threshold):
         """
-        Check whether or not the `task_referal` is an instance of TaskReferralBase object. If it is the object is
+        Check whether or not the `task_referral` is an instance of TaskReferralBase object. If it is the object is
         then it is returned unchanged. If not then an generic TaskReferralBase will be created and returned. The
-        value of `str(task_referal)` will be used.
+        value of `str(task_referral)` will be used.
 
-        @param task_referal: An object that may or may not be a TaskReferralBase object.
-        @returns: If the `task_referal` param is an instance of TaskReferralBase object, then `task_referal` is
+        @param task_referral: An object that may or may not be a TaskReferralBase object.
+        @returns: If the `task_referral` param is an instance of TaskReferralBase object, then `task_referral` is
                   returned.
-                  If `task_referal` param is NOT an instance of TaskReferralBase AND fail_threshold is logging.ERROR
-                  then a new TaskReferralBase object is created (using `msg` and `str(task_referal)` for context).
+                  If `task_referral` param is NOT an instance of TaskReferralBase AND fail_threshold is logging.ERROR
+                  then a new TaskReferralBase object is created (using `msg` and `str(task_referral)` for context).
                   Else `None` is returned.
         """
-        if isinstance(task_referal, TaskReferralBase):
-            logger.debug('JiraClient.ensure_task_referal_type found a TaskReferralBase object')
-            return task_referal
+        if isinstance(task_referral, TaskReferralBase):
+            logger.debug('JiraClient.ensure_task_referral_type found a TaskReferralBase object')
+            return task_referral
 
-        if task_referal and (fail_threshold > logging.WARNING):
-            logger.debug('JiraClient.ensure_task_referal_type created a new TaskReferralBase object')
-            return TaskReferralBase(None, msg=msg, other=str(task_referal))
+        if task_referral and (fail_threshold > logging.WARNING):
+            logger.debug('JiraClient.ensure_task_referral_type created a new TaskReferralBase object')
+            return TaskReferralBase(None, msg=msg, other=str(task_referral))
 
-        logger.debug('JiraClient.ensure_task_referal_type passed "{}" but returned `None`'.format(
-            str(task_referal)
+        logger.debug('JiraClient.ensure_task_referral_type passed "{}" but returned `None`'.format(
+            str(task_referral)
         ))
         return None
 
