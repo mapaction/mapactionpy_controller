@@ -184,7 +184,7 @@ class RecipeLayer:
 
     def get_data_finder(self, cmf, all_gis_files):
         """
-        This method returns a function which tests for the existance of data that matches
+        This method returns a function which tests for the existence of data that matches
         the param `recipe_lyr.reg_exp`.
 
         Create a new function for each layer within a recipe.
