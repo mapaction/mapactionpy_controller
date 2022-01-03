@@ -38,7 +38,7 @@ class DummyRunner(BaseRunnerPlugin):
     def get_lyr_render_extension(self):
         return '.lyr'
 
-    def create_ouput_map_project(self, **kwargs):
+    def create_output_map_project(self, **kwargs):
         return kwargs['state']
 
 
@@ -181,7 +181,7 @@ class TestPluginBase(TestCase):
         self.fail()
 
     @skip('Not ready yet')
-    def test_create_ouput_map_project(self):
+    def test_create_output_map_project(self):
         self.fail()
 
     @skip('Not ready yet')

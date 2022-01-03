@@ -205,11 +205,11 @@ class BaseRunnerPlugin(object):
         versionNumber = versionNumber + 1
         return versionNumber
 
-    # TODO Is it possible to aviod the need to hardcode the naming convention for the output mxds? Eg could a
+    # TODO Is it possible to avoid the need to hardcode the naming convention for the output mxds? Eg could a
     # String.Template be specified within the Cookbook?
     # https://docs.python.org/2/library/string.html#formatspec
     # https://www.python.org/dev/peps/pep-3101/
-    def create_ouput_map_project(self, **kwargs):
+    def create_output_map_project(self, **kwargs):
         recipe = kwargs['state']
         # Create `mapNumberDirectory` for output
         output_dir = os.path.join(self.cmf.map_projects, recipe.mapnumber)
@@ -277,7 +277,7 @@ class BaseRunnerPlugin(object):
 
     def _do_export(self, export_params, recipe):
         """
-        Note implenmenting subclasses, must return the dict `export_params`, with
+        Note implementing subclasses, must return the dict `export_params`, with
         key/value pairs which satisfies the `_check_plugin_supplied_params` method.
         """
         raise NotImplementedError(

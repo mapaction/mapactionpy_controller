@@ -12,7 +12,7 @@ def _check_for_export_metadata(recipe):
 
     raises ValueError: If any of the requried keys are missing.
     """
-    mininal_keys = {
+    minimal_keys = {
         'themes',
         'pdffilename',
         'jpgfilename',
@@ -27,7 +27,7 @@ def _check_for_export_metadata(recipe):
         'product-type'
     }
 
-    missing_keys = mininal_keys.difference(set(recipe.export_metadata.keys()))
+    missing_keys = minimal_keys.difference(set(recipe.export_metadata.keys()))
     if missing_keys:
         if len(missing_keys) > 0:
             raise ValueError(
@@ -36,22 +36,12 @@ def _check_for_export_metadata(recipe):
 
 
 def write_export_metadata_to_xml(recipe):
-    # Set up dictionary for all the values required for the export XML file
-    # map_data = MapData(exportPropertiesDict)
-    # mapDocument = MapDoc(map_data)
-
     xml_fname = recipe.core_file_name+".xml"
     xml_fpath = os.path.join(recipe.export_path, xml_fname)
-
-    # export_params_dict = _create_export_params_dict(recipe.export_metadata)
-    # xml = dicttoxml(export_params_dict, attr_type=False, custom_root='mapdoc')
-    # print(parseString(xml).toprettyxml())
-
     xmls = _export_metadata_to_xmls(recipe)
 
-    with open(xml_fpath, "w") as xml_file:
+    with open(xml_fpath, "wb") as xml_file:
         xml_file.write(xmls)
-
     return xml_fpath
 
 
@@ -119,21 +109,18 @@ def _create_export_params_dict(recipe):
         'proj': "",
         'datasource': "",
         'kmlresolutiondpi': "",
-        'paperxmax': "",
-        'paperxmin': "",
-        'paperymax': "",
-        'paperymin': "",
         'createdate': "",
         'createtime': "",
         'scale': "",
-        'datum': "",
-        "language-iso2": recipe.hum_event.language_iso2,
-        "pdfresolutiondpi": recipe.hum_event.default_pdf_res_dpi,
-        "jpgresolutiondpi": recipe.hum_event.default_jpeg_res_dpi,
-        "countries": recipe.hum_event.country_name,
-        "glideno": recipe.hum_event.glide_number,
-        "operationID": recipe.hum_event.operation_id,
-        "sourceorg": recipe.hum_event.default_source_organisation
+        'datum': ""
+        # ,
+        # "language-iso2": recipe.hum_event.language_iso2,
+        # "pdfresolutiondpi": recipe.hum_event.default_pdf_res_dpi,
+        # "jpgresolutiondpi": recipe.hum_event.default_jpeg_res_dpi,
+        # "countries": recipe.hum_event.country_name,
+        # "glideno": recipe.hum_event.glide_number,
+        # "operationID": recipe.hum_event.operation_id,
+        # "sourceorg": recipe.hum_event.default_source_organisation
     }
 
     # Copy from params
@@ -144,11 +131,4 @@ def _create_export_params_dict(recipe):
     else:
         all_export_metadata["status"] = "Update"
 
-    language = pycountry.languages.get(alpha_2=recipe.hum_event.language_iso2)
-    if (language is not None):
-        all_export_metadata["language"] = language.name
-    else:
-        all_export_metadata["language"] = None
-
-    # return
     return {'mapdata': all_export_metadata}

@@ -92,7 +92,7 @@ def _get_per_product_runner_steps(_runner, recipe):
             'Failed to identify suitable map template',
         ),
         Step(
-            _runner.create_ouput_map_project,
+            _runner.create_output_map_project,
             logging.ERROR,
             "Creating new '{}' file.".format(_runner.get_projectfile_extension()),
             "Successfully created new '{}' file.".format(_runner.get_projectfile_extension()),
