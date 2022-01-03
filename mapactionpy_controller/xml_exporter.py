@@ -1,5 +1,4 @@
 import os
-import pycountry
 from dicttoxml import dicttoxml
 from xml.dom.minidom import parseString
 import xml.etree.ElementTree as ET

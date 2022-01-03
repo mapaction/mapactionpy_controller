@@ -110,9 +110,9 @@ class TestPluginBase(TestCase):
             self.assertEqual(expect_result, actual_result)
 
         template_aspect_ratios = [
-            ('landscape_bottom',	1.975),
-            ('landscape_side',		1.294117647),
-            ('portrait'	,	0.816816817)
+            ('landscape_bottom', 1.975),
+            ('landscape_side', 1.294117647),
+            ('portrait', 0.816816817)
         ]
 
         # linear_aspect_ratios = [
