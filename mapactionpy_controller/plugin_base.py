@@ -205,7 +205,7 @@ class BaseRunnerPlugin(object):
         versionNumber = versionNumber + 1
         return versionNumber
 
-    # TODO Is it possible to avoid the need to hardcode the naming convention for the output mxds? Eg could a
+    # Is it possible to avoid the need to hardcode the naming convention for the output mxds? Eg could a
     # String.Template be specified within the Cookbook?
     # https://docs.python.org/2/library/string.html#formatspec
     # https://www.python.org/dev/peps/pep-3101/

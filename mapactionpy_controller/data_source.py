@@ -1,5 +1,3 @@
-# TODO: asmith 2020/03/04
-#
 # Compare this class to the implementation here:
 #       cmf_watcher.cmf_handler._hash_files(...)
 # I think the implenmentation here (ie in the DataSource class) handles shapefiles better - notably
