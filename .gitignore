@@ -19,3 +19,4 @@ env27/
 nosetests.xml
 mapactionpy_controller/tests/testfiles/delete-me-test-output-file.json
 htmlcov/
+build
