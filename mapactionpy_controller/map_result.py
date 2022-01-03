@@ -1,8 +1,6 @@
 from datetime import datetime
 
 
-# TODO: asmith 2020/03/06
-#
 # 1) Based on the description in the docstring, would "LayerResult" be a more appropriate name for
 # this class?
 #
