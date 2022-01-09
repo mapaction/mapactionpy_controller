@@ -104,10 +104,8 @@ def _create_export_params_dict(recipe):
         'accessnotes': "",
         'location': "",
         'qclevel': "Automatically generated",
-        'qcname': "",
         'proj': "",
         'datasource': "",
-        'kmlresolutiondpi': "",
         'createdate': "",
         'createtime': "",
         'scale': "",
@@ -122,12 +120,15 @@ def _create_export_params_dict(recipe):
         # "sourceorg": recipe.hum_event.default_source_organisation
     }
 
+    for propertyToRemove in ["exportemf", "exportDirectory"]:
+        if propertyToRemove in (recipe.export_metadata):
+            del recipe.export_metadata[propertyToRemove]
+
     # Copy from params
     all_export_metadata.update(recipe.export_metadata)
+    versionNumber = int(all_export_metadata.get("versionNumber", 1))
 
-    if (all_export_metadata["versionNumber"] == 1):
+    if (versionNumber == 1):
         all_export_metadata["status"] = "New"
-    else:
-        all_export_metadata["status"] = "Update"
 
     return {'mapdata': all_export_metadata}
