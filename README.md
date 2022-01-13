@@ -133,3 +133,7 @@ Extra information associated with clause `datatheme`:
 
 The Administrative boundary (level 3) data generously supplied by the World Food Program, downloaded from https://www.wfp.org/.
 ```
+
+# Extra info in the Readme
+
+This info is added as a demo of using git branches for a collegue.
