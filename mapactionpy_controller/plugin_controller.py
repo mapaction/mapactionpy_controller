@@ -14,17 +14,22 @@ def get_plugin_step():
     def get_plugin(**kwargs):
         hum_event = kwargs['state']
         try:
-            logger.debug('Attempting to load the ArcMapRunner')
-            from mapactionpy_arcmap.arcmap_runner import ArcMapRunner
-            runner = ArcMapRunner(hum_event)
-            logger.info('Successfully loaded the ArcMapRunner')
+            logger.debug('Attempting to load the ArcProRunner')
+            from mapactionpy_arcpro.arcpro_runner import ArcProRunner
+            runner = ArcProRunner(hum_event)
+            logger.info('Successfully loaded the ArcProRunner')
         except ImportError:
-            logger.debug('Failed to load the ArcMapRunner')
+            logger.debug('Failed to load the ArcProRunner')
             logger.debug('Attempting to load the QGisRunner')
-            from mapactionpy_qgis.qgis_runner import QGisRunner
-            runner = QGisRunner()
-            logger.info('Failed to load the ArcMapRunner')
-
+            try :
+                from mapactionpy_qgis.qgis_runner import QGisRunner
+                runner = QGisRunner()
+                logger.info('Successfully loaded the QGisRunner')            
+            except ImportError :
+                logger.debug('Failed to load the QGisRunner')
+                logger.debug('Attempting to load the ArcMapRunner')
+                from mapactionpy_arcmap.arcmap_runner import ArcMapRunner
+                runner = ArcMapRunner(hum_event)
         return runner
 
     def new_event(**kwargs):
