@@ -82,7 +82,7 @@ def _get_requires_list():
         'pyyaml',
         'pyshp',
         'six>=1.11.0',
-        'slugify'
+        'python-slugify'
     ]
 
     if (sys.version_info.major == 2):
