@@ -23,7 +23,7 @@ def get_plugin_step():
             logger.debug('Attempting to load the QGisRunner')
             try :
                 from mapactionpy_qgis.qgis_runner import QGisRunner
-                runner = QGisRunner()
+                runner = QGisRunner(hum_event)
                 logger.info('Successfully loaded the QGisRunner')            
             except ImportError :
                 logger.debug('Failed to load the QGisRunner')
