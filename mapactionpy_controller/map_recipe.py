@@ -105,10 +105,10 @@ class MapRecipe:
         mp_path = recipe_def.get('map_project_path', None)
 
         if mp_path:
-            mp_path = path.abspath(self.map_project_path)
+            mp_path = path.abspath(mp_path)
 
         return mp_path
-
+    
     def _parse_core_file_name(self, recipe_def):
         core_fname = recipe_def.get('core_file_name', None)
 

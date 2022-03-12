@@ -1,4 +1,5 @@
 import os
+import pycountry
 from dicttoxml import dicttoxml
 from xml.dom.minidom import parseString
 import xml.etree.ElementTree as ET
@@ -11,7 +12,7 @@ def _check_for_export_metadata(recipe):
 
     raises ValueError: If any of the requried keys are missing.
     """
-    minimal_keys = {
+    mininal_keys = {
         'themes',
         'pdffilename',
         'jpgfilename',
@@ -26,7 +27,7 @@ def _check_for_export_metadata(recipe):
         'product-type'
     }
 
-    missing_keys = minimal_keys.difference(set(recipe.export_metadata.keys()))
+    missing_keys = mininal_keys.difference(set(recipe.export_metadata.keys()))
     if missing_keys:
         if len(missing_keys) > 0:
             raise ValueError(
@@ -35,12 +36,22 @@ def _check_for_export_metadata(recipe):
 
 
 def write_export_metadata_to_xml(recipe):
+    # Set up dictionary for all the values required for the export XML file
+    # map_data = MapData(exportPropertiesDict)
+    # mapDocument = MapDoc(map_data)
+
     xml_fname = recipe.core_file_name+".xml"
     xml_fpath = os.path.join(recipe.export_path, xml_fname)
+
+    # export_params_dict = _create_export_params_dict(recipe.export_metadata)
+    # xml = dicttoxml(export_params_dict, attr_type=False, custom_root='mapdoc')
+    # print(parseString(xml).toprettyxml())
+
     xmls = _export_metadata_to_xmls(recipe)
 
     with open(xml_fpath, "wb") as xml_file:
         xml_file.write(xmls)
+
     return xml_fpath
 
 
@@ -104,31 +115,40 @@ def _create_export_params_dict(recipe):
         'accessnotes': "",
         'location': "",
         'qclevel': "Automatically generated",
+        'qcname': "",
         'proj': "",
         'datasource': "",
+        'kmlresolutiondpi': "",
+        'paperxmax': "",
+        'paperxmin': "",
+        'paperymax': "",
+        'paperymin': "",
         'createdate': "",
         'createtime': "",
         'scale': "",
-        'datum': ""
-        # ,
-        # "language-iso2": recipe.hum_event.language_iso2,
-        # "pdfresolutiondpi": recipe.hum_event.default_pdf_res_dpi,
-        # "jpgresolutiondpi": recipe.hum_event.default_jpeg_res_dpi,
-        # "countries": recipe.hum_event.country_name,
-        # "glideno": recipe.hum_event.glide_number,
-        # "operationID": recipe.hum_event.operation_id,
-        # "sourceorg": recipe.hum_event.default_source_organisation
+        'datum': "",
+        "language-iso2": recipe.hum_event.language_iso2,
+        "pdfresolutiondpi": recipe.hum_event.default_pdf_res_dpi,
+        "jpgresolutiondpi": recipe.hum_event.default_jpeg_res_dpi,
+        "countries": recipe.hum_event.country_name,
+        "glideno": recipe.hum_event.glide_number,
+        "operationID": recipe.hum_event.operation_id,
+        "sourceorg": recipe.hum_event.default_source_organisation
     }
-
-    for propertyToRemove in ["exportemf", "exportDirectory"]:
-        if propertyToRemove in (recipe.export_metadata):
-            del recipe.export_metadata[propertyToRemove]
 
     # Copy from params
     all_export_metadata.update(recipe.export_metadata)
-    versionNumber = int(all_export_metadata.get("versionNumber", 1))
 
-    if (versionNumber == 1):
+    if (all_export_metadata["versionNumber"] == 1):
         all_export_metadata["status"] = "New"
+    else:
+        all_export_metadata["status"] = "Update"
 
+    language = pycountry.languages.get(alpha_2=recipe.hum_event.language_iso2)
+    if (language is not None):
+        all_export_metadata["language"] = language.name
+    else:
+        all_export_metadata["language"] = None
+
+    # return
     return {'mapdata': all_export_metadata}
