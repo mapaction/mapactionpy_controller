@@ -18,6 +18,18 @@ https://pypi.org/project/mapactionpy-controller/#history
 
 Command-line Usage
 ==========
+
+* Please create an environment variable named by **CMF_PATH** which contains the CMF path.
+* The new command line for Mapchef will be as follows : 
+```
+mapchef maps --build "%CMF_PATH%/honduras/event_description.json" --map-number "MA9001" --runner "qgis_via_docker"
+```
+* The runner parameter could have the following values :
+    * **"arcpro"** for runing ArcProRunner;
+    * **"qgis"** for runing QGisRunner;
+    * **"qgis_via_docker"** for runing DockerRunner;
+    * **"arcmap"** for runing ArcMapRunner;
+
 There are two key files, typically named `cmf_description.json` and `event_description.json` that need to be in the root of the crash move folder. Most command-line options require one or the other of these.
 
 General help:
@@ -44,6 +56,8 @@ Create the map "MA001" from the cookbook file:
 ```
 mapchef maps --build --map-number "MA001" /path/to/current/cmf/2019gbr01/event_description.json
 ```
+
+
 
 Programmatic Usage
 =====
@@ -133,3 +147,5 @@ Extra information associated with clause `datatheme`:
 
 The Administrative boundary (level 3) data generously supplied by the World Food Program, downloaded from https://www.wfp.org/.
 ```
+
+
