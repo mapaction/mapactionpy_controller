@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 
 import pytz
-#from jira import JIRA
+from jira import JIRA
 
 from mapactionpy_controller.task_renderer import TaskReferralBase
 

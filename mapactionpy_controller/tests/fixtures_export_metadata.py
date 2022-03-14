@@ -30,6 +30,7 @@ case1_export_metadata_dict = {
     'papersize': 'A3',
     'jpgresolutiondpi': '300',
     'pdfresolutiondpi': '300',
+    'kmlresolutiondpi': '50',
     'mapfilename': 'MA9001-v05-country-overview-with-admin-1-boundaries-and-topography.mxd',
     'paperxmax': '',
     'paperxmin': '',
@@ -59,6 +60,7 @@ case1_expected_xml_output = r"""<?xml version="1.0" encoding="utf-8"?>
     <jpgfilename>MA9001-v05-country-overview-with-admin-1-boundaries-and-topography-300dpi.jpeg</jpgfilename>
     <jpgfilesize>2118804</jpgfilesize>
     <jpgresolutiondpi>300</jpgresolutiondpi>
+    <kmlresolutiondpi>50</kmlresolutiondpi>
     <language>English</language>
     <language-iso2>en</language-iso2>
     <location></location>
@@ -131,6 +133,7 @@ case3_expected_xml_output = r"""<?xml version="1.0" encoding="utf-8"?>
     <papersize>A3</papersize>
     <jpgresolutiondpi>300</jpgresolutiondpi>
     <pdfresolutiondpi>300</pdfresolutiondpi>
+    <kmlresolutiondpi>50</kmlresolutiondpi>
     <mapfilename>MA9001-v05-country-overview-with-admin-1-boundaries-and-topography.mxd</mapfilename>
     <paperxmax></paperxmax>
     <paperxmin></paperxmin>

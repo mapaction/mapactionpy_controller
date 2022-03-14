@@ -50,11 +50,8 @@ def build_maps(humevent_desc_path, map_number, dry_run):
     # build_steps.append(cnc.get_active_data_step_list(args.humevent_desc_path, True))
     # main_stack.process_stack(build_steps)
     my_runner = process_stack(plugin_controller.get_plugin_step(), humevent_desc_path)
-    if(isinstance(my_runner,plugin_controller.DockerRunner)):
-        my_runner.start_runner(args = map_number)
-    else:
-        process_stack(plugin_controller.get_cookbook_steps(my_runner, map_number, dry_run), None)
-        
+    process_stack(plugin_controller.get_cookbook_steps(my_runner, map_number, dry_run), None)
+
     # map_nums = None
     # if map_number:
     #     map_nums = [map_number]

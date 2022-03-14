@@ -118,7 +118,7 @@ def _add_steps_from_state_to_stack(new_state, stack, old_state):
         new_state.reverse()
         stack.extend(new_state)
         return old_state
-    
+
     return new_state
 
 

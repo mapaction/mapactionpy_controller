@@ -49,7 +49,7 @@ def write_export_metadata_to_xml(recipe):
 
     xmls = _export_metadata_to_xmls(recipe)
 
-    with open(xml_fpath, "wb") as xml_file:
+    with open(xml_fpath, "w") as xml_file:
         xml_file.write(xmls)
 
     return xml_fpath
