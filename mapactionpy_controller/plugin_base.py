@@ -42,7 +42,8 @@ class BaseRunnerPlugin(object):
             'BaseRunnerPlugin is an abstract class and the `get_lyr_render_extension`'
             ' method cannot be called directly')
 
-    def _get_all_templates_by_regex(self, recipe):
+    def _get_all_templates_by_regex(self, recipe): #Todo should we use the layoutManager from project instance 
+                                                    #to get embeded templates and match the regex against their names 
         """
         Gets the fully qualified filenames of map templates, which exist in `self.cmf.map_templates` whose
         filenames match the regex `recipe.template`.
@@ -53,25 +54,28 @@ class BaseRunnerPlugin(object):
                  `self.get_projectfile_extension()`
         """
         def _is_relevant_file(f):
+
             extension = os.path.splitext(f)[1]
-            logger.debug('checking file "{}", with extension "{}", against pattern "{}" and "{}"'.format(
+            logger.info('checking file "{}", with extension "{}", against pattern "{}" and "{}"'.format(
                 f, extension, recipe.template, self.get_projectfile_extension()
             ))
             if re.search(recipe.template, f):
                 logger.debug('file {} matched regex'.format(f))
                 f_path = os.path.join(self.cmf.map_templates, f)
                 logger.debug('file {} joined with self.cmf.map_templates "{}"'.format(f, f_path))
-                return (os.path.isfile(f_path)) and (extension == self.get_projectfile_extension())
+                is_relevent =  (os.path.isfile(f_path)) and (extension == self.get_projectfile_extension())
+                if(is_relevent): logging.info(f"got relevent {f_path}")
+                return is_relevent
             else:
                 return False
 
         # TODO: This results in calling `os.path.join` twice for certain files
-        logger.debug('searching for map templates in; {}'.format(self.cmf.map_templates))
+        logger.info('searching for map templates in; {}'.format(self.cmf.map_templates))
         all_filenames = os.listdir(self.cmf.map_templates)
-        logger.debug('all available template files:\n\t{}'.format('\n\t'.join(all_filenames)))
+        logger.info('all available template files:\n\t{}'.format('\n\t'.join(all_filenames)))
         relevant_filenames = [os.path.realpath(os.path.join(self.cmf.map_templates, fi))
                               for fi in all_filenames if _is_relevant_file(fi)]
-        logger.debug('possible template files:\n\t{}'.format('\n\t'.join(relevant_filenames)))
+        logger.info('possible template files:\n\t{}'.format('\n\t'.join(relevant_filenames)))
         return relevant_filenames
 
     def _get_template_by_aspect_ratio(self, template_aspect_ratios, target_ar):
@@ -168,10 +172,10 @@ class BaseRunnerPlugin(object):
 
         # use `recipe.template` as regex to locate one or more templates
         possible_templates = self._get_all_templates_by_regex(recipe)
-
+        
         # Select the template with the most appropriate aspect ratio
         possible_aspect_ratios = self.get_aspect_ratios_of_templates(possible_templates, recipe)
-
+        logging.info(f"possible ARio : {possible_aspect_ratios}")
         mf = recipe.get_frame(recipe.principal_map_frame)
         # Default value
         target_aspect_ratio = 1.0
@@ -182,7 +186,7 @@ class BaseRunnerPlugin(object):
         # use logic to workout which template has best aspect ratio
         # obviously not this logic though:
         recipe.template_path = self._get_template_by_aspect_ratio(possible_aspect_ratios, target_aspect_ratio)
-
+        
         # TODO re-enable "Have the input files changed?"
         # Have the input shapefiles changed?
         return recipe

@@ -78,7 +78,7 @@ class MapRecipe:
                 validate_against_recipe_schema_v0_2(recipe_def)
                 # Do something useful here
                 # Hack some values? Or raise a JIRA ticket?
-                logger.warn('Attempting to load backwards compatable v0.2 MapRecipe')
+                logger.warn('Attempting to load backwards compatible v0.2 MapRecipe')
                 # raise ValueError('old maprecipe format')
                 return 0.2
             except jsonschema.ValidationError:
@@ -105,10 +105,10 @@ class MapRecipe:
         mp_path = recipe_def.get('map_project_path', None)
 
         if mp_path:
-            mp_path = path.abspath(self.map_project_path)
+            mp_path = path.abspath(mp_path)
 
         return mp_path
-
+    
     def _parse_core_file_name(self, recipe_def):
         core_fname = recipe_def.get('core_file_name', None)
 
