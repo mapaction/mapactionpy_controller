@@ -72,7 +72,7 @@ class TestXmlExport(XmlTestCase):
         test_recipe.export_metadata = femd.case1_export_metadata_dict
         test_recipe.core_file_name = 'my-test-file'
         test_recipe.export_path = tempfile.gettempdir()
-        expected_export_fpath = os.path.join(test_recipe.export_path, 'my-test-file.xml')
+        excepted_export_fpath = os.path.join(test_recipe.export_path, 'my-test-file.xml')
 
         m = mock.mock_open()
         if six.PY2:
@@ -82,8 +82,8 @@ class TestXmlExport(XmlTestCase):
             with mock.patch("builtins.open", m, create=True):
                 actual_export_path = xml_exporter.write_export_metadata_to_xml(test_recipe)
 
-        m.assert_called_once_with(expected_export_fpath, 'wb')
-        self.assertEqual(expected_export_fpath, actual_export_path)
+        m.assert_called_once_with(excepted_export_fpath, 'w')
+        self.assertEqual(excepted_export_fpath, actual_export_path)
 
         # Case 2: Metadata missing from the recipe
         # Case 3: Write error

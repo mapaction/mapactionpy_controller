@@ -1,4 +1,5 @@
 import argparse
+import logging
 import os
 
 import mapactionpy_controller.check_naming_convention as cnc
@@ -39,22 +40,24 @@ def noun_gisdata_print_output(args):
 
 def noun_maps_print_output(args):
     if args.verb == VERB_BUILD:
-        build_maps(args.humevent_desc_path, args.map_number, args.dry_run)
+        build_maps(args.humevent_desc_path, args.map_number, args.dry_run,args.runner_name)
     else:
         raise NotImplementedError(args)
 
 
-def build_maps(humevent_desc_path, map_number, dry_run):
+def build_maps(humevent_desc_path, map_number, dry_run,runner_name):
     # build_steps = config_verify.get_config_verify_steps(args.cmf_desc_path, ['.lyr'])
     # build_steps.append(cnc.get_defaultcmf_step_list(args.cmf_desc_path, False))
     # build_steps.append(cnc.get_active_data_step_list(args.humevent_desc_path, True))
     # main_stack.process_stack(build_steps)
-    my_runner = process_stack(plugin_controller.get_plugin_step(), humevent_desc_path)
+    logging.info(f"loading runnnner{runner_name}")
+    my_runner = process_stack(plugin_controller.get_plugin_step(), {"state":humevent_desc_path,"runner_name":runner_name})
     if(isinstance(my_runner,plugin_controller.DockerRunner)):
-        my_runner.start_runner(args = map_number)
+        
+        my_runner.start_runner(cmf_path=humevent_desc_path,args = map_number)
     else:
         process_stack(plugin_controller.get_cookbook_steps(my_runner, map_number, dry_run), None)
-        
+#mapchef maps --build "C:\Users\BLAIT\Desktop\prepared-country-data\honduras\event_description.json" --map-number "MA9001"
     # map_nums = None
     # if map_number:
     #     map_nums = [map_number]
@@ -187,6 +190,14 @@ def get_args():
         help=('The number of an individual map to produce (eg "MA0123"). This must match a map'
               ' number name that exists in the MapCookbook. If this option is not specified then'
               ' all maps in the MapCookbook will be created.')
+    )
+
+    prs_maps.add_argument(
+        '--runner',
+        metavar='"Runner Name"',
+        dest = "runner_name",
+        help=('the identification name of the target runner;'
+         'supported runner are : <{" ; ".join(plugin_controller.supported_runners)}>')
     )
 
     maps_options_grp = prs_maps.add_mutually_exclusive_group(required=False)
