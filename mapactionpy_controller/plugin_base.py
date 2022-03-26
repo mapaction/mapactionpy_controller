@@ -213,7 +213,7 @@ class BaseRunnerPlugin(object):
     # String.Template be specified within the Cookbook?
     # https://docs.python.org/2/library/string.html#formatspec
     # https://www.python.org/dev/peps/pep-3101/
-    def create_ouput_map_project(self, **kwargs):
+    def create_output_map_project(self, **kwargs):
         recipe = kwargs['state']
         # Create `mapNumberDirectory` for output
         output_dir = os.path.join(self.cmf.map_projects, recipe.mapnumber)
