@@ -31,6 +31,7 @@ from collections import deque
 
 import humanfriendly.terminal as hft
 import humanfriendly.terminal.spinners as spinners
+from mapactionpy_controller.map_recipe import MapRecipe
 
 from mapactionpy_controller.steps import Step
 from mapactionpy_controller.task_renderer import TaskReferralBase
@@ -110,6 +111,7 @@ def _add_steps_from_state_to_stack(new_state, stack, old_state):
     :returns: If `new_state` contains Step objects then `old_state` is returned. Else `new_state`
        is returned
     """
+    # print(type(new_state),new_state)
     if isinstance(new_state, Step):
         stack.append(new_state)
         return old_state
@@ -118,7 +120,7 @@ def _add_steps_from_state_to_stack(new_state, stack, old_state):
         new_state.reverse()
         stack.extend(new_state)
         return old_state
-
+    
     return new_state
 
 
@@ -147,7 +149,7 @@ def process_stack(step_list, initial_state):
             # `nplus_state` = the state for the next iteraction (eg N+1)
             step = stack.pop()
             kwargs = {'state': n_state}
-
+            # print(n_state)
             if hft.connected_to_terminal():
                 with spinners.AutomaticSpinner(step.running_msg, show_time=True):
                     nplus_state = step.run(parse_feedback, **kwargs)

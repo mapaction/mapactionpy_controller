@@ -1,34 +1,102 @@
+from ast import Import
+from itertools import count
 import logging
-
+from lzma import CHECK_ID_MAX
+import subprocess
 from mapactionpy_controller.event import Event
 from mapactionpy_controller.layer_properties import LayerProperties
 from mapactionpy_controller.map_cookbook import MapCookbook
 from mapactionpy_controller.steps import Step
 import mapactionpy_controller.data_search as data_search
-
+import os
+from sys import platform, stdout
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+class DockerRunner :
+    
+    _run_container_command = "docker run -it -v \"{CMF_PATH}\":/cmf {container_name}  conda run --no-capture-output  -n myenv mapchef maps --build \"{linux_cmf_path}\"  --map-number \"{map_number}\""
+    def __init__(self,container_name) -> None:
+        #from python_on_whales import docker
+        self.container_name = container_name
+        self.status = None
+    def check_docker_container(self):
+        container_name = "qgisrunner"
+        try :
+            docker_subprocess = subprocess.check_output("docker container inspect -f '{{.State.Status}}' " +container_name,shell=True,stderr=subprocess.STDOUT)
+            self.status = docker_subprocess.decode('ascii').strip()
+            
+        except subprocess.CalledProcessError as e:
+            logging.info(f"cant find any docker container with name {container_name} --> {e}")
+            raise e
+        return self.status
+            #raise a specific exception 
+
+    def start_runner(self,cmf_path="%CMF_PATH%",args = ""):
+        #if(self.check_docker_container()):
+        #    if(self.status == "running"):
+        #        logging.info(f"there is already a tunning container {self.container_name}")
+        #    else :
+        country_path,event_file = os.path.split(cmf_path)
+        cmf_root,country_path = os.path.split(country_path)
+        run_cmd = self._run_container_command.format(CMF_PATH=cmf_root,linux_cmf_path = f"/cmf/{country_path}/{event_file}" ,container_name = self.container_name,map_number = args)
+        docker_subprocess = subprocess.Popen(run_cmd,shell=False)
+        docker_subprocess.communicate()
+        #logging.info(f"docker result : {docker_subprocess.decode('ascii').strip()}")
+        
+supported_runners = {"arcpro":"mapactionpy_arcpro.arcpro_runner.ArcProRunner",\
+                        "qgis":"mapactionpy_qgis.qgis_runner.QGisRunner",\
+                        "qgis_via_docker":DockerRunner,\
+                        "arcmap":"mapactionpy_arcmap.arcmap_runner.ArcMapRunner"}
+
 
 def get_plugin_step():
+       
     def get_plugin(**kwargs):
-        hum_event = kwargs['state']
+        logging.info(f"inside runner loader {kwargs.keys()}")
+        hum_event = kwargs['state']['hum_event']
+        if(kwargs['state']["runner_name"]):
+            runner_name = kwargs["state"]["runner_name"]
+            try:
+                
+                logging.info("inside runner loader")
+                if(runner_name == "qgis_via_docker"):
+                    return DockerRunner("qgisrunner")
+                runner_name = kwargs['state']['runner_name']
+                pak,mod,rclass = supported_runners[runner_name].split('.')
+                runner_class =getattr(getattr(__import__(pak),mod),rclass)
+                return runner_class(hum_event)
+            except ImportError as e :
+                logging.debug(f"Failed to load the {runner_name}")
         try:
-            logger.debug('Attempting to load the ArcMapRunner')
-            from mapactionpy_arcmap.arcmap_runner import ArcMapRunner
-            runner = ArcMapRunner(hum_event)
-            logger.info('Successfully loaded the ArcMapRunner')
+            logger.debug('Attempting to load the ArcProRunner')
+            from mapactionpy_arcpro.arcpro_runner import ArcProRunner
+            runner = ArcProRunner(hum_event)
+            logger.info('Successfully loaded the ArcProRunner')
         except ImportError:
-            logger.debug('Failed to load the ArcMapRunner')
+            logger.debug('Failed to load the ArcProRunner')
             logger.debug('Attempting to load the QGisRunner')
-            from mapactionpy_qgis.qgis_runner import QGisRunner
-            runner = QGisRunner()
-            logger.info('Failed to load the ArcMapRunner')
+            try :
+                if(platform != 'win32'):
+                    from mapactionpy_qgis.qgis_runner import QGisRunner
+                    runner = QGisRunner(hum_event)
+                    logger.info('Successfully loaded the QGisRunner')
+                else:
+                    logger.debug('Failed to load the QGisRunner')
+                    logger.debug('Attempting to load the DockerRunner')
+                    runner = DockerRunner("qgisrunner")
+                        #if(runner.check_docker_container()):
+                    return runner
+            except ImportError :            
+                logger.debug('Failed to load the DockerRunner')
+                logger.debug('Attempting to load the ArcMapRunner')
+                from mapactionpy_arcmap.arcmap_runner import ArcMapRunner
+                runner = ArcMapRunner(hum_event)
 
         return runner
 
     def new_event(**kwargs):
-        return Event(kwargs['state'])
+        return {"hum_event":Event(kwargs['state']['state']),"runner_name":kwargs['state']["runner_name"]}
 
     plugin_step = [
         Step(

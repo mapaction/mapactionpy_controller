@@ -1,7 +1,6 @@
 import json
 import logging
 from os import path
-
 from jsonschema import validate
 
 CONFIG_SCHEMAS_DIR = path.join(path.abspath(path.dirname(__file__)), 'schemas')

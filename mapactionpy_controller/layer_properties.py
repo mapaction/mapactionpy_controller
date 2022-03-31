@@ -62,7 +62,7 @@ class LayerProperties:
                 mapLayer = RecipeLayer(layer, self)
                 self.properties[mapLayer.name] = mapLayer
 
-    def _get_lyr_rendering_names_as_set(self):
+    def _get_lyr_rendering_names_as_set(self): #this should append the runners specific rendering folder name to the cmf.layer_rendering to handle new structure of cmf 
         files_unique = set()
         dir_content = os.listdir(self.cmf.layer_rendering)
         for f in dir_content:

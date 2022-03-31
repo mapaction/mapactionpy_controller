@@ -82,7 +82,7 @@ def _get_requires_list():
         'pyyaml',
         'pyshp',
         'six>=1.11.0',
-        'slugify'
+        'python-slugify'
     ]
 
     if (sys.version_info.major == 2):
@@ -130,7 +130,7 @@ setup(
     description='Controls the workflow of map and infographic production',
     long_description=readme(),
     long_description_content_type="text/markdown",
-    url='http://github.com/mapaction/mapactionpy_controller',
+    url='http://github.com/mapaction/mapactionpy_controller/tree/occamlabsarcpro',
     author='MapAction',
     author_email='github@mapaction.com',
     license='GPL3',

@@ -38,7 +38,7 @@ class DummyRunner(BaseRunnerPlugin):
     def get_lyr_render_extension(self):
         return '.lyr'
 
-    def create_output_map_project(self, **kwargs):
+    def create_ouput_map_project(self, **kwargs):
         return kwargs['state']
 
 
@@ -110,9 +110,9 @@ class TestPluginBase(TestCase):
             self.assertEqual(expect_result, actual_result)
 
         template_aspect_ratios = [
-            ('landscape_bottom', 1.975),
-            ('landscape_side', 1.294117647),
-            ('portrait', 0.816816817)
+            ('landscape_bottom',	1.975),
+            ('landscape_side',		1.294117647),
+            ('portrait'	,	0.816816817)
         ]
 
         # linear_aspect_ratios = [
@@ -181,7 +181,7 @@ class TestPluginBase(TestCase):
         self.fail()
 
     @skip('Not ready yet')
-    def test_create_output_map_project(self):
+    def test_create_ouput_map_project(self):
         self.fail()
 
     @skip('Not ready yet')

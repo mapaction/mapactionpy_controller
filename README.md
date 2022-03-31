@@ -7,9 +7,9 @@ Master branch [![Build Status](https://travis-ci.com/mapaction/mapactionpy_contr
 
 Installing
 ==========
-To install the latest stable release via PyPi:
+To install the occamlabsarcpro version via PyPi:
 ```
-python -m pip install mapactionpy_controller
+python -m pip install git+https://github.com/mapaction/mapactionpy_controller.git@occamlabsarcpro
 ```
 
 To install a specific version for testing, see the relevant command line from here:
@@ -18,6 +18,21 @@ https://pypi.org/project/mapactionpy-controller/#history
 
 Command-line Usage
 ==========
+
+* To use Mapchef using QGIS runner, please follow the following instructions : https://github.com/mapaction/mapactionpy_qgis/tree/occamlabsqgis#install-qgis-runner-on-windows-using-docker
+* To use Mapchef using Arcpro runner, please follow the following instructions : https://github.com/mapaction/mapactionpy_arcpro/tree/occamlabsarcpro#mapchef
+* To use Mapchef using Arcmap runner, please follow the following instructions : https://github.com/mapaction/mapactionpy_arcmap
+
+* The new command line for Mapchef will be as follows : 
+```
+mapchef maps --build "%CMF_PATH%/honduras/event_description.json" --map-number "MA9001" --runner "qgis_via_docker"
+```
+* The runner parameter could have the following values :
+    * **"arcpro"** for runing ArcProRunner;
+    * **"qgis_via_docker"** for runing DockerRunner;
+    * **"arcmap"** for runing ArcMapRunner;
+ * the parameter **CMF_PATH** contain the CMF path.
+
 There are two key files, typically named `cmf_description.json` and `event_description.json` that need to be in the root of the crash move folder. Most command-line options require one or the other of these.
 
 General help:
@@ -35,15 +50,6 @@ Check the compliance with the Data Naming Convention.
 mapchef gisdata --verify /path/to/current/cmf/2019gbr01/event_description.json
 ```
 
-Create all maps in the cookbook file:
-```
-mapchef maps --build /path/to/current/cmf/2019gbr01/event_description.json
-```
-
-Create the map "MA001" from the cookbook file:
-```
-mapchef maps --build --map-number "MA001" /path/to/current/cmf/2019gbr01/event_description.json
-```
 
 Programmatic Usage
 =====
@@ -133,3 +139,5 @@ Extra information associated with clause `datatheme`:
 
 The Administrative boundary (level 3) data generously supplied by the World Food Program, downloaded from https://www.wfp.org/.
 ```
+
+
