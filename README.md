@@ -19,9 +19,9 @@ https://pypi.org/project/mapactionpy-controller/#history
 Command-line Usage
 ==========
 
-* To use Mpachef for running QGIS runner should have docker image following this instructions : https://github.com/mapaction/mapactionpy_qgis/tree/occamlabsqgis
-* To use Mpachef for running Arcpro runner should have Mapactionpy_arcpro installed : https://github.com/mapaction/mapactionpy_arcpro/tree/occamlabsarcpro
-* To use Mpachef for running Arcpro runner should have Mapactionpy_arcmap installed : https://github.com/mapaction/mapactionpy_arcmap
+* To use Mapchef using QGIS runner, please follow the following instructions : https://github.com/mapaction/mapactionpy_qgis/tree/occamlabsqgis#install-qgis-runner-on-windows-using-docker
+* To use Mapchef using Arcpro runner, please follow the following instructions : https://github.com/mapaction/mapactionpy_arcpro/tree/occamlabsarcpro#mapchef
+* To use Mapchef using Arcmap runner, please follow the following instructions : https://github.com/mapaction/mapactionpy_arcmap
 
 * The new command line for Mapchef will be as follows : 
 ```
