@@ -153,18 +153,18 @@ def get_cookbook_steps(my_runner, map_number, dry_run, verify_on_creation=True):
     return cookbook_steps
 
 
-def select_recipes(cookbook, map_nums=None):
-    all_recipes = cookbook.products.values()
+# def select_recipes(cookbook, map_nums=None):
+#     all_recipes = cookbook.products.values()
 
-    if map_nums:
-        try:
-            cleaned_nums = [map_nums.upper()]
-        except AttributeError:
-            cleaned_nums = [mn.upper() for mn in map_nums]
+#     if map_nums:
+#         try:
+#             cleaned_nums = [map_nums.upper()]
+#         except AttributeError:
+#             cleaned_nums = [mn.upper() for mn in map_nums]
 
-        selected_recipes = [r for r in all_recipes if r.mapnumber.upper() in cleaned_nums]
+#         selected_recipes = [r for r in all_recipes if r.mapnumber.upper() in cleaned_nums]
 
-        logger.debug('MapIDs "{}" have been selected'.format([r.mapnumber for r in selected_recipes]))
-        return selected_recipes
-    else:
-        return all_recipes
+#         logger.debug('MapIDs "{}" have been selected'.format([r.mapnumber for r in selected_recipes]))
+#         return selected_recipes
+#     else:
+#         return all_recipes
