@@ -22,6 +22,7 @@ class RecipeFrame:
     def __init__(self, frame_def, compatiblity_mode=0.3):
         # Required fields
         self.name = frame_def['name']
+        print ("RecipeFrame.__init__ : self.name = " + self.name)
         # This is a list, but see note in `_parse_layers` method
         self.layers = self._parse_layers(frame_def['layers'])
         self.crs = self._parse_crs(frame_def, compatiblity_mode)
@@ -32,18 +33,19 @@ class RecipeFrame:
     #     self.spatial_ref_text_element = frame_def.get('spatial_ref_text_element', None)
 
     def _parse_layers(self, lyr_defs):
+        print ("RecipeFrame._parse_layers()")
         recipe_lyrs_list = []
         lyrs_names_set = set()
         for lyr_def in lyr_defs:
             l_name = lyr_def['name']
-            print ("RecipeFrame._parse_layers: " + l_name)
+            print ("RecipeFrame._parse_layers: [" + l_name + "]")
             if l_name in lyrs_names_set:
                 raise ValueError(
                     'Duplicate layer name {} in mapframe {}. Each layername within a'
                     ' mapframe must unique'.format(l_name, self.name))
 
             lyrs_names_set.add(l_name)
-            recipe_lyrs_list.append(self._parse_single_layer(l_name, lyr_def))
+            recipe_lyrs_list.append(RecipeLayer(lyr_def))
         return recipe_lyrs_list
 
     # def _parse_single_layer(self, l_name, lyr_def, lyr_props):

@@ -50,7 +50,7 @@ class MapCookbook:
         with open(self.cookbook_json_file) as json_file:
             jsonContents = json.load(json_file)
             for recipe in jsonContents['recipes']:
-                print (recipe['mapnumber'])
+                print ("MapCookbook._parse_json_file() : " + recipe['mapnumber'])
                 rec = MapRecipe(recipe)
                 self.products[(recipe['mapnumber'])] = rec
 

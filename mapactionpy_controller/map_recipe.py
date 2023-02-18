@@ -143,10 +143,11 @@ class MapRecipe:
     #     return recipe_map_frames_list
 
     def _parse_map_frames(self, map_frames_def):
+        print ("MapRecipe._parse_map_frames()")
         recipe_map_frames_list = []
         map_frames_set = set()
         for frame_def in map_frames_def:
-        #     # mf = RecipeFrame(frame_def, lyr_props, compatiblity_mode)
+            print ("MapRecipe._parse_map_frames() : name = " + frame_def["name"])
             mf = RecipeFrame(frame_def)
             if mf.name in map_frames_set:
                 raise ValueError(

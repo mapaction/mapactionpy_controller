@@ -4,6 +4,7 @@ import os
 # import fiona
 # import glob
 import re
+import json
 # import hashlib
 # import geopandas
 
@@ -109,9 +110,11 @@ class RecipeLayer:
         """
         # validate_against_layer_schema(layer_def)
         # print ("RecipeLayer.__init__()")
-
+        self.subLayers = list()
         # Required fields
         self.name = layer_def["name"]
+        print ("RecipeLayer.__init__() : " + self.name)
+        self.subLayers = self._parse_layers(layer_def)
         self.reg_exp = layer_def.get("reg_exp", "empty")
         self.definition_query = layer_def.get("definition_query", "empty")
         self.schema_definition = layer_def.get("schema_definition", "empty")
@@ -126,7 +129,7 @@ class RecipeLayer:
         # Optional fields
         # self._get_data_schema(layer_def, lyr_props)
         # self.layer_file_checksum = layer_def.get('layer_file_checksum', self._calc_layer_file_checksum())
-        self.data_source_path = layer_def.get('data_source_path', None)
+        # self.data_source_path = layer_def.get('data_source_path', None)
         # if self.data_source_path:
         #     self.data_source_path = os.path.abspath(self.data_source_path)
 
@@ -138,6 +141,14 @@ class RecipeLayer:
         # self.success = layer_def.get('success', False)
         # self.visible = layer_def.get('visible', True)
     #     self._apply_use_for_frame_extent(layer_def)
+    def _parse_layers(self, lyr_defs):
+        recipe_lyrs_list = []
+        print (lyr_defs.keys())
+
+        if (lyr_defs.get('layers', "None") != "None"):
+            for lyr_def in lyr_defs["layers"]:
+                recipe_lyrs_list.append(RecipeLayer(lyr_def))                
+        return recipe_lyrs_list
 
     # def _apply_use_for_frame_extent(self, layer_def):
     #     # Allow for three valid values True/False/None
@@ -151,7 +162,6 @@ class RecipeLayer:
     #         self.layer_file_path = os.path.abspath(layer_def['layer_file_path'])
     #         if verify_on_creation:
     #             self.verify_layer_file_path()
-
     #     else:
     #         self.layer_file_path = os.path.abspath(os.path.join(
     #             lyr_props.cmf.layer_rendering,

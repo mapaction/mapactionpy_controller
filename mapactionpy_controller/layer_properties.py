@@ -58,6 +58,7 @@ class LayerProperties:
         """
         Reads layer properties file
         """
+        print ("LayerProperties._parse() - opening : " + self.cmf.layer_properties)
         with open(self.cmf.layer_properties) as json_file:
             jsonContents = json.load(json_file)
             for layer in jsonContents['layerProperties']:
