@@ -109,11 +109,10 @@ class RecipeLayer:
             row {dict} -- From the layerProperties.json file
         """
         # validate_against_layer_schema(layer_def)
-        # print ("RecipeLayer.__init__()")
         self.subLayers = list()
         # Required fields
         self.name = layer_def["name"]
-        print ("RecipeLayer.__init__() : " + self.name)
+        # print ("RecipeLayer.__init__() : " + self.name)
         self.subLayers = self._parse_layers(layer_def)
         self.reg_exp = layer_def.get("reg_exp", "empty")
         self.definition_query = layer_def.get("definition_query", "empty")
@@ -143,7 +142,7 @@ class RecipeLayer:
     #     self._apply_use_for_frame_extent(layer_def)
     def _parse_layers(self, lyr_defs):
         recipe_lyrs_list = []
-        print (lyr_defs.keys())
+        # print (lyr_defs.keys())
 
         if (lyr_defs.get('layers', "None") != "None"):
             for lyr_def in lyr_defs["layers"]:
