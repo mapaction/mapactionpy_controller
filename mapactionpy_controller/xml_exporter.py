@@ -88,7 +88,7 @@ def _export_metadata_to_xmls(recipe):
         if item_name == 'activities':
             return 'activity'
         if item_name == 'clustersAndSectors':
-            return 'clustersOrSector'
+            return 'clusterOrSector'
         return item_name
 
     xml = dicttoxml(export_params_dict, attr_type=False, custom_root='mapdoc', item_func=get_list_item_name)
