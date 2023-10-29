@@ -10,8 +10,8 @@ jobs:
     - name: "Python 3.6 on Xenial Linux"
       python: 3.6           # Required for ArcGIS Pro v2.4
     # Only required to isolate windows/linux problems from py3/py2 problems
-    - name: "Python 2.7 on Xenial Linux"
-      python: 2.7           
+    #- name: "Python 2.7 on Xenial Linux"
+    #  python: 2.7           
     # Python 3.7 is used by QGIS v3.12
     - name: "Python 3.7 on Windows"
       os: windows           # Windows 10.0.17134 N/A Build 17134
@@ -29,13 +29,13 @@ jobs:
         - python -m pip install --upgrade pip
       env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
     # Python 2.7 is used by ArcMap 10.6
-    - name: "Python 2.7 (32bit) on Windows"
-      os: windows           # Windows 10.0.17134 N/A Build 17134
-      language: shell       # 'language: python' is an error on Travis CI Windows
-      before_install:
-        - choco install python2 --x86
-        - python -m pip install --upgrade pip
-      env: PATH=/c/Python27:/c/Python27/Scripts:$PATH
+    #- name: "Python 2.7 (32bit) on Windows"
+    #  os: windows           # Windows 10.0.17134 N/A Build 17134
+    #  language: shell       # 'language: python' is an error on Travis CI Windows
+    #  before_install:
+    #    - choco install python2 --x86
+    #    - python -m pip install --upgrade pip
+    #  env: PATH=/c/Python27:/c/Python27/Scripts:$PATH
     # Python 3.9 is used by ArcGIS Pro v2.9.5
     - name: "Python 3.9 on Windows"
       os: windows           # Windows 10.0.17134 N/A Build 17134
