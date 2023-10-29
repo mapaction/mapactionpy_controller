@@ -34,7 +34,7 @@ def _check_for_export_metadata(recipe):
 
 
 def write_export_metadata_to_xml(recipe):
-    xml_fname = recipe.core_file_name+".xml"
+    xml_fname = recipe.core_file_name + ".xml"
     xml_fpath = os.path.join(recipe.export_path, xml_fname)
     xmls = _export_metadata_to_xmls(recipe)
 
