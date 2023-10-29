@@ -40,7 +40,7 @@ If applied to Lebanon, at runtime would be updated to be, hence only matching an
 * Some hardcoded assumptions about the names of elements within the map template have been removed. The name of the map frame(s), scale_text_element and spatial_ref_text_element are specified in the map recipe
 * Switch from v0.2 to v0.3 as default format MapRecipe. Backward compatibility is maintained and recipes in v0.2 format can still be loaded. In backward compatibility mode:
   * `recipe.principal_map_frame` is assumed to equal "Main map". A error is raise if a suitable mapframe is not available on the template
-  * `recipe.crs` is assumed to be ....
+  * `recipe.crs` is assumed to be ...
 
 
 
