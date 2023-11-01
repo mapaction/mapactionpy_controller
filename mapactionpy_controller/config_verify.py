@@ -22,8 +22,8 @@ class ConfigVerifier():
             self.check_cmf_description()
             lp = LayerProperties(self.cmf, '', verify_on_creation=False)
             MapCookbook(self.cmf, lp, verify_on_creation=False)
-            return ('No json validation problems were detected in the parsing of these two'
-                   ' files:\n"{}"\n"{}"'.format(lp.cmf.layer_properties, self.cmf.map_definitions)
+            return ('No json validation problems were detected in the parsing of these two '
+                    'files:\n"{}"\n"{}"'.format(lp.cmf.layer_properties, self.cmf.map_definitions)
                    )
         except ValueError:
             raise
