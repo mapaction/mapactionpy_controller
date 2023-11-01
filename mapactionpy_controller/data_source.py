@@ -36,7 +36,7 @@ class DataSource:
 
         for file in files:
             root, ext = os.path.splitext(file)
-            if not(ext.endswith(".lock")):
+            if not (ext.endswith(".lock")):
                 paths_to_hash.append(file)
         return paths_to_hash
 

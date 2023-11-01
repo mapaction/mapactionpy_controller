@@ -24,7 +24,7 @@ class ConfigVerifier():
             MapCookbook(self.cmf, lp, verify_on_creation=False)
             return ('No json validation problems were detected in the parsing of these two '
                     'files:\n"{}"\n"{}"'.format(lp.cmf.layer_properties, self.cmf.map_definitions)
-                   )
+                    )
         except ValueError:
             raise
 
@@ -34,11 +34,11 @@ class ConfigVerifier():
             try:
                 LayerProperties(cmf, lyr_exn, verify_on_creation=True)
                 return ('No inconsistency detected between:\n'
-                       ' * the contents of the layer properties json file:\n\t{props}\n'
-                       ' * and layer rendering dir:\n\t{render}\n'.format(
-                           props=cmf.layer_properties,
-                           render=cmf.layer_rendering
-                       ))
+                        ' * the contents of the layer properties json file:\n\t{props}\n'
+                        ' * and layer rendering dir:\n\t{render}\n'.format(
+                            props=cmf.layer_properties,
+                            render=cmf.layer_rendering
+                        ))
             except ValueError:
                 raise
 
@@ -48,11 +48,11 @@ class ConfigVerifier():
             lyrs = LayerProperties(cmf, '', verify_on_creation=False)
             MapCookbook(cmf, lyrs, verify_on_creation=True)
             return ('No inconsistency detected between:\n'
-                   ' * the contents of the layer properties json file:\n\t{props}\n'
-                   ' * and the contents of the MapCookbook json:\n\t{cbook}\n'.format(
-                       props=cmf.layer_properties,
-                       cbook=cmf.map_definitions
-                   ))
+                    ' * the contents of the layer properties json file:\n\t{props}\n'
+                    ' * and the contents of the MapCookbook json:\n\t{cbook}\n'.format(
+                        props=cmf.layer_properties,
+                        cbook=cmf.map_definitions
+                    ))
         except ValueError:
             raise
 
