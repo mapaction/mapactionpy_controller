@@ -37,7 +37,8 @@ before_install:
 - if [ $TRAVIS_OS_NAME = linux ]; then ogrinfo --version; fi
 install:
 - if [ $TRAVIS_OS_NAME = linux ]; then pip install GDAL==`ogrinfo --version | grep -o -P '(?<=GDAL )(.*)(?=,)'`; fi
-- pip install --upgrade setuptools
+- pip uninstall setuptools
+- pip install setuptools
 - pip install -r requirements-dev.txt
 - pip install -r requirements-jira.txt
 - pip install .
