@@ -1,5 +1,6 @@
 # -r requirements.txt
 #  mapactionpy_controller_dependancies@git+https://github.com/mapaction/mapactionpy_controller_dependencies.git
+pip
 coverage
 flake8
 autopep8
