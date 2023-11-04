@@ -93,7 +93,7 @@ def _parse_fictional_country_name(raw_name, validation_results, affected_country
         real_ctrys = ', '.join([country.name for country in validation_results])
         raise ValueError('It is not valid to supply a real country name with a fictional ISO3 code.'
                          ' Fictional value for affected_country_iso3="{}". Supplied country_name="{}".'
-                         ' Simular real country name(s)="{}".'.format(
+                         ' Similar real country name(s)="{}".'.format(
                              affected_country_iso3, raw_name, real_ctrys))
 
     # Fictional ISO, No Country name - BAD

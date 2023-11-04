@@ -159,7 +159,7 @@ class TestDataSearch(unittest.TestCase):
 
             # Case E
             # Check whether or not it is enforced that a regex is matches the beginning of the string or at any
-            # point in the string. Simular to Case A
+            # point in the string. Similar to Case A
             test_recipe = MapRecipe(fixtures.recipe_test_for_search_for_shapefiles, self.lyr_props)
             mock_glob.return_value = mock_single_file_glob
             all_gis_files = [(f_path, os.path.basename(f_path)) for f_path in data_search.get_all_gisfiles(self.cmf)]
@@ -186,7 +186,7 @@ class TestDataSearch(unittest.TestCase):
             # Case F
             # Check case where filesystem has case sensitive filenames, meaning that we could match on two
             # seperate files whose names only different by case.
-            # Very simular to Case B
+            # Very similar to Case B
             test_recipe = MapRecipe(fixtures.recipe_test_for_search_for_shapefiles, self.lyr_props)
             mock_glob.return_value = fixtures.glob_multiple_stle_file_search_case_difference_linux
             all_gis_files = [(f_path, os.path.basename(f_path)) for f_path in data_search.get_all_gisfiles(self.cmf)]
