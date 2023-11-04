@@ -35,12 +35,12 @@ before_install:
 - if [ $TRAVIS_OS_NAME = linux ]; then export CPLUS_INCLUDE_PATH=/usr/include/gdal; fi
 - if [ $TRAVIS_OS_NAME = linux ]; then export C_INCLUDE_PATH=/usr/include/gdal; fi
 - if [ $TRAVIS_OS_NAME = linux ]; then ogrinfo --version; fi
-- if [ -f "pyproject.toml" ]; then rm -r pyproject.toml; fi
 
 install:
 - if [ $TRAVIS_OS_NAME = linux ]; then pip install GDAL==`ogrinfo --version | grep -o -P '(?<=GDAL )(.*)(?=,)'`; fi
 - pip uninstall setuptools --yes
 - pip install setuptools
+- if [ -f "pyproject.toml" ]; then rm -r pyproject.toml; fi
 - pip install -r requirements-dev.txt
 - pip install -r requirements-jira.txt
 - pip install .
