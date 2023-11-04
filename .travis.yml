@@ -35,7 +35,7 @@ before_install:
 - if [ $TRAVIS_OS_NAME = linux ]; then export CPLUS_INCLUDE_PATH=/usr/include/gdal; fi
 - if [ $TRAVIS_OS_NAME = linux ]; then export C_INCLUDE_PATH=/usr/include/gdal; fi
 - if [ $TRAVIS_OS_NAME = linux ]; then ogrinfo --version; fi
-- [[ -f "pyproject.toml" ]] &&  rm -r pyproject.toml
+# - [[ -f "pyproject.toml" ]] &&  rm -r pyproject.toml
 
 install:
 - if [ $TRAVIS_OS_NAME = linux ]; then pip install GDAL==`ogrinfo --version | grep -o -P '(?<=GDAL )(.*)(?=,)'`; fi
