@@ -56,7 +56,7 @@ class TestEvent(TestCase):
             ('GBR', u'United Kingdom'),
             ('IRL', u'Ireland')
         ]
-############# STEVE
+
         for test_iso3, test_name in working_name_not_supplied:
             # Don't supply the country name
             event_def = base_event_def.copy()
