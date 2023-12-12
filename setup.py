@@ -85,7 +85,7 @@ def _get_requires_list():
         'slugify',
         'pyproj',
         'shapely',
-        #'GDAL',
+        'GDAL',
         'Fiona',
         'Rtree'
     ]
