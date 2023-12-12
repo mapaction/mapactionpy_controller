@@ -118,11 +118,11 @@ def _get_requires_list():
             gdal_str = 'GDAL'
 
         requires.extend([
-            'Fiona',
-            'pyproj',
-            'Shapely',
+            #'Fiona',
+            #'pyproj',
+            #'Shapely',
             gdal_str,
-            'Rtree',
+            #'Rtree',
             'geopandas'
         ])
 
