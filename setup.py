@@ -82,7 +82,12 @@ def _get_requires_list():
         'pyyaml',
         'pyshp',
         'six>=1.11.0',
-        'slugify'
+        'slugify',
+        'pyproj',
+        'shapely',
+        'GDAL',
+        'Fiona',
+        'Rtree'
     ]
 
     if (sys.version_info.major == 2):
