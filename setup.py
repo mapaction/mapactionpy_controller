@@ -82,12 +82,7 @@ def _get_requires_list():
         'pyyaml',
         'pyshp',
         'six>=1.11.0',
-        'GDAL',
-        'slugify',
-        'pyproj',
-        'shapely',
-        'Fiona',
-        'Rtree'
+        'slugify'
     ]
 
     if (sys.version_info.major == 2):
@@ -118,11 +113,11 @@ def _get_requires_list():
             gdal_str = 'GDAL'
 
         requires.extend([
-            #'Fiona',
-            #'pyproj',
-            #'Shapely',
+            'Fiona',
+            'pyproj',
+            'Shapely',
             gdal_str,
-            #'Rtree',
+            'Rtree',
             'geopandas'
         ])
 
