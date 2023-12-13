@@ -26,6 +26,7 @@ jobs:
         - choco install python --version 3.9.13
         - python -m pip install --upgrade pip
         - python -m pip --version
+        - export PATH="/c/Python39:/c/Python39/Scripts:$PATH"
       env: PATH=/c/Python39:/c/Python39/Scripts:$PATH
  
 
