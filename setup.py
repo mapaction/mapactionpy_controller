@@ -82,10 +82,10 @@ def _get_requires_list():
         'pyyaml',
         'pyshp',
         'six>=1.11.0',
+        'GDAL',
         'slugify',
         'pyproj',
         'shapely',
-        'GDAL',
         'Fiona',
         'Rtree'
     ]
