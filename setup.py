@@ -101,6 +101,7 @@ def _get_requires_list():
     if sys.platform == 'win32' and not can_import_geo_packages():
         requires.extend([
             'pytz',
+            'geopandas'
         ])
     else:
         try:
