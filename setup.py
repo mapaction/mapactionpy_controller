@@ -101,7 +101,6 @@ def _get_requires_list():
     if sys.platform == 'win32' and not can_import_geo_packages():
         requires.extend([
             'pytz',
-            'mapactionpy_controller_dependencies'
         ])
     else:
         try:
