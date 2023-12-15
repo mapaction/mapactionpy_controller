@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import os
 from setuptools import setup, find_packages
 from os import path, environ
 
@@ -16,6 +17,7 @@ def readme():
 # it won't ask for mapactionpy_controller_dependencies
 def is_travis_environment():
     return "TRAVIS" in os.environ and os.environ["TRAVIS"] == "true"
+
 
 # See https://packaging.python.org/guides/single-sourcing-package-version/
 # This uses method 4 on this list combined with other methods.

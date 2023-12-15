@@ -30,7 +30,7 @@ jobs:
         - python -m pip install travispipelinedependencies/pyproj-3.0.0.post1-cp39-cp39-win_amd64.whl
         - python -m pip install travispipelinedependencies/Shapely-1.7.1-cp39-cp39-win_amd64.whl
         - python -m pip install travispipelinedependencies/GDAL-3.1.4-cp39-cp39-win_amd64.whl
-        - python -m pip install travispipelinedependencies/Fiona-1.8.17-cp39-cp39-win_amd64.whls
+        - python -m pip install travispipelinedependencies/Fiona-1.8.17-cp39-cp39-win_amd64.whl
         - python -m pip install travispipelinedependencies/Rtree-0.9.4-cp39-cp39-win_amd64.whl
 
       env: PATH=/c/Python39:/c/Python39/Scripts:$PATH
