@@ -27,12 +27,11 @@ jobs:
         - python -m pip install --upgrade pip
         - python -m pip --version
         - export PATH="/c/Python39:/c/Python39/Scripts:$PATH"
-        - python -m pip install pyproj
-        - python -m pip install Shapely
-        - powershell -command "(New-Object Net.WebClient).DownloadFile('https://tmpfiles.org/dl/3413343/gdal-3.4.3-cp39-cp39-win_amd64.whl', 'gdal-3.4.3-cp39-cp39-win_amd64.whl')"
-        - python -m pip install gdal-3.4.3-cp39-cp39-win_amd64.whl
-        - python -m pip install Fiona
-        - python -m pip install Rtree
+        - python -m pip install travispipelinedependencies/pyproj-3.0.0.post1-cp39-cp39-win_amd64.whl
+        - python -m pip install travispipelinedependencies/Shapely-1.7.1-cp39-cp39-win_amd64.whl
+        - python -m pip install travispipelinedependencies/GDAL-3.1.4-cp39-cp39-win_amd64.whl
+        - python -m pip install travispipelinedependencies/Fiona-1.8.17-cp39-cp39-win_amd64.whls
+        - python -m pip install travispipelinedependencies/Rtree-0.9.4-cp39-cp39-win_amd64.whl
 
       env: PATH=/c/Python39:/c/Python39/Scripts:$PATH
  
