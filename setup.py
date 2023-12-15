@@ -13,6 +13,7 @@ def readme():
     with open(path.join(root_dir, 'README.md')) as f:
         return f.read()
 
+
 # Checks if this is a travis build. If it is
 # it won't ask for mapactionpy_controller_dependencies
 def is_travis_environment():
