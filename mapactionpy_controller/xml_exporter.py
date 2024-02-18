@@ -107,8 +107,6 @@ def _create_export_params_dict(recipe):
         'qclevel': "Automatically generated",
         'proj': "",
         'datasource': "",
-        #'createdate': "",
-        #'createtime': "",
         'scale': "",
         'datum': ""
         # ,
