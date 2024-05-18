@@ -3,6 +3,15 @@ os: linux
 dist: xenial
 jobs:
   include:
+    # Python 3.11 is used by ArcGIS Pro v3.11
+    - name: "Python 3.11 on Windows"
+      os: windows           # Windows 11
+      language: shell       # 'language: python' is an error on Travis CI Windows
+      before_install:
+        - choco install python --version 3.11.8
+        - python -m pip install --upgrade pip
+      env: PATH=/c/Python311:/c/Python36/Scripts:$PATH
+    # Python 2.7 is used by ArcMap 10.6
     # Python 3.7 is used by QGIS v3.12
     - name: "Python 3.7 on Xenial Linux"
       python: 3.7           

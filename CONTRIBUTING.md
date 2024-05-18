@@ -15,6 +15,8 @@ The controller targets both Python 2 and 3 in order to support the `mapactionpy_
 * Python 3.6 Linux 64 bit
 * Python 3.7 Windows 64 bit
 * Python 3.7 Linux 64 bit
+* Python 3.11 Linux 64 bit
+* Python 3.11 Windows 64 bit
 
 The individual plugins do not need to support all of these versions of Python.
 
