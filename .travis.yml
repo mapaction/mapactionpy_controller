@@ -60,3 +60,4 @@ deploy:
   skip_cleanup: true
   on:
     all_branches: true
+    condition: ${TRAVIS_PYTHON_VERSION,,} =~ ^3
