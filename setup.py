@@ -103,20 +103,20 @@ def _get_requires_list():
             'pytz',
             'mapactionpy_controller_dependencies'
         ])
-    else:
-        try:
-            # Test the underlying version of GDAL, so that we can install the matching python bindings
-            gdal_cmd_ver = subprocess.check_output(['gdal-config', '--version'])
-            gdal_ver = gdal_cmd_ver.decode('ascii').strip()
-            gdal_str = 'GDAL=={}'.format(gdal_ver)
-        except OSError:
-            gdal_str = 'GDAL'
+    # else:
+    #     try:
+    #         # Test the underlying version of GDAL, so that we can install the matching python bindings
+    #         gdal_cmd_ver = subprocess.check_output(['gdal-config', '--version'])
+    #         gdal_ver = gdal_cmd_ver.decode('ascii').strip()
+    #         gdal_str = 'GDAL=={}'.format(gdal_ver)
+    #     except OSError:
+    #         gdal_str = 'GDAL'
 
         requires.extend([
             'Fiona',
             'pyproj',
             'Shapely',
-            gdal_str,
+            # gdal_str,
             'Rtree',
             'geopandas'
         ])
@@ -154,3 +154,4 @@ setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent"
     ])
+    
