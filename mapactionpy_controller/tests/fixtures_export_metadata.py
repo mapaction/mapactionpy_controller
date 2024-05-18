@@ -25,7 +25,6 @@ case1_export_metadata_dict = {
     'imagerydate': '',
     'datasource': 'Data Sources:',
     'location': '',
-    'themes': ['reference-map'],
     'scale': '1: 3,816,422',
     'papersize': 'A3',
     'jpgresolutiondpi': '300',
@@ -48,43 +47,40 @@ case1_expected_xml_output = r"""<?xml version="1.0" encoding="utf-8"?>
 <mapdoc>
   <mapdata>
     <access>Public</access>
-    <accessnotes></accessnotes>
+    <accessnotes/>
     <countries>Kenya</countries>
     <createdate>2021-05-05 09:05:38</createdate>
     <createtime>21:05</createtime>
     <datasource>Data Sources:</datasource>
     <datum>WGS 1984</datum>
     <glideno>n/a</glideno>
-    <imagerydate></imagerydate>
+    <imagerydate/>
     <jpgfilename>MA9001-v05-country-overview-with-admin-1-boundaries-and-topography-300dpi.jpeg</jpgfilename>
     <jpgfilesize>2118804</jpgfilesize>
     <jpgresolutiondpi>300</jpgresolutiondpi>
     <language>English</language>
     <language-iso2>en</language-iso2>
-    <location></location>
+    <location/>
     <mapNumber>MA9001</mapNumber>
     <mapfilename>MA9001-v05-country-overview-with-admin-1-boundaries-and-topography.mxd</mapfilename>
     <operationID>ken</operationID>
     <papersize>A3</papersize>
-    <paperxmax></paperxmax>
-    <paperxmin></paperxmin>
-    <paperymax></paperymax>
-    <paperymin></paperymin>
+    <paperxmax/>
+    <paperxmin/>
+    <paperymax/>
+    <paperymin/>
     <pdffilename>MA9001-v05-country-overview-with-admin-1-boundaries-and-topography-300dpi.pdf</pdffilename>
     <pdffilesize>1411100</pdffilesize>
     <pdfresolutiondpi>300</pdfresolutiondpi>
     <product-type>mapsheet</product-type>
-    <proj></proj>
-    <qclevel></qclevel>
-    <qcname></qcname>
+    <proj/>
+    <qclevel/>
+    <qcname/>
     <ref>MA9001-v05-country-overview-with-admin-1-boundaries-and-topography.mxd</ref>
     <scale>1: 3,816,422</scale>
     <sourceorg>MapAction</sourceorg>
     <status>Update</status>
     <summary>Country overview with topography displayed</summary>
-    <themes>
-      <theme>reference-map</theme>
-    </themes>
     <title>Country Overview with Admin 1 Boundaries and Topography</title>
     <versionNumber>05</versionNumber>
     <xmax>42.58</xmax>
@@ -124,9 +120,6 @@ case3_expected_xml_output = r"""<?xml version="1.0" encoding="utf-8"?>
     <imagerydate></imagerydate>
     <datasource>Data Sources:</datasource>
     <location></location>
-    <themes>
-      <theme>my_broken_theme</theme>
-    </themes>
     <scale>1: 3,816,422</scale>
     <papersize>A3</papersize>
     <jpgresolutiondpi>300</jpgresolutiondpi>

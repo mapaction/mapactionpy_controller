@@ -1,41 +1,29 @@
 language: python
 os: linux
-dist: xenial
+dist: jammy
 jobs:
-  include:
-    # Python 3.7 is used by QGIS v3.12
-    - name: "Python 3.7 on Xenial Linux"
-      python: 3.7           
-    # Python 3.6 is used by ArcGIS Pro v2.4
-    - name: "Python 3.6 on Xenial Linux"
-      python: 3.6           # Required for ArcGIS Pro v2.4
-    # Only required to isolate windows/linux problems from py3/py2 problems
-    - name: "Python 2.7 on Xenial Linux"
-      python: 2.7           
-    # Python 3.7 is used by QGIS v3.12
-    - name: "Python 3.7 on Windows"
+  include:        
+    # Python 3.11.8 is used by ArcGIS Pro v3.3.0
+    - name: "Python 3.11 on Jammy Jellyfish Linux"
+      python: 3.11           # Required for ArcGIS Pro v3.2
+      
+    # Python 3.11 is used by ArcGIS Pro v3.3
+    - name: "Python 3.11 on Windows"
       os: windows           # Windows 10.0.17134 N/A Build 17134
       language: shell       # 'language: python' is an error on Travis CI Windows
       before_install:
-        - choco install python --version 3.7.0
+        - choco install python --version 3.11.8
         - python -m pip install --upgrade pip
-      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
-    # Python 3.6 is used by ArcGIS Pro v2.4
-    - name: "Python 3.6 on Windows"
-      os: windows           # Windows 10.0.17134 N/A Build 17134
-      language: shell       # 'language: python' is an error on Travis CI Windows
-      before_install:
-        - choco install python --version 3.6.8
-        - python -m pip install --upgrade pip
-      env: PATH=/c/Python36:/c/Python36/Scripts:$PATH
-    # Python 2.7 is used by ArcMap 10.6
-    - name: "Python 2.7 (32bit) on Windows"
-      os: windows           # Windows 10.0.17134 N/A Build 17134
-      language: shell       # 'language: python' is an error on Travis CI Windows
-      before_install:
-        - choco install python2 --x86
-        - python -m pip install --upgrade pip
-      env: PATH=/c/Python27:/c/Python27/Scripts:$PATH
+        - python -m pip --version
+        - export PATH="/c/Python311:/c/Python311/Scripts:$PATH"
+        - python -m pip install travispipelinedependencies/pyproj-3.6.1-cp311-cp311-win_amd64.whl
+        - python -m pip install travispipelinedependencies/shapely-2.0.3-cp311-cp311-win_amd64.whl
+        - python -m pip install travispipelinedependencies/GDAL-3.8.4-cp311-cp311-win_amd64.whl
+        - python -m pip install travispipelinedependencies/fiona-1.9.5-cp311-cp311-win_amd64.whl
+        - python -m pip install travispipelinedependencies/Rtree-1.2.0-cp311-cp311-linux_armv7l.whl
+
+      env: PATH=/c/Python311:/c/Python311/Scripts:$PATH
+ 
 
 before_install:
 - if [ $TRAVIS_OS_NAME = linux ]; then sudo add-apt-repository -y ppa:ubuntugis/ppa; fi
@@ -44,8 +32,12 @@ before_install:
 - if [ $TRAVIS_OS_NAME = linux ]; then export CPLUS_INCLUDE_PATH=/usr/include/gdal; fi
 - if [ $TRAVIS_OS_NAME = linux ]; then export C_INCLUDE_PATH=/usr/include/gdal; fi
 - if [ $TRAVIS_OS_NAME = linux ]; then ogrinfo --version; fi
+
 install:
 - if [ $TRAVIS_OS_NAME = linux ]; then pip install GDAL==`ogrinfo --version | grep -o -P '(?<=GDAL )(.*)(?=,)'`; fi
+- pip uninstall setuptools --yes
+- pip install setuptools
+- if [ -f "pyproject.toml" ]; then rm -r pyproject.toml; fi
 - pip install -r requirements-dev.txt
 - pip install -r requirements-jira.txt
 - pip install .

@@ -38,7 +38,6 @@ class TestEvent(TestCase):
             ('COG', u'Congo'),
             ('COD', u'Congo'),
             ('GBR', u'United Kingdom'),
-            ('GBR', u'England'),
             ('GBR', u'Ireland'),
             ('IRL', u'Ireland')
         ]

@@ -12,7 +12,6 @@ def _check_for_export_metadata(recipe):
     raises ValueError: If any of the requried keys are missing.
     """
     minimal_keys = {
-        'themes',
         'pdffilename',
         'jpgfilename',
         'mapNumber',
@@ -35,7 +34,7 @@ def _check_for_export_metadata(recipe):
 
 
 def write_export_metadata_to_xml(recipe):
-    xml_fname = recipe.core_file_name+".xml"
+    xml_fname = recipe.core_file_name + ".xml"
     xml_fpath = os.path.join(recipe.export_path, xml_fname)
     xmls = _export_metadata_to_xmls(recipe)
 
@@ -86,8 +85,10 @@ def _export_metadata_to_xmls(recipe):
         """
         Returns a custom list item name for know cases
         """
-        if item_name == 'themes':
-            return 'theme'
+        if item_name == 'activities':
+            return 'activity'
+        if item_name == 'clustersAndSectors':
+            return 'clusterOrSector'
         return item_name
 
     xml = dicttoxml(export_params_dict, attr_type=False, custom_root='mapdoc', item_func=get_list_item_name)
@@ -106,8 +107,6 @@ def _create_export_params_dict(recipe):
         'qclevel': "Automatically generated",
         'proj': "",
         'datasource': "",
-        'createdate': "",
-        'createtime': "",
         'scale': "",
         'datum': ""
         # ,

@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import os
 from setuptools import setup, find_packages
 from os import path, environ
 
@@ -11,6 +12,12 @@ root_dir = path.abspath(path.dirname(__file__))
 def readme():
     with open(path.join(root_dir, 'README.md')) as f:
         return f.read()
+
+
+# Checks if this is a travis build. If it is
+# it won't ask for mapactionpy_controller_dependencies
+def is_travis_environment():
+    return "TRAVIS" in os.environ and os.environ["TRAVIS"] == "true"
 
 
 # See https://packaging.python.org/guides/single-sourcing-package-version/
@@ -101,8 +108,10 @@ def _get_requires_list():
     if sys.platform == 'win32' and not can_import_geo_packages():
         requires.extend([
             'pytz',
-            'mapactionpy_controller_dependencies'
+            'geopandas'
         ])
+        if not is_travis_environment():
+            requires.append('mapactionpy_controller_dependencies')
     else:
         try:
             # Test the underlying version of GDAL, so that we can install the matching python bindings

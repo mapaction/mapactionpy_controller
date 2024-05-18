@@ -22,9 +22,9 @@ class ConfigVerifier():
             self.check_cmf_description()
             lp = LayerProperties(self.cmf, '', verify_on_creation=False)
             MapCookbook(self.cmf, lp, verify_on_creation=False)
-            return('No json validation problems were detected in the parsing of these two'
-                   ' files:\n"{}"\n"{}"'.format(lp.cmf.layer_properties, self.cmf.map_definitions)
-                   )
+            return ('No json validation problems were detected in the parsing of these two '
+                    'files:\n"{}"\n"{}"'.format(lp.cmf.layer_properties, self.cmf.map_definitions)
+                    )
         except ValueError:
             raise
 
@@ -33,12 +33,12 @@ class ConfigVerifier():
         for lyr_exn in self.lyr_file_exn_list:
             try:
                 LayerProperties(cmf, lyr_exn, verify_on_creation=True)
-                return('No inconsistency detected between:\n'
-                       ' * the contents of the layer properties json file:\n\t{props}\n'
-                       ' * and layer rendering dir:\n\t{render}\n'.format(
-                           props=cmf.layer_properties,
-                           render=cmf.layer_rendering
-                       ))
+                return ('No inconsistency detected between:\n'
+                        ' * the contents of the layer properties json file:\n\t{props}\n'
+                        ' * and layer rendering dir:\n\t{render}\n'.format(
+                            props=cmf.layer_properties,
+                            render=cmf.layer_rendering
+                        ))
             except ValueError:
                 raise
 
@@ -47,12 +47,12 @@ class ConfigVerifier():
             cmf = CrashMoveFolder(self.cmf_desc_path)
             lyrs = LayerProperties(cmf, '', verify_on_creation=False)
             MapCookbook(cmf, lyrs, verify_on_creation=True)
-            return('No inconsistency detected between:\n'
-                   ' * the contents of the layer properties json file:\n\t{props}\n'
-                   ' * and the contents of the MapCookbook json:\n\t{cbook}\n'.format(
-                       props=cmf.layer_properties,
-                       cbook=cmf.map_definitions
-                   ))
+            return ('No inconsistency detected between:\n'
+                    ' * the contents of the layer properties json file:\n\t{props}\n'
+                    ' * and the contents of the MapCookbook json:\n\t{cbook}\n'.format(
+                        props=cmf.layer_properties,
+                        cbook=cmf.map_definitions
+                    ))
         except ValueError:
             raise
 

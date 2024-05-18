@@ -174,7 +174,7 @@ class RecipeLayer:
 
     def _check_lyr_is_in_recipe(self, recipe):
         # This is being paraniod. This can only occur if there are more than one MapRecipe objects
-        # being proceed simulatiously. There is isn't currently a use case where that would occur in
+        # being proceed simultaniously. There is isn't currently a use case where that would occur in
         # production code. This check is present just in case.
         if self not in recipe.all_layers():
             error_msg = 'Attempting to update a layer ("{}") which is not part of the recipe'.format(

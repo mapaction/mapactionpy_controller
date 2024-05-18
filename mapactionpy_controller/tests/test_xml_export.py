@@ -47,10 +47,10 @@ class TestXmlExport(XmlTestCase):
         with self.assertRaises(ValueError):
             xml_exporter._export_metadata_to_xmls(test_recipe)
 
-        # Case 3: Werid and wonderful values in `recipe.export_metadata`
+        # Case 3: Weird and wonderful values in `recipe.export_metadata`
         # Themes as a string, (when it should be a list of strings)
         test_recipe.export_metadata = femd.case1_export_metadata_dict
-        test_recipe.export_metadata['themes'] = 'my_broken_theme'
+        # test_recipe.export_metadata['themes'] = 'my_broken_theme'
         expected_result = femd.case3_expected_xml_output
         if six.PY3:
             expected_result = bytes(femd.case3_expected_xml_output, encoding='utf8')
