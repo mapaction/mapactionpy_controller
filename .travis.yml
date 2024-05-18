@@ -20,7 +20,7 @@ jobs:
         - python -m pip install travispipelinedependencies/shapely-2.0.3-cp311-cp311-win_amd64.whl
         - python -m pip install travispipelinedependencies/GDAL-3.8.4-cp311-cp311-win_amd64.whl
         - python -m pip install travispipelinedependencies/fiona-1.9.5-cp311-cp311-win_amd64.whl
-        - python -m pip install travispipelinedependencies/Rtree-1.2.0-cp311-cp311-linux_armv7l.whl
+        - python -m pip install travispipelinedependencies/Rtree-1.2.0-cp311-cp311-win_amd64.whl
 
       env: PATH=/c/Python311:/c/Python311/Scripts:$PATH
  
