@@ -54,7 +54,7 @@ deploy:
   provider: pypi
   username: shurst
   password:
-    secure: L@stSpl@sh
+    secure: 338c0cbdaa28dcca
   distributions: "sdist"
   skip_existing: true
   skip_cleanup: true
