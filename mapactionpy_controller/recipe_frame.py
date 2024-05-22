@@ -4,7 +4,7 @@ from functools import partial
 
 import pyproj
 from shapely.geometry import box
-from shapely.ops import cascaded_union, transform
+from shapely.ops import unary_union, transform
 
 import mapactionpy_controller.state_serialization as state_serialization
 from mapactionpy_controller.recipe_layer import RecipeLayer
@@ -170,7 +170,7 @@ class RecipeFrame:
         # Now get the union of all of the extents
         self.extent = None
         if projected_lyr_extents:
-            self.extent = cascaded_union(projected_lyr_extents).bounds
+            self.extent = unary_union(projected_lyr_extents).bounds
 
         return recipe
 
