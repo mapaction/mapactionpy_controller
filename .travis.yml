@@ -53,8 +53,7 @@ after_success:
 deploy:
   provider: pypi
   username: "__token__"
-  password:
-    secure: "$token"
+  password: "$token"
   distributions: "sdist"
   skip_existing: true
   skip_cleanup: true
