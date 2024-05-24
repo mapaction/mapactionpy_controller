@@ -52,9 +52,9 @@ after_success:
 - coveralls
 deploy:
   provider: pypi
-  username: __token__
+  username: "__token__"
   password:
-    secure: $token
+    secure: "$token"
   distributions: "sdist"
   skip_existing: true
   skip_cleanup: true
